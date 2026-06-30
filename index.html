@@ -61,58 +61,8 @@
         </div>
       </div>
       <div class="hero__visual">
-        <svg class="hero__mascot" width="320" height="380" viewBox="0 0 320 380" xmlns="http://www.w3.org/2000/svg">
-          <!-- Glow -->
-          <ellipse cx="160" cy="210" rx="130" ry="150" fill="rgba(14,165,233,0.12)"/>
-          <!-- Tail feathers -->
-          <path d="M108 295 Q85 345 65 375" stroke="#0369A1" stroke-width="11" fill="none" stroke-linecap="round"/>
-          <path d="M128 308 Q122 360 115 385" stroke="#0EA5E9" stroke-width="11" fill="none" stroke-linecap="round"/>
-          <path d="M155 314 Q158 365 155 390" stroke="#38BDF8" stroke-width="11" fill="none" stroke-linecap="round"/>
-          <path d="M178 308 Q186 360 198 382" stroke="#0EA5E9" stroke-width="11" fill="none" stroke-linecap="round"/>
-          <path d="M200 295 Q218 342 235 365" stroke="#0284C7" stroke-width="11" fill="none" stroke-linecap="round"/>
-          <!-- Body -->
-          <ellipse cx="160" cy="228" rx="80" ry="95" fill="#0EA5E9"/>
-          <!-- Wings -->
-          <ellipse cx="95"  cy="238" rx="32" ry="75" fill="#0284C7" transform="rotate(-10 95 238)"/>
-          <ellipse cx="225" cy="238" rx="32" ry="75" fill="#0369A1" transform="rotate(10 225 238)"/>
-          <!-- Body highlight -->
-          <ellipse cx="148" cy="200" rx="48" ry="68" fill="#38BDF8" opacity="0.3"/>
-          <!-- Head -->
-          <circle cx="160" cy="108" r="68" fill="#0EA5E9"/>
-          <!-- Head highlight -->
-          <ellipse cx="143" cy="83" rx="38" ry="32" fill="#38BDF8" opacity="0.3"/>
-          <!-- Forehead red -->
-          <path d="M126 65 Q160 28 194 65 Q176 80 160 74 Q144 80 126 65Z" fill="#EF4444"/>
-          <!-- Yellow face patch -->
-          <ellipse cx="178" cy="118" rx="40" ry="32" fill="#FCD34D"/>
-          <!-- Eye white -->
-          <circle cx="180" cy="103" r="16" fill="white"/>
-          <!-- Eye -->
-          <circle cx="180" cy="103" r="12" fill="#0F172A"/>
-          <!-- Eye shine -->
-          <circle cx="184" cy="98"  r="5"  fill="white"/>
-          <circle cx="187" cy="101" r="2"  fill="rgba(255,255,255,0.5)"/>
-          <!-- Beak upper -->
-          <path d="M180 122 Q206 127 202 144 Q191 155 173 148 Q160 141 166 128Z" fill="#92400E"/>
-          <!-- Beak hook -->
-          <path d="M190 140 Q206 143 202 154 Q191 156 184 149Z" fill="#78350F"/>
-          <!-- Beak lower -->
-          <path d="M173 142 Q188 146 184 155 Q175 158 168 151 Q161 144 167 140Z" fill="#B45309"/>
-          <!-- Beak shine -->
-          <path d="M182 124 Q198 129 196 136" stroke="#FCD34D" stroke-width="2" fill="none" opacity="0.4" stroke-linecap="round"/>
-          <!-- Nostril -->
-          <ellipse cx="185" cy="124" rx="3.5" ry="2.5" fill="#78350F"/>
-          <!-- Cheek lines -->
-          <line x1="158" y1="124" x2="154" y2="137" stroke="rgba(160,110,0,0.25)" stroke-width="1.5"/>
-          <line x1="166" y1="127" x2="163" y2="140" stroke="rgba(160,110,0,0.25)" stroke-width="1.5"/>
-          <line x1="174" y1="125" x2="172" y2="138" stroke="rgba(160,110,0,0.25)" stroke-width="1.5"/>
-          <!-- Body feather hints -->
-          <path d="M128 188 Q140 183 152 188 Q140 193 128 188Z" fill="rgba(255,255,255,0.1)"/>
-          <path d="M150 183 Q162 178 174 183 Q162 188 150 183Z" fill="rgba(255,255,255,0.1)"/>
-          <path d="M172 188 Q184 183 196 188 Q184 193 172 188Z" fill="rgba(255,255,255,0.1)"/>
-          <path d="M136 210 Q148 205 160 210 Q148 215 136 210Z" fill="rgba(255,255,255,0.08)"/>
-          <path d="M158 205 Q170 200 182 205 Q170 210 158 205Z" fill="rgba(255,255,255,0.08)"/>
-        </svg>
+        <img src="img/logo-official.png" alt="ParrotTalk Official Logo"
+          style="width:380px;max-width:100%;filter:drop-shadow(0 24px 48px rgba(14,165,233,.4))">
 
         <!-- Floating score cards -->
         <div class="floating-card fc-1">
@@ -248,17 +198,25 @@
   </div>
 </section>
 
-<!-- CTA BOTTOM -->
-<section class="section" style="background:var(--dark)">
-  <div class="container" style="text-align:center">
-    <div style="font-size:3rem;margin-bottom:16px">🦜</div>
-    <h2 style="color:var(--white)">Ready to reach Band 7?</h2>
-    <p style="color:rgba(255,255,255,.55);margin:12px auto 32px;max-width:480px;font-size:1.0625rem">
-      Start your first practice test now. Free, no sign-up required.
-    </p>
-    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-      <a href="listening.html" class="btn btn-primary btn-lg">Start Listening Test</a>
-      <a href="writing.html"   class="btn btn-secondary btn-lg">Try Writing + AI</a>
+<!-- CTA BOTTOM — Banner -->
+<section style="background:var(--dark);overflow:hidden">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:48px;padding:60px 0 0">
+      <div>
+        <h2 style="color:var(--white);font-size:clamp(1.75rem,4vw,2.75rem)">Ready to reach Band 7?</h2>
+        <p style="color:rgba(255,255,255,.6);margin:12px 0 32px;font-size:1.0625rem;max-width:480px">
+          Start your first practice test now. Free, no sign-up required.
+          Speak English. Score Higher. Go Further.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a href="listening.html" class="btn btn-primary btn-lg">Start Free Practice</a>
+          <a href="writing.html"   class="btn btn-secondary btn-lg">Try Writing + AI</a>
+        </div>
+      </div>
+      <div style="align-self:flex-end">
+        <img src="img/banner-hero.png" alt="ParrotTalk — Free IELTS Practice"
+          style="width:480px;max-width:100%;display:block">
+      </div>
     </div>
   </div>
 </section>
