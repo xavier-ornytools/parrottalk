@@ -9,31 +9,44 @@ Question (Part ${part}): "${question}"
 Listen to the audio recording and return JSON only (no markdown):
 {"transcript":"<verbatim transcription of what was said>","pronunciationNotes":"<brief note on accent clarity, mispronunciations, intelligibility>"}`;
 
-  // Strip codec suffix: "audio/webm;codecs=opus" → "audio/webm"
   const cleanMime = mimeType.split(';')[0].trim();
 
+  const geminiBody = JSON.stringify({
+    contents: [{ parts: [
+      { inlineData: { mimeType: cleanMime, data: audioData } },
+      { text: prompt }
+    ]}],
+    generationConfig: { temperature: 0.2, maxOutputTokens: 512 }
+  });
+
   try {
-    const r = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [
-            { inlineData: { mimeType: cleanMime, data: audioData } },
-            { text: prompt }
-          ]}],
-          generationConfig: { temperature: 0.2, maxOutputTokens: 512 }
-        })
+    let r;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      r = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: geminiBody }
+      );
+      if (r.status === 429 && attempt === 0) {
+        await new Promise(resolve => setTimeout(resolve, 12000));
+        continue;
       }
-    );
+      break;
+    }
+
     if (!r.ok) {
       const err = await r.text();
-      return res.status(502).json({ error: 'Gemini API error', detail: err, sentMimeType: cleanMime, audioBytes: audioData.length });
+      const is429 = r.status === 429;
+      return res.status(502).json({
+        error: is429 ? 'Rate limit exceeded' : 'Gemini API error',
+        detail: err,
+        sentMimeType: cleanMime,
+        audioBytes: audioData.length,
+        rateLimit: is429
+      });
     }
+
     const g = await r.json();
     const text = g.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    // Extract JSON even if Gemini wraps it in markdown code fences
     const match = text.match(/\{[\s\S]*\}/);
     if (!match) return res.status(502).json({ error: 'No JSON in response', raw: text });
     try {

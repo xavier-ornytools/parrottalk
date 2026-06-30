@@ -841,11 +841,14 @@ async function submitTest() {
     }
   };
 
-  // Batches of 3 to stay within Gemini free-tier rate limits
+  // Sequential with 4s delay — Gemini free tier: 15 RPM max
   const qas = [];
-  for (let b = 0; b < allQs.length; b += 3) {
-    const batch = await Promise.all([b, b+1, b+2].filter(i => i < allQs.length).map(i => transcribeOne(i)));
-    qas.push(...batch);
+  for (let i = 0; i < allQs.length; i++) {
+    if (i > 0) {
+      showProgress(transcribed, allQs.length + 1, `Waiting before next request (${i}/${allQs.length} done)...`);
+      await new Promise(r => setTimeout(r, 4000));
+    }
+    qas.push(await transcribeOne(i));
   }
 
   // Guard: if majority of recordings failed, transcription is broken — don't call feedback
@@ -853,10 +856,17 @@ async function submitTest() {
   const failedCount = actualRecordings.filter(q => q.failed).length;
   if (actualRecordings.length > 0 && failedCount >= Math.ceil(actualRecordings.length / 2)) {
     const firstErr = actualRecordings.find(q => q.failed)?.pronunciationNotes || '';
+    const is429 = firstErr.includes('429') || firstErr.includes('quota') || firstErr.includes('Rate limit');
+    const errorTitle = is429
+      ? '⏳ <strong>Gemini API rate limit reached</strong>'
+      : '🚫 <strong>Audio transcription failed</strong> for ' + failedCount + ' of ' + actualRecordings.length + ' recordings';
+    const errorMsg = is429
+      ? 'Too many requests sent to Gemini today. Wait <strong>1–2 minutes</strong> then retry — or try again tomorrow if the daily quota is exhausted.'
+      : firstErr;
     resultsEl.innerHTML = `
       <div class="card card-sm" style="border-color:var(--danger);background:var(--danger-light)">
-        <p style="color:var(--danger);font-size:.875rem">🚫 <strong>Audio transcription failed</strong> for ${failedCount} of ${actualRecordings.length} recordings.</p>
-        ${firstErr ? `<p style="font-family:monospace;font-size:.75rem;word-break:break-all;margin-top:8px;padding:8px;background:rgba(0,0,0,.05);border-radius:4px">${firstErr}</p>` : ''}
+        <p style="color:var(--danger);font-size:.875rem">${errorTitle}</p>
+        ${errorMsg ? `<p style="font-size:.8rem;margin-top:8px;${is429 ? '' : 'font-family:monospace;word-break:break-all;padding:8px;background:rgba(0,0,0,.05);border-radius:4px'}">${errorMsg}</p>` : ''}
         <button class="btn" onclick="document.getElementById('spk-test-zone').classList.remove('hidden');document.getElementById('spk-results').classList.add('hidden');" style="margin-top:12px">← Back to test</button>
       </div>`;
     return;
