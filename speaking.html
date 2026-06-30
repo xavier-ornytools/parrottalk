@@ -68,6 +68,7 @@
     </a>
     <div class="nav__links">
       <a href="listening.html" class="nav__link">Listening</a>
+      <a href="reading.html"   class="nav__link">Reading</a>
       <a href="writing.html"   class="nav__link">Writing</a>
       <a href="speaking.html"  class="nav__link active">Speaking</a>
       <a href="dashboard.html" class="nav__link">Dashboard</a>
@@ -105,9 +106,9 @@
   <!-- TEST SELECTOR -->
   <div class="grid-2" style="margin-bottom:24px">
     <button class="test-sel-btn active" onclick="showTest(1)" id="spk-btn-1">
-      <div class="t-num">Test 01 ✅ Completed</div>
-      <div class="t-name">Life Decisions & Turning Points</div>
-      <div class="t-meta">FC 7.0 · LR 6.5 · GRA 6.0 · Pron 6.5 — Band 6.5 · 29 Jun 2026</div>
+      <div class="t-num">Test 01 — Example Results</div>
+      <div class="t-name">Technology & Daily Life</div>
+      <div class="t-meta">FC 6.5 · LR 6.0 · GRA 5.5 · Pron 6.0 — Band 6.0 (sample)</div>
     </button>
     <button class="test-sel-btn" onclick="showTest(2)" id="spk-btn-2">
       <div class="t-num">Test 02</div>
@@ -121,54 +122,54 @@
 
     <div class="card card-lg" style="margin-bottom:20px">
       <div class="flex items-center justify-between" style="margin-bottom:16px">
-        <h3>Speaking Test 01 — Results</h3>
-        <span class="badge badge-primary">29 Jun 2026</span>
+        <h3>Speaking Test 01 — Sample Results</h3>
+        <span class="badge badge-primary">Example · Band 6.0</span>
       </div>
 
       <div class="score-mini-grid">
         <div class="score-mini" style="background:var(--primary-light)">
           <div class="sm-tag">FC</div>
-          <div class="sm-val" style="color:var(--primary)">7.0</div>
+          <div class="sm-val" style="color:var(--primary)">6.5</div>
           <div class="sm-name">Fluency</div>
         </div>
         <div class="score-mini" style="background:var(--primary-light)">
           <div class="sm-tag">LR</div>
-          <div class="sm-val" style="color:var(--primary)">6.5</div>
+          <div class="sm-val" style="color:var(--primary)">6.0</div>
           <div class="sm-name">Lexical Resource</div>
         </div>
         <div class="score-mini" style="background:var(--warning-light)">
           <div class="sm-tag">GRA</div>
-          <div class="sm-val" style="color:var(--warning)">6.0</div>
+          <div class="sm-val" style="color:var(--warning)">5.5</div>
           <div class="sm-name">Grammar</div>
         </div>
         <div class="score-mini" style="background:#F5F3FF">
           <div class="sm-tag">Pron</div>
-          <div class="sm-val" style="color:var(--purple)">6.5</div>
+          <div class="sm-val" style="color:var(--purple)">6.0</div>
           <div class="sm-name">Pronunciation</div>
         </div>
       </div>
 
       <div class="card card-sm" style="background:var(--warning-light);border-color:var(--warning);margin-bottom:16px">
-        <p style="color:#92400E;font-size:.875rem">⚠️ <strong>Priority — Grammar (GRA 6.0):</strong> Fix make/do confusion, present perfect vs past simple, plural agreement. Correcting grammar → GRA 7.0 → overall Band <strong>6.75 → 7.0</strong>.</p>
+        <p style="color:#92400E;font-size:.875rem">⚠️ <strong>Priority — Grammar (GRA 5.5):</strong> Fix stative verbs, countable/uncountable nouns, tense consistency. Reaching GRA 6.5 → overall Band <strong>6.0 → 6.5</strong>.</p>
       </div>
 
       <div class="grid-2">
         <div>
           <div style="font-size:.8125rem;font-weight:700;color:var(--success-dark);margin-bottom:8px">✅ Strengths</div>
           <ul style="display:flex;flex-direction:column;gap:6px">
-            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">Excellent fluency, very few hesitations</li>
-            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">Varied vocabulary (DeFi, blockchain, AI natural)</li>
-            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">Strong spontaneity in Part 2 and Part 3</li>
-            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">Good use of personal examples to support answers</li>
+            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">Good use of discourse markers (however, on the other hand)</li>
+            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">Varied sentence structures attempted</li>
+            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">Clear pronunciation on familiar vocabulary</li>
+            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">Maintained fluency with minimal long pauses</li>
           </ul>
         </div>
         <div>
           <div style="font-size:.8125rem;font-weight:700;color:var(--danger);margin-bottom:8px">⚠️ To Fix</div>
           <ul style="display:flex;flex-direction:column;gap:6px">
-            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">"make a master degree" → <em>do a master's degree</em></li>
-            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">"make the turn of my life" → <em>a turning point</em></li>
-            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">"School need to" → <em>Schools need to</em></li>
-            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">Present perfect with specific dates</li>
+            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">"I am agree" → <em>I agree</em></li>
+            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">"Informations" → <em>Information</em> (uncountable)</li>
+            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">"Since 3 years" → <em>For 3 years</em></li>
+            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">Present tense with past time markers</li>
           </ul>
         </div>
       </div>
@@ -245,34 +246,34 @@
         </thead>
         <tbody>
           <tr>
-            <td class="incorrect-cell">"make a master degree"</td>
-            <td class="correct-cell">"do a master's degree"</td>
-            <td>make / do confusion</td>
-          </tr>
-          <tr>
-            <td class="incorrect-cell">"make the turn of my life"</td>
-            <td class="correct-cell">"it was a turning point in my life"</td>
-            <td>Collocation</td>
-          </tr>
-          <tr>
-            <td class="incorrect-cell">"School need to..."</td>
-            <td class="correct-cell">"Schools need to..."</td>
-            <td>Plural agreement</td>
-          </tr>
-          <tr>
-            <td class="incorrect-cell">"I have started in 2014"</td>
-            <td class="correct-cell">"I started in 2014"</td>
-            <td>Past simple (specific date)</td>
-          </tr>
-          <tr>
-            <td class="incorrect-cell">"Since many years"</td>
-            <td class="correct-cell">"For many years"</td>
-            <td>Since vs For</td>
-          </tr>
-          <tr>
             <td class="incorrect-cell">"I am agree"</td>
             <td class="correct-cell">"I agree"</td>
             <td>Stative verb</td>
+          </tr>
+          <tr>
+            <td class="incorrect-cell">"Since 3 years"</td>
+            <td class="correct-cell">"For 3 years"</td>
+            <td>Since vs For</td>
+          </tr>
+          <tr>
+            <td class="incorrect-cell">"Informations are..."</td>
+            <td class="correct-cell">"Information is..."</td>
+            <td>Uncountable noun</td>
+          </tr>
+          <tr>
+            <td class="incorrect-cell">"I have went there"</td>
+            <td class="correct-cell">"I went there"</td>
+            <td>Past participle</td>
+          </tr>
+          <tr>
+            <td class="incorrect-cell">"More better"</td>
+            <td class="correct-cell">"Better"</td>
+            <td>Double comparative</td>
+          </tr>
+          <tr>
+            <td class="incorrect-cell">"The people is..."</td>
+            <td class="correct-cell">"People are..."</td>
+            <td>Plural agreement</td>
           </tr>
         </tbody>
       </table>

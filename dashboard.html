@@ -66,6 +66,7 @@
     </a>
     <div class="nav__links">
       <a href="listening.html" class="nav__link">Listening</a>
+      <a href="reading.html"   class="nav__link">Reading</a>
       <a href="writing.html"   class="nav__link">Writing</a>
       <a href="speaking.html"  class="nav__link">Speaking</a>
       <a href="dashboard.html" class="nav__link active">Dashboard</a>
@@ -125,7 +126,7 @@
         <h2>Your IELTS Level</h2>
         <p id="band-description">Complete a test to see your estimated band</p>
         <div class="ob-target">
-          🎯 Target: Band 7.0 · September 2026
+          🎯 Target: Band 7.0
         </div>
       </div>
     </div>
@@ -211,29 +212,29 @@
         <div class="tip-item">
           <div class="tip-icon">✍️</div>
           <div>
-            <div class="tip-label" style="color:var(--warning)">Writing — Priority #1</div>
-            <div class="tip-text">Task 2 counts double. Focus on Task Response structure: clear position, 2 body paragraphs with examples, strong conclusion.</div>
+            <div class="tip-label" style="color:var(--warning)">Writing — Task 2 is key</div>
+            <div class="tip-text">Task 2 counts double. Aim for a clear position, 2 body paragraphs with supporting examples, and a strong conclusion. Minimum 250 words.</div>
           </div>
         </div>
         <div class="tip-item">
           <div class="tip-icon">🎧</div>
           <div>
-            <div class="tip-label" style="color:var(--primary)">Listening Section 4 — Priority #2</div>
-            <div class="tip-text">Academic lectures are the hardest section. Practice note-completion under real conditions: one listen, no pausing.</div>
-          </div>
-        </div>
-        <div class="tip-item">
-          <div class="tip-icon">🎤</div>
-          <div>
-            <div class="tip-label" style="color:var(--purple)">Speaking Grammar — Priority #3</div>
-            <div class="tip-text">Fix make/do confusion and present perfect vs past simple. GRA 6.0 → 7.0 = overall band up by 0.25.</div>
+            <div class="tip-label" style="color:var(--primary)">Listening — Section 4 focus</div>
+            <div class="tip-text">Academic monologues are the hardest section. Practise note-completion under strict conditions: one listen, no pausing.</div>
           </div>
         </div>
         <div class="tip-item">
           <div class="tip-icon">📖</div>
           <div>
-            <div class="tip-label" style="color:var(--success-dark)">Reading — Maintain 7.0</div>
-            <div class="tip-text">Strong performance. Keep practising True/False/Not Given — easiest place to lose points under time pressure.</div>
+            <div class="tip-label" style="color:var(--success-dark)">Reading — True/False/Not Given</div>
+            <div class="tip-text">The most common error source. "Not Given" means the text neither confirms nor denies the statement — don't guess from general knowledge.</div>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-icon">🎤</div>
+          <div>
+            <div class="tip-label" style="color:var(--purple)">Speaking — Extend your answers</div>
+            <div class="tip-text">Never give one-word answers. Use the PEEL method: Point → Example → Explanation → Link. Aim for 3-5 sentences per response.</div>
           </div>
         </div>
       </div>
@@ -252,17 +253,16 @@
 
 <script src="js/data.js"></script>
 <script>
-// Fixed scores (from your Speaking test & Reading estimation)
-const FIXED_SCORES = {
-  reading: { band: 7.0, label: 'Estimated' },
-  speaking: { band: 6.5, label: '29 Jun 2026' }
-};
+function getAllReadingScores() {
+  return JSON.parse(localStorage.getItem('ielts_reading_scores') || '{}');
+}
 
 let radarChart = null;
 
 function loadDashboard() {
   const listeningScores = getAllScores();
-  const hasData = Object.keys(listeningScores).length > 0;
+  const readingScores = getAllReadingScores();
+  const hasData = Object.keys(listeningScores).length > 0 || Object.keys(readingScores).length > 0;
 
   // Get best listening band
   let bestListening = null;
@@ -270,19 +270,25 @@ function loadDashboard() {
     if (!bestListening || s.band > bestListening.band) bestListening = s;
   });
 
+  // Get best reading band
+  let bestReading = null;
+  Object.values(readingScores).forEach(s => {
+    if (!bestReading || s.band > bestReading.band) bestReading = s;
+  });
+
   // Skills
   const skills = {
     listening: bestListening ? bestListening.band : null,
-    reading:   FIXED_SCORES.reading.band,
+    reading:   bestReading ? bestReading.band : null,
     writing:   null,
-    speaking:  FIXED_SCORES.speaking.band
+    speaking:  null
   };
 
   // Calculate overall
   const available = Object.values(skills).filter(v => v !== null);
   const overall = available.length ? (available.reduce((a,b) => a+b, 0) / available.length).toFixed(1) : null;
 
-  if (!hasData && !overall) {
+  if (!hasData) {
     document.getElementById('empty-state').classList.remove('hidden');
     document.getElementById('dashboard-content').classList.add('hidden');
     return;
