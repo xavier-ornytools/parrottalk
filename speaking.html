@@ -113,7 +113,7 @@
     <button class="test-sel-btn" onclick="showTest(2)" id="spk-btn-2">
       <div class="t-num">Test 02</div>
       <div class="t-name">Travel & Places</div>
-      <div class="t-meta">Ready to practice</div>
+      <div class="t-meta">🤖 AI Feedback — Write your responses</div>
     </button>
   </div>
 
@@ -177,60 +177,90 @@
 
   </div>
 
-  <!-- TEST 02 BRIEFING -->
+  <!-- TEST 02 — AI INTERACTIVE -->
   <div id="speaking-test-2" class="hidden">
 
+    <div class="card card-sm" style="background:var(--primary-pale);border-color:var(--primary-light);margin-bottom:20px">
+      <p style="font-size:.875rem;color:var(--primary-dark)">🤖 <strong>AI Speaking Simulation</strong> — Write your answers as if you were speaking naturally. Aim for 3–5 sentences per answer. The AI will evaluate your Fluency, Vocabulary, Grammar and Pronunciation patterns.</p>
+    </div>
+
+    <!-- PART 1 -->
     <div class="part-card">
       <div class="part-header">
         <span class="part-tag p1">Part 1</span>
-        <span style="font-size:.875rem;color:var(--text-muted)">Interview · 4–5 minutes</span>
+        <span style="font-size:.875rem;color:var(--text-muted)">Interview — Travel & Daily Life</span>
       </div>
-      <p>The examiner will ask questions on 3 topics from: <strong>Travel, Learning, Music, Daily Routine, Food</strong>. Answer naturally with developed responses and examples.</p>
-    </div>
-
-    <div class="part-card">
-      <div class="part-header">
-        <span class="part-tag p2">Part 2</span>
-        <span style="font-size:.875rem;color:var(--text-muted)">Long turn · 3–4 minutes</span>
-      </div>
-      <div class="cue-card">
-        <h4>Describe a place you would like to visit in the future.</h4>
-        <ul>
-          <li>Where this place is</li>
-          <li>Why you would like to go there</li>
-          <li>What you would do there</li>
-          <li><strong>And explain how you think visiting this place would affect you</strong></li>
-        </ul>
-        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--yellow);font-size:.8rem;color:#92400E">
-          ⏱ 1 minute preparation · 1–2 minutes speaking
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div>
+          <p style="font-weight:600;margin-bottom:6px">1. Do you enjoy travelling? Why or why not?</p>
+          <textarea class="spk-answer" id="spk-q1" placeholder="Write your answer here (3–5 sentences)..." rows="3" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.9rem;font-family:inherit;resize:vertical"></textarea>
+        </div>
+        <div>
+          <p style="font-weight:600;margin-bottom:6px">2. How often do you travel, and where do you usually go?</p>
+          <textarea class="spk-answer" id="spk-q2" placeholder="Write your answer here..." rows="3" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.9rem;font-family:inherit;resize:vertical"></textarea>
+        </div>
+        <div>
+          <p style="font-weight:600;margin-bottom:6px">3. What is your favourite type of holiday — city trips, beach holidays or nature retreats?</p>
+          <textarea class="spk-answer" id="spk-q3" placeholder="Write your answer here..." rows="3" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.9rem;font-family:inherit;resize:vertical"></textarea>
         </div>
       </div>
     </div>
 
+    <!-- PART 2 -->
+    <div class="part-card">
+      <div class="part-header">
+        <span class="part-tag p2">Part 2</span>
+        <span style="font-size:.875rem;color:var(--text-muted)">Long Turn — Cue Card</span>
+      </div>
+      <div class="cue-card" style="background:var(--warning-light);border-left:3px solid var(--warning);border-radius:var(--r);padding:16px 20px;margin-bottom:16px">
+        <h4 style="margin-bottom:10px">Describe a place you would like to visit in the future.</h4>
+        <ul style="display:flex;flex-direction:column;gap:6px;font-size:.9rem">
+          <li>Where this place is</li>
+          <li>Why you would like to go there</li>
+          <li>What you would do there</li>
+          <li><strong>And explain how visiting this place would affect you</strong></li>
+        </ul>
+        <div style="margin-top:12px;font-size:.8rem;color:#92400E">⏱ Write 8–12 sentences — equivalent to 1–2 minutes of speech</div>
+      </div>
+      <textarea class="spk-answer" id="spk-q4" placeholder="Describe the place in detail. Aim for 8–12 sentences..." rows="6" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.9rem;font-family:inherit;resize:vertical"></textarea>
+    </div>
+
+    <!-- PART 3 -->
     <div class="part-card">
       <div class="part-header">
         <span class="part-tag p3">Part 3</span>
-        <span style="font-size:.875rem;color:var(--text-muted)">Discussion · 4–5 minutes</span>
+        <span style="font-size:.875rem;color:var(--text-muted)">Discussion — Travel & Society</span>
       </div>
-      <ul>
-        <li>Do you think travelling abroad is important for young people's development?</li>
-        <li>Some people say that mass tourism is destroying the places it promotes. Do you agree?</li>
-        <li>How has social media changed the way people choose where to travel?</li>
-        <li>Do you think virtual reality will ever replace the experience of actually visiting a place?</li>
-      </ul>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div>
+          <p style="font-weight:600;margin-bottom:6px">5. Do you think travelling abroad is important for young people's personal development?</p>
+          <textarea class="spk-answer" id="spk-q5" placeholder="Discuss both sides and give your opinion..." rows="4" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.9rem;font-family:inherit;resize:vertical"></textarea>
+        </div>
+        <div>
+          <p style="font-weight:600;margin-bottom:6px">6. Some people argue that mass tourism is destroying the places it promotes. To what extent do you agree?</p>
+          <textarea class="spk-answer" id="spk-q6" placeholder="Discuss this view with examples..." rows="4" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.9rem;font-family:inherit;resize:vertical"></textarea>
+        </div>
+        <div>
+          <p style="font-weight:600;margin-bottom:6px">7. How has social media changed the way people choose where to travel?</p>
+          <textarea class="spk-answer" id="spk-q7" placeholder="Give your view with examples..." rows="4" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.9rem;font-family:inherit;resize:vertical"></textarea>
+        </div>
+      </div>
     </div>
+
+    <!-- AI FEEDBACK BUTTON -->
+    <div style="text-align:center;margin:24px 0">
+      <button class="btn btn-primary btn-lg" id="spk-ai-btn" onclick="getSpeakingFeedback()">🤖 Get AI Feedback</button>
+    </div>
+
+    <!-- AI FEEDBACK RESULT -->
+    <div id="spk-ai-result" class="hidden"></div>
 
   </div>
 
-  <!-- LAUNCH AI EXAMINER -->
-  <a href="https://claude.ai" target="_blank" class="claude-link">
-    <div class="cl-icon">🤖</div>
-    <div class="cl-text">
-      <div class="cl-title">Launch AI Examiner — claude.ai</div>
-      <div class="cl-sub">Open claude.ai → enable microphone → paste the speaking briefing → say GO to start your mock exam</div>
-    </div>
-    <div class="cl-arrow">→</div>
-  </a>
+  <!-- TIP: after test 01 static results -->
+  <div class="card card-sm" style="background:var(--primary-pale);border-color:var(--primary-light);margin:20px 0" id="spk-tip" style="display:none">
+    <p style="font-size:.875rem;color:var(--primary-dark)">💡 <strong>Try Test 02</strong> for real AI feedback on your writing — scored across all 4 IELTS speaking criteria.</p>
+  </div>
 
   <!-- GRAMMAR ERROR TABLE -->
   <div class="card">
@@ -288,6 +318,103 @@ function showTest(n) {
   document.getElementById('speaking-test-2').classList.toggle('hidden', n!==2);
   document.getElementById('spk-btn-1').classList.toggle('active', n===1);
   document.getElementById('spk-btn-2').classList.toggle('active', n===2);
+  const tip = document.getElementById('spk-tip');
+  if (tip) tip.style.display = n===1 ? 'block' : 'none';
+}
+
+async function getSpeakingFeedback() {
+  const questions = [
+    'Do you enjoy travelling? Why or why not?',
+    'How often do you travel, and where do you usually go?',
+    'What is your favourite type of holiday — city trips, beach holidays or nature retreats?',
+    'Describe a place you would like to visit in the future.',
+    'Do you think travelling abroad is important for young people\'s personal development?',
+    'Some people argue that mass tourism is destroying the places it promotes. To what extent do you agree?',
+    'How has social media changed the way people choose where to travel?'
+  ];
+  const answers = [1,2,3,4,5,6,7].map(i => (document.getElementById('spk-q'+i)?.value || '').trim());
+  const filled = answers.filter(a => a.length > 10).length;
+  if (filled < 4) {
+    alert('Please answer at least 4 questions before requesting AI feedback.');
+    return;
+  }
+  const btn = document.getElementById('spk-ai-btn');
+  const result = document.getElementById('spk-ai-result');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner" style="border-color:rgba(255,255,255,.3);border-top-color:white;width:16px;height:16px;display:inline-block;margin-right:8px"></div> Analysing...';
+  result.classList.remove('hidden');
+  result.innerHTML = '<div class="card" style="text-align:center;padding:32px"><div class="spinner" style="margin:0 auto 12px"></div><p style="color:var(--text-muted)">AI is evaluating your speaking responses...</p></div>';
+
+  try {
+    const res = await fetch('/api/speaking-feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topic: 'Travel & Places', questions, answers })
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    renderSpeakingFeedback(data);
+    saveSpeakingScore(data);
+  } catch (err) {
+    result.innerHTML = '<div class="card card-sm" style="border-color:var(--danger-light);background:var(--danger-light)"><p style="color:var(--danger);font-size:.875rem">⚠️ AI feedback unavailable. Please try again.<br><em>' + err.message + '</em></p></div>';
+  }
+  btn.disabled = false;
+  btn.innerHTML = '🤖 Get AI Feedback';
+}
+
+function renderSpeakingFeedback(data) {
+  const result = document.getElementById('spk-ai-result');
+  const criteriaHTML = [
+    { key: 'fc', label: 'Fluency & Coherence', color: 'var(--primary)', bg: 'var(--primary-light)' },
+    { key: 'lr', label: 'Lexical Resource', color: 'var(--primary)', bg: 'var(--primary-light)' },
+    { key: 'gra', label: 'Grammar Range', color: 'var(--warning)', bg: 'var(--warning-light)' },
+    { key: 'pron', label: 'Pronunciation', color: 'var(--purple)', bg: '#F5F3FF' }
+  ].map(c => `
+    <div class="score-mini" style="background:${c.bg}">
+      <div class="sm-tag">${c.key.toUpperCase()}</div>
+      <div class="sm-val" style="color:${c.color}">${data[c.key] || '—'}</div>
+      <div class="sm-name">${c.label}</div>
+    </div>`).join('');
+
+  const strengthsHTML = (data.strengths || []).map(s =>
+    `<li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">${s}</li>`).join('');
+  const fixHTML = (data.toFix || []).map(f =>
+    `<li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">${f}</li>`).join('');
+
+  result.innerHTML = `
+    <div class="card card-lg" style="margin-top:8px">
+      <div class="flex items-center justify-between" style="margin-bottom:16px">
+        <h3>Speaking Test 02 — AI Results</h3>
+        <span class="badge badge-primary">Band ${data.overall || '—'}</span>
+      </div>
+      <div class="score-mini-grid" style="margin-bottom:16px">${criteriaHTML}</div>
+      ${data.summary ? `<p style="font-size:.9375rem;color:var(--text);margin-bottom:16px">${data.summary}</p>` : ''}
+      <div class="grid-2" style="margin-bottom:16px">
+        <div>
+          <div style="font-size:.8125rem;font-weight:700;color:var(--success-dark);margin-bottom:8px">✅ Strengths</div>
+          <ul style="display:flex;flex-direction:column;gap:6px">${strengthsHTML}</ul>
+        </div>
+        <div>
+          <div style="font-size:.8125rem;font-weight:700;color:var(--danger);margin-bottom:8px">⚠️ To Fix</div>
+          <ul style="display:flex;flex-direction:column;gap:6px">${fixHTML}</ul>
+        </div>
+      </div>
+      ${data.topTip ? `<div style="padding:12px 14px;background:var(--warning-light);border-radius:var(--r);font-size:.875rem;color:#92400E"><strong>💡 Top tip:</strong> ${data.topTip}</div>` : ''}
+      <div style="margin-top:16px;text-align:center">
+        <a href="dashboard.html" class="btn btn-primary">View Dashboard →</a>
+      </div>
+    </div>`;
+}
+
+function saveSpeakingScore(data) {
+  if (!data.overall) return;
+  const spkScores = JSON.parse(localStorage.getItem('ielts_speaking_scores') || '{}');
+  spkScores['test02'] = {
+    band: parseFloat(data.overall),
+    criteriaScores: { fc: data.fc, lr: data.lr, gra: data.gra, pron: data.pron },
+    date: new Date().toLocaleDateString('fr-FR')
+  };
+  localStorage.setItem('ielts_speaking_scores', JSON.stringify(spkScores));
 }
 </script>
 </body>

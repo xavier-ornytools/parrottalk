@@ -261,8 +261,10 @@ let radarChart = null;
 
 function loadDashboard() {
   const listeningScores = getAllScores();
-  const readingScores = getAllReadingScores();
-  const hasData = Object.keys(listeningScores).length > 0 || Object.keys(readingScores).length > 0;
+  const readingScores   = getAllReadingScores();
+  const writingScores   = JSON.parse(localStorage.getItem('ielts_writing_scores')  || '{}');
+  const speakingScores  = JSON.parse(localStorage.getItem('ielts_speaking_scores') || '{}');
+  const hasData = Object.keys(listeningScores).length > 0 || Object.keys(readingScores).length > 0 || Object.keys(writingScores).length > 0 || Object.keys(speakingScores).length > 0;
 
   // Get best listening band
   let bestListening = null;
@@ -276,12 +278,24 @@ function loadDashboard() {
     if (!bestReading || s.band > bestReading.band) bestReading = s;
   });
 
+  // Get best writing band
+  let bestWriting = null;
+  Object.values(writingScores).forEach(s => {
+    if (s.band && (!bestWriting || s.band > bestWriting.band)) bestWriting = s;
+  });
+
+  // Get best speaking band
+  let bestSpeaking = null;
+  Object.values(speakingScores).forEach(s => {
+    if (s.band && (!bestSpeaking || s.band > bestSpeaking.band)) bestSpeaking = s;
+  });
+
   // Skills
   const skills = {
     listening: bestListening ? bestListening.band : null,
-    reading:   bestReading ? bestReading.band : null,
-    writing:   null,
-    speaking:  null
+    reading:   bestReading   ? bestReading.band   : null,
+    writing:   bestWriting   ? bestWriting.band   : null,
+    speaking:  bestSpeaking  ? bestSpeaking.band  : null
   };
 
   // Calculate overall
@@ -406,8 +420,11 @@ function buildHistory(scores) {
 }
 
 function confirmReset() {
-  if (confirm('Reset all listening scores? This cannot be undone.')) {
+  if (confirm('Reset all scores? This cannot be undone.')) {
     localStorage.removeItem('ielts_scores');
+    localStorage.removeItem('ielts_reading_scores');
+    localStorage.removeItem('ielts_writing_scores');
+    localStorage.removeItem('ielts_speaking_scores');
     loadDashboard();
   }
 }

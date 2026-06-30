@@ -199,6 +199,26 @@
   </div>
 </section>
 
+<!-- EMAIL CAPTURE -->
+<section class="section" id="newsletter-section" style="background:linear-gradient(135deg,#0F172A,#1E293B)">
+  <div class="container" style="text-align:center;max-width:560px;padding:64px 24px">
+    <div style="font-size:2.5rem;margin-bottom:16px">🦜</div>
+    <h2 style="color:var(--white);margin-bottom:12px">Stay ahead of your IELTS prep</h2>
+    <p style="color:rgba(255,255,255,.6);margin-bottom:32px">
+      New tests and tips — straight to your inbox. No spam. Unsubscribe anytime.
+    </p>
+    <form id="subscribe-form" onsubmit="handleSubscribe(event)"
+      style="display:flex;gap:12px;max-width:440px;margin:0 auto;flex-wrap:wrap">
+      <input type="email" id="sub-email" placeholder="your@email.com" required
+        style="flex:1;min-width:200px;padding:12px 16px;border-radius:var(--r);border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:var(--white);font-size:1rem;font-family:inherit">
+      <button type="submit" class="btn btn-primary" id="sub-btn">Subscribe</button>
+    </form>
+    <p id="sub-success" class="hidden" style="color:#4ADE80;margin-top:16px;font-weight:600">
+      ✅ You're on the list! We'll be in touch.
+    </p>
+  </div>
+</section>
+
 <!-- CTA BOTTOM — Banner -->
 <section style="background:var(--dark);overflow:hidden">
   <div class="container">
@@ -242,10 +262,37 @@
 </footer>
 
 <script>
-  // Mark active nav link
   document.querySelectorAll('.nav__link').forEach(link => {
     if (link.href === location.href) link.classList.add('active');
   });
+
+  if (localStorage.getItem('parrottalk_subscribed')) {
+    const sec = document.getElementById('newsletter-section');
+    if (sec) sec.style.display = 'none';
+  }
+
+  async function handleSubscribe(e) {
+    e.preventDefault();
+    if (localStorage.getItem('parrottalk_subscribed')) return;
+    const email = document.getElementById('sub-email').value.trim();
+    const btn = document.getElementById('sub-btn');
+    btn.disabled = true; btn.textContent = 'Sending...';
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      if (res.ok) {
+        localStorage.setItem('parrottalk_subscribed', '1');
+        document.getElementById('subscribe-form').classList.add('hidden');
+        document.getElementById('sub-success').classList.remove('hidden');
+      } else {
+        btn.disabled = false; btn.textContent = 'Subscribe';
+        alert('Something went wrong. Please try again.');
+      }
+    } catch { btn.disabled = false; btn.textContent = 'Subscribe'; }
+  }
 </script>
 </body>
 </html>

@@ -210,8 +210,8 @@
     </button>
     <button class="test-sel-btn" onclick="selectTest('test02')">
       <div class="t-num">Test 02</div>
-      <div class="t-name">Coming soon</div>
-      <div class="t-meta">In preparation</div>
+      <div class="t-name">Renewable Energy · Water Scarcity · Memory</div>
+      <div class="t-meta" id="meta-rdtest02">Not attempted yet</div>
     </button>
   </div>
 
@@ -667,25 +667,388 @@
       <button class="btn btn-success btn-lg" onclick="submitTest()">✅ Submit & Score (40 questions)</button>
     </div>
 
-    <!-- RESULTS -->
-    <div class="results-card" id="results-card">
-      <div style="display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center">
-        <div>
-          <div style="font-size:.8rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em">Final Score</div>
-          <div class="band-big" id="results-score">—</div>
-          <div style="font-size:1.5rem;font-weight:700;color:var(--white);margin-top:4px" id="results-band">Band —</div>
-        </div>
-        <div>
-          <p id="results-sub" style="color:rgba(255,255,255,.7);font-size:1.0625rem;margin-bottom:16px"></p>
-          <button class="btn btn-outline" onclick="showAnswers()" style="color:white;border-color:rgba(255,255,255,.3)">
-            Show All Correct Answers
-          </button>
-        </div>
-      </div>
-      <div class="sec-results-grid" id="section-results"></div>
+  </div><!-- /test-zone -->
+
+  <!-- TEST ZONE 02 -->
+  <div id="test-zone-02" class="hidden">
+
+    <div class="passage-nav">
+      <button class="passage-tab active" id="t2_ptab-0" onclick="switchPassage(0)">📄 Passage 1</button>
+      <button class="passage-tab" id="t2_ptab-1" onclick="switchPassage(1)">📄 Passage 2</button>
+      <button class="passage-tab" id="t2_ptab-2" onclick="switchPassage(2)">📄 Passage 3</button>
+      <div class="timer-badge" id="t2_timer-display">⏱ 60:00</div>
     </div>
 
-  </div><!-- /test-zone -->
+    <!-- PASSAGE 1: Renewable Energy (Q1–13) -->
+    <div class="passage-block active" id="t2_passage-0">
+      <div class="passage-text">
+        <div class="passage-label">Passage 1 — Questions 1–13</div>
+        <h3>The Evolution of Renewable Energy</h3>
+        <p>The transition from fossil fuels to renewable energy sources is widely regarded as one of the most significant challenges facing human civilisation in the 21st century. Wind and solar power, once considered marginal technologies confined to experimental projects, have undergone dramatic cost reductions over the past two decades. The price of solar photovoltaic panels, for example, fell by more than 89% between 2010 and 2020, making solar energy cost-competitive with coal in many regions of the world.</p>
+        <p>Wind energy has followed a similar trajectory. Offshore wind farms, which generate electricity by harnessing winds at sea where they are stronger and more consistent than on land, have become a major component of national energy strategies, particularly in northern Europe. Countries such as Denmark, which generates more than 50% of its electricity from wind, have demonstrated that high levels of renewable penetration are operationally feasible.</p>
+        <p>One of the primary challenges associated with renewable energy is its intermittency — the fact that solar panels generate no electricity at night and wind turbines produce nothing when the air is still. Energy storage, particularly in the form of large-scale battery systems, is seen as a critical solution to this problem. Lithium-ion batteries, the same technology used in electric vehicles, have emerged as the dominant form of grid-scale storage, though alternatives including pumped hydro, compressed air, and hydrogen are also under active development.</p>
+        <p>The electrification of transport represents one of the most promising opportunities for integrating renewable energy into daily life. Electric vehicles charged with renewable electricity can significantly reduce the carbon emissions associated with personal transportation. Several major economies, including the United Kingdom, France and Norway, have announced targets to phase out new petrol and diesel vehicles entirely by 2035 or sooner.</p>
+        <p>Despite these developments, critics of rapid renewable expansion point to several concerns. The manufacture of solar panels and wind turbines requires significant quantities of raw materials, including silicon, copper, lithium, cobalt and rare earth elements. Mining these materials can cause environmental damage if not carefully managed. Additionally, the decommissioning of wind turbines — particularly the fibreglass composite blades — presents a growing waste management challenge.</p>
+        <p>Nevertheless, the scientific consensus is clear that the transition to renewable energy, while imperfect, is essential for limiting global temperature rise to 1.5°C above pre-industrial levels, as outlined in the Paris Agreement. The speed and scale of this transition will determine whether humanity can avoid the most severe consequences of climate change.</p>
+      </div>
+
+      <!-- Q1–7: T/F/NG -->
+      <div class="question-group">
+        <div class="group-title">Questions 1–7 — True / False / Not Given</div>
+        <div class="group-instructions">Do the following statements agree with the information given in the passage? Write TRUE, FALSE or NOT GIVEN.</div>
+        <div class="tfng-question">
+          <div class="tfng-text"><div class="q-num">1</div><span>Solar photovoltaic panels became more than 89% cheaper between 2010 and 2020.</span></div>
+          <div class="tfng-options" id="t2_tfng-1">
+            <label class="tfng-label"><input type="radio" name="t2_q1" value="TRUE"> TRUE</label>
+            <label class="tfng-label"><input type="radio" name="t2_q1" value="FALSE"> FALSE</label>
+            <label class="tfng-label"><input type="radio" name="t2_q1" value="NOT GIVEN"> NOT GIVEN</label>
+          </div>
+        </div>
+        <div class="tfng-question">
+          <div class="tfng-text"><div class="q-num">2</div><span>Wind energy is currently the world's fastest-growing source of electricity.</span></div>
+          <div class="tfng-options" id="t2_tfng-2">
+            <label class="tfng-label"><input type="radio" name="t2_q2" value="TRUE"> TRUE</label>
+            <label class="tfng-label"><input type="radio" name="t2_q2" value="FALSE"> FALSE</label>
+            <label class="tfng-label"><input type="radio" name="t2_q2" value="NOT GIVEN"> NOT GIVEN</label>
+          </div>
+        </div>
+        <div class="tfng-question">
+          <div class="tfng-text"><div class="q-num">3</div><span>Renewable energy sources are unable to generate electricity continuously.</span></div>
+          <div class="tfng-options" id="t2_tfng-3">
+            <label class="tfng-label"><input type="radio" name="t2_q3" value="TRUE"> TRUE</label>
+            <label class="tfng-label"><input type="radio" name="t2_q3" value="FALSE"> FALSE</label>
+            <label class="tfng-label"><input type="radio" name="t2_q3" value="NOT GIVEN"> NOT GIVEN</label>
+          </div>
+        </div>
+        <div class="tfng-question">
+          <div class="tfng-text"><div class="q-num">4</div><span>Lithium-ion battery technology was developed specifically for grid-scale energy storage.</span></div>
+          <div class="tfng-options" id="t2_tfng-4">
+            <label class="tfng-label"><input type="radio" name="t2_q4" value="TRUE"> TRUE</label>
+            <label class="tfng-label"><input type="radio" name="t2_q4" value="FALSE"> FALSE</label>
+            <label class="tfng-label"><input type="radio" name="t2_q4" value="NOT GIVEN"> NOT GIVEN</label>
+          </div>
+        </div>
+        <div class="tfng-question">
+          <div class="tfng-text"><div class="q-num">5</div><span>Norway has announced that it will ban new diesel vehicle sales by 2030.</span></div>
+          <div class="tfng-options" id="t2_tfng-5">
+            <label class="tfng-label"><input type="radio" name="t2_q5" value="TRUE"> TRUE</label>
+            <label class="tfng-label"><input type="radio" name="t2_q5" value="FALSE"> FALSE</label>
+            <label class="tfng-label"><input type="radio" name="t2_q5" value="NOT GIVEN"> NOT GIVEN</label>
+          </div>
+        </div>
+        <div class="tfng-question">
+          <div class="tfng-text"><div class="q-num">6</div><span>The Paris Agreement sets a target of limiting warming to 1.5°C above pre-industrial levels.</span></div>
+          <div class="tfng-options" id="t2_tfng-6">
+            <label class="tfng-label"><input type="radio" name="t2_q6" value="TRUE"> TRUE</label>
+            <label class="tfng-label"><input type="radio" name="t2_q6" value="FALSE"> FALSE</label>
+            <label class="tfng-label"><input type="radio" name="t2_q6" value="NOT GIVEN"> NOT GIVEN</label>
+          </div>
+        </div>
+        <div class="tfng-question">
+          <div class="tfng-text"><div class="q-num">7</div><span>Critics argue that the environmental costs of renewable energy manufacture outweigh its benefits.</span></div>
+          <div class="tfng-options" id="t2_tfng-7">
+            <label class="tfng-label"><input type="radio" name="t2_q7" value="TRUE"> TRUE</label>
+            <label class="tfng-label"><input type="radio" name="t2_q7" value="FALSE"> FALSE</label>
+            <label class="tfng-label"><input type="radio" name="t2_q7" value="NOT GIVEN"> NOT GIVEN</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q8–13: MC -->
+      <div class="question-group">
+        <div class="group-title">Questions 8–13 — Multiple Choice</div>
+        <div class="group-instructions">Choose the correct letter A, B, C or D.</div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">8</div><span>According to the passage, what is described as the primary challenge of renewable energy?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q8" value="A"> A. High manufacturing costs</label>
+          <label class="mc-option"><input type="radio" name="t2_q8" value="B"> B. Intermittency of supply</label>
+          <label class="mc-option"><input type="radio" name="t2_q8" value="C"> C. Lack of consumer demand</label>
+          <label class="mc-option"><input type="radio" name="t2_q8" value="D"> D. Insufficient government support</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">9</div><span>Which country is mentioned as an example of successful large-scale wind energy integration?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q9" value="A"> A. Germany</label>
+          <label class="mc-option"><input type="radio" name="t2_q9" value="B"> B. France</label>
+          <label class="mc-option"><input type="radio" name="t2_q9" value="C"> C. Denmark</label>
+          <label class="mc-option"><input type="radio" name="t2_q9" value="D"> D. Norway</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">10</div><span>What does the passage suggest about large-scale battery storage?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q10" value="A"> A. It is the only viable solution to energy intermittency</label>
+          <label class="mc-option"><input type="radio" name="t2_q10" value="B"> B. It has replaced pumped hydro in most countries</label>
+          <label class="mc-option"><input type="radio" name="t2_q10" value="C"> C. It is dominated by lithium-ion technology</label>
+          <label class="mc-option"><input type="radio" name="t2_q10" value="D"> D. It is still in the experimental phase</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">11</div><span>Which of the following is a concern raised by critics of rapid renewable expansion?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q11" value="A"> A. The instability of renewable energy prices</label>
+          <label class="mc-option"><input type="radio" name="t2_q11" value="B"> B. The environmental impact of raw material extraction</label>
+          <label class="mc-option"><input type="radio" name="t2_q11" value="C"> C. The lack of qualified engineers in the sector</label>
+          <label class="mc-option"><input type="radio" name="t2_q11" value="D"> D. Excessive land use of solar farms</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">12</div><span>What does the passage say about decommissioning wind turbines?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q12" value="A"> A. It produces large quantities of recyclable metal</label>
+          <label class="mc-option"><input type="radio" name="t2_q12" value="B"> B. It is regulated by international agreements</label>
+          <label class="mc-option"><input type="radio" name="t2_q12" value="C"> C. The composite blades present a growing disposal challenge</label>
+          <label class="mc-option"><input type="radio" name="t2_q12" value="D"> D. It is currently more expensive than construction</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">13</div><span>What is the passage's overall position on the transition to renewable energy?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q13" value="A"> A. It is scientifically unnecessary given current temperature levels</label>
+          <label class="mc-option"><input type="radio" name="t2_q13" value="B"> B. It is essential despite its imperfections</label>
+          <label class="mc-option"><input type="radio" name="t2_q13" value="C"> C. It should be slowed to allow further technological development</label>
+          <label class="mc-option"><input type="radio" name="t2_q13" value="D"> D. It is economically unviable without government subsidies</label>
+        </div>
+      </div>
+
+      <div class="flex justify-end" style="margin-top:16px">
+        <button class="btn btn-primary" onclick="switchPassage(1)">Passage 2 → </button>
+      </div>
+    </div><!-- /t2_passage-0 -->
+
+    <!-- PASSAGE 2: Water Scarcity (Q14–26) -->
+    <div class="passage-block" id="t2_passage-1">
+      <div class="passage-text">
+        <div class="passage-label">Passage 2 — Questions 14–26</div>
+        <h3>Urbanisation and Water Scarcity</h3>
+        <p>Urbanisation — the movement of populations from rural areas to cities — is one of the defining demographic trends of the 21st century. According to the United Nations, more than 55% of the world's population currently lives in urban areas, a figure projected to rise to 68% by 2050. As cities expand rapidly, particularly in developing nations across Sub-Saharan Africa and South and Southeast Asia, the strain on municipal water supplies has become increasingly critical.</p>
+        <p>Water scarcity, defined as an insufficient supply of clean water relative to demand, affects more than 2 billion people globally. In many rapidly growing cities, ageing infrastructure, population growth, and the effects of climate change are converging to create what experts describe as a "perfect storm" for water security. Cities such as Cape Town in South Africa, Chennai in India, and Lima in Peru have all experienced severe water crises in recent years, forcing emergency rationing measures and prompting long-term investments in water management.</p>
+        <p>The agricultural sector remains by far the largest consumer of freshwater globally, accounting for approximately 70% of all water withdrawals. Urban growth compounds this challenge in two ways: as cities expand onto fertile agricultural land, farmland is lost, requiring the remaining land to be irrigated more intensively. Simultaneously, rising urban populations demand greater quantities of food, increasing the agricultural water footprint.</p>
+        <p>Groundwater — water stored in underground aquifers — is an increasingly critical source of freshwater for urban populations worldwide. However, groundwater is being extracted faster than it can be replenished by rainfall in many regions, a process known as aquifer depletion. Once depleted, some aquifers may take thousands of years to recover, making groundwater loss effectively irreversible in human timescales.</p>
+        <p>Several innovative approaches are being explored to address urban water scarcity. Rainwater harvesting systems collect and store precipitation for later use in irrigation or toilet flushing, reducing demand on municipal supplies. Wastewater recycling — treating sewage and industrial effluent to a standard suitable for reuse — is gaining acceptance in water-stressed regions. Singapore, which has almost no natural freshwater sources, has developed a world-leading water recycling programme that now supplies approximately 40% of the city-state's water needs.</p>
+        <p>Desalination, the process of removing salt from seawater to produce fresh water, offers another potential solution, though it is energy-intensive and has historically been costly. Advances in membrane technology have reduced desalination costs significantly in recent years, making it more viable as a component of diversified water supply strategies.</p>
+      </div>
+
+      <!-- Q14–20: Fill in blanks -->
+      <div class="question-group">
+        <div class="group-title">Questions 14–20 — Sentence Completion</div>
+        <div class="group-instructions">Complete the sentences below. Use NO MORE THAN TWO WORDS from the passage for each answer.</div>
+        <div class="fill-row">
+          <div class="q-num">14</div>
+          <span style="font-size:.9rem">More than 55% of the global population currently lives in <strong>______</strong> areas.</span>
+          <input type="text" id="t2_q14" class="q-input" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">15</div>
+          <span style="font-size:.9rem">The agricultural sector accounts for approximately 70% of all freshwater <strong>______</strong>.</span>
+          <input type="text" id="t2_q15" class="q-input" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">16</div>
+          <span style="font-size:.9rem">Urban expansion onto farmland requires the remaining agricultural land to be <strong>______</strong> more intensively.</span>
+          <input type="text" id="t2_q16" class="q-input" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">17</div>
+          <span style="font-size:.9rem">Aquifer depletion occurs when groundwater is extracted faster than it can be replenished, potentially leaving underground <strong>______</strong> permanently depleted.</span>
+          <input type="text" id="t2_q17" class="q-input" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">18</div>
+          <span style="font-size:.9rem">Rainwater <strong>______</strong> systems reduce demand on municipal water supplies by collecting precipitation for later use.</span>
+          <input type="text" id="t2_q18" class="q-input" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">19</div>
+          <span style="font-size:.9rem">Singapore's water recycling programme now meets approximately 40% of the city-state's water <strong>______</strong>.</span>
+          <input type="text" id="t2_q19" class="q-input" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">20</div>
+          <span style="font-size:.9rem">The process of removing salt from seawater to produce fresh water is known as <strong>______</strong>.</span>
+          <input type="text" id="t2_q20" class="q-input" placeholder="your answer">
+        </div>
+      </div>
+
+      <!-- Q21–26: MC -->
+      <div class="question-group">
+        <div class="group-title">Questions 21–26 — Multiple Choice</div>
+        <div class="group-instructions">Choose the correct letter A, B, C or D.</div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">21</div><span>What percentage of the world's population is projected to live in urban areas by 2050?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q21" value="A"> A. 55%</label>
+          <label class="mc-option"><input type="radio" name="t2_q21" value="B"> B. 60%</label>
+          <label class="mc-option"><input type="radio" name="t2_q21" value="C"> C. 68%</label>
+          <label class="mc-option"><input type="radio" name="t2_q21" value="D"> D. 75%</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">22</div><span>What does the passage identify as contributing to urban water crises?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q22" value="A"> A. Declining investment in water infrastructure alone</label>
+          <label class="mc-option"><input type="radio" name="t2_q22" value="B"> B. A convergence of ageing infrastructure, population growth and climate change</label>
+          <label class="mc-option"><input type="radio" name="t2_q22" value="C"> C. Mismanagement by municipal authorities</label>
+          <label class="mc-option"><input type="radio" name="t2_q22" value="D"> D. Excessive water use by industrial companies</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">23</div><span>According to the passage, what happens when cities expand onto agricultural land?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q23" value="A"> A. Crop yields immediately decline</label>
+          <label class="mc-option"><input type="radio" name="t2_q23" value="B"> B. New farmland is created elsewhere</label>
+          <label class="mc-option"><input type="radio" name="t2_q23" value="C"> C. Remaining farmland requires more intensive irrigation</label>
+          <label class="mc-option"><input type="radio" name="t2_q23" value="D"> D. Water demand for agriculture falls</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">24</div><span>What does the passage say about aquifer depletion?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q24" value="A"> A. It can be quickly reversed through conservation measures</label>
+          <label class="mc-option"><input type="radio" name="t2_q24" value="B"> B. It primarily affects developing countries</label>
+          <label class="mc-option"><input type="radio" name="t2_q24" value="C"> C. Some aquifers may take thousands of years to recover</label>
+          <label class="mc-option"><input type="radio" name="t2_q24" value="D"> D. It is less serious than surface water depletion</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">25</div><span>What is described as one reason desalination has not been widely adopted historically?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q25" value="A"> A. It produces water of insufficient quality</label>
+          <label class="mc-option"><input type="radio" name="t2_q25" value="B"> B. It requires specialist technical knowledge</label>
+          <label class="mc-option"><input type="radio" name="t2_q25" value="C"> C. It is harmful to marine ecosystems</label>
+          <label class="mc-option"><input type="radio" name="t2_q25" value="D"> D. It is energy-intensive and costly</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">26</div><span>Singapore is presented in the passage as an example of:</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q26" value="A"> A. A country that relies entirely on imported water</label>
+          <label class="mc-option"><input type="radio" name="t2_q26" value="B"> B. A city that has implemented successful water recycling at scale</label>
+          <label class="mc-option"><input type="radio" name="t2_q26" value="C"> C. A nation that has banned the use of groundwater</label>
+          <label class="mc-option"><input type="radio" name="t2_q26" value="D"> D. A pioneer in rainwater harvesting technology</label>
+        </div>
+      </div>
+
+      <div class="flex justify-between" style="margin-top:16px">
+        <button class="btn btn-secondary" onclick="switchPassage(0)">← Passage 1</button>
+        <button class="btn btn-primary" onclick="switchPassage(2)">Passage 3 →</button>
+      </div>
+    </div><!-- /t2_passage-1 -->
+
+    <!-- PASSAGE 3: Memory (Q27–40) -->
+    <div class="passage-block" id="t2_passage-2">
+      <div class="passage-text">
+        <div class="passage-label">Passage 3 — Questions 27–40</div>
+        <h3>The Science of Memory Consolidation</h3>
+        <p>Memory is one of the most fundamental cognitive capacities, enabling humans to learn from experience, plan for the future, and construct a sense of personal identity. Yet the processes by which memories are formed, stored, and retrieved remain the subject of intensive scientific investigation. The past three decades have produced remarkable insights into the neuroscience of memory, driven in large part by advances in brain imaging technologies and molecular biology.</p>
+        <p>Memory consolidation refers to the process by which newly acquired information is transformed from a fragile, temporary state into a stable, long-term memory. This process occurs in stages. During learning, electrical signals between neurons create temporary connections known as synaptic pathways. These pathways must then be stabilised through a molecular process involving the synthesis of new proteins within the neuron. Without this protein synthesis, memories remain vulnerable to disruption and are likely to be lost.</p>
+        <p>The hippocampus, a curved structure located in the medial temporal lobe of the brain, plays a central role in the initial formation of declarative memories — those involving facts and events. However, the hippocampus does not serve as the permanent storage site for long-term memories. Over time, memories are gradually transferred and distributed across the cortex through a process called systems consolidation, which is strongly facilitated by sleep.</p>
+        <p>Research has demonstrated that sleep serves a critical function in memory consolidation. During slow-wave sleep — the deepest stage of non-REM sleep — the hippocampus repeatedly reactivates recently formed memories and transfers information to the cortex for long-term storage. This reactivation process is thought to strengthen the neural connections associated with the memory and integrate new information with existing knowledge.</p>
+        <p>One well-established finding is that the interval between learning and sleep has a significant effect on memory retention. Studies have shown that learning shortly before sleeping produces markedly better long-term recall than learning followed by a waking period of equal duration. This effect, sometimes described as "sleep-dependent memory consolidation," has practical implications for educational strategies.</p>
+        <p>The phenomenon of reconsolidation — the discovery that memories become temporarily fragile each time they are retrieved — has transformed understanding of memory's dynamic nature. When a stored memory is recalled, it re-enters a labile state in which it can be modified, strengthened, or even destabilised by new information or emotional experience. This finding has significant implications for the treatment of conditions such as post-traumatic stress disorder (PTSD), where traumatic memories can potentially be weakened by intervening during the reconsolidation window.</p>
+      </div>
+
+      <!-- Q27–33: Fill in blanks -->
+      <div class="question-group">
+        <div class="group-title">Questions 27–33 — Sentence Completion</div>
+        <div class="group-instructions">Complete the sentences below. Use NO MORE THAN TWO WORDS from the passage for each answer.</div>
+        <div class="fill-row">
+          <div class="q-num">27</div>
+          <span style="font-size:.9rem">Memory consolidation transforms newly acquired information from a fragile state into a <strong>______</strong>, long-term memory.</span>
+          <input type="text" id="t2_q27" class="q-input" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">28</div>
+          <span style="font-size:.9rem">During learning, neurons create temporary connections known as <strong>______</strong> pathways.</span>
+          <input type="text" id="t2_q28" class="q-input" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">29</div>
+          <span style="font-size:.9rem">Stabilising synaptic pathways requires the synthesis of new <strong>______</strong> within the neuron.</span>
+          <input type="text" id="t2_q29" class="q-input" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">30</div>
+          <span style="font-size:.9rem">The hippocampus plays a central role in the initial formation of <strong>______</strong> memories, which involve facts and events.</span>
+          <input type="text" id="t2_q30" class="q-input" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">31</div>
+          <span style="font-size:.9rem">During slow-wave sleep, the hippocampus repeatedly <strong>______</strong> recently formed memories and transfers them to the cortex.</span>
+          <input type="text" id="t2_q31" class="q-input" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">32</div>
+          <span style="font-size:.9rem">Research shows that learning shortly before <strong>______</strong> leads to better long-term recall than learning followed by a waking period.</span>
+          <input type="text" id="t2_q32" class="q-input" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">33</div>
+          <span style="font-size:.9rem">The discovery that memories become temporarily fragile each time they are retrieved is known as <strong>______</strong>.</span>
+          <input type="text" id="t2_q33" class="q-input" placeholder="your answer">
+        </div>
+      </div>
+
+      <!-- Q34–40: MC -->
+      <div class="question-group">
+        <div class="group-title">Questions 34–40 — Multiple Choice</div>
+        <div class="group-instructions">Choose the correct letter A, B, C or D.</div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">34</div><span>What is the primary purpose of protein synthesis during memory consolidation?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q34" value="A"> A. To increase the speed of information retrieval</label>
+          <label class="mc-option"><input type="radio" name="t2_q34" value="B"> B. To stabilise newly formed synaptic pathways</label>
+          <label class="mc-option"><input type="radio" name="t2_q34" value="C"> C. To transfer memories from the cortex to the hippocampus</label>
+          <label class="mc-option"><input type="radio" name="t2_q34" value="D"> D. To erase redundant memories</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">35</div><span>According to the passage, where are long-term memories ultimately stored?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q35" value="A"> A. Exclusively in the hippocampus</label>
+          <label class="mc-option"><input type="radio" name="t2_q35" value="B"> B. In the medial temporal lobe</label>
+          <label class="mc-option"><input type="radio" name="t2_q35" value="C"> C. Distributed across the cortex</label>
+          <label class="mc-option"><input type="radio" name="t2_q35" value="D"> D. In specific synaptic pathways</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">36</div><span>What role does slow-wave sleep play in memory consolidation?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q36" value="A"> A. It prevents new learning from interfering with old memories</label>
+          <label class="mc-option"><input type="radio" name="t2_q36" value="B"> B. It allows the hippocampus to transfer memories to the cortex</label>
+          <label class="mc-option"><input type="radio" name="t2_q36" value="C"> C. It eliminates memories that are no longer needed</label>
+          <label class="mc-option"><input type="radio" name="t2_q36" value="D"> D. It enhances the production of cortisol</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">37</div><span>What does the phrase "sleep-dependent memory consolidation" refer to?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q37" value="A"> A. The fact that people sleep better after intensive learning</label>
+          <label class="mc-option"><input type="radio" name="t2_q37" value="B"> B. The discovery that sleep is required for all types of learning</label>
+          <label class="mc-option"><input type="radio" name="t2_q37" value="C"> C. The finding that sleeping after learning improves long-term retention</label>
+          <label class="mc-option"><input type="radio" name="t2_q37" value="D"> D. The relationship between REM sleep and emotional memory</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">38</div><span>According to the passage, what happens to a memory when it is retrieved?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q38" value="A"> A. It is permanently strengthened</label>
+          <label class="mc-option"><input type="radio" name="t2_q38" value="B"> B. It becomes temporarily unstable</label>
+          <label class="mc-option"><input type="radio" name="t2_q38" value="C"> C. It is deleted from the hippocampus</label>
+          <label class="mc-option"><input type="radio" name="t2_q38" value="D"> D. It is duplicated across multiple brain regions</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">39</div><span>What does reconsolidation research suggest for treating PTSD?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q39" value="A"> A. Preventing patients from recalling traumatic events entirely</label>
+          <label class="mc-option"><input type="radio" name="t2_q39" value="B"> B. Intervening during the reconsolidation window to weaken traumatic memories</label>
+          <label class="mc-option"><input type="radio" name="t2_q39" value="C"> C. Using protein synthesis inhibitors to erase emotional memories</label>
+          <label class="mc-option"><input type="radio" name="t2_q39" value="D"> D. Applying slow-wave sleep therapy to consolidate positive memories</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">40</div><span>Which statement best describes the overall view of memory presented in the passage?</span></div>
+          <label class="mc-option"><input type="radio" name="t2_q40" value="A"> A. Memory is a fixed and reliable record of past experiences</label>
+          <label class="mc-option"><input type="radio" name="t2_q40" value="B"> B. Memory is a dynamic process that continues to be modified over time</label>
+          <label class="mc-option"><input type="radio" name="t2_q40" value="C"> C. Memory consolidation is complete within 24 hours of learning</label>
+          <label class="mc-option"><input type="radio" name="t2_q40" value="D"> D. The hippocampus alone is responsible for all memory storage</label>
+        </div>
+      </div>
+
+      <div class="flex justify-between" style="margin-top:16px;gap:12px">
+        <button class="btn btn-secondary" onclick="switchPassage(1)">← Passage 2</button>
+        <button class="btn btn-primary btn-lg" onclick="submitTest()">✓ Submit & Score</button>
+      </div>
+    </div><!-- /t2_passage-2 -->
+
+  </div><!-- /test-zone-02 -->
+
+  <!-- SHARED RESULTS CARD -->
+  <div class="results-card" id="results-card">
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center">
+      <div>
+        <div style="font-size:.8rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em">Final Score</div>
+        <div class="band-big" id="results-score">—</div>
+        <div style="font-size:1.5rem;font-weight:700;color:var(--white);margin-top:4px" id="results-band">Band —</div>
+      </div>
+      <div>
+        <p id="results-sub" style="color:rgba(255,255,255,.7);font-size:1.0625rem;margin-bottom:16px"></p>
+        <button class="btn btn-outline" onclick="showAnswers()" style="color:white;border-color:rgba(255,255,255,.3)">
+          Show All Correct Answers
+        </button>
+      </div>
+    </div>
+    <div class="sec-results-grid" id="section-results"></div>
+  </div>
 
 </div>
 
@@ -750,6 +1113,22 @@ const PASSAGE_RANGES = [
   { label: 'Passage 3 (Printing Press)', start: 27, end: 40 }
 ];
 
+const ANSWERS_02 = {
+  q1:'TRUE', q2:'NOT GIVEN', q3:'TRUE', q4:'FALSE', q5:'NOT GIVEN', q6:'TRUE', q7:'NOT GIVEN',
+  q8:'B', q9:'C', q10:'C', q11:'B', q12:'C', q13:'B',
+  q14:'URBAN', q15:'WITHDRAWALS', q16:'IRRIGATED', q17:'AQUIFERS', q18:'HARVESTING', q19:'NEEDS', q20:'DESALINATION',
+  q21:'C', q22:'B', q23:'C', q24:'C', q25:'D', q26:'B',
+  q27:'STABLE', q28:'SYNAPTIC', q29:'PROTEINS', q30:'DECLARATIVE', q31:'REACTIVATES', q32:'SLEEPING', q33:'RECONSOLIDATION',
+  q34:'B', q35:'C', q36:'B', q37:'C', q38:'B', q39:'B', q40:'B'
+};
+
+const PASSAGE_RANGES_02 = [
+  { label: 'Passage 1 (Renewable Energy)', start: 1, end: 13 },
+  { label: 'Passage 2 (Water Scarcity)', start: 14, end: 26 },
+  { label: 'Passage 3 (Memory)', start: 27, end: 40 }
+];
+
+let currentReadingTest = 1;
 let currentPassage = 0;
 let submitted = false;
 let timerInterval = null;
@@ -760,6 +1139,11 @@ function init() {
   if (scores.rdtest01) {
     const s = scores.rdtest01;
     document.getElementById('meta-rdtest01').textContent =
+      `Last: ${s.total}/40 — Band ${s.band} (${s.date})`;
+  }
+  if (scores.rdtest02) {
+    const s = scores.rdtest02;
+    document.getElementById('meta-rdtest02').textContent =
       `Last: ${s.total}/40 — Band ${s.band} (${s.date})`;
   }
 }
@@ -780,19 +1164,21 @@ function saveReadingScore(testId, passageScores, total) {
 }
 
 function selectTest(id) {
-  if (id === 'test02') {
-    toast('Test 02 is coming soon — check back later!', 'info');
-    return;
-  }
+  currentReadingTest = id === 'test02' ? 2 : 1;
   document.querySelectorAll('.test-sel-btn').forEach((b,i) =>
-    b.classList.toggle('active', i === 0));
+    b.classList.toggle('active', i === currentReadingTest - 1));
   document.getElementById('instructions-card').classList.remove('hidden');
   document.getElementById('test-zone').classList.add('hidden');
+  document.getElementById('test-zone-02').classList.add('hidden');
+  submitted = false;
 }
 
 function startTest() {
   document.getElementById('instructions-card').classList.add('hidden');
-  document.getElementById('test-zone').classList.remove('hidden');
+  document.getElementById('test-zone').classList.add('hidden');
+  document.getElementById('test-zone-02').classList.add('hidden');
+  const zoneId = currentReadingTest === 2 ? 'test-zone-02' : 'test-zone';
+  document.getElementById(zoneId).classList.remove('hidden');
   submitted = false;
   startTimer();
   switchPassage(0);
@@ -818,18 +1204,20 @@ function updateTimerDisplay() {
   const m = Math.floor(secondsLeft / 60);
   const s = secondsLeft % 60;
   const display = `⏱ ${m}:${s.toString().padStart(2,'0')}`;
-  const el = document.getElementById('timer-display');
-  el.textContent = display;
-  if (secondsLeft <= 600) el.classList.add('warning');
+  ['timer-display', 't2_timer-display'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = display; if (secondsLeft <= 600) el.classList.add('warning'); }
+  });
 }
 
 function switchPassage(i) {
   currentPassage = i;
-  document.querySelectorAll('.passage-block').forEach((b,j) =>
+  const zoneId = currentReadingTest === 2 ? 'test-zone-02' : 'test-zone';
+  document.querySelectorAll(`#${zoneId} .passage-block`).forEach((b,j) =>
     b.classList.toggle('active', j === i));
-  document.querySelectorAll('.passage-tab').forEach((t,j) =>
+  document.querySelectorAll(`#${zoneId} .passage-tab`).forEach((t,j) =>
     t.classList.toggle('active', j === i));
-  window.scrollTo({ top: document.getElementById('test-zone').offsetTop - 80, behavior: 'smooth' });
+  window.scrollTo({ top: document.getElementById(zoneId).offsetTop - 80, behavior: 'smooth' });
 }
 
 function submitTest() {
@@ -837,46 +1225,48 @@ function submitTest() {
   submitted = true;
   clearInterval(timerInterval);
 
+  const prefix = currentReadingTest === 2 ? 't2_' : '';
+  const activeRanges = currentReadingTest === 2 ? PASSAGE_RANGES_02 : PASSAGE_RANGES;
+  const testId = currentReadingTest === 2 ? 'rdtest02' : 'rdtest01';
+  const metaId = currentReadingTest === 2 ? 'meta-rdtest02' : 'meta-rdtest01';
+
   let total = 0;
   const passageScores = [0, 0, 0];
 
   for (let qn = 1; qn <= 40; qn++) {
-    const correct = checkQ(qn);
+    const correct = checkQ(qn, prefix);
     if (correct) total++;
-    markQ(qn, correct);
-    // Assign to passage
+    markQ(qn, correct, prefix);
     if (qn <= 13) passageScores[0] += correct ? 1 : 0;
     else if (qn <= 26) passageScores[1] += correct ? 1 : 0;
     else passageScores[2] += correct ? 1 : 0;
   }
 
   const band = getBand(total);
-  saveReadingScore('rdtest01', passageScores, total);
-  showResults(total, band, passageScores);
+  saveReadingScore(testId, passageScores, total);
+  showResults(total, band, passageScores, activeRanges);
 
-  document.getElementById('meta-rdtest01').textContent =
-    `Last: ${total}/40 — Band ${band}`;
+  document.getElementById(metaId).textContent = `Last: ${total}/40 — Band ${band}`;
 }
 
-function checkQ(n) {
-  const key = 'q' + n;
-  const answer = ANSWERS[key];
+function checkQ(n, prefix='') {
+  const qkey = 'q' + n;
+  const key = prefix + qkey;
+  const answer = (prefix ? ANSWERS_02 : ANSWERS)[qkey];
   const el = document.getElementById(key);
-
   if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) {
     return el.value.trim().toUpperCase() === answer;
   }
-  // Radio buttons (T/F/NG and MC)
   const checked = document.querySelector(`input[name="${key}"]:checked`);
   return checked && checked.value === answer;
 }
 
-function markQ(n, correct) {
-  const key = 'q' + n;
-  const answer = ANSWERS[key];
+function markQ(n, correct, prefix='') {
+  const qkey = 'q' + n;
+  const key = prefix + qkey;
+  const answer = (prefix ? ANSWERS_02 : ANSWERS)[qkey];
   const el = document.getElementById(key);
 
-  // Fill-in input
   if (el && el.tagName === 'INPUT' && el.type === 'text') {
     el.classList.add(correct ? 'correct' : 'incorrect');
     el.disabled = true;
@@ -889,7 +1279,6 @@ function markQ(n, correct) {
     return;
   }
 
-  // Select (matching)
   if (el && el.tagName === 'SELECT') {
     el.classList.add(correct ? 'correct' : 'incorrect');
     el.disabled = true;
@@ -902,8 +1291,7 @@ function markQ(n, correct) {
     return;
   }
 
-  // T/F/NG radio labels
-  const tfngWrap = document.getElementById('tfng-' + n);
+  const tfngWrap = document.getElementById(prefix + 'tfng-' + n);
   if (tfngWrap) {
     const labels = tfngWrap.querySelectorAll('.tfng-label');
     labels.forEach(lbl => {
@@ -916,7 +1304,6 @@ function markQ(n, correct) {
     return;
   }
 
-  // MC radio labels
   const radios = document.querySelectorAll(`input[name="${key}"]`);
   radios.forEach(inp => {
     inp.disabled = true;
@@ -927,7 +1314,7 @@ function markQ(n, correct) {
   });
 }
 
-function showResults(total, band, passageScores) {
+function showResults(total, band, passageScores, ranges) {
   const card = document.getElementById('results-card');
   card.classList.add('show');
   document.getElementById('results-score').textContent = `${total}/40`;
@@ -935,7 +1322,7 @@ function showResults(total, band, passageScores) {
   const gap = 35 - total;
   document.getElementById('results-sub').textContent =
     total >= 35 ? '🎉 Band 7.0 target reached!' : `${gap} more correct to reach Band 7.0`;
-  document.getElementById('section-results').innerHTML = PASSAGE_RANGES.map((p,i) =>
+  document.getElementById('section-results').innerHTML = ranges.map((p,i) =>
     `<div class="sec-res">
        <div class="val">${passageScores[i]}/${p.end - p.start + 1}</div>
        <div class="lbl">${p.label}</div>

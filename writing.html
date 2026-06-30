@@ -124,16 +124,21 @@
 <div class="container" style="padding-top:32px;padding-bottom:80px">
 
   <!-- TEST SELECTOR -->
-  <div class="grid-2" style="margin-bottom:24px">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px">
     <button class="test-sel-btn active" onclick="selectWritingTest(1)" id="wbtn-1">
       <div class="t-num">Test 01</div>
       <div class="t-t1">📈 Task 1 — Line graph: renewable energy %</div>
-      <div class="t-t2">📝 Task 2 — Academic knowledge vs practical training</div>
+      <div class="t-t2">📝 Task 2 — Academic vs practical education</div>
     </button>
     <button class="test-sel-btn" onclick="selectWritingTest(2)" id="wbtn-2">
       <div class="t-num">Test 02</div>
       <div class="t-t1">📊 Task 1 — Bar chart: leisure hours by age</div>
       <div class="t-t2">📝 Task 2 — Inequality and taxing the wealthy</div>
+    </button>
+    <button class="test-sel-btn" onclick="selectWritingTest(3)" id="wbtn-3">
+      <div class="t-num">Test 03</div>
+      <div class="t-t1">📋 Task 1 — Table: smartphone ownership %</div>
+      <div class="t-t2">📝 Task 2 — Social media and society</div>
     </button>
   </div>
 
@@ -304,6 +309,13 @@ const WRITING_DATA = {
     task1_sample: `The bar chart compares the average number of hours per week that people in three age groups — 18–30, 31–50, and 51 and over — devoted to four leisure activities in 2024.<br><br>Overall, social media dominated the leisure time of younger people, while older groups spent considerably more time watching television and streaming content. Reading books showed a clear inverse relationship with age, while exercise remained relatively stable across all groups.<br><br>The most striking contrast concerns social media: 18–30 year-olds spent an average of 14 hours per week on it, compared with just 8 hours for the 31–50 group and only 3 hours for those aged 51 and above. By contrast, TV and streaming followed the opposite pattern, rising from 9 hours among the youngest group to 15 hours for the oldest.<br><br>Reading books also increased with age, from just 2 hours weekly for 18–30 year-olds to 7 hours for the 51+ group. Exercise was the most consistent activity, with all three groups spending between 4 and 6 hours per week, peaking at 6 hours for the 31–50 age group.<br><br>In summary, digital screen time shifts from social media to television as age increases, while reading books becomes progressively more popular.`,
     task2_instruction: `In many countries, the gap between rich and poor is growing. Some people believe that governments should introduce higher taxes on the wealthy to reduce inequality. Others argue that this approach is counterproductive and that economic growth benefits everyone.<br><br>Discuss both views and give your own opinion.`,
     task2_sample: `Rising economic inequality has become one of the defining challenges of our era, and the debate over how governments should respond is both politically charged and economically complex. While some advocate for higher taxes on the wealthy as a corrective mechanism, others warn that such policies may suppress the investment and growth that ultimately benefit all citizens. I believe a balanced approach, combining progressive taxation with targeted spending, offers the most effective solution.<br><br>Those who support higher taxes on the wealthy argue that extreme inequality is socially destabilising and morally unjustifiable. When a small proportion of the population controls a disproportionate share of national wealth, public services deteriorate and social mobility declines. Proponents of wealth redistribution point to Scandinavian countries such as Denmark and Sweden, where relatively high tax rates coexist with strong economic performance and low inequality.<br><br>On the other hand, critics of higher taxation argue that it discourages entrepreneurship and investment. If high earners face punitive tax rates, they may relocate to lower-tax jurisdictions, reducing the overall tax base. Some economists also contend that economic growth — stimulated by lower taxes — generates jobs and raises living standards across all income groups.<br><br>In my view, neither extreme is convincing. The most effective approach combines moderately progressive taxation with investment in public goods — education, healthcare, and infrastructure — that enable lower-income groups to improve their economic position over time.<br><br>In conclusion, the solution to inequality is not simply a question of raising or lowering taxes, but of designing a tax-and-spend system that supports growth while ensuring that the benefits are broadly shared.`
+  },
+  3: {
+    task1_instruction: `The table below shows global smartphone ownership (percentage of adults) in five countries in 2014, 2018, and 2022.<br><br><table style="border-collapse:collapse;font-size:.875rem;margin:12px 0;width:100%"><thead><tr style="background:#f1f5f9"><th style="padding:8px 12px;border:1px solid #e2e8f0;text-align:left">Country</th><th style="padding:8px 12px;border:1px solid #e2e8f0">2014</th><th style="padding:8px 12px;border:1px solid #e2e8f0">2018</th><th style="padding:8px 12px;border:1px solid #e2e8f0">2022</th></tr></thead><tbody><tr><td style="padding:8px 12px;border:1px solid #e2e8f0">South Korea</td><td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center">73%</td><td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center">88%</td><td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center">95%</td></tr><tr style="background:#f8fafc"><td style="padding:8px 12px;border:1px solid #e2e8f0">United States</td><td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center">58%</td><td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center">77%</td><td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center">85%</td></tr><tr><td style="padding:8px 12px;border:1px solid #e2e8f0">Brazil</td><td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center">41%</td><td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center">60%</td><td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center">72%</td></tr><tr style="background:#f8fafc"><td style="padding:8px 12px;border:1px solid #e2e8f0">India</td><td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center">17%</td><td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center">35%</td><td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center">54%</td></tr><tr><td style="padding:8px 12px;border:1px solid #e2e8f0">Nigeria</td><td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center">11%</td><td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center">25%</td><td style="padding:8px 12px;border:1px solid #e2e8f0;text-align:center">38%</td></tr></tbody></table><br>Summarise the information by selecting and reporting the main features, and make comparisons where relevant.`,
+    task1_graph: '',
+    task1_sample: `The table illustrates the proportion of adults owning smartphones in five countries across three years: 2014, 2018 and 2022.<br><br>Overall, smartphone ownership increased in all five countries over the period, with South Korea consistently recording the highest rates and Nigeria the lowest. The gap between the most and least connected nations narrowed slightly but remained substantial throughout.<br><br>South Korea led in all three years, rising from 73% in 2014 to a near-universal 95% in 2022. The United States followed a similar trajectory, climbing from 58% to 85% over the same period. Both countries had already achieved majority smartphone ownership by the start of the period.<br><br>The most dramatic growth was seen in India and Nigeria, albeit from much lower starting points. India's rate more than tripled from 17% to 54%, while Nigeria's grew from 11% to 38%. Despite this rapid expansion, both countries remained well below 60% penetration by 2022. Brazil fell between these two groups, rising steadily from 41% to 72%.<br><br>In summary, while South Korea and the United States approached saturation point, emerging economies showed the most dynamic growth, suggesting that global smartphone adoption is becoming increasingly widespread.`,
+    task2_instruction: `Many people believe that social media has had a largely negative impact on society. To what extent do you agree or disagree?`,
+    task2_sample: `The rise of social media platforms over the past two decades has fundamentally altered the way people communicate, consume information, and engage with public life. While critics point to a range of harmful effects — from the spread of misinformation to mental health deterioration — I believe that social media's overall impact depends heavily on how it is used, and that a balanced assessment reveals both significant benefits and genuine risks.<br><br>Those who view social media as harmful often highlight its role in amplifying extreme or false information. Algorithms designed to maximise engagement tend to promote content that is emotionally provocative rather than accurate, creating what researchers describe as "filter bubbles" in which users are exposed only to views that reinforce their existing beliefs. Additionally, studies have linked heavy social media use — particularly among adolescents — to increased rates of anxiety, depression, and poor self-image, partly driven by constant social comparison.<br><br>Nevertheless, the picture is not entirely negative. Social media has democratised the flow of information, enabling grassroots movements, political activism, and the rapid coordination of humanitarian responses to crises. Small businesses, artists and educators have used these platforms to reach audiences that would previously have been inaccessible. Furthermore, social media has helped maintain personal connections across vast distances, which has been particularly valuable during periods of social isolation such as the COVID-19 pandemic.<br><br>In my view, the negative consequences of social media are real but not inevitable. With appropriate digital literacy education, platform regulation, and individual mindfulness about usage, many of the harms can be mitigated. The technology itself is neutral; what matters is the cultural and regulatory frameworks within which it operates.<br><br>In conclusion, while social media carries genuine risks to both individual wellbeing and democratic discourse, dismissing it as purely harmful overlooks its considerable positive contributions. A nuanced, context-sensitive approach offers a more accurate and useful perspective.`
   }
 };
 
@@ -315,6 +327,8 @@ function selectWritingTest(n) {
   currentWritingTest = n;
   document.getElementById('wbtn-1').classList.toggle('active', n===1);
   document.getElementById('wbtn-2').classList.toggle('active', n===2);
+  const btn3 = document.getElementById('wbtn-3');
+  if (btn3) btn3.classList.toggle('active', n===3);
 }
 
 function startWritingTest() {
@@ -322,7 +336,9 @@ function startWritingTest() {
   document.getElementById('writing-instructions').classList.add('hidden');
   document.getElementById('writing-test-zone').classList.remove('hidden');
   document.getElementById('task1-instruction').innerHTML = d.task1_instruction;
-  document.getElementById('task1-graph').src = d.task1_graph;
+  const graphEl = document.getElementById('task1-graph');
+  graphEl.src = d.task1_graph || '';
+  graphEl.style.display = d.task1_graph ? 'block' : 'none';
   document.getElementById('sample1-text').innerHTML = d.task1_sample;
   document.getElementById('task2-instruction').innerHTML = d.task2_instruction;
   document.getElementById('sample2-text').innerHTML = d.task2_sample;
@@ -417,6 +433,12 @@ function renderAIFeedback(box, data, task) {
     <div class="criteria-grid">${itemsHTML}</div>
     ${data.topTip ? `<div style="margin-top:12px;padding:12px 14px;background:var(--warning-light);border-radius:var(--r);font-size:.875rem;color:#92400E"><strong>💡 Top tip:</strong> ${data.topTip}</div>` : ''}
   </div>`;
+  if (data.band) {
+    const testKey = `test${String(currentWritingTest).padStart(2,'0')}-task${task}`;
+    const wScores = JSON.parse(localStorage.getItem('ielts_writing_scores') || '{}');
+    wScores[testKey] = { band: parseFloat(data.band), task, testId: currentWritingTest, date: new Date().toLocaleDateString('fr-FR') };
+    localStorage.setItem('ielts_writing_scores', JSON.stringify(wScores));
+  }
 }
 
 function toast(msg, type='info') {
