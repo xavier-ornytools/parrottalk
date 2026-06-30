@@ -805,13 +805,15 @@ async function submitTest() {
       return { ...base, transcript: '(no recording provided)', pronunciationNotes: 'Question was skipped', failed: false };
     }
     try {
-      // Convert to WAV 16kHz — universally accepted by Gemini (OGG/WebM rejected via inlineData)
+      if (rec.blob.size < 100) throw new Error(`Recording empty (${rec.blob.size} bytes) — microphone may not be capturing audio`);
       let audioData, mimeType;
+      let wavConversionError = null;
       try {
         const wav = await blobToWavBase64(rec.blob);
         audioData = wav.data; mimeType = wav.mimeType;
-      } catch (_) {
-        audioData = await blobToBase64(rec.blob); mimeType = rec.mimeType;
+      } catch (wavErr) {
+        wavConversionError = wavErr.message;
+        audioData = await blobToBase64(rec.blob); mimeType = rec.mimeType.split(';')[0];
       }
       const res = await fetch('/api/speaking-transcribe', {
         method: 'POST',
@@ -820,7 +822,12 @@ async function submitTest() {
       });
       if (!res.ok) {
         let detail = `HTTP ${res.status}`;
-        try { const e = await res.json(); if (e.detail) detail += ': ' + String(e.detail).substring(0, 300); } catch(_) {}
+        try {
+          const e = await res.json();
+          if (e.detail) detail += ': ' + String(e.detail).substring(0, 300);
+          if (e.sentMimeType) detail += ` [sent:${e.sentMimeType}, ${e.audioBytes}b]`;
+        } catch(_) {}
+        if (wavConversionError) detail += ` | WAV err: ${wavConversionError}`;
         throw new Error(detail);
       }
       const d = await res.json();

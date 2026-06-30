@@ -14,7 +14,7 @@ Listen to the audio recording and return JSON only (no markdown):
 
   try {
     const r = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -29,7 +29,7 @@ Listen to the audio recording and return JSON only (no markdown):
     );
     if (!r.ok) {
       const err = await r.text();
-      return res.status(502).json({ error: 'Gemini API error', detail: err });
+      return res.status(502).json({ error: 'Gemini API error', detail: err, sentMimeType: cleanMime, audioBytes: audioData.length });
     }
     const g = await r.json();
     const text = g.candidates?.[0]?.content?.parts?.[0]?.text || '';
