@@ -51,13 +51,13 @@
         </div>
         <div class="hero__stats">
           <div class="hero__stat">
-            <strong>2</strong><span>Mock Tests</span>
+            <strong>3+</strong><span>Tests per Skill</span>
           </div>
           <div class="hero__stat">
-            <strong>80</strong><span>Listening Questions</span>
+            <strong>160+</strong><span>Practice Questions</span>
           </div>
           <div class="hero__stat">
-            <strong>AI</strong><span>Writing Feedback</span>
+            <strong>AI</strong><span>Speaking + Writing</span>
           </div>
         </div>
       </div>
@@ -88,8 +88,8 @@
   <div class="container">
     <div class="strip-items">
       <div class="strip-item"><span class="icon">🆓</span> 100% Free Forever</div>
-      <div class="strip-item"><span class="icon">🤖</span> AI Writing Feedback</div>
-      <div class="strip-item"><span class="icon">🎧</span> 2 Full Listening Tests</div>
+      <div class="strip-item"><span class="icon">🤖</span> AI Writing + Speaking</div>
+      <div class="strip-item"><span class="icon">🎧</span> 3 Full Listening Tests</div>
       <div class="strip-item"><span class="icon">📊</span> Progress Dashboard</div>
       <div class="strip-item"><span class="icon">🚫</span> No Ads · No Signup</div>
     </div>
@@ -128,16 +128,16 @@
         <h3>Reading</h3>
         <p>3 academic passages · 40 questions. True/False/Not Given, multiple choice and more.</p>
         <div class="module-meta" style="color:var(--success-dark)">
-          <span>2 Tests Available</span>
+          <span>3 Tests Available</span>
           <span>→</span>
         </div>
       </a>
       <a href="speaking.html" class="module-card">
         <div class="module-icon speaking">🎤</div>
         <h3>Speaking</h3>
-        <p>Part 1, 2 & 3 practice with cue cards, grammar correction and fluency tips.</p>
+        <p>Part 1, 2 & 3 with voice recording, AI transcription, and band score across 4 criteria.</p>
         <div class="module-meta" style="color:#22C55E">
-          <span>AI Examiner</span>
+          <span class="badge badge-warning" style="font-size:.7rem">AI Feedback</span>
           <span>→</span>
         </div>
       </a>
@@ -199,6 +199,72 @@
   </div>
 </section>
 
+<!-- FAQ -->
+<section class="section">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px">
+      <div class="section-label">❓ FAQ</div>
+      <h2>Common Questions</h2>
+    </div>
+    <div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:12px" id="faq-list">
+
+      <details class="faq-item">
+        <summary class="faq-q">Is ParrotTalk really free?</summary>
+        <p class="faq-a">Yes, completely. No subscription, no credit card, no premium tier. Every test and every AI feedback is free. It will stay free.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Do I need to create an account?</summary>
+        <p class="faq-a">No sign-up required. Your progress is saved automatically in your browser. Just open the site and start practising.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">What happens to my audio when I use Speaking AI?</summary>
+        <p class="faq-a">Your recording is temporarily sent to Google's Gemini AI for transcription and feedback. It is not stored by ParrotTalk at any point. See our <a href="privacy.html">Privacy Policy</a> for details.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Is this for IELTS Academic or General Training?</summary>
+        <p class="faq-a">All content is designed for <strong>IELTS Academic</strong>. The Reading passages, Writing tasks and Speaking questions match Academic exam standards. General Training candidates will also benefit from the practice, but the scoring targets the Academic band scale.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Does it work on mobile?</summary>
+        <p class="faq-a">Yes. ParrotTalk is mobile-friendly. The Speaking module requires microphone access, which most modern mobile browsers support. For the best AI feedback experience, we recommend Chrome or Firefox.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">How often are new tests added?</summary>
+        <p class="faq-a">We release new tests regularly. Subscribe to the newsletter below to be notified when new Listening, Reading, Writing and Speaking tests go live.</p>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq-item {
+    background: var(--white); border: 1.5px solid var(--border);
+    border-radius: var(--r-lg); overflow: hidden;
+    transition: border-color .2s;
+  }
+  .faq-item[open] { border-color: var(--primary); }
+  .faq-q {
+    padding: 18px 24px; font-weight: 700; font-size: .9375rem;
+    cursor: pointer; list-style: none; display: flex;
+    justify-content: space-between; align-items: center;
+    color: var(--dark); user-select: none;
+  }
+  .faq-q::-webkit-details-marker { display: none; }
+  .faq-q::after { content: '+'; font-size: 1.25rem; color: var(--primary); flex-shrink: 0; }
+  .faq-item[open] .faq-q::after { content: '−'; }
+  .faq-a {
+    padding: 0 24px 18px; font-size: .9rem; color: var(--text);
+    line-height: 1.7; margin: 0;
+  }
+  .faq-a a { color: var(--primary); }
+</style>
+
 <!-- EMAIL CAPTURE -->
 <section class="section" id="newsletter-section" style="background:linear-gradient(135deg,#0F172A,#1E293B)">
   <div class="container" style="text-align:center;max-width:560px;padding:64px 24px">
@@ -255,6 +321,7 @@
         <a href="writing.html">Writing</a>
         <a href="speaking.html">Speaking</a>
         <a href="dashboard.html">Dashboard</a>
+        <a href="privacy.html">Privacy Policy</a>
       </div>
     </div>
     <p class="footer__copy">© 2026 ParrotTalk · Free IELTS Preparation · parrottalk.app</p>
