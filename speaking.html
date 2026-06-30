@@ -733,6 +733,45 @@ async function blobToBase64(blob) {
   });
 }
 
+// Convert any browser audio blob → WAV 16kHz mono (universally supported by Gemini)
+async function blobToWavBase64(blob) {
+  const ab = await blob.arrayBuffer();
+  const rawCtx = new AudioContext();
+  let decoded;
+  try { decoded = await rawCtx.decodeAudioData(ab); }
+  finally { rawCtx.close(); }
+
+  const targetSR = 16000;
+  const offCtx = new OfflineAudioContext(1, Math.ceil(decoded.duration * targetSR), targetSR);
+  const src = offCtx.createBufferSource();
+  src.buffer = decoded;
+  src.connect(offCtx.destination);
+  src.start(0);
+  const resampled = await offCtx.startRendering();
+
+  const pcm = resampled.getChannelData(0);
+  const samples = new Int16Array(pcm.length);
+  for (let i = 0; i < pcm.length; i++) {
+    const s = Math.max(-1, Math.min(1, pcm[i]));
+    samples[i] = (s < 0 ? s * 0x8000 : s * 0x7FFF) | 0;
+  }
+  const dataLen = samples.length * 2;
+  const wav = new ArrayBuffer(44 + dataLen);
+  const v = new DataView(wav);
+  const ws = (off, str) => { for (let i = 0; i < str.length; i++) v.setUint8(off + i, str.charCodeAt(i)); };
+  ws(0,'RIFF'); v.setUint32(4, 36 + dataLen, true); ws(8,'WAVE');
+  ws(12,'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true);
+  v.setUint16(22, 1, true); v.setUint32(24, targetSR, true);
+  v.setUint32(28, targetSR * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+  ws(36,'data'); v.setUint32(40, dataLen, true);
+  new Int16Array(wav, 44).set(samples);
+
+  const bytes = new Uint8Array(wav);
+  let b64 = '';
+  for (let i = 0; i < bytes.length; i += 8192) b64 += String.fromCharCode(...bytes.subarray(i, i + 8192));
+  return { data: btoa(b64), mimeType: 'audio/wav' };
+}
+
 async function submitTest() {
   const t = SPEAKING_TESTS[currentSpeakingTest];
   const allQs = getAllQuestions(currentSpeakingTest);
@@ -766,11 +805,18 @@ async function submitTest() {
       return { ...base, transcript: '(no recording provided)', pronunciationNotes: 'Question was skipped', failed: false };
     }
     try {
-      const audioData = await blobToBase64(rec.blob);
+      // Convert to WAV 16kHz — universally accepted by Gemini (OGG/WebM rejected via inlineData)
+      let audioData, mimeType;
+      try {
+        const wav = await blobToWavBase64(rec.blob);
+        audioData = wav.data; mimeType = wav.mimeType;
+      } catch (_) {
+        audioData = await blobToBase64(rec.blob); mimeType = rec.mimeType;
+      }
       const res = await fetch('/api/speaking-transcribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ audioData, mimeType: rec.mimeType, question: qi.question, part: qi.part })
+        body: JSON.stringify({ audioData, mimeType, question: qi.question, part: qi.part })
       });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const d = await res.json();
