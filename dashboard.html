@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Progress — ParrotTalk</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    .overall-band {
+      background: linear-gradient(135deg, var(--dark), #0C3A6B);
+      border-radius: var(--r-xl); padding: 32px; color: var(--white);
+      display: flex; align-items: center; gap: 32px; margin-bottom: 24px;
+    }
+    .ob-score { font-size: 6rem; font-weight: 900; color: var(--primary); line-height: 1; }
+    .ob-info h2 { color: var(--white); font-size: 1.75rem; }
+    .ob-info p  { color: rgba(255,255,255,.55); margin-top:6px; }
+    .ob-target  {
+      margin-top: 12px; display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.1); padding: 6px 14px; border-radius: var(--r-full);
+      font-size: .875rem; font-weight: 600;
+    }
+    .skill-row {
+      display: flex; align-items: center; gap: 16px; padding: 14px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .skill-row:last-child { border-bottom: none; }
+    .skill-name { width: 80px; font-size: .875rem; font-weight: 600; color: var(--text); }
+    .skill-bar-wrap { flex: 1; }
+    .skill-score { width: 48px; text-align: right; font-size: 1.125rem; font-weight: 800; }
+    .radar-wrap { position: relative; max-width: 360px; margin: 0 auto; }
+    .tips-list { display: flex; flex-direction: column; gap: 12px; }
+    .tip-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 14px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--border);
+    }
+    .tip-icon { font-size: 1.25rem; flex-shrink: 0; margin-top: 1px; }
+    .tip-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+    .tip-text  { font-size: .875rem; color: var(--text-muted); margin-top: 2px; }
+    .empty-state {
+      text-align: center; padding: 60px 24px;
+      color: var(--text-muted);
+    }
+    .empty-state .es-icon { font-size: 4rem; margin-bottom: 16px; }
+    .history-table { width: 100%; border-collapse: collapse; }
+    .history-table th, .history-table td {
+      padding: 10px 14px; text-align: left; font-size: .875rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .history-table th { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); background: var(--surface); }
+    .band-pill {
+      display: inline-block; padding: 2px 10px; border-radius: var(--r-full);
+      font-size: .8125rem; font-weight: 700; background: var(--primary-light); color: var(--primary-dark);
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__logo">
+      <div class="logo-mark">🦜</div>
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="listening.html" class="nav__link">Listening</a>
+      <a href="writing.html"   class="nav__link">Writing</a>
+      <a href="speaking.html"  class="nav__link">Speaking</a>
+      <a href="dashboard.html" class="nav__link active">Dashboard</a>
+    </div>
+    <a href="listening.html" class="nav__cta">Practice Now</a>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="container">
+    <div class="flex items-center gap-3" style="margin-bottom:8px">
+      <span class="badge badge-primary">📊 Dashboard</span>
+      <span class="badge badge-success">Band Predictor</span>
+    </div>
+    <h1>My Progress</h1>
+    <p>Track your band evolution across all four IELTS skills</p>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container" style="padding-top:32px;padding-bottom:80px">
+
+  <!-- EMPTY STATE (shown when no scores) -->
+  <div id="empty-state" class="hidden">
+    <div class="card card-lg" style="text-align:center;padding:60px">
+      <div style="font-size:4rem;margin-bottom:16px">🦜</div>
+      <h3>No practice sessions yet</h3>
+      <p style="margin-top:8px;margin-bottom:24px">Complete a listening or writing test to see your scores here.</p>
+      <div class="flex items-center justify-center gap-3">
+        <a href="listening.html" class="btn btn-primary">Start Listening Test</a>
+        <a href="writing.html"   class="btn btn-outline">Try Writing</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD CONTENT -->
+  <div id="dashboard-content">
+
+    <!-- OVERALL BAND -->
+    <div class="overall-band">
+      <div>
+        <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.4)">Overall Band</div>
+        <div class="ob-score" id="overall-band">—</div>
+      </div>
+      <div class="ob-info">
+        <h2>Your IELTS Level</h2>
+        <p id="band-description">Complete a test to see your estimated band</p>
+        <div class="ob-target">
+          🎯 Target: Band 7.0 · September 2026
+        </div>
+      </div>
+    </div>
+
+    <!-- SKILL SCORES -->
+    <div class="grid-2" style="margin-bottom:24px">
+      <div class="card card-lg">
+        <h3 style="margin-bottom:20px">Skills Breakdown</h3>
+
+        <div class="skill-row">
+          <div class="skill-name">Listening</div>
+          <div class="skill-bar-wrap">
+            <div class="progress-bar">
+              <div class="progress-fill" id="bar-listening" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="skill-score" style="color:var(--primary)" id="score-listening">—</div>
+        </div>
+
+        <div class="skill-row">
+          <div class="skill-name">Reading</div>
+          <div class="skill-bar-wrap">
+            <div class="progress-bar">
+              <div class="progress-fill success" id="bar-reading" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="skill-score" style="color:var(--success-dark)" id="score-reading">—</div>
+        </div>
+
+        <div class="skill-row">
+          <div class="skill-name">Writing</div>
+          <div class="skill-bar-wrap">
+            <div class="progress-bar">
+              <div class="progress-fill" id="bar-writing" style="width:0%;background:linear-gradient(90deg,var(--warning),#D97706)"></div>
+            </div>
+          </div>
+          <div class="skill-score" style="color:var(--warning)" id="score-writing">—</div>
+        </div>
+
+        <div class="skill-row">
+          <div class="skill-name">Speaking</div>
+          <div class="skill-bar-wrap">
+            <div class="progress-bar">
+              <div class="progress-fill" id="bar-speaking" style="width:0%;background:linear-gradient(90deg,var(--purple),#7C3AED)"></div>
+            </div>
+          </div>
+          <div class="skill-score" style="color:var(--purple)" id="score-speaking">—</div>
+        </div>
+
+      </div>
+
+      <div class="card card-lg">
+        <h3 style="margin-bottom:16px">Band Radar</h3>
+        <div class="radar-wrap">
+          <canvas id="radar-chart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- LISTENING HISTORY -->
+    <div class="card card-lg" style="margin-bottom:24px" id="history-section">
+      <h3 style="margin-bottom:16px">📋 Listening Test History</h3>
+      <div style="overflow-x:auto">
+        <table class="history-table" id="history-table">
+          <thead>
+            <tr>
+              <th>Test</th>
+              <th>Score</th>
+              <th>Band</th>
+              <th>S1</th><th>S2</th><th>S3</th><th>S4</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="history-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TIPS -->
+    <div class="card card-lg" id="tips-card">
+      <h3 style="margin-bottom:16px">💡 Priority Focus</h3>
+      <div class="tips-list" id="tips-list">
+        <div class="tip-item">
+          <div class="tip-icon">✍️</div>
+          <div>
+            <div class="tip-label" style="color:var(--warning)">Writing — Priority #1</div>
+            <div class="tip-text">Task 2 counts double. Focus on Task Response structure: clear position, 2 body paragraphs with examples, strong conclusion.</div>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-icon">🎧</div>
+          <div>
+            <div class="tip-label" style="color:var(--primary)">Listening Section 4 — Priority #2</div>
+            <div class="tip-text">Academic lectures are the hardest section. Practice note-completion under real conditions: one listen, no pausing.</div>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-icon">🎤</div>
+          <div>
+            <div class="tip-label" style="color:var(--purple)">Speaking Grammar — Priority #3</div>
+            <div class="tip-text">Fix make/do confusion and present perfect vs past simple. GRA 6.0 → 7.0 = overall band up by 0.25.</div>
+          </div>
+        </div>
+        <div class="tip-item">
+          <div class="tip-icon">📖</div>
+          <div>
+            <div class="tip-label" style="color:var(--success-dark)">Reading — Maintain 7.0</div>
+            <div class="tip-text">Strong performance. Keep practising True/False/Not Given — easiest place to lose points under time pressure.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESET BUTTON -->
+    <div style="text-align:center;margin-top:32px">
+      <button class="btn btn-outline btn-sm" onclick="confirmReset()" style="color:var(--danger);border-color:var(--danger)">
+        🗑 Reset All Scores
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="js/data.js"></script>
+<script>
+// Fixed scores (from your Speaking test & Reading estimation)
+const FIXED_SCORES = {
+  reading: { band: 7.0, label: 'Estimated' },
+  speaking: { band: 6.5, label: '29 Jun 2026' }
+};
+
+let radarChart = null;
+
+function loadDashboard() {
+  const listeningScores = getAllScores();
+  const hasData = Object.keys(listeningScores).length > 0;
+
+  // Get best listening band
+  let bestListening = null;
+  Object.values(listeningScores).forEach(s => {
+    if (!bestListening || s.band > bestListening.band) bestListening = s;
+  });
+
+  // Skills
+  const skills = {
+    listening: bestListening ? bestListening.band : null,
+    reading:   FIXED_SCORES.reading.band,
+    writing:   null,
+    speaking:  FIXED_SCORES.speaking.band
+  };
+
+  // Calculate overall
+  const available = Object.values(skills).filter(v => v !== null);
+  const overall = available.length ? (available.reduce((a,b) => a+b, 0) / available.length).toFixed(1) : null;
+
+  if (!hasData && !overall) {
+    document.getElementById('empty-state').classList.remove('hidden');
+    document.getElementById('dashboard-content').classList.add('hidden');
+    return;
+  }
+
+  document.getElementById('empty-state').classList.add('hidden');
+  document.getElementById('dashboard-content').classList.remove('hidden');
+
+  // Overall band
+  if (overall) {
+    document.getElementById('overall-band').textContent = overall;
+    const gap = (7.0 - parseFloat(overall)).toFixed(1);
+    document.getElementById('band-description').textContent =
+      parseFloat(overall) >= 7.0
+        ? '🎉 Target reached! Band 7.0 achieved!'
+        : `${gap} band away from your Band 7.0 target`;
+  }
+
+  // Skill bars (scale: band 1–9, bar width = band/9*100%)
+  setSkill('listening', skills.listening);
+  setSkill('reading',   skills.reading);
+  setSkill('writing',   skills.writing);
+  setSkill('speaking',  skills.speaking);
+
+  // Radar chart
+  buildRadar(skills);
+
+  // History table
+  buildHistory(listeningScores);
+}
+
+function setSkill(name, band) {
+  const scoreEl = document.getElementById('score-'+name);
+  const barEl   = document.getElementById('bar-'+name);
+  if (band !== null) {
+    scoreEl.textContent = band;
+    barEl.style.width = Math.min((band/9)*100, 100) + '%';
+  } else {
+    scoreEl.textContent = '—';
+    barEl.style.width = '0%';
+  }
+}
+
+function buildRadar(skills) {
+  const ctx = document.getElementById('radar-chart').getContext('2d');
+  if (radarChart) radarChart.destroy();
+  const data = [
+    skills.listening || 0,
+    skills.reading   || 0,
+    skills.writing   || 0,
+    skills.speaking  || 0
+  ];
+  radarChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ['Listening', 'Reading', 'Writing', 'Speaking'],
+      datasets: [
+        {
+          label: 'Current',
+          data,
+          backgroundColor: 'rgba(14,165,233,.15)',
+          borderColor: '#0EA5E9',
+          borderWidth: 2,
+          pointBackgroundColor: '#0EA5E9',
+          pointRadius: 4,
+        },
+        {
+          label: 'Target (7.0)',
+          data: [7,7,7,7],
+          backgroundColor: 'rgba(34,197,94,.08)',
+          borderColor: 'rgba(34,197,94,.4)',
+          borderWidth: 1.5,
+          borderDash: [5,4],
+          pointRadius: 0,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        r: {
+          min: 0, max: 9,
+          ticks: { stepSize: 1.5, font: { size: 11 } },
+          grid: { color: 'rgba(0,0,0,.06)' },
+          pointLabels: { font: { size: 12, weight: '600' } }
+        }
+      },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 12 } } }
+      }
+    }
+  });
+}
+
+function buildHistory(scores) {
+  const tbody = document.getElementById('history-body');
+  tbody.innerHTML = '';
+  const tests = Object.entries(scores);
+  if (!tests.length) {
+    document.getElementById('history-section').classList.add('hidden');
+    return;
+  }
+  tests.forEach(([id, s]) => {
+    const testLabel = id === 'test01' ? 'Test 01' : 'Test 02';
+    const secs = s.sectionScores || [0,0,0,0];
+    tbody.innerHTML += `<tr>
+      <td style="font-weight:600">${testLabel}</td>
+      <td>${s.total}/40</td>
+      <td><span class="band-pill">Band ${s.band}</span></td>
+      <td>${secs[0]||0}/10</td><td>${secs[1]||0}/10</td>
+      <td>${secs[2]||0}/10</td><td>${secs[3]||0}/10</td>
+      <td style="color:var(--text-muted)">${s.date}</td>
+    </tr>`;
+  });
+}
+
+function confirmReset() {
+  if (confirm('Reset all listening scores? This cannot be undone.')) {
+    localStorage.removeItem('ielts_scores');
+    loadDashboard();
+  }
+}
+
+loadDashboard();
+</script>
+</body>
+</html>

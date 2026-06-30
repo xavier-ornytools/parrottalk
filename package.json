@@ -1,0 +1,8 @@
+{
+  "name": "parrottalk",
+  "version": "1.0.0",
+  "description": "Free AI-powered IELTS preparation platform",
+  "engines": {
+    "node": ">=18"
+  }
+}

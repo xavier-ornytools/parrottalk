@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speaking Test — ParrotTalk</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
+  <style>
+    .part-card {
+      background: var(--white); border-radius: var(--r-lg);
+      border: 1px solid var(--border); padding: 24px; margin-bottom: 16px;
+    }
+    .part-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .part-tag {
+      display: inline-flex; align-items: center;
+      padding: 4px 12px; border-radius: var(--r-full);
+      font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+    }
+    .part-tag.p1 { background: var(--primary-light); color: var(--primary-dark); }
+    .part-tag.p2 { background: #FEF3C7; color: #92400E; }
+    .part-tag.p3 { background: #F0FDF4; color: var(--success-dark); }
+    .part-card p { font-size: .9375rem; margin-bottom: 12px; }
+    .part-card ul { display: flex; flex-direction: column; gap: 8px; }
+    .part-card ul li {
+      font-size: .9375rem; color: var(--text);
+      padding: 8px 14px; background: var(--surface); border-radius: var(--r-sm);
+      border-left: 3px solid var(--primary);
+    }
+    .test-sel-btn {
+      background: var(--white); border: 2px solid var(--border);
+      border-radius: var(--r-lg); padding: 20px 24px; cursor: pointer;
+      text-align: left; transition: all .2s; font-family: inherit; width: 100%;
+    }
+    .test-sel-btn:hover  { border-color: var(--primary); background: var(--primary-pale); }
+    .test-sel-btn.active { border-color: var(--primary); background: var(--primary-pale); }
+    .test-sel-btn .t-num  { font-size: 1.125rem; font-weight: 800; color: var(--primary); }
+    .test-sel-btn .t-name { font-size: .875rem; color: var(--text); font-weight: 500; margin-top: 2px; }
+    .test-sel-btn .t-meta { font-size: .8rem; color: var(--text-muted); margin-top: 2px; }
+    .score-mini-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 16px; }
+    .score-mini { text-align: center; padding: 16px; border-radius: var(--r); }
+    .score-mini .sm-tag { font-size: .7rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+    .score-mini .sm-val { font-size: 2rem; font-weight: 900; }
+    .score-mini .sm-name { font-size: .7rem; color: var(--text-muted); margin-top: 2px; }
+    .claude-link {
+      display: flex; align-items: center; gap: 16px;
+      background: linear-gradient(135deg, #1A1A2E, #16213E);
+      border-radius: var(--r-xl); padding: 20px 24px; margin: 24px 0;
+      text-decoration: none; color: var(--white); transition: transform .2s, box-shadow .2s;
+      box-shadow: var(--sh-lg);
+    }
+    .claude-link:hover { transform: translateY(-3px); box-shadow: var(--sh-xl); }
+    .cl-icon { font-size: 2.5rem; }
+    .cl-text { flex: 1; }
+    .cl-title { font-size: 1.0625rem; font-weight: 700; color: var(--white); }
+    .cl-sub   { font-size: .8125rem; color: rgba(255,255,255,.55); margin-top: 3px; }
+    .cl-arrow { font-size: 1.5rem; color: rgba(255,255,255,.4); }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__logo">
+      <div class="logo-mark">🦜</div>
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="listening.html" class="nav__link">Listening</a>
+      <a href="writing.html"   class="nav__link">Writing</a>
+      <a href="speaking.html"  class="nav__link active">Speaking</a>
+      <a href="dashboard.html" class="nav__link">Dashboard</a>
+    </div>
+    <a href="dashboard.html" class="nav__cta">My Progress</a>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="container">
+    <div class="flex items-center gap-3" style="margin-bottom:8px">
+      <span class="badge badge-success">🎤 Speaking</span>
+      <span class="badge badge-primary">Part 1 + 2 + 3</span>
+      <span class="badge badge-dark">~11–14 min</span>
+    </div>
+    <h1>IELTS Speaking Test</h1>
+    <p>Full simulation with AI examiner · Grammar correction · Fluency tips</p>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container" style="padding-top:32px;padding-bottom:80px">
+
+  <!-- TEST SELECTOR -->
+  <div class="grid-2" style="margin-bottom:24px">
+    <button class="test-sel-btn active" onclick="showTest(1)" id="spk-btn-1">
+      <div class="t-num">Test 01 ✅ Completed</div>
+      <div class="t-name">Life Decisions & Turning Points</div>
+      <div class="t-meta">FC 7.0 · LR 6.5 · GRA 6.0 · Pron 6.5 — Band 6.5 · 29 Jun 2026</div>
+    </button>
+    <button class="test-sel-btn" onclick="showTest(2)" id="spk-btn-2">
+      <div class="t-num">Test 02</div>
+      <div class="t-name">Travel & Places</div>
+      <div class="t-meta">Ready to practice</div>
+    </button>
+  </div>
+
+  <!-- TEST 01 RESULTS -->
+  <div id="speaking-test-1">
+
+    <div class="card card-lg" style="margin-bottom:20px">
+      <div class="flex items-center justify-between" style="margin-bottom:16px">
+        <h3>Speaking Test 01 — Results</h3>
+        <span class="badge badge-primary">29 Jun 2026</span>
+      </div>
+
+      <div class="score-mini-grid">
+        <div class="score-mini" style="background:var(--primary-light)">
+          <div class="sm-tag">FC</div>
+          <div class="sm-val" style="color:var(--primary)">7.0</div>
+          <div class="sm-name">Fluency</div>
+        </div>
+        <div class="score-mini" style="background:var(--primary-light)">
+          <div class="sm-tag">LR</div>
+          <div class="sm-val" style="color:var(--primary)">6.5</div>
+          <div class="sm-name">Lexical Resource</div>
+        </div>
+        <div class="score-mini" style="background:var(--warning-light)">
+          <div class="sm-tag">GRA</div>
+          <div class="sm-val" style="color:var(--warning)">6.0</div>
+          <div class="sm-name">Grammar</div>
+        </div>
+        <div class="score-mini" style="background:#F5F3FF">
+          <div class="sm-tag">Pron</div>
+          <div class="sm-val" style="color:var(--purple)">6.5</div>
+          <div class="sm-name">Pronunciation</div>
+        </div>
+      </div>
+
+      <div class="card card-sm" style="background:var(--warning-light);border-color:var(--warning);margin-bottom:16px">
+        <p style="color:#92400E;font-size:.875rem">⚠️ <strong>Priority — Grammar (GRA 6.0):</strong> Fix make/do confusion, present perfect vs past simple, plural agreement. Correcting grammar → GRA 7.0 → overall Band <strong>6.75 → 7.0</strong>.</p>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <div style="font-size:.8125rem;font-weight:700;color:var(--success-dark);margin-bottom:8px">✅ Strengths</div>
+          <ul style="display:flex;flex-direction:column;gap:6px">
+            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">Excellent fluency, very few hesitations</li>
+            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">Varied vocabulary (DeFi, blockchain, AI natural)</li>
+            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">Strong spontaneity in Part 2 and Part 3</li>
+            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">Good use of personal examples to support answers</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:.8125rem;font-weight:700;color:var(--danger);margin-bottom:8px">⚠️ To Fix</div>
+          <ul style="display:flex;flex-direction:column;gap:6px">
+            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">"make a master degree" → <em>do a master's degree</em></li>
+            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">"make the turn of my life" → <em>a turning point</em></li>
+            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">"School need to" → <em>Schools need to</em></li>
+            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">Present perfect with specific dates</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TEST 02 BRIEFING -->
+  <div id="speaking-test-2" class="hidden">
+
+    <div class="part-card">
+      <div class="part-header">
+        <span class="part-tag p1">Part 1</span>
+        <span style="font-size:.875rem;color:var(--text-muted)">Interview · 4–5 minutes</span>
+      </div>
+      <p>The examiner will ask questions on 3 topics from: <strong>Travel, Learning, Music, Daily Routine, Food</strong>. Answer naturally with developed responses and examples.</p>
+    </div>
+
+    <div class="part-card">
+      <div class="part-header">
+        <span class="part-tag p2">Part 2</span>
+        <span style="font-size:.875rem;color:var(--text-muted)">Long turn · 3–4 minutes</span>
+      </div>
+      <div class="cue-card">
+        <h4>Describe a place you would like to visit in the future.</h4>
+        <ul>
+          <li>Where this place is</li>
+          <li>Why you would like to go there</li>
+          <li>What you would do there</li>
+          <li><strong>And explain how you think visiting this place would affect you</strong></li>
+        </ul>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--yellow);font-size:.8rem;color:#92400E">
+          ⏱ 1 minute preparation · 1–2 minutes speaking
+        </div>
+      </div>
+    </div>
+
+    <div class="part-card">
+      <div class="part-header">
+        <span class="part-tag p3">Part 3</span>
+        <span style="font-size:.875rem;color:var(--text-muted)">Discussion · 4–5 minutes</span>
+      </div>
+      <ul>
+        <li>Do you think travelling abroad is important for young people's development?</li>
+        <li>Some people say that mass tourism is destroying the places it promotes. Do you agree?</li>
+        <li>How has social media changed the way people choose where to travel?</li>
+        <li>Do you think virtual reality will ever replace the experience of actually visiting a place?</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- LAUNCH AI EXAMINER -->
+  <a href="https://claude.ai" target="_blank" class="claude-link">
+    <div class="cl-icon">🤖</div>
+    <div class="cl-text">
+      <div class="cl-title">Launch AI Examiner — claude.ai</div>
+      <div class="cl-sub">Open claude.ai → enable microphone → paste the speaking briefing → say GO to start your mock exam</div>
+    </div>
+    <div class="cl-arrow">→</div>
+  </a>
+
+  <!-- GRAMMAR ERROR TABLE -->
+  <div class="card">
+    <h3 style="margin-bottom:16px">📚 Grammar Revision — Recurring Speaking Errors</h3>
+    <div style="overflow-x:auto">
+      <table class="error-table">
+        <thead>
+          <tr>
+            <th>❌ Incorrect</th>
+            <th>✅ Correct</th>
+            <th>Error Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="incorrect-cell">"make a master degree"</td>
+            <td class="correct-cell">"do a master's degree"</td>
+            <td>make / do confusion</td>
+          </tr>
+          <tr>
+            <td class="incorrect-cell">"make the turn of my life"</td>
+            <td class="correct-cell">"it was a turning point in my life"</td>
+            <td>Collocation</td>
+          </tr>
+          <tr>
+            <td class="incorrect-cell">"School need to..."</td>
+            <td class="correct-cell">"Schools need to..."</td>
+            <td>Plural agreement</td>
+          </tr>
+          <tr>
+            <td class="incorrect-cell">"I have started in 2014"</td>
+            <td class="correct-cell">"I started in 2014"</td>
+            <td>Past simple (specific date)</td>
+          </tr>
+          <tr>
+            <td class="incorrect-cell">"Since many years"</td>
+            <td class="correct-cell">"For many years"</td>
+            <td>Since vs For</td>
+          </tr>
+          <tr>
+            <td class="incorrect-cell">"I am agree"</td>
+            <td class="correct-cell">"I agree"</td>
+            <td>Stative verb</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showTest(n) {
+  document.getElementById('speaking-test-1').classList.toggle('hidden', n!==1);
+  document.getElementById('speaking-test-2').classList.toggle('hidden', n!==2);
+  document.getElementById('spk-btn-1').classList.toggle('active', n===1);
+  document.getElementById('spk-btn-2').classList.toggle('active', n===2);
+}
+</script>
+</body>
+</html>

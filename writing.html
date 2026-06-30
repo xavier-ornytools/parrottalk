@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Writing Test — ParrotTalk</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
+  <style>
+    .task-card { background: var(--white); border-radius: var(--r-lg); border: 1px solid var(--border); padding: 28px; margin-bottom: 20px; }
+    .task-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border-light);
+    }
+    .task-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: var(--r-full);
+      font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+    }
+    .task-tag.t1 { background: #FEF3C7; color: #92400E; }
+    .task-tag.t2 { background: var(--primary-light); color: var(--primary-dark); }
+    .task-instruction {
+      background: var(--surface); border-radius: var(--r); padding: 16px 20px;
+      font-size: .9375rem; line-height: 1.7; color: var(--text); margin-bottom: 20px;
+      border-left: 3px solid var(--warning);
+    }
+    .task-instruction strong { color: var(--dark); }
+    .answer-area {
+      width: 100%; min-height: 220px; padding: 16px;
+      border: 1.5px solid var(--border); border-radius: var(--r);
+      font-size: 1rem; font-family: inherit; line-height: 1.7; color: var(--text);
+      resize: vertical; transition: border-color .2s;
+    }
+    .answer-area:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(14,165,233,.12); }
+    .wc-row { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+    .sample-panel { display: none; margin-top: 16px; }
+    .sample-panel.show { display: block; }
+    .test-sel-btn {
+      background: var(--white); border: 2px solid var(--border);
+      border-radius: var(--r-lg); padding: 20px 24px; cursor: pointer;
+      text-align: left; transition: all .2s; font-family: inherit; width: 100%;
+    }
+    .test-sel-btn:hover  { border-color: var(--primary); background: var(--primary-pale); }
+    .test-sel-btn.active { border-color: var(--primary); background: var(--primary-pale); }
+    .test-sel-btn .t-num  { font-size: 1.125rem; font-weight: 800; color: var(--primary); }
+    .test-sel-btn .t-t1   { font-size: .875rem; color: var(--text); font-weight: 500; margin-top: 2px; }
+    .test-sel-btn .t-t2   { font-size: .8rem; color: var(--text-muted); margin-top: 2px; }
+    .timer-row {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 14px 20px; margin-bottom: 20px;
+      position: sticky; top: var(--nav-h); z-index: 50;
+      box-shadow: var(--sh-sm);
+    }
+    .timer-display {
+      font-size: 1.75rem; font-weight: 900; color: var(--dark);
+      font-variant-numeric: tabular-nums; letter-spacing: .02em;
+    }
+    .timer-display.warning { color: var(--warning); }
+    .timer-display.danger  { color: var(--danger); animation: pulse 1s infinite; }
+    .criteria-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .criteria-item-small {
+      background: var(--surface); border-radius: var(--r); padding: 12px 14px;
+    }
+    .criteria-item-small .ci-tag { font-size: .75rem; font-weight: 700; color: var(--primary); }
+    .criteria-item-small .ci-name { font-size: .8125rem; font-weight: 600; color: var(--text); margin-top: 1px; }
+    .criteria-item-small p { font-size: .8rem; margin-top: 3px; }
+    .ai-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: var(--r-full);
+      background: linear-gradient(135deg, #6366F1, #8B5CF6);
+      color: white; font-size: .875rem; font-weight: 700;
+      border: none; cursor: pointer; transition: all .2s;
+      box-shadow: 0 4px 14px rgba(99,102,241,.35);
+    }
+    .ai-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(99,102,241,.45); }
+    .ai-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__logo">
+      <div class="logo-mark">🦜</div>
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="listening.html" class="nav__link">Listening</a>
+      <a href="writing.html"   class="nav__link active">Writing</a>
+      <a href="speaking.html"  class="nav__link">Speaking</a>
+      <a href="dashboard.html" class="nav__link">Dashboard</a>
+    </div>
+    <a href="dashboard.html" class="nav__cta">My Progress</a>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="container">
+    <div class="flex items-center gap-3" style="margin-bottom:8px">
+      <span class="badge badge-warning">✍️ Writing</span>
+      <span class="badge badge-primary">Task 1 + Task 2</span>
+      <span class="badge" style="background:linear-gradient(135deg,#6366F1,#8B5CF6);color:white">🤖 AI Feedback</span>
+    </div>
+    <h1>IELTS Writing Test</h1>
+    <p>60-minute timed test · Automatic word count · AI band correction</p>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container" style="padding-top:32px;padding-bottom:80px">
+
+  <!-- TEST SELECTOR -->
+  <div class="grid-2" style="margin-bottom:24px">
+    <button class="test-sel-btn active" onclick="selectWritingTest(1)" id="wbtn-1">
+      <div class="t-num">Test 01</div>
+      <div class="t-t1">📈 Task 1 — Line graph: renewable energy %</div>
+      <div class="t-t2">📝 Task 2 — Academic knowledge vs practical training</div>
+    </button>
+    <button class="test-sel-btn" onclick="selectWritingTest(2)" id="wbtn-2">
+      <div class="t-num">Test 02</div>
+      <div class="t-t1">📊 Task 1 — Bar chart: leisure hours by age</div>
+      <div class="t-t2">📝 Task 2 — Inequality and taxing the wealthy</div>
+    </button>
+  </div>
+
+  <!-- INSTRUCTIONS -->
+  <div class="card card-lg" id="writing-instructions">
+    <h3 style="margin-bottom:16px">📋 Writing test instructions</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+      <div class="card card-sm" style="background:var(--warning-light);border-color:var(--warning)">
+        <div style="font-weight:700;color:#92400E;margin-bottom:4px">Task 1 — 20 minutes</div>
+        <p style="font-size:.875rem;color:#78350F">Minimum <strong>150 words</strong>. Describe the graph: main features and comparisons. No opinion, no invented data.</p>
+      </div>
+      <div class="card card-sm" style="background:var(--primary-pale);border-color:var(--primary-light)">
+        <div style="font-weight:700;color:var(--primary-dark);margin-bottom:4px">Task 2 — 40 minutes</div>
+        <p style="font-size:.875rem;color:var(--primary-xdark)">Minimum <strong>250 words</strong>. Discuss both views and give your opinion with examples.</p>
+      </div>
+    </div>
+    <div class="card card-sm" style="background:var(--surface);border-color:var(--border);margin-bottom:20px">
+      <p style="font-size:.875rem;color:var(--text-muted)">⚖️ <strong>Scoring:</strong> Task 2 counts double. Final band = (T1 + T2×2) ÷ 3</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="btn btn-primary btn-lg" onclick="startWritingTest()">▶ Start Test (60 min)</button>
+      <span class="text-sm text-muted">Timer starts automatically</span>
+    </div>
+  </div>
+
+  <!-- TEST ZONE -->
+  <div id="writing-test-zone" class="hidden">
+
+    <!-- TIMER -->
+    <div class="timer-row">
+      <div>
+        <div style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em">Time Remaining</div>
+        <div class="timer-display" id="global-timer">60:00</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em">Phase</div>
+        <div style="font-size:.9375rem;font-weight:700;color:var(--text)" id="phase-hint">📊 Task 1 — 20 min</div>
+      </div>
+    </div>
+
+    <!-- TASK 1 -->
+    <div class="task-card">
+      <div class="task-header">
+        <div class="flex items-center gap-3">
+          <span class="task-tag t1">Task 1</span>
+          <span class="text-sm text-muted">20 minutes recommended · 150 words minimum</span>
+        </div>
+      </div>
+
+      <div class="task-instruction">
+        <strong>You should spend about 20 minutes on this task.</strong><br><br>
+        <span id="task1-instruction"></span><br><br>
+        <strong>Write at least 150 words.</strong>
+      </div>
+
+      <div style="text-align:center;margin:20px 0">
+        <img id="task1-graph" src="" alt="Task 1 Graph" style="max-width:100%;border-radius:var(--r);box-shadow:var(--sh)">
+      </div>
+
+      <textarea class="answer-area" id="task1-answer"
+        placeholder="Write your Task 1 answer here..."
+        oninput="updateWordCount('task1-answer','wc1',150)"></textarea>
+
+      <div class="wc-row">
+        <div class="word-count" id="wc1">0 words (minimum: 150)</div>
+        <div class="flex items-center gap-3">
+          <button class="ai-btn" onclick="getAIFeedback(1)" id="ai-btn-1">🤖 Get AI Feedback</button>
+          <button class="btn btn-outline btn-sm" onclick="toggleSample('sample1')">👁 Band 7 Model Answer</button>
+        </div>
+      </div>
+
+      <!-- AI FEEDBACK T1 -->
+      <div id="ai-feedback-1" class="hidden" style="margin-top:16px"></div>
+
+      <!-- MODEL ANSWER T1 -->
+      <div class="sample-panel" id="sample1" style="margin-top:16px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <span class="badge badge-success">Band 7 Model Answer</span>
+        </div>
+        <div class="model-answer" id="sample1-text"></div>
+      </div>
+    </div>
+
+    <!-- TASK 2 -->
+    <div class="task-card">
+      <div class="task-header">
+        <div class="flex items-center gap-3">
+          <span class="task-tag t2">Task 2</span>
+          <span class="text-sm text-muted">40 minutes recommended · 250 words minimum</span>
+        </div>
+      </div>
+
+      <div class="task-instruction">
+        <strong>You should spend about 40 minutes on this task.</strong><br><br>
+        <span id="task2-instruction"></span><br><br>
+        <strong>Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words.</strong>
+      </div>
+
+      <textarea class="answer-area" id="task2-answer"
+        placeholder="Write your Task 2 answer here..."
+        oninput="updateWordCount('task2-answer','wc2',250)"
+        style="min-height:300px"></textarea>
+
+      <div class="wc-row">
+        <div class="word-count" id="wc2">0 words (minimum: 250)</div>
+        <div class="flex items-center gap-3">
+          <button class="ai-btn" onclick="getAIFeedback(2)" id="ai-btn-2">🤖 Get AI Feedback</button>
+          <button class="btn btn-outline btn-sm" onclick="toggleSample('sample2')">👁 Band 7 Model Answer</button>
+        </div>
+      </div>
+
+      <!-- AI FEEDBACK T2 -->
+      <div id="ai-feedback-2" class="hidden" style="margin-top:16px"></div>
+
+      <!-- MODEL ANSWER T2 -->
+      <div class="sample-panel" id="sample2" style="margin-top:16px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <span class="badge badge-success">Band 7 Model Answer</span>
+        </div>
+        <div class="model-answer" id="sample2-text"></div>
+      </div>
+    </div>
+
+    <!-- SCORING CRITERIA -->
+    <div class="card">
+      <h3 style="margin-bottom:16px">📐 IELTS Writing Assessment Criteria</h3>
+      <div class="criteria-row">
+        <div>
+          <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--warning);margin-bottom:10px">Task 1</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="criteria-item-small"><div class="ci-tag">TA</div><div class="ci-name">Task Achievement</div><p>Overview + main data features + comparisons</p></div>
+            <div class="criteria-item-small"><div class="ci-tag">CC</div><div class="ci-name">Coherence & Cohesion</div><p>Logical paragraph progression + linking</p></div>
+            <div class="criteria-item-small"><div class="ci-tag">LR</div><div class="ci-name">Lexical Resource</div><p>Precise graph vocabulary, varied collocations</p></div>
+            <div class="criteria-item-small"><div class="ci-tag">GRA</div><div class="ci-name">Grammatical Range</div><p>Variety + accuracy of structures</p></div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--primary);margin-bottom:10px">Task 2</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="criteria-item-small"><div class="ci-tag">TR</div><div class="ci-name">Task Response</div><p>Both views addressed + clear opinion</p></div>
+            <div class="criteria-item-small"><div class="ci-tag">CC</div><div class="ci-name">Coherence & Cohesion</div><p>5-paragraph structure + cohesive devices</p></div>
+            <div class="criteria-item-small"><div class="ci-tag">LR</div><div class="ci-name">Lexical Resource</div><p>Academic vocabulary, avoid repetition</p></div>
+            <div class="criteria-item-small"><div class="ci-tag">GRA</div><div class="ci-name">Grammatical Range</div><p>Complex sentences, variety of tenses</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toast-container"></div>
+
+<script src="js/data.js"></script>
+<script>
+const WRITING_DATA = {
+  1: {
+    task1_instruction: `The graph below shows the percentage of electricity generated from renewable sources in three European countries between 2000 and 2020.<br><br>Summarise the information by selecting and reporting the main features, and make comparisons where relevant.`,
+    task1_graph: 'img/graphs/writing_test01_graph.png',
+    task1_sample: `The line graph illustrates the proportion of electricity produced from renewable energy in the United Kingdom, Germany and France over a twenty-year period from 2000 to 2020.<br><br>Overall, both the UK and Germany experienced dramatic increases in renewable electricity generation, while France showed only modest growth despite starting from a considerably higher base.<br><br>In 2000, France led with 15% of its electricity coming from renewables, compared to just 6% in Germany and 3% in the UK. However, France's share remained relatively stable throughout the period, rising only marginally to 22% by 2020.<br><br>Germany and the UK, by contrast, underwent substantial transformations. Germany grew steadily from 6% in 2000 to 17% in 2010, before accelerating sharply to reach 46% in 2020 — the highest figure among the three nations. The UK followed a similar trajectory, climbing from 3% to 40% over the same period, with particularly rapid growth between 2010 and 2020.<br><br>By the end of the period, Germany and the UK had overtaken France considerably, reversing the rankings seen at the start.`,
+    task2_instruction: `Some people believe that universities should focus on providing students with academic knowledge and theoretical understanding. Others think that universities should prepare students for the world of work by providing more practical training.<br><br>Discuss both views and give your own opinion.`,
+    task2_sample: `The role of higher education has long been debated, with some arguing that universities should remain centres of pure academic inquiry, while others contend that they must evolve to meet the practical demands of the modern labour market. Both perspectives have merit, though I believe a balanced integration of the two is the most effective approach.<br><br>Those who favour a theoretical focus argue that universities exist precisely to develop critical thinking, intellectual depth, and the ability to engage with complex ideas. A student of philosophy or pure mathematics, for instance, acquires modes of reasoning that are transferable across many professions, even if the subject matter is not directly vocational. Furthermore, foundational research — which underpins medical breakthroughs, engineering advances and economic theory — depends on academics who are not constrained by immediate commercial pressures.<br><br>On the other hand, proponents of practical training point out that many graduates struggle to transition into employment because their education has not equipped them with the specific skills employers require. Several countries, notably Germany and Switzerland, have successfully combined academic rigour with vocational apprenticeships, producing graduates who are both intellectually capable and immediately productive.<br><br>In my view, the dichotomy between theory and practice is largely false. The most effective university programmes integrate both dimensions: theoretical frameworks provide depth and adaptability, while practical components ensure graduates can apply their knowledge confidently from day one.<br><br>In conclusion, while both approaches offer real benefits, the most valuable higher education combines strong theoretical foundations with meaningful practical experience.`
+  },
+  2: {
+    task1_instruction: `The chart below shows the average number of hours per week that people in three age groups spent on four leisure activities in 2024.<br><br>Summarise the information by selecting and reporting the main features, and make comparisons where relevant.`,
+    task1_graph: 'img/graphs/writing_test02_graph.png',
+    task1_sample: `The bar chart compares the average number of hours per week that people in three age groups — 18–30, 31–50, and 51 and over — devoted to four leisure activities in 2024.<br><br>Overall, social media dominated the leisure time of younger people, while older groups spent considerably more time watching television and streaming content. Reading books showed a clear inverse relationship with age, while exercise remained relatively stable across all groups.<br><br>The most striking contrast concerns social media: 18–30 year-olds spent an average of 14 hours per week on it, compared with just 8 hours for the 31–50 group and only 3 hours for those aged 51 and above. By contrast, TV and streaming followed the opposite pattern, rising from 9 hours among the youngest group to 15 hours for the oldest.<br><br>Reading books also increased with age, from just 2 hours weekly for 18–30 year-olds to 7 hours for the 51+ group. Exercise was the most consistent activity, with all three groups spending between 4 and 6 hours per week, peaking at 6 hours for the 31–50 age group.<br><br>In summary, digital screen time shifts from social media to television as age increases, while reading books becomes progressively more popular.`,
+    task2_instruction: `In many countries, the gap between rich and poor is growing. Some people believe that governments should introduce higher taxes on the wealthy to reduce inequality. Others argue that this approach is counterproductive and that economic growth benefits everyone.<br><br>Discuss both views and give your own opinion.`,
+    task2_sample: `Rising economic inequality has become one of the defining challenges of our era, and the debate over how governments should respond is both politically charged and economically complex. While some advocate for higher taxes on the wealthy as a corrective mechanism, others warn that such policies may suppress the investment and growth that ultimately benefit all citizens. I believe a balanced approach, combining progressive taxation with targeted spending, offers the most effective solution.<br><br>Those who support higher taxes on the wealthy argue that extreme inequality is socially destabilising and morally unjustifiable. When a small proportion of the population controls a disproportionate share of national wealth, public services deteriorate and social mobility declines. Proponents of wealth redistribution point to Scandinavian countries such as Denmark and Sweden, where relatively high tax rates coexist with strong economic performance and low inequality.<br><br>On the other hand, critics of higher taxation argue that it discourages entrepreneurship and investment. If high earners face punitive tax rates, they may relocate to lower-tax jurisdictions, reducing the overall tax base. Some economists also contend that economic growth — stimulated by lower taxes — generates jobs and raises living standards across all income groups.<br><br>In my view, neither extreme is convincing. The most effective approach combines moderately progressive taxation with investment in public goods — education, healthcare, and infrastructure — that enable lower-income groups to improve their economic position over time.<br><br>In conclusion, the solution to inequality is not simply a question of raising or lowering taxes, but of designing a tax-and-spend system that supports growth while ensuring that the benefits are broadly shared.`
+  }
+};
+
+let currentWritingTest = 1;
+let globalInterval = null;
+let totalSeconds = 3600;
+
+function selectWritingTest(n) {
+  currentWritingTest = n;
+  document.getElementById('wbtn-1').classList.toggle('active', n===1);
+  document.getElementById('wbtn-2').classList.toggle('active', n===2);
+}
+
+function startWritingTest() {
+  const d = WRITING_DATA[currentWritingTest];
+  document.getElementById('writing-instructions').classList.add('hidden');
+  document.getElementById('writing-test-zone').classList.remove('hidden');
+  document.getElementById('task1-instruction').innerHTML = d.task1_instruction;
+  document.getElementById('task1-graph').src = d.task1_graph;
+  document.getElementById('sample1-text').innerHTML = d.task1_sample;
+  document.getElementById('task2-instruction').innerHTML = d.task2_instruction;
+  document.getElementById('sample2-text').innerHTML = d.task2_sample;
+  totalSeconds = 3600;
+  startTimer();
+  toast('Test started — 60 minutes. Begin with Task 1 (20 min).', 'info');
+}
+
+function startTimer() {
+  if (globalInterval) clearInterval(globalInterval);
+  globalInterval = setInterval(() => {
+    totalSeconds--;
+    const m = Math.floor(totalSeconds / 60);
+    const s = totalSeconds % 60;
+    const display = document.getElementById('global-timer');
+    display.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    display.className = 'timer-display' +
+      (totalSeconds < 300 ? ' danger' : totalSeconds < 600 ? ' warning' : '');
+    const hint = document.getElementById('phase-hint');
+    if      (totalSeconds > 2400) hint.textContent = `📊 Task 1 — ${Math.ceil(totalSeconds/60 - 40)} min left`;
+    else if (totalSeconds > 0)    hint.textContent = `📝 Task 2 — ${Math.ceil(totalSeconds/60)} min left`;
+    else { clearInterval(globalInterval); toast('⏰ Time is up! Put your pen down.', 'error'); }
+    if (totalSeconds === 2400) toast('20 minutes elapsed — switch to Task 2 now!', 'info');
+    if (totalSeconds === 300)  toast('⚠️ 5 minutes remaining — finish your conclusion.', 'info');
+  }, 1000);
+}
+
+function updateWordCount(areaId, countId, min) {
+  const text = document.getElementById(areaId).value.trim();
+  const count = text ? text.split(/\s+/).length : 0;
+  const el = document.getElementById(countId);
+  el.textContent = `${count} words (minimum: ${min})`;
+  el.className = 'word-count' + (count >= min ? ' ok' : count > min*0.8 ? ' warning' : '');
+}
+
+function toggleSample(id) {
+  document.getElementById(id).classList.toggle('show');
+}
+
+// AI FEEDBACK
+async function getAIFeedback(task) {
+  const d = WRITING_DATA[currentWritingTest];
+  const essay = document.getElementById(`task${task}-answer`).value.trim();
+  if (!essay || essay.split(/\s+/).length < 50) {
+    toast('Please write at least 50 words before requesting AI feedback.', 'error');
+    return;
+  }
+  const promptText = task === 1 ? d.task1_instruction.replace(/<[^>]+>/g,'') : d.task2_instruction.replace(/<[^>]+>/g,'');
+  const minWords = task === 1 ? 150 : 250;
+  const taskType = task === 1 ? 'Task 1 (Graph description)' : 'Task 2 (Essay - discuss both views)';
+  const btn = document.getElementById(`ai-btn-${task}`);
+  const feedbackBox = document.getElementById(`ai-feedback-${task}`);
+  btn.disabled = true;
+  btn.innerHTML = `<div class="spinner" style="border-color:rgba(255,255,255,.3);border-top-color:white;width:16px;height:16px"></div> Analysing...`;
+  feedbackBox.classList.remove('hidden');
+  feedbackBox.innerHTML = `<div class="ai-feedback"><div class="ai-loading"><div class="spinner"></div><span>AI is evaluating your essay against IELTS criteria...</span></div></div>`;
+  try {
+    const res = await fetch('/api/writing-feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ task, taskType, prompt: promptText, essay, wordCount: essay.split(/\s+/).length, minWords })
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    renderAIFeedback(feedbackBox, data, task);
+  } catch (err) {
+    feedbackBox.innerHTML = `<div class="card card-sm" style="border-color:var(--danger-light);background:var(--danger-light)">
+      <p style="color:var(--danger);font-size:.875rem">⚠️ AI feedback unavailable. Make sure the API is configured in Vercel environment variables.<br><em>${err.message}</em></p>
+    </div>`;
+  }
+  btn.disabled = false;
+  btn.innerHTML = '🤖 Get AI Feedback';
+}
+
+function renderAIFeedback(box, data, task) {
+  const criteriaKey = task === 1 ? ['taskAchievement','coherence','lexical','grammar'] : ['taskResponse','coherence','lexical','grammar'];
+  const criteriaNames = task === 1
+    ? ['Task Achievement','Coherence & Cohesion','Lexical Resource','Grammatical Range']
+    : ['Task Response','Coherence & Cohesion','Lexical Resource','Grammatical Range'];
+  const itemsHTML = criteriaKey.map((k,i) => `
+    <div class="criteria-item">
+      <div class="criteria-band">${data[k]?.band || '—'}</div>
+      <div class="criteria-name">${criteriaNames[i]}</div>
+      <div class="criteria-text">${data[k]?.comment || ''}</div>
+    </div>`).join('');
+  box.innerHTML = `<div class="ai-feedback">
+    <div class="ai-feedback__header">
+      <div class="ai-badge">🤖 AI Analysis</div>
+      <h4 style="font-size:1rem">Estimated Band: <span style="color:var(--primary);font-size:1.25rem;font-weight:800">${data.band || '—'}</span></h4>
+    </div>
+    ${data.summary ? `<p style="font-size:.9375rem;color:var(--text);margin-bottom:12px">${data.summary}</p>` : ''}
+    <div class="criteria-grid">${itemsHTML}</div>
+    ${data.topTip ? `<div style="margin-top:12px;padding:12px 14px;background:var(--warning-light);border-radius:var(--r);font-size:.875rem;color:#92400E"><strong>💡 Top tip:</strong> ${data.topTip}</div>` : ''}
+  </div>`;
+}
+
+function toast(msg, type='info') {
+  const c = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  c.appendChild(el);
+  setTimeout(() => el.remove(), 5000);
+}
+</script>
+</body>
+</html>
