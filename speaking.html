@@ -7,54 +7,148 @@
   <link rel="stylesheet" href="css/main.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
   <style>
-    .part-card {
-      background: var(--white); border-radius: var(--r-lg);
-      border: 1px solid var(--border); padding: 24px; margin-bottom: 16px;
-    }
-    .part-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-    .part-tag {
-      display: inline-flex; align-items: center;
-      padding: 4px 12px; border-radius: var(--r-full);
-      font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
-    }
-    .part-tag.p1 { background: var(--primary-light); color: var(--primary-dark); }
-    .part-tag.p2 { background: #FEF3C7; color: #92400E; }
-    .part-tag.p3 { background: #F0FDF4; color: var(--success-dark); }
-    .part-card p { font-size: .9375rem; margin-bottom: 12px; }
-    .part-card ul { display: flex; flex-direction: column; gap: 8px; }
-    .part-card ul li {
-      font-size: .9375rem; color: var(--text);
-      padding: 8px 14px; background: var(--surface); border-radius: var(--r-sm);
-      border-left: 3px solid var(--primary);
-    }
+    .spk-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+
     .test-sel-btn {
-      background: var(--white); border: 2px solid var(--border);
-      border-radius: var(--r-lg); padding: 20px 24px; cursor: pointer;
-      text-align: left; transition: all .2s; font-family: inherit; width: 100%;
+      background:var(--white); border:2px solid var(--border);
+      border-radius:var(--r-lg); padding:20px 24px; cursor:pointer;
+      text-align:left; transition:all .2s; font-family:inherit; width:100%;
     }
-    .test-sel-btn:hover  { border-color: var(--primary); background: var(--primary-pale); }
-    .test-sel-btn.active { border-color: var(--primary); background: var(--primary-pale); }
-    .test-sel-btn .t-num  { font-size: 1.125rem; font-weight: 800; color: var(--primary); }
-    .test-sel-btn .t-name { font-size: .875rem; color: var(--text); font-weight: 500; margin-top: 2px; }
-    .test-sel-btn .t-meta { font-size: .8rem; color: var(--text-muted); margin-top: 2px; }
-    .score-mini-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 16px; }
-    .score-mini { text-align: center; padding: 16px; border-radius: var(--r); }
-    .score-mini .sm-tag { font-size: .7rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
-    .score-mini .sm-val { font-size: 2rem; font-weight: 900; }
-    .score-mini .sm-name { font-size: .7rem; color: var(--text-muted); margin-top: 2px; }
-    .claude-link {
-      display: flex; align-items: center; gap: 16px;
-      background: linear-gradient(135deg, #1A1A2E, #16213E);
-      border-radius: var(--r-xl); padding: 20px 24px; margin: 24px 0;
-      text-decoration: none; color: var(--white); transition: transform .2s, box-shadow .2s;
-      box-shadow: var(--sh-lg);
+    .test-sel-btn:hover  { border-color:var(--primary); background:var(--primary-pale); }
+    .test-sel-btn.active { border-color:var(--primary); background:var(--primary-pale); }
+    .test-sel-btn .t-num  { font-size:1.125rem; font-weight:800; color:var(--primary); }
+    .test-sel-btn .t-name { font-size:.875rem; color:var(--text); font-weight:500; margin-top:2px; }
+    .test-sel-btn .t-meta { font-size:.8rem; color:var(--text-muted); margin-top:2px; }
+
+    .part-tag {
+      display:inline-flex; align-items:center;
+      padding:4px 12px; border-radius:var(--r-full);
+      font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.04em;
     }
-    .claude-link:hover { transform: translateY(-3px); box-shadow: var(--sh-xl); }
-    .cl-icon { font-size: 2.5rem; }
-    .cl-text { flex: 1; }
-    .cl-title { font-size: 1.0625rem; font-weight: 700; color: var(--white); }
-    .cl-sub   { font-size: .8125rem; color: rgba(255,255,255,.55); margin-top: 3px; }
-    .cl-arrow { font-size: 1.5rem; color: rgba(255,255,255,.4); }
+    .part-tag.p1 { background:var(--primary-light); color:var(--primary-dark); }
+    .part-tag.p2 { background:#FEF3C7; color:#92400E; }
+    .part-tag.p3 { background:#F0FDF4; color:var(--success-dark); }
+
+    .score-mini-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+    .score-mini { text-align:center; padding:16px; border-radius:var(--r); }
+    .score-mini .sm-tag  { font-size:.7rem; font-weight:700; color:var(--text-light); text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; }
+    .score-mini .sm-val  { font-size:2rem; font-weight:900; }
+    .score-mini .sm-name { font-size:.7rem; color:var(--text-muted); margin-top:2px; }
+
+    /* VOICE INTERFACE */
+    .voice-zone {
+      background:var(--white); border-radius:var(--r-xl);
+      border:1px solid var(--border); padding:32px; text-align:center;
+    }
+    .part-progress { display:flex; gap:8px; justify-content:center; margin-bottom:24px; }
+    .part-step {
+      flex:1; max-width:140px; padding:8px 12px; border-radius:var(--r);
+      font-size:.75rem; font-weight:700; text-align:center; transition:.2s;
+    }
+    .part-step.done    { background:var(--success-light); color:var(--success-dark); }
+    .part-step.active  { background:var(--primary); color:white; }
+    .part-step.pending { background:var(--surface); color:var(--text-muted); }
+
+    .question-label { font-size:.8125rem; color:var(--text-muted); font-weight:600; margin-bottom:10px; }
+    .question-text {
+      font-size:1.1875rem; font-weight:700; color:var(--text);
+      line-height:1.55; margin-bottom:20px; padding:18px 22px;
+      background:var(--primary-pale); border-radius:var(--r-lg);
+      border-left:4px solid var(--primary); text-align:left;
+    }
+    .tts-btn {
+      background:none; border:1px solid var(--border); border-radius:var(--r-full);
+      padding:5px 14px; font-size:.8125rem; cursor:pointer; color:var(--text-muted);
+      font-family:inherit; margin-bottom:20px; transition:.2s;
+    }
+    .tts-btn:hover { border-color:var(--primary); color:var(--primary); }
+
+    .record-btn-main {
+      width:76px; height:76px; border-radius:50%;
+      border:none; cursor:pointer; font-size:1.875rem;
+      transition:all .25s; margin:0 auto 12px;
+      display:flex; align-items:center; justify-content:center;
+      background:var(--primary); color:white;
+      box-shadow:0 4px 20px rgba(99,102,241,.3);
+    }
+    .record-btn-main:hover  { transform:scale(1.06); box-shadow:0 6px 28px rgba(99,102,241,.4); }
+    .record-btn-main.recording {
+      background:#EF4444; box-shadow:0 4px 20px rgba(239,68,68,.35);
+      animation:recPulse 1.2s ease-in-out infinite;
+    }
+    .record-btn-main.done   { background:var(--success); box-shadow:0 4px 20px rgba(34,197,94,.25); }
+    @keyframes recPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.09)} }
+
+    .rec-status { font-size:.9375rem; font-weight:600; margin-bottom:6px; min-height:1.4em; }
+    .rec-timer-display {
+      font-size:1.875rem; font-weight:900; color:#EF4444;
+      font-variant-numeric:tabular-nums; letter-spacing:.04em;
+      min-height:2.2em; display:flex; align-items:center; justify-content:center;
+    }
+    .rerecord-btn {
+      background:none; border:1px solid var(--border); border-radius:var(--r);
+      padding:5px 14px; font-size:.8125rem; cursor:pointer; color:var(--text-muted);
+      font-family:inherit; margin-top:6px; transition:.2s;
+    }
+    .rerecord-btn:hover { border-color:var(--danger); color:var(--danger); }
+
+    .spk-nav { display:flex; gap:12px; justify-content:space-between; margin-top:24px; align-items:center; }
+    .spk-nav-prev {
+      padding:9px 20px; border-radius:var(--r); font-size:.9375rem;
+      cursor:pointer; font-family:inherit; font-weight:600;
+      background:var(--white); border:1.5px solid var(--border); color:var(--text); transition:.2s;
+    }
+    .spk-nav-prev:hover { border-color:var(--primary); color:var(--primary); }
+
+    /* Cue card */
+    .cue-card-voice {
+      background:var(--warning-light); border-left:4px solid var(--warning);
+      border-radius:var(--r-lg); padding:18px 22px; margin-bottom:20px; text-align:left;
+    }
+    .cue-card-voice h4 { margin-bottom:10px; font-size:.9375rem; color:var(--text); line-height:1.5; }
+    .cue-card-voice ul { display:flex; flex-direction:column; gap:5px; }
+    .cue-card-voice li { font-size:.875rem; color:#92400E; }
+
+    /* Prep timer */
+    .prep-zone {
+      padding:16px; background:var(--surface); border-radius:var(--r); margin-bottom:16px;
+    }
+    .prep-countdown {
+      font-size:2.25rem; font-weight:900; color:var(--warning);
+      font-variant-numeric:tabular-nums; margin:8px 0;
+    }
+
+    /* Progress dots */
+    .rec-progress { display:flex; gap:5px; flex-wrap:wrap; justify-content:center; }
+    .rec-dot {
+      width:26px; height:26px; border-radius:50%; font-size:.65rem;
+      display:flex; align-items:center; justify-content:center; font-weight:700;
+      transition:.2s;
+    }
+
+    /* AI analysis progress */
+    .ai-progress-bar {
+      background:var(--surface); border-radius:var(--r-full);
+      height:8px; margin:14px 0; overflow:hidden;
+    }
+    .ai-progress-fill {
+      background:linear-gradient(90deg,var(--primary),var(--primary-dark));
+      height:100%; border-radius:var(--r-full); transition:width .5s ease;
+    }
+
+    /* Error */
+    .mic-error {
+      background:var(--danger-light); border:1px solid var(--danger);
+      border-radius:var(--r); padding:12px 16px; font-size:.875rem; color:var(--danger);
+      margin-bottom:16px; text-align:left;
+    }
+
+    @media(max-width:600px){
+      .spk-grid-3 { grid-template-columns:1fr; }
+      .question-text { font-size:1rem; }
+      .record-btn-main { width:64px; height:64px; font-size:1.625rem; }
+      .score-mini-grid { grid-template-columns:repeat(2,1fr); }
+    }
   </style>
 </head>
 <body>
@@ -88,9 +182,9 @@
           <span class="badge badge-dark">~11–14 min</span>
         </div>
         <h1>IELTS Speaking Test</h1>
-        <p>Full simulation with AI examiner · Grammar correction · Fluency tips</p>
-        <div style="display:flex;gap:16px;margin-top:16px;flex-wrap:wrap">
-          <div style="font-size:.875rem;font-weight:600;color:var(--text-muted)">🎯 SPEAK CONFIDENTLY · FLUENCY PRACTICE · GET AI FEEDBACK · IMPROVE YOUR BAND</div>
+        <p>Record your voice · AI evaluates pronunciation, fluency &amp; grammar</p>
+        <div style="font-size:.875rem;font-weight:600;color:var(--text-muted);margin-top:12px">
+          🎙️ REAL VOICE RECORDING · GEMINI AI ANALYSIS · FC · LR · GRA · PRONUNCIATION
         </div>
       </div>
       <div class="page-hero__mascot">
@@ -104,207 +198,50 @@
 <div class="container" style="padding-top:32px;padding-bottom:80px">
 
   <!-- TEST SELECTOR -->
-  <div class="grid-2" style="margin-bottom:24px">
-    <button class="test-sel-btn active" onclick="showTest(1)" id="spk-btn-1">
-      <div class="t-num">Test 01 — Example Results</div>
-      <div class="t-name">Technology & Daily Life</div>
-      <div class="t-meta">FC 6.5 · LR 6.0 · GRA 5.5 · Pron 6.0 — Band 6.0 (sample)</div>
+  <div class="spk-grid-3" style="margin-bottom:24px">
+    <button class="test-sel-btn active" onclick="selectTest(1)" id="spk-btn-1">
+      <div class="t-num">Test 01</div>
+      <div class="t-name">Personal Life &amp; Future Plans</div>
+      <div class="t-meta">🎤 Voice · AI Feedback</div>
     </button>
-    <button class="test-sel-btn" onclick="showTest(2)" id="spk-btn-2">
+    <button class="test-sel-btn" onclick="selectTest(2)" id="spk-btn-2">
       <div class="t-num">Test 02</div>
-      <div class="t-name">Travel & Places</div>
-      <div class="t-meta">🤖 AI Feedback — Write your responses</div>
+      <div class="t-name">Travel &amp; Environment</div>
+      <div class="t-meta">🎤 Voice · AI Feedback</div>
+    </button>
+    <button class="test-sel-btn" onclick="selectTest(3)" id="spk-btn-3">
+      <div class="t-num">Test 03</div>
+      <div class="t-name">Technology &amp; Society</div>
+      <div class="t-meta">🎤 Voice · AI Feedback</div>
     </button>
   </div>
 
-  <!-- TEST 01 RESULTS -->
-  <div id="speaking-test-1">
+  <!-- PRE-TEST INFO -->
+  <div id="spk-pretest"></div>
 
-    <div class="card card-lg" style="margin-bottom:20px">
-      <div class="flex items-center justify-between" style="margin-bottom:16px">
-        <h3>Speaking Test 01 — Sample Results</h3>
-        <span class="badge badge-primary">Example · Band 6.0</span>
-      </div>
+  <!-- RECORDING INTERFACE -->
+  <div id="spk-test-zone" class="hidden"></div>
 
-      <div class="score-mini-grid">
-        <div class="score-mini" style="background:var(--primary-light)">
-          <div class="sm-tag">FC</div>
-          <div class="sm-val" style="color:var(--primary)">6.5</div>
-          <div class="sm-name">Fluency</div>
-        </div>
-        <div class="score-mini" style="background:var(--primary-light)">
-          <div class="sm-tag">LR</div>
-          <div class="sm-val" style="color:var(--primary)">6.0</div>
-          <div class="sm-name">Lexical Resource</div>
-        </div>
-        <div class="score-mini" style="background:var(--warning-light)">
-          <div class="sm-tag">GRA</div>
-          <div class="sm-val" style="color:var(--warning)">5.5</div>
-          <div class="sm-name">Grammar</div>
-        </div>
-        <div class="score-mini" style="background:#F5F3FF">
-          <div class="sm-tag">Pron</div>
-          <div class="sm-val" style="color:var(--purple)">6.0</div>
-          <div class="sm-name">Pronunciation</div>
-        </div>
-      </div>
+  <!-- RESULTS -->
+  <div id="spk-results" class="hidden" style="margin-top:8px"></div>
 
-      <div class="card card-sm" style="background:var(--warning-light);border-color:var(--warning);margin-bottom:16px">
-        <p style="color:#92400E;font-size:.875rem">⚠️ <strong>Priority — Grammar (GRA 5.5):</strong> Fix stative verbs, countable/uncountable nouns, tense consistency. Reaching GRA 6.5 → overall Band <strong>6.0 → 6.5</strong>.</p>
-      </div>
-
-      <div class="grid-2">
-        <div>
-          <div style="font-size:.8125rem;font-weight:700;color:var(--success-dark);margin-bottom:8px">✅ Strengths</div>
-          <ul style="display:flex;flex-direction:column;gap:6px">
-            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">Good use of discourse markers (however, on the other hand)</li>
-            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">Varied sentence structures attempted</li>
-            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">Clear pronunciation on familiar vocabulary</li>
-            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">Maintained fluency with minimal long pauses</li>
-          </ul>
-        </div>
-        <div>
-          <div style="font-size:.8125rem;font-weight:700;color:var(--danger);margin-bottom:8px">⚠️ To Fix</div>
-          <ul style="display:flex;flex-direction:column;gap:6px">
-            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">"I am agree" → <em>I agree</em></li>
-            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">"Informations" → <em>Information</em> (uncountable)</li>
-            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">"Since 3 years" → <em>For 3 years</em></li>
-            <li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">Present tense with past time markers</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- TEST 02 — AI INTERACTIVE -->
-  <div id="speaking-test-2" class="hidden">
-
-    <div class="card card-sm" style="background:var(--primary-pale);border-color:var(--primary-light);margin-bottom:20px">
-      <p style="font-size:.875rem;color:var(--primary-dark)">🤖 <strong>AI Speaking Simulation</strong> — Write your answers as if you were speaking naturally. Aim for 3–5 sentences per answer. The AI will evaluate your Fluency, Vocabulary, Grammar and Pronunciation patterns.</p>
-    </div>
-
-    <!-- PART 1 -->
-    <div class="part-card">
-      <div class="part-header">
-        <span class="part-tag p1">Part 1</span>
-        <span style="font-size:.875rem;color:var(--text-muted)">Interview — Travel & Daily Life</span>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:16px">
-        <div>
-          <p style="font-weight:600;margin-bottom:6px">1. Do you enjoy travelling? Why or why not?</p>
-          <textarea class="spk-answer" id="spk-q1" placeholder="Write your answer here (3–5 sentences)..." rows="3" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.9rem;font-family:inherit;resize:vertical"></textarea>
-        </div>
-        <div>
-          <p style="font-weight:600;margin-bottom:6px">2. How often do you travel, and where do you usually go?</p>
-          <textarea class="spk-answer" id="spk-q2" placeholder="Write your answer here..." rows="3" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.9rem;font-family:inherit;resize:vertical"></textarea>
-        </div>
-        <div>
-          <p style="font-weight:600;margin-bottom:6px">3. What is your favourite type of holiday — city trips, beach holidays or nature retreats?</p>
-          <textarea class="spk-answer" id="spk-q3" placeholder="Write your answer here..." rows="3" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.9rem;font-family:inherit;resize:vertical"></textarea>
-        </div>
-      </div>
-    </div>
-
-    <!-- PART 2 -->
-    <div class="part-card">
-      <div class="part-header">
-        <span class="part-tag p2">Part 2</span>
-        <span style="font-size:.875rem;color:var(--text-muted)">Long Turn — Cue Card</span>
-      </div>
-      <div class="cue-card" style="background:var(--warning-light);border-left:3px solid var(--warning);border-radius:var(--r);padding:16px 20px;margin-bottom:16px">
-        <h4 style="margin-bottom:10px">Describe a place you would like to visit in the future.</h4>
-        <ul style="display:flex;flex-direction:column;gap:6px;font-size:.9rem">
-          <li>Where this place is</li>
-          <li>Why you would like to go there</li>
-          <li>What you would do there</li>
-          <li><strong>And explain how visiting this place would affect you</strong></li>
-        </ul>
-        <div style="margin-top:12px;font-size:.8rem;color:#92400E">⏱ Write 8–12 sentences — equivalent to 1–2 minutes of speech</div>
-      </div>
-      <textarea class="spk-answer" id="spk-q4" placeholder="Describe the place in detail. Aim for 8–12 sentences..." rows="6" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.9rem;font-family:inherit;resize:vertical"></textarea>
-    </div>
-
-    <!-- PART 3 -->
-    <div class="part-card">
-      <div class="part-header">
-        <span class="part-tag p3">Part 3</span>
-        <span style="font-size:.875rem;color:var(--text-muted)">Discussion — Travel & Society</span>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:16px">
-        <div>
-          <p style="font-weight:600;margin-bottom:6px">5. Do you think travelling abroad is important for young people's personal development?</p>
-          <textarea class="spk-answer" id="spk-q5" placeholder="Discuss both sides and give your opinion..." rows="4" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.9rem;font-family:inherit;resize:vertical"></textarea>
-        </div>
-        <div>
-          <p style="font-weight:600;margin-bottom:6px">6. Some people argue that mass tourism is destroying the places it promotes. To what extent do you agree?</p>
-          <textarea class="spk-answer" id="spk-q6" placeholder="Discuss this view with examples..." rows="4" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.9rem;font-family:inherit;resize:vertical"></textarea>
-        </div>
-        <div>
-          <p style="font-weight:600;margin-bottom:6px">7. How has social media changed the way people choose where to travel?</p>
-          <textarea class="spk-answer" id="spk-q7" placeholder="Give your view with examples..." rows="4" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-size:.9rem;font-family:inherit;resize:vertical"></textarea>
-        </div>
-      </div>
-    </div>
-
-    <!-- AI FEEDBACK BUTTON -->
-    <div style="text-align:center;margin:24px 0">
-      <button class="btn btn-primary btn-lg" id="spk-ai-btn" onclick="getSpeakingFeedback()">🤖 Get AI Feedback</button>
-    </div>
-
-    <!-- AI FEEDBACK RESULT -->
-    <div id="spk-ai-result" class="hidden"></div>
-
-  </div>
-
-  <!-- TIP: after test 01 static results -->
-  <div class="card card-sm" style="background:var(--primary-pale);border-color:var(--primary-light);margin:20px 0" id="spk-tip" style="display:none">
-    <p style="font-size:.875rem;color:var(--primary-dark)">💡 <strong>Try Test 02</strong> for real AI feedback on your writing — scored across all 4 IELTS speaking criteria.</p>
-  </div>
-
-  <!-- GRAMMAR ERROR TABLE -->
-  <div class="card">
+  <!-- GRAMMAR TABLE -->
+  <div class="card" style="margin-top:32px">
     <h3 style="margin-bottom:16px">📚 Grammar Revision — Recurring Speaking Errors</h3>
     <div style="overflow-x:auto">
       <table class="error-table">
         <thead>
-          <tr>
-            <th>❌ Incorrect</th>
-            <th>✅ Correct</th>
-            <th>Error Type</th>
-          </tr>
+          <tr><th>❌ Incorrect</th><th>✅ Correct</th><th>Error Type</th></tr>
         </thead>
         <tbody>
-          <tr>
-            <td class="incorrect-cell">"I am agree"</td>
-            <td class="correct-cell">"I agree"</td>
-            <td>Stative verb</td>
-          </tr>
-          <tr>
-            <td class="incorrect-cell">"Since 3 years"</td>
-            <td class="correct-cell">"For 3 years"</td>
-            <td>Since vs For</td>
-          </tr>
-          <tr>
-            <td class="incorrect-cell">"Informations are..."</td>
-            <td class="correct-cell">"Information is..."</td>
-            <td>Uncountable noun</td>
-          </tr>
-          <tr>
-            <td class="incorrect-cell">"I have went there"</td>
-            <td class="correct-cell">"I went there"</td>
-            <td>Past participle</td>
-          </tr>
-          <tr>
-            <td class="incorrect-cell">"More better"</td>
-            <td class="correct-cell">"Better"</td>
-            <td>Double comparative</td>
-          </tr>
-          <tr>
-            <td class="incorrect-cell">"The people is..."</td>
-            <td class="correct-cell">"People are..."</td>
-            <td>Plural agreement</td>
-          </tr>
+          <tr><td class="incorrect-cell">"I am agree"</td><td class="correct-cell">"I agree"</td><td>Stative verb</td></tr>
+          <tr><td class="incorrect-cell">"Since 3 years"</td><td class="correct-cell">"For 3 years"</td><td>Since vs For</td></tr>
+          <tr><td class="incorrect-cell">"Informations are..."</td><td class="correct-cell">"Information is..."</td><td>Uncountable noun</td></tr>
+          <tr><td class="incorrect-cell">"I have went there"</td><td class="correct-cell">"I went there"</td><td>Past participle</td></tr>
+          <tr><td class="incorrect-cell">"More better"</td><td class="correct-cell">"Better"</td><td>Double comparative</td></tr>
+          <tr><td class="incorrect-cell">"The people is..."</td><td class="correct-cell">"People are..."</td><td>Plural agreement</td></tr>
+          <tr><td class="incorrect-cell">"I didn't understood"</td><td class="correct-cell">"I didn't understand"</td><td>Double past</td></tr>
+          <tr><td class="incorrect-cell">"Depends of"</td><td class="correct-cell">"Depends on"</td><td>Preposition</td></tr>
         </tbody>
       </table>
     </div>
@@ -313,82 +250,584 @@
 </div>
 
 <script>
-function showTest(n) {
-  document.getElementById('speaking-test-1').classList.toggle('hidden', n!==1);
-  document.getElementById('speaking-test-2').classList.toggle('hidden', n!==2);
-  document.getElementById('spk-btn-1').classList.toggle('active', n===1);
-  document.getElementById('spk-btn-2').classList.toggle('active', n===2);
-  const tip = document.getElementById('spk-tip');
-  if (tip) tip.style.display = n===1 ? 'block' : 'none';
+const SPEAKING_TESTS = {
+  1: {
+    topic: 'Personal Life & Future Plans',
+    part1: { questions: [
+      'Can you tell me a little about where you grew up?',
+      'Do you currently work or are you a student? Tell me more about that.',
+      'What do you enjoy doing in your free time?',
+      'How important is music to you in your everyday life?'
+    ]},
+    part2: { cue: {
+      instruction: 'Describe a person who has had a significant influence on your life.',
+      bullets: [
+        'Who this person is',
+        'How you know them',
+        'What influence they have had on you',
+        'And explain why you consider this influence to be positive'
+      ]
+    }, maxSpeak: 120 },
+    part3: { questions: [
+      'What qualities do you think make a good role model for young people?',
+      'Do you think celebrities are effective role models in modern society? Why or why not?',
+      'How has the concept of personal success changed over the past few decades?',
+      'Should schools place more emphasis on teaching young people about influential historical figures?'
+    ]}
+  },
+  2: {
+    topic: 'Travel & Environment',
+    part1: { questions: [
+      'Do you enjoy travelling? Why or why not?',
+      'How often do you travel, and where do you usually go?',
+      'Do you prefer city trips, beach holidays, or nature retreats, and why?',
+      'Have you ever visited a place that really disappointed you? What happened?'
+    ]},
+    part2: { cue: {
+      instruction: 'Describe a journey or trip that you remember particularly well.',
+      bullets: [
+        'Where you went',
+        'Who you travelled with',
+        'What you did during the trip',
+        'And explain why this journey is particularly memorable to you'
+      ]
+    }, maxSpeak: 120 },
+    part3: { questions: [
+      'Do you think international travel is important for young people\'s personal development?',
+      'Some argue that mass tourism damages the very places it promotes — do you agree?',
+      'How has social media changed the way people choose travel destinations?',
+      'Should governments limit tourist numbers at sensitive natural or cultural sites?'
+    ]}
+  },
+  3: {
+    topic: 'Technology & Society',
+    part1: { questions: [
+      'How important is the internet in your daily life?',
+      'Do you prefer communicating online or face to face? Why?',
+      'Approximately how much time do you spend on your smartphone each day?',
+      'Have you ever experienced a serious technology failure? What happened?'
+    ]},
+    part2: { cue: {
+      instruction: 'Describe a time when technology helped you solve a problem or achieve something important.',
+      bullets: [
+        'What the problem or situation was',
+        'What technology you used',
+        'How the technology helped you',
+        'And explain whether you think you could have achieved the same result without it'
+      ]
+    }, maxSpeak: 120 },
+    part3: { questions: [
+      'Do you think artificial intelligence will have a positive or negative overall impact on employment?',
+      'How has social media changed the way people form and maintain personal relationships?',
+      'Some believe technology is making people less creative — to what extent do you agree?',
+      'What responsibilities do technology companies have towards their users and towards society?'
+    ]}
+  }
+};
+
+// State
+let currentSpeakingTest = 1;
+let currentPart = 0;
+let currentQIdx = 0;
+let recordings = new Array(9).fill(null); // {blob, mimeType, duration}
+let mediaRecorder = null;
+let recordingChunks = [];
+let recIntervalId = null;
+let recSeconds = 0;
+let mediaStream = null;
+let currentMimeType = '';
+let prepIntervalId = null;
+let prepSecondsLeft = 60;
+let prepActive = false;
+
+// ── Test selection ──────────────────────────────────────────────────────────
+
+function selectTest(n) {
+  if (mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+  currentSpeakingTest = n;
+  currentPart = 0;
+  currentQIdx = 0;
+  recordings = new Array(9).fill(null);
+  prepActive = false; prepSecondsLeft = 60;
+  [1,2,3].forEach(i => document.getElementById('spk-btn-'+i).classList.toggle('active', i===n));
+  document.getElementById('spk-test-zone').classList.add('hidden');
+  document.getElementById('spk-results').classList.add('hidden');
+  renderPretest(n);
 }
 
-async function getSpeakingFeedback() {
-  const questions = [
-    'Do you enjoy travelling? Why or why not?',
-    'How often do you travel, and where do you usually go?',
-    'What is your favourite type of holiday — city trips, beach holidays or nature retreats?',
-    'Describe a place you would like to visit in the future.',
-    'Do you think travelling abroad is important for young people\'s personal development?',
-    'Some people argue that mass tourism is destroying the places it promotes. To what extent do you agree?',
-    'How has social media changed the way people choose where to travel?'
+function renderPretest(n) {
+  const t = SPEAKING_TESTS[n];
+  const el = document.getElementById('spk-pretest');
+  el.classList.remove('hidden');
+  el.innerHTML = `
+    <div class="card card-lg">
+      <div class="flex items-center justify-between" style="margin-bottom:16px">
+        <h3>Test 0${n} — ${t.topic}</h3>
+        <span class="badge badge-primary">🎤 Voice Test</span>
+      </div>
+      <div class="card card-sm" style="background:var(--primary-pale);border-color:var(--primary-light);margin-bottom:20px">
+        <p style="font-size:.875rem;color:var(--primary-dark)">
+          🦜 <strong>How it works:</strong> Record your spoken answers for each question. Gemini AI will transcribe your voice and evaluate Fluency, Vocabulary, Grammar and Pronunciation — just like a real IELTS examiner. Make sure your microphone is working before you start.
+        </p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px">
+        <div style="padding:14px;background:var(--surface);border-radius:var(--r);font-size:.875rem">
+          <div style="font-weight:700;margin-bottom:4px">🗣 Part 1 — Interview</div>
+          <div style="color:var(--text-muted)">4 questions about personal topics</div>
+        </div>
+        <div style="padding:14px;background:var(--surface);border-radius:var(--r);font-size:.875rem">
+          <div style="font-weight:700;margin-bottom:4px">📋 Part 2 — Long Turn</div>
+          <div style="color:var(--text-muted)">1 cue card · 1 min prep + 2 min speech</div>
+        </div>
+        <div style="padding:14px;background:var(--surface);border-radius:var(--r);font-size:.875rem">
+          <div style="font-weight:700;margin-bottom:4px">💬 Part 3 — Discussion</div>
+          <div style="color:var(--text-muted)">4 abstract analytical questions</div>
+        </div>
+        <div style="padding:14px;background:var(--primary-pale);border-radius:var(--r);font-size:.875rem">
+          <div style="font-weight:700;color:var(--primary);margin-bottom:4px">🤖 AI Evaluation</div>
+          <div style="color:var(--text-muted)">FC · LR · GRA · Pronunciation</div>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <p style="font-size:.8125rem;color:var(--text-muted);margin-bottom:16px">
+          ⚠️ You will be asked for microphone permission on your first recording.
+        </p>
+        <button class="btn btn-primary btn-lg" onclick="startTest()">🎤 Start Test 0${n}</button>
+      </div>
+    </div>`;
+}
+
+function startTest() {
+  currentPart = 1;
+  currentQIdx = 0;
+  document.getElementById('spk-pretest').classList.add('hidden');
+  document.getElementById('spk-test-zone').classList.remove('hidden');
+  renderTestZone();
+}
+
+function backToPretest() {
+  if (mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+  document.getElementById('spk-test-zone').classList.add('hidden');
+  renderPretest(currentSpeakingTest);
+  document.getElementById('spk-pretest').classList.remove('hidden');
+}
+
+// ── Render recording interface ──────────────────────────────────────────────
+
+function getRecordingIndex(part, qIdx) {
+  if (part === 1) return qIdx;
+  if (part === 2) return 4;
+  return 5 + qIdx;
+}
+
+function getAllQuestions(testId) {
+  const t = SPEAKING_TESTS[testId];
+  const qs = [];
+  t.part1.questions.forEach((q, i) => qs.push({ question: q, part: 1, qIdx: i }));
+  qs.push({ question: t.part2.cue.instruction, part: 2, qIdx: 0 });
+  t.part3.questions.forEach((q, i) => qs.push({ question: q, part: 3, qIdx: i }));
+  return qs;
+}
+
+function renderTestZone() {
+  const t = SPEAKING_TESTS[currentSpeakingTest];
+  const el = document.getElementById('spk-test-zone');
+  const recIdx = getRecordingIndex(currentPart, currentQIdx);
+  const rec = recordings[recIdx];
+  const isRecording = mediaRecorder && mediaRecorder.state === 'recording';
+  const isPart2 = (currentPart === 2);
+
+  // Part labels
+  const parts = [
+    { label:'Part 1 — Interview', cls:'p1' },
+    { label:'Part 2 — Long Turn', cls:'p2' },
+    { label:'Part 3 — Discussion', cls:'p3' }
   ];
-  const answers = [1,2,3,4,5,6,7].map(i => (document.getElementById('spk-q'+i)?.value || '').trim());
-  const filled = answers.filter(a => a.length > 10).length;
-  if (filled < 4) {
-    alert('Please answer at least 4 questions before requesting AI feedback.');
-    return;
+  const { label:partLabel, cls:partClass } = parts[currentPart-1];
+  let qText = isPart2
+    ? t.part2.cue.instruction
+    : currentPart === 1
+      ? t.part1.questions[currentQIdx]
+      : t.part3.questions[currentQIdx];
+  const totalInPart = isPart2 ? 1 : currentPart === 1 ? t.part1.questions.length : t.part3.questions.length;
+  const qLabel = isPart2 ? 'Cue Card' : `Question ${currentQIdx+1} of ${totalInPart}`;
+
+  // Part progress pills
+  const pills = [1,2,3].map(p => {
+    const cls = p < currentPart ? 'done' : p === currentPart ? 'active' : 'pending';
+    return `<div class="part-step ${cls}">${cls==='done'?'✓ ':''}Part ${p}</div>`;
+  }).join('');
+
+  // Record button state
+  let btnCls = 'record-btn-main', btnIcon = '🎤';
+  let statusHTML = '';
+  if (isRecording) {
+    btnCls += ' recording'; btnIcon = '⏹';
+    statusHTML = `<div class="rec-status" style="color:#EF4444">Recording — speak clearly and naturally</div>
+      <div class="rec-timer-display" id="spk-rec-display">0:00</div>`;
+  } else if (rec) {
+    btnCls += ' done'; btnIcon = '✓';
+    const m = Math.floor(rec.duration/60), s = String(rec.duration%60).padStart(2,'0');
+    statusHTML = `<div class="rec-status" style="color:var(--success)">✓ Recorded (${m}:${s})</div>
+      <button class="rerecord-btn" onclick="reRecord()">🔄 Re-record</button>`;
+  } else {
+    statusHTML = `<div class="rec-status" style="color:var(--text-muted)">Tap the microphone to start</div>`;
   }
-  const btn = document.getElementById('spk-ai-btn');
-  const result = document.getElementById('spk-ai-result');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spinner" style="border-color:rgba(255,255,255,.3);border-top-color:white;width:16px;height:16px;display:inline-block;margin-right:8px"></div> Analysing...';
-  result.classList.remove('hidden');
-  result.innerHTML = '<div class="card" style="text-align:center;padding:32px"><div class="spinner" style="margin:0 auto 12px"></div><p style="color:var(--text-muted)">AI is evaluating your speaking responses...</p></div>';
+
+  // Cue card
+  let cueHTML = '';
+  if (isPart2) {
+    const bullets = t.part2.cue.bullets.map(b=>`<li>• ${b}</li>`).join('');
+    cueHTML = `<div class="cue-card-voice">
+      <h4>${t.part2.cue.instruction}</h4>
+      <ul>${bullets}</ul>
+      <div style="margin-top:10px;font-size:.8rem;color:#92400E">⏱ 1 minute to prepare · speak for up to 2 minutes</div>
+    </div>`;
+  }
+
+  // Prep zone (Part 2 only, when no recording yet and not currently recording)
+  let prepHTML = '';
+  if (isPart2 && !rec && !isRecording) {
+    if (!prepActive) {
+      prepHTML = `<div class="prep-zone" style="margin-bottom:20px">
+        <div style="font-size:.875rem;color:var(--text-muted);margin-bottom:10px">Take 1 minute to organise your ideas before recording.</div>
+        <button class="btn" onclick="startPrepTimer()" style="font-size:.875rem">⏱ Start 1-min Preparation Timer</button>
+      </div>`;
+    } else {
+      prepHTML = `<div class="prep-zone" style="margin-bottom:20px">
+        <div style="font-size:.8rem;color:var(--text-muted)">Preparation time remaining</div>
+        <div class="prep-countdown" id="spk-prep-display">${formatTime(prepSecondsLeft)}</div>
+        <button class="rerecord-btn" onclick="skipPrep()">Skip → Start Recording Now</button>
+      </div>`;
+    }
+  }
+
+  // Navigation
+  const isLastQ = currentPart === 3 && currentQIdx === t.part3.questions.length - 1;
+  const doneCount = recordings.filter(Boolean).length;
+
+  let navL = currentPart===1&&currentQIdx===0
+    ? `<button class="spk-nav-prev" onclick="backToPretest()">← Back</button>`
+    : `<button class="spk-nav-prev" onclick="prevQuestion()">← Previous</button>`;
+
+  let navR = isLastQ
+    ? `<button class="btn btn-primary" onclick="checkAndSubmit()" style="font-size:.9375rem;padding:10px 22px">🤖 Get AI Feedback</button>`
+    : `<button class="btn btn-primary" onclick="nextQuestion()" style="font-size:.9375rem;padding:10px 22px">Next →</button>`;
+
+  // Progress dots
+  const dots = Array.from({length:9},(_,i)=>{
+    const done=!!recordings[i], active=i===recIdx;
+    const bg = active?'var(--primary)':done?'var(--success)':'var(--surface)';
+    const col = (active||done)?'white':'var(--text-muted)';
+    return `<div class="rec-dot" style="background:${bg};color:${col};border:${active?'2px solid var(--primary-dark)':'none'}">${i+1}</div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="voice-zone">
+      <div class="part-progress">${pills}</div>
+      <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:14px">
+        <span class="part-tag ${partClass}">${partLabel}</span>
+        <span class="question-label">${qLabel}</span>
+      </div>
+      <div class="question-text">${escQ(qText)}</div>
+      <button class="tts-btn" onclick="readQuestion(${JSON.stringify(qText)})">🔊 Hear question</button>
+      ${cueHTML}
+      ${prepHTML}
+      <div id="spk-mic-error" class="mic-error hidden">
+        🚫 Microphone access denied. Please allow microphone access in your browser settings and reload the page.
+      </div>
+      <button class="${btnCls}" id="spk-rec-btn" onclick="toggleRecording()"><span>${btnIcon}</span></button>
+      <div id="spk-rec-status" style="margin-top:8px">${statusHTML}</div>
+      <div class="spk-nav" style="margin-top:24px">${navL}${navR}</div>
+    </div>
+    <div class="card card-sm" style="margin-top:12px;padding:12px 16px">
+      <div style="font-size:.8rem;font-weight:700;color:var(--text-muted);margin-bottom:8px">Overall progress</div>
+      <div class="rec-progress">${dots}</div>
+      <div style="font-size:.75rem;color:var(--text-muted);margin-top:8px">${doneCount}/9 responses recorded · <button onclick="checkAndSubmit()" style="background:none;border:none;color:var(--primary);cursor:pointer;font-size:.75rem;font-weight:600;padding:0">Submit for AI feedback →</button></div>
+    </div>`;
+
+  if (isRecording) startRecordingTimerDisplay();
+  if (isPart2 && prepActive && !rec && !isRecording) startPrepCountdown();
+}
+
+function escQ(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ── Navigation ──────────────────────────────────────────────────────────────
+
+function nextQuestion() {
+  const t = SPEAKING_TESTS[currentSpeakingTest];
+  if (currentPart === 1) {
+    if (currentQIdx < t.part1.questions.length - 1) { currentQIdx++; }
+    else { currentPart = 2; currentQIdx = 0; prepActive = false; prepSecondsLeft = 60; }
+  } else if (currentPart === 2) {
+    currentPart = 3; currentQIdx = 0;
+  } else {
+    if (currentQIdx < t.part3.questions.length - 1) currentQIdx++;
+  }
+  renderTestZone();
+}
+
+function prevQuestion() {
+  const t = SPEAKING_TESTS[currentSpeakingTest];
+  if (currentPart === 1) {
+    if (currentQIdx > 0) currentQIdx--;
+  } else if (currentPart === 2) {
+    currentPart = 1; currentQIdx = t.part1.questions.length - 1;
+    clearInterval(prepIntervalId); prepActive = false;
+  } else {
+    if (currentQIdx > 0) { currentQIdx--; }
+    else { currentPart = 2; currentQIdx = 0; }
+  }
+  renderTestZone();
+}
+
+// ── Prep timer ──────────────────────────────────────────────────────────────
+
+function startPrepTimer() {
+  prepActive = true;
+  prepSecondsLeft = 60;
+  renderTestZone();
+}
+
+function startPrepCountdown() {
+  clearInterval(prepIntervalId);
+  prepIntervalId = setInterval(() => {
+    prepSecondsLeft--;
+    const el = document.getElementById('spk-prep-display');
+    if (el) el.textContent = formatTime(prepSecondsLeft);
+    if (prepSecondsLeft <= 0) {
+      clearInterval(prepIntervalId);
+      prepActive = false;
+      renderTestZone();
+    }
+  }, 1000);
+}
+
+function skipPrep() {
+  clearInterval(prepIntervalId);
+  prepActive = false;
+  prepSecondsLeft = 0;
+  renderTestZone();
+}
+
+function formatTime(s) {
+  return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+}
+
+// ── Recording ───────────────────────────────────────────────────────────────
+
+function toggleRecording() {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    stopRecording();
+  } else {
+    startRecording();
+  }
+}
+
+async function startRecording() {
+  const errEl = document.getElementById('spk-mic-error');
+  if (errEl) errEl.classList.add('hidden');
+
+  try {
+    if (!mediaStream || mediaStream.getTracks().every(t => t.readyState === 'ended')) {
+      mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    }
+
+    currentMimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+      ? 'audio/webm;codecs=opus'
+      : MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')
+        ? 'audio/ogg;codecs=opus'
+        : 'audio/webm';
+
+    recordingChunks = [];
+    recSeconds = 0;
+    mediaRecorder = new MediaRecorder(mediaStream, { mimeType: currentMimeType });
+
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordingChunks.push(e.data); };
+
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recordingChunks, { type: currentMimeType });
+      const idx = getRecordingIndex(currentPart, currentQIdx);
+      recordings[idx] = { blob, mimeType: currentMimeType, duration: recSeconds };
+      stopRecordingTimerDisplay();
+      renderTestZone();
+    };
+
+    mediaRecorder.start(100);
+    recSeconds = 0;
+    startRecordingTimerDisplay();
+
+    // Update button immediately without full re-render
+    const btn = document.getElementById('spk-rec-btn');
+    if (btn) { btn.className = 'record-btn-main recording'; btn.querySelector('span').textContent = '⏹'; }
+    const st = document.getElementById('spk-rec-status');
+    if (st) st.innerHTML = `<div class="rec-status" style="color:#EF4444">Recording — speak clearly and naturally</div><div class="rec-timer-display" id="spk-rec-display">0:00</div>`;
+
+    // Auto-stop for Part 2
+    if (currentPart === 2) {
+      setTimeout(() => {
+        if (mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+      }, SPEAKING_TESTS[currentSpeakingTest].part2.maxSpeak * 1000);
+    }
+  } catch (err) {
+    console.error('Microphone error:', err);
+    const errEl2 = document.getElementById('spk-mic-error');
+    if (errEl2) errEl2.classList.remove('hidden');
+  }
+}
+
+function stopRecording() {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    mediaRecorder.stop();
+  }
+}
+
+function reRecord() {
+  const idx = getRecordingIndex(currentPart, currentQIdx);
+  recordings[idx] = null;
+  renderTestZone();
+}
+
+function startRecordingTimerDisplay() {
+  clearInterval(recIntervalId);
+  recIntervalId = setInterval(() => {
+    recSeconds++;
+    const el = document.getElementById('spk-rec-display');
+    if (el) el.textContent = formatTime(recSeconds);
+  }, 1000);
+}
+
+function stopRecordingTimerDisplay() {
+  clearInterval(recIntervalId);
+  recIntervalId = null;
+}
+
+// ── TTS ─────────────────────────────────────────────────────────────────────
+
+function readQuestion(text) {
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-GB'; u.rate = 0.9;
+  speechSynthesis.speak(u);
+}
+
+// ── Submit ──────────────────────────────────────────────────────────────────
+
+function checkAndSubmit() {
+  const missing = recordings.map((r,i) => r ? null : i+1).filter(Boolean);
+  if (missing.length > 0) {
+    const ok = confirm(`You haven't recorded question${missing.length>1?'s':''} ${missing.join(', ')}. Submit with your recorded responses only?`);
+    if (!ok) return;
+  }
+  submitTest();
+}
+
+async function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function submitTest() {
+  const t = SPEAKING_TESTS[currentSpeakingTest];
+  const allQs = getAllQuestions(currentSpeakingTest);
+
+  document.getElementById('spk-test-zone').classList.add('hidden');
+  const resultsEl = document.getElementById('spk-results');
+  resultsEl.classList.remove('hidden');
+
+  function showProgress(step, total, msg) {
+    const pct = Math.round(step/total*100);
+    resultsEl.innerHTML = `
+      <div class="card card-lg" style="text-align:center;padding:40px 32px">
+        <div class="spinner" style="margin:0 auto 16px"></div>
+        <h3 style="margin-bottom:8px">Analysing your speaking test...</h3>
+        <p style="color:var(--text-muted);margin-bottom:16px">${msg}</p>
+        <div class="ai-progress-bar"><div class="ai-progress-fill" style="width:${pct}%"></div></div>
+        <div style="font-size:.8125rem;color:var(--text-muted)">${step} / ${total} steps complete</div>
+      </div>`;
+  }
+
+  showProgress(0, allQs.length + 1, 'Starting transcription...');
+
+  const qas = [];
+  for (let i = 0; i < allQs.length; i++) {
+    const qi = allQs[i];
+    const rec = recordings[i];
+    showProgress(i, allQs.length + 1, `Transcribing response ${i+1} of ${allQs.length}...`);
+
+    if (!rec) {
+      qas.push({ question: qi.question, part: qi.part, transcript: '(no recording provided)', pronunciationNotes: 'Question was skipped' });
+      continue;
+    }
+
+    try {
+      const audioData = await blobToBase64(rec.blob);
+      const res = await fetch('/api/speaking-transcribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ audioData, mimeType: rec.mimeType, question: qi.question, part: qi.part })
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const d = await res.json();
+      qas.push({ question: qi.question, part: qi.part, transcript: d.transcript || '', pronunciationNotes: d.pronunciationNotes || '' });
+    } catch (err) {
+      qas.push({ question: qi.question, part: qi.part, transcript: '(transcription failed)', pronunciationNotes: 'Error: ' + err.message });
+    }
+  }
+
+  showProgress(allQs.length, allQs.length + 1, 'Generating IELTS band score evaluation...');
 
   try {
     const res = await fetch('/api/speaking-feedback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ topic: 'Travel & Places', questions, answers })
+      body: JSON.stringify({ topic: t.topic, qas })
     });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-    renderSpeakingFeedback(data);
-    saveSpeakingScore(data);
+    renderSpeakingFeedback(data, currentSpeakingTest);
+    saveSpeakingScore(data, currentSpeakingTest);
   } catch (err) {
-    result.innerHTML = '<div class="card card-sm" style="border-color:var(--danger-light);background:var(--danger-light)"><p style="color:var(--danger);font-size:.875rem">⚠️ AI feedback unavailable. Please try again.<br><em>' + err.message + '</em></p></div>';
+    resultsEl.innerHTML = `
+      <div class="card card-sm" style="border-color:var(--danger);background:var(--danger-light)">
+        <p style="color:var(--danger);font-size:.875rem">⚠️ AI evaluation failed. Please try again.<br><em>${err.message}</em></p>
+        <button class="btn" onclick="document.getElementById('spk-test-zone').classList.remove('hidden');document.getElementById('spk-results').classList.add('hidden');" style="margin-top:12px">← Back to test</button>
+      </div>`;
   }
-  btn.disabled = false;
-  btn.innerHTML = '🤖 Get AI Feedback';
 }
 
-function renderSpeakingFeedback(data) {
-  const result = document.getElementById('spk-ai-result');
+function renderSpeakingFeedback(data, testId) {
   const criteriaHTML = [
-    { key: 'fc', label: 'Fluency & Coherence', color: 'var(--primary)', bg: 'var(--primary-light)' },
-    { key: 'lr', label: 'Lexical Resource', color: 'var(--primary)', bg: 'var(--primary-light)' },
-    { key: 'gra', label: 'Grammar Range', color: 'var(--warning)', bg: 'var(--warning-light)' },
-    { key: 'pron', label: 'Pronunciation', color: 'var(--purple)', bg: '#F5F3FF' }
+    { key:'fc',   label:'Fluency & Coherence', color:'var(--primary)', bg:'var(--primary-light)' },
+    { key:'lr',   label:'Lexical Resource',     color:'var(--primary)', bg:'var(--primary-light)' },
+    { key:'gra',  label:'Grammar Range',         color:'var(--warning)', bg:'var(--warning-light)' },
+    { key:'pron', label:'Pronunciation',          color:'var(--purple)',  bg:'#F5F3FF' }
   ].map(c => `
     <div class="score-mini" style="background:${c.bg}">
       <div class="sm-tag">${c.key.toUpperCase()}</div>
-      <div class="sm-val" style="color:${c.color}">${data[c.key] || '—'}</div>
+      <div class="sm-val" style="color:${c.color}">${data[c.key]||'—'}</div>
       <div class="sm-name">${c.label}</div>
     </div>`).join('');
 
-  const strengthsHTML = (data.strengths || []).map(s =>
-    `<li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">${s}</li>`).join('');
-  const fixHTML = (data.toFix || []).map(f =>
-    `<li style="font-size:.875rem;color:var(--text);padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">${f}</li>`).join('');
+  const strengthsHTML = (data.strengths||[]).map(s =>
+    `<li style="font-size:.875rem;padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">${s}</li>`).join('');
+  const fixHTML = (data.toFix||[]).map(f =>
+    `<li style="font-size:.875rem;padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">${f}</li>`).join('');
 
-  result.innerHTML = `
-    <div class="card card-lg" style="margin-top:8px">
+  document.getElementById('spk-results').innerHTML = `
+    <div class="card card-lg">
       <div class="flex items-center justify-between" style="margin-bottom:16px">
-        <h3>Speaking Test 02 — AI Results</h3>
-        <span class="badge badge-primary">Band ${data.overall || '—'}</span>
+        <h3>Speaking Test 0${testId} — AI Results</h3>
+        <span class="badge badge-primary">Band ${data.overall||'—'}</span>
       </div>
-      <div class="score-mini-grid" style="margin-bottom:16px">${criteriaHTML}</div>
-      ${data.summary ? `<p style="font-size:.9375rem;color:var(--text);margin-bottom:16px">${data.summary}</p>` : ''}
+      <div class="score-mini-grid">${criteriaHTML}</div>
+      ${data.summary?`<p style="font-size:.9375rem;color:var(--text);margin-bottom:16px">${data.summary}</p>`:''}
       <div class="grid-2" style="margin-bottom:16px">
         <div>
           <div style="font-size:.8125rem;font-weight:700;color:var(--success-dark);margin-bottom:8px">✅ Strengths</div>
@@ -399,23 +838,27 @@ function renderSpeakingFeedback(data) {
           <ul style="display:flex;flex-direction:column;gap:6px">${fixHTML}</ul>
         </div>
       </div>
-      ${data.topTip ? `<div style="padding:12px 14px;background:var(--warning-light);border-radius:var(--r);font-size:.875rem;color:#92400E"><strong>💡 Top tip:</strong> ${data.topTip}</div>` : ''}
-      <div style="margin-top:16px;text-align:center">
+      ${data.topTip?`<div style="padding:12px 14px;background:var(--warning-light);border-radius:var(--r);font-size:.875rem;color:#92400E"><strong>💡 Top tip:</strong> ${data.topTip}</div>`:''}
+      <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn" onclick="selectTest(${testId})">🔄 Redo Test 0${testId}</button>
         <a href="dashboard.html" class="btn btn-primary">View Dashboard →</a>
       </div>
     </div>`;
 }
 
-function saveSpeakingScore(data) {
+function saveSpeakingScore(data, testId) {
   if (!data.overall) return;
-  const spkScores = JSON.parse(localStorage.getItem('ielts_speaking_scores') || '{}');
-  spkScores['test02'] = {
+  const spk = JSON.parse(localStorage.getItem('ielts_speaking_scores')||'{}');
+  spk[`test0${testId}`] = {
     band: parseFloat(data.overall),
-    criteriaScores: { fc: data.fc, lr: data.lr, gra: data.gra, pron: data.pron },
+    criteriaScores: { fc:data.fc, lr:data.lr, gra:data.gra, pron:data.pron },
     date: new Date().toLocaleDateString('fr-FR')
   };
-  localStorage.setItem('ielts_speaking_scores', JSON.stringify(spkScores));
+  localStorage.setItem('ielts_speaking_scores', JSON.stringify(spk));
 }
+
+// Init
+selectTest(1);
 </script>
 </body>
 </html>

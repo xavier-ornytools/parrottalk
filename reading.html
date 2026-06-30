@@ -202,16 +202,21 @@
 <div class="container" style="padding-top:32px;padding-bottom:80px">
 
   <!-- TEST SELECTOR -->
-  <div class="grid-2" style="margin-bottom:24px">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px">
     <button class="test-sel-btn active" onclick="selectTest('test01')">
       <div class="t-num">Test 01</div>
-      <div class="t-name">Psychology of Sleep · Urban Farming · Printing Press</div>
+      <div class="t-name">Sleep · Urban Farming · Printing Press</div>
       <div class="t-meta" id="meta-rdtest01">Not attempted yet</div>
     </button>
     <button class="test-sel-btn" onclick="selectTest('test02')">
       <div class="t-num">Test 02</div>
       <div class="t-name">Renewable Energy · Water Scarcity · Memory</div>
       <div class="t-meta" id="meta-rdtest02">Not attempted yet</div>
+    </button>
+    <button class="test-sel-btn" onclick="selectTest('test03')">
+      <div class="t-num">Test 03</div>
+      <div class="t-name">History of Glass · Microplastics · Consumer Psychology</div>
+      <div class="t-meta" id="meta-rdtest03">Not attempted yet</div>
     </button>
   </div>
 
@@ -1032,6 +1037,370 @@
 
   </div><!-- /test-zone-02 -->
 
+  <!-- TEST ZONE 03 -->
+  <div id="test-zone-03" class="hidden">
+
+    <div class="passage-nav">
+      <button class="passage-tab active" id="t3_ptab-0" onclick="switchPassage(0)">📄 Passage 1</button>
+      <button class="passage-tab" id="t3_ptab-1" onclick="switchPassage(1)">📄 Passage 2</button>
+      <button class="passage-tab" id="t3_ptab-2" onclick="switchPassage(2)">📄 Passage 3</button>
+      <div class="timer-badge" id="t3_timer-display">⏱ 60:00</div>
+    </div>
+
+    <!-- PASSAGE 1: The History of Glass (Q1–13) -->
+    <div class="passage-block active" id="t3_passage-0">
+      <div class="passage-text">
+        <div class="passage-label">Passage 1 — Questions 1–13</div>
+        <h3>The History of Glass</h3>
+        <p>Glass is one of humanity's oldest manufactured materials, with evidence of production dating back to Mesopotamia around 3500 BCE. Early glass was primarily used for decorative purposes, with craftsmen producing beads, amulets, and small vessels. It was not until the first century BCE that glassblowing was discovered, most likely in the region of ancient Syria. This technique — which involves inflating molten glass through a metal tube — revolutionised the craft by making it faster and far less expensive, dramatically expanding the range of objects that could be produced.</p>
+        <p>During the medieval period, Venice became the undisputed centre of European glassmaking. Venetian glassmakers were so highly prized — and their techniques so jealously guarded — that in 1291, the Venetian Republic ordered all glassmakers to relocate to the island of Murano. This served both to reduce the fire risk to the city and to allow the government to monitor the trade more closely. Glassmakers who attempted to leave and share their techniques with other regions were threatened with severe penalties, including death.</p>
+        <p>The emergence of lead crystal glass in seventeenth-century England represented another significant development. English glassmaker George Ravenscroft discovered that adding lead oxide to the glass mixture produced a material that was softer, more brilliant, easier to cut and engrave, and highly desirable for luxury tableware. By the eighteenth century, this style had spread across Europe and established Britain as a major force in glassmaking.</p>
+        <p>The Industrial Revolution transformed the scale of glass production. Previously, glass had been produced by skilled artisans in small quantities; mechanisation allowed factories to produce standardised glass sheets in large volumes, dramatically lowering costs. Window glass, once a luxury item found only in wealthy homes and churches, became affordable to the general population.</p>
+        <p>The twentieth century saw arguably the most significant advance in flat glass production: the float glass process, developed by Sir Alastair Pilkington of the Pilkington Brothers company in 1952. In this process, molten glass is poured onto a bed of molten tin, on which it floats and spreads, creating a perfectly flat and uniform surface as it cools. This technique made it possible to produce large sheets of flawless glass economically, and it remains the dominant method of flat glass production globally.</p>
+        <p>The applications of glass have extended far beyond windows and tableware. The development of optical glass in the seventeenth century enabled the creation of accurate telescopes, microscopes, and spectacles, fundamentally transforming scientific inquiry. Today, glass fibres carry the vast majority of the world's internet data, demonstrating that a material first crafted thousands of years ago remains central to modern technological infrastructure.</p>
+      </div>
+
+      <!-- Q1–7: T/F/NG -->
+      <div class="question-group">
+        <div class="group-title">Questions 1–7 — True / False / Not Given</div>
+        <div class="group-instructions">Do the following statements agree with the information given in the passage? Write TRUE, FALSE or NOT GIVEN.</div>
+        <div class="tfng-question">
+          <div class="tfng-text"><div class="q-num">1</div><span>The earliest glass objects made by humans were intended primarily for practical use.</span></div>
+          <div class="tfng-options" id="t3_tfng-1">
+            <label class="tfng-label"><input type="radio" name="t3_q1" value="TRUE"> TRUE</label>
+            <label class="tfng-label"><input type="radio" name="t3_q1" value="FALSE"> FALSE</label>
+            <label class="tfng-label"><input type="radio" name="t3_q1" value="NOT GIVEN"> NOT GIVEN</label>
+          </div>
+        </div>
+        <div class="tfng-question">
+          <div class="tfng-text"><div class="q-num">2</div><span>Glassblowing was invented by craftsmen working in Venice during the medieval period.</span></div>
+          <div class="tfng-options" id="t3_tfng-2">
+            <label class="tfng-label"><input type="radio" name="t3_q2" value="TRUE"> TRUE</label>
+            <label class="tfng-label"><input type="radio" name="t3_q2" value="FALSE"> FALSE</label>
+            <label class="tfng-label"><input type="radio" name="t3_q2" value="NOT GIVEN"> NOT GIVEN</label>
+          </div>
+        </div>
+        <div class="tfng-question">
+          <div class="tfng-text"><div class="q-num">3</div><span>One reason the Venetian Republic moved glassmakers to Murano was to maintain control over their trade secrets.</span></div>
+          <div class="tfng-options" id="t3_tfng-3">
+            <label class="tfng-label"><input type="radio" name="t3_q3" value="TRUE"> TRUE</label>
+            <label class="tfng-label"><input type="radio" name="t3_q3" value="FALSE"> FALSE</label>
+            <label class="tfng-label"><input type="radio" name="t3_q3" value="NOT GIVEN"> NOT GIVEN</label>
+          </div>
+        </div>
+        <div class="tfng-question">
+          <div class="tfng-text"><div class="q-num">4</div><span>George Ravenscroft's lead crystal glass was harder to cut than traditional Venetian glass.</span></div>
+          <div class="tfng-options" id="t3_tfng-4">
+            <label class="tfng-label"><input type="radio" name="t3_q4" value="TRUE"> TRUE</label>
+            <label class="tfng-label"><input type="radio" name="t3_q4" value="FALSE"> FALSE</label>
+            <label class="tfng-label"><input type="radio" name="t3_q4" value="NOT GIVEN"> NOT GIVEN</label>
+          </div>
+        </div>
+        <div class="tfng-question">
+          <div class="tfng-text"><div class="q-num">5</div><span>Several glass manufacturers had unsuccessfully attempted the float glass process before Pilkington.</span></div>
+          <div class="tfng-options" id="t3_tfng-5">
+            <label class="tfng-label"><input type="radio" name="t3_q5" value="TRUE"> TRUE</label>
+            <label class="tfng-label"><input type="radio" name="t3_q5" value="FALSE"> FALSE</label>
+            <label class="tfng-label"><input type="radio" name="t3_q5" value="NOT GIVEN"> NOT GIVEN</label>
+          </div>
+        </div>
+        <div class="tfng-question">
+          <div class="tfng-text"><div class="q-num">6</div><span>The Industrial Revolution made window glass accessible to ordinary people for the first time.</span></div>
+          <div class="tfng-options" id="t3_tfng-6">
+            <label class="tfng-label"><input type="radio" name="t3_q6" value="TRUE"> TRUE</label>
+            <label class="tfng-label"><input type="radio" name="t3_q6" value="FALSE"> FALSE</label>
+            <label class="tfng-label"><input type="radio" name="t3_q6" value="NOT GIVEN"> NOT GIVEN</label>
+          </div>
+        </div>
+        <div class="tfng-question">
+          <div class="tfng-text"><div class="q-num">7</div><span>According to the passage, modern glass fibres are primarily used in the manufacture of scientific instruments.</span></div>
+          <div class="tfng-options" id="t3_tfng-7">
+            <label class="tfng-label"><input type="radio" name="t3_q7" value="TRUE"> TRUE</label>
+            <label class="tfng-label"><input type="radio" name="t3_q7" value="FALSE"> FALSE</label>
+            <label class="tfng-label"><input type="radio" name="t3_q7" value="NOT GIVEN"> NOT GIVEN</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q8–13: MC -->
+      <div class="question-group">
+        <div class="group-title">Questions 8–13 — Multiple Choice</div>
+        <div class="group-instructions">Choose the correct letter, A, B, C or D.</div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">8</div><span>According to the passage, why did the Venetian Republic relocate glassmakers to Murano in 1291?</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q8" value="A"> A. To provide them with better raw materials</label>
+          <label class="mc-option"><input type="radio" name="t3_q8" value="B"> B. To protect them from competition from foreign craftsmen</label>
+          <label class="mc-option"><input type="radio" name="t3_q8" value="C"> C. To reduce the fire hazard to the city and enable closer supervision of the trade</label>
+          <label class="mc-option"><input type="radio" name="t3_q8" value="D"> D. To allow them to work alongside other skilled artisans</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">9</div><span>The word "prized" in paragraph 2 most closely means...</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q9" value="A"> A. Rewarded financially</label>
+          <label class="mc-option"><input type="radio" name="t3_q9" value="B"> B. Highly valued</label>
+          <label class="mc-option"><input type="radio" name="t3_q9" value="C"> C. Closely monitored</label>
+          <label class="mc-option"><input type="radio" name="t3_q9" value="D"> D. Officially licensed</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">10</div><span>According to the passage, what was the principal advantage of the float glass process?</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q10" value="A"> A. It eliminated the need for skilled workers in glass production</label>
+          <label class="mc-option"><input type="radio" name="t3_q10" value="B"> B. It used a new chemical process to improve the clarity of glass</label>
+          <label class="mc-option"><input type="radio" name="t3_q10" value="C"> C. It enabled the economical production of large, flawless glass sheets</label>
+          <label class="mc-option"><input type="radio" name="t3_q10" value="D"> D. It required significantly less energy than previous glassmaking methods</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">11</div><span>The passage suggests that lead crystal glass became popular largely because it was...</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q11" value="A"> A. Cheaper to produce than Venetian glass</label>
+          <label class="mc-option"><input type="radio" name="t3_q11" value="B"> B. Stronger and more durable in everyday use</label>
+          <label class="mc-option"><input type="radio" name="t3_q11" value="C"> C. Better suited to industrial applications</label>
+          <label class="mc-option"><input type="radio" name="t3_q11" value="D"> D. More visually attractive and easier to work with</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">12</div><span>According to the passage, which development in the seventeenth century contributed significantly to scientific progress?</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q12" value="A"> A. The establishment of glass factories using industrial methods</label>
+          <label class="mc-option"><input type="radio" name="t3_q12" value="B"> B. The creation of lead crystal glass in England</label>
+          <label class="mc-option"><input type="radio" name="t3_q12" value="C"> C. The development of optical glass enabling precision instruments</label>
+          <label class="mc-option"><input type="radio" name="t3_q12" value="D"> D. The introduction of glassblowing techniques from Syria</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">13</div><span>The main purpose of the final paragraph is to...</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q13" value="A"> A. Contrast the uses of ancient and modern glass</label>
+          <label class="mc-option"><input type="radio" name="t3_q13" value="B"> B. Argue that glass has replaced metals in most technological applications</label>
+          <label class="mc-option"><input type="radio" name="t3_q13" value="C"> C. Demonstrate that glass remains technologically relevant in the modern world</label>
+          <label class="mc-option"><input type="radio" name="t3_q13" value="D"> D. Describe the environmental challenges associated with glass fibre production</label>
+        </div>
+      </div>
+
+      <div class="flex justify-between" style="margin-top:16px;gap:12px">
+        <div></div>
+        <button class="btn btn-primary" onclick="switchPassage(1)">Passage 2 →</button>
+      </div>
+    </div><!-- /t3_passage-0 -->
+
+    <!-- PASSAGE 2: Microplastics in the Global Food Chain (Q14–26) -->
+    <div class="passage-block" id="t3_passage-1">
+      <div class="passage-text">
+        <div class="passage-label">Passage 2 — Questions 14–26</div>
+        <h3>Microplastics in the Global Food Chain</h3>
+        <p>Microplastics are defined as plastic particles smaller than five millimetres in their longest dimension. They enter the environment through multiple pathways: the degradation of larger plastic items exposed to sunlight and mechanical stress; the release of synthetic fibres during the washing of clothes made from polyester, nylon, and acrylic; the breakdown of plastic packaging; and the direct manufacture of microbeads formerly incorporated into cosmetics. Although microbeads have been banned in several countries, remaining sources continue to release microplastics into waterways, soils, and the atmosphere at significant rates.</p>
+        <p>Once in the environment, microplastics are ingested by a wide range of organisms, from zooplankton — the microscopic animals at the base of many aquatic food chains — to fish, seabirds, and marine mammals. When zooplankton consume microplastics, they may experience satiation — a false sense of fullness — that reduces their actual food intake and impairs their reproduction and growth. This disruption at the base of the food chain can have cascading effects on species further up, including commercially important fish.</p>
+        <p>As organisms at lower trophic levels consume microplastics and are themselves consumed by larger predators, the concentration of microplastic particles can increase at each level in a process known as biomagnification. This means that top predators, including humans, may be exposed to significantly higher concentrations of microplastics than the ambient environment would suggest. However, the evidence for classical biomagnification of microplastics specifically remains disputed among scientists.</p>
+        <p>Studies have detected microplastics in bottled water, tap water, sea salt, honey, beer, and commercially sold seafood. Research conducted in 2018 estimated that the average person may ingest approximately 50,000 microplastic particles per year through food and water alone, with additional exposure occurring through inhalation. Plastic particles have also been found in human blood, lung tissue, and placental tissue, indicating that they can cross biological barriers and accumulate in the body.</p>
+        <p>The health implications of microplastic ingestion remain a subject of active research. Laboratory studies on animals have linked exposure to chemicals associated with plastics — including phthalates and bisphenol A — to hormonal disruption and cellular damage. However, establishing direct causal links between microplastic exposure and human health outcomes is complicated by difficulties in isolating plastic-related effects. The World Health Organisation concluded in 2019 that risks from microplastics in drinking water are currently low, while acknowledging significant uncertainty.</p>
+        <p>Policy responses have been varied. Some countries have implemented bans on single-use plastics, while others have set recycling targets. Critics argue that these measures are insufficient given the scale of plastic production, and that more radical systemic changes are required to meaningfully reduce microplastic contamination of the environment.</p>
+      </div>
+
+      <!-- Q14–20: Sentence completion -->
+      <div class="question-group">
+        <div class="group-title">Questions 14–20 — Sentence Completion</div>
+        <div class="group-instructions">Complete the sentences below. Use NO MORE THAN TWO WORDS from the passage for each answer.</div>
+        <div class="fill-row">
+          <div class="q-num">14</div>
+          <span>The ________ of larger plastic items by sunlight and mechanical forces is one source of microplastics.</span>
+          <input class="q-input" type="text" id="t3_q14" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">15</div>
+          <span>When synthetic garments are washed, they release ________ into the water system.</span>
+          <input class="q-input" type="text" id="t3_q15" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">16</div>
+          <span>Consuming microplastics may cause zooplankton to experience ________, making them feel full when they are not.</span>
+          <input class="q-input" type="text" id="t3_q16" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">17</div>
+          <span>The process by which microplastic concentrations increase at higher levels of the food chain is called ________.</span>
+          <input class="q-input" type="text" id="t3_q17" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">18</div>
+          <span>Scientists have detected microplastic particles in human ________, lung tissue, and placental tissue.</span>
+          <input class="q-input" type="text" id="t3_q18" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">19</div>
+          <span>In addition to eating and drinking, microplastics can also enter the body through ________.</span>
+          <input class="q-input" type="text" id="t3_q19" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">20</div>
+          <span>The WHO's 2019 assessment concluded that risks from microplastics in drinking water are currently ________.</span>
+          <input class="q-input" type="text" id="t3_q20" placeholder="your answer">
+        </div>
+      </div>
+
+      <!-- Q21–26: MC -->
+      <div class="question-group">
+        <div class="group-title">Questions 21–26 — Multiple Choice</div>
+        <div class="group-instructions">Choose the correct letter, A, B, C or D.</div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">21</div><span>Which of the following is NOT mentioned in the passage as a source of microplastics?</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q21" value="A"> A. The breakdown of plastic packaging</label>
+          <label class="mc-option"><input type="radio" name="t3_q21" value="B"> B. The washing of synthetic garments</label>
+          <label class="mc-option"><input type="radio" name="t3_q21" value="C"> C. The abrasion of rubber from vehicle tyres</label>
+          <label class="mc-option"><input type="radio" name="t3_q21" value="D"> D. The manufacture of microbeads in cosmetics</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">22</div><span>According to the passage, why is the effect of microplastics on zooplankton significant for the wider ecosystem?</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q22" value="A"> A. Zooplankton are the only organisms that can break down plastic particles</label>
+          <label class="mc-option"><input type="radio" name="t3_q22" value="B"> B. The loss of zooplankton directly reduces the amount of oxygen in the ocean</label>
+          <label class="mc-option"><input type="radio" name="t3_q22" value="C"> C. Disruption at the base of the food chain can affect species at higher levels</label>
+          <label class="mc-option"><input type="radio" name="t3_q22" value="D"> D. Zooplankton populations determine the distribution of commercial fish stocks</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">23</div><span>The term "biomagnification" in paragraph 3 refers to...</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q23" value="A"> A. The process by which plastic particles break down over time into smaller fragments</label>
+          <label class="mc-option"><input type="radio" name="t3_q23" value="B"> B. The tendency of microplastics to concentrate in coastal and estuarine environments</label>
+          <label class="mc-option"><input type="radio" name="t3_q23" value="C"> C. The increasing concentration of microplastics as they move up the food chain</label>
+          <label class="mc-option"><input type="radio" name="t3_q23" value="D"> D. The growth in the total volume of microplastics in the environment over time</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">24</div><span>What does the passage indicate about the health risks of microplastic ingestion for humans?</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q24" value="A"> A. They have been confirmed by the WHO as a serious global health threat</label>
+          <label class="mc-option"><input type="radio" name="t3_q24" value="B"> B. They are primarily associated with exposure through the skin rather than ingestion</label>
+          <label class="mc-option"><input type="radio" name="t3_q24" value="C"> C. Evidence from animal studies exists, but direct causal links in humans are difficult to establish</label>
+          <label class="mc-option"><input type="radio" name="t3_q24" value="D"> D. They are well understood through long-term epidemiological studies of coastal populations</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">25</div><span>According to the passage, what aspect of microplastics remains contested among scientists?</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q25" value="A"> A. Whether microplastics have been detected in human tissue</label>
+          <label class="mc-option"><input type="radio" name="t3_q25" value="B"> B. Whether the process of classical biomagnification applies to microplastics</label>
+          <label class="mc-option"><input type="radio" name="t3_q25" value="C"> C. Whether governments should ban all single-use plastics</label>
+          <label class="mc-option"><input type="radio" name="t3_q25" value="D"> D. Whether microplastics affect marine mammals more severely than fish</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">26</div><span>The word "ambient" in paragraph 3 most closely means...</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q26" value="A"> A. Fluctuating</label>
+          <label class="mc-option"><input type="radio" name="t3_q26" value="B"> B. Surrounding</label>
+          <label class="mc-option"><input type="radio" name="t3_q26" value="C"> C. Measurable</label>
+          <label class="mc-option"><input type="radio" name="t3_q26" value="D"> D. Elevated</label>
+        </div>
+      </div>
+
+      <div class="flex justify-between" style="margin-top:16px;gap:12px">
+        <button class="btn btn-secondary" onclick="switchPassage(0)">← Passage 1</button>
+        <button class="btn btn-primary" onclick="switchPassage(2)">Passage 3 →</button>
+      </div>
+    </div><!-- /t3_passage-1 -->
+
+    <!-- PASSAGE 3: The Psychology of Consumer Decision-Making (Q27–40) -->
+    <div class="passage-block" id="t3_passage-2">
+      <div class="passage-text">
+        <div class="passage-label">Passage 3 — Questions 27–40</div>
+        <h3>The Psychology of Consumer Decision-Making</h3>
+        <p>For much of the twentieth century, economic theory was built on the assumption that consumers make rational decisions — carefully evaluating available information, calculating costs and benefits, and selecting the option that maximises their utility. This model, known as homo economicus, described a hypothetically perfect decision-maker operating with complete information and unwavering logic. However, research beginning in the 1950s began to challenge this assumption with substantial empirical evidence to the contrary.</p>
+        <p>Herbert Simon, an economist and cognitive scientist, was among the first to formally propose that human decision-making is subject to what he termed bounded rationality. Simon argued that while humans aim to make rational decisions, they are constrained by the limits of their cognitive capacity, the finite time available to process information, and the complexity of the environment. Rather than optimising — finding the single best solution — most people satisfice: they adopt the first option that meets a minimum acceptable standard, even if better alternatives may exist.</p>
+        <p>Daniel Kahneman and Amos Tversky extended this framework in the 1970s and 1980s with their work on cognitive heuristics and biases. They demonstrated that human judgment is not simply limited but systematically distorted by mental shortcuts that, while often useful, can produce predictable errors. One of their most influential findings concerns the anchoring effect: the tendency for an initial piece of numerical information — even one that is arbitrary or irrelevant — to exert a disproportionate influence on subsequent judgments. When buyers see an item marked down from a high original price, they are inclined to perceive it as a bargain regardless of whether the original price was genuinely meaningful.</p>
+        <p>A complementary body of research has examined priming, the process by which exposure to one stimulus unconsciously influences responses to subsequent stimuli. Experiments have shown that playing French music in a wine shop leads customers to purchase French wines at a higher rate, while German music results in greater sales of German wines — effects that often occur without the conscious awareness of the consumer. Taken together, priming and anchoring illustrate how purchasing decisions are frequently shaped by environmental cues and framing effects rather than by conscious deliberation.</p>
+        <p>Richard Thaler and Cass Sunstein built upon this research to develop what they called nudge theory, arguing that policymakers can design choice architectures — the arrangement of options in a decision-making environment — to steer individuals towards better decisions without restricting their freedom of choice. Classic examples include placing healthier food at eye level in a cafeteria, or enrolling employees in pension schemes by default while allowing them to opt out. Such nudges have been adopted by numerous governments as low-cost tools for promoting public health, increasing savings rates, and encouraging sustainable behaviours.</p>
+        <p>Critics of nudge theory question whether it is ethically appropriate for governments to manipulate citizens' choices, even in benevolent ways. Others argue that nudges are merely superficial interventions that address only the symptoms of poor decision-making, and that more fundamental reforms to institutions and markets are required. The debate continues as behavioural economics — the discipline that combines psychological research with economic theory — has become one of the fastest-growing fields in the social sciences.</p>
+      </div>
+
+      <!-- Q27–33: Sentence completion -->
+      <div class="question-group">
+        <div class="group-title">Questions 27–33 — Sentence Completion</div>
+        <div class="group-instructions">Complete the sentences below. Use NO MORE THAN THREE WORDS from the passage for each answer.</div>
+        <div class="fill-row">
+          <div class="q-num">27</div>
+          <span>The classical model of the rational consumer described an idealised decision-maker known as ________.</span>
+          <input class="q-input" type="text" id="t3_q27" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">28</div>
+          <span>Herbert Simon argued that real-world decision-making is subject to ________, due to cognitive and time constraints.</span>
+          <input class="q-input" type="text" id="t3_q28" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">29</div>
+          <span>According to Simon, rather than finding the optimal solution, most people ________ by selecting the first acceptable option.</span>
+          <input class="q-input" type="text" id="t3_q29" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">30</div>
+          <span>The ________ effect describes how an initial piece of numerical information can disproportionately influence later judgments.</span>
+          <input class="q-input" type="text" id="t3_q30" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">31</div>
+          <span>Research on ________ has shown that background music in a shop can unconsciously influence what customers choose to buy.</span>
+          <input class="q-input" type="text" id="t3_q31" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">32</div>
+          <span>Thaler and Sunstein developed ________ theory, which advocates for designing environments that guide people towards better choices.</span>
+          <input class="q-input" type="text" id="t3_q32" placeholder="your answer">
+        </div>
+        <div class="fill-row">
+          <div class="q-num">33</div>
+          <span>Critics of nudge theory argue that it only addresses the ________ of poor decision-making rather than its structural causes.</span>
+          <input class="q-input" type="text" id="t3_q33" placeholder="your answer">
+        </div>
+      </div>
+
+      <!-- Q34–40: MC -->
+      <div class="question-group">
+        <div class="group-title">Questions 34–40 — Multiple Choice</div>
+        <div class="group-instructions">Choose the correct letter, A, B, C or D.</div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">34</div><span>According to the passage, what was the central assumption of the homo economicus model?</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q34" value="A"> A. Consumers make decisions based primarily on social comparison</label>
+          <label class="mc-option"><input type="radio" name="t3_q34" value="B"> B. Consumers have access to limited but reliable market information</label>
+          <label class="mc-option"><input type="radio" name="t3_q34" value="C"> C. Consumers act logically to maximise their personal benefit</label>
+          <label class="mc-option"><input type="radio" name="t3_q34" value="D"> D. Consumers prefer familiar products to unfamiliar alternatives</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">35</div><span>Herbert Simon's concept of bounded rationality suggests that...</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q35" value="A"> A. Humans are fundamentally incapable of rational thought</label>
+          <label class="mc-option"><input type="radio" name="t3_q35" value="B"> B. Real decision-making is constrained by cognitive and environmental limitations</label>
+          <label class="mc-option"><input type="radio" name="t3_q35" value="C"> C. Time pressure consistently improves the quality of decisions</label>
+          <label class="mc-option"><input type="radio" name="t3_q35" value="D"> D. People become more rational with experience and practice</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">36</div><span>In the passage, the anchoring effect is best illustrated by the example of...</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q36" value="A"> A. A consumer who buys French wine after hearing French music</label>
+          <label class="mc-option"><input type="radio" name="t3_q36" value="B"> B. An employee who is automatically enrolled in a pension scheme</label>
+          <label class="mc-option"><input type="radio" name="t3_q36" value="C"> C. A buyer who perceives a discounted item as a bargain based on its original price</label>
+          <label class="mc-option"><input type="radio" name="t3_q36" value="D"> D. A shopper who selects the product placed at eye level in a supermarket</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">37</div><span>According to the passage, how does priming differ from anchoring?</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q37" value="A"> A. Priming is deliberately used by retailers, whereas anchoring occurs naturally</label>
+          <label class="mc-option"><input type="radio" name="t3_q37" value="B"> B. Priming works through unconscious exposure to stimuli rather than numerical data</label>
+          <label class="mc-option"><input type="radio" name="t3_q37" value="C"> C. Priming affects individual shoppers, while anchoring affects entire markets</label>
+          <label class="mc-option"><input type="radio" name="t3_q37" value="D"> D. Priming is effective only in physical retail environments</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">38</div><span>In paragraph 5, the term "choice architectures" refers to...</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q38" value="A"> A. Physical store layouts designed to slow down customer movement</label>
+          <label class="mc-option"><input type="radio" name="t3_q38" value="B"> B. Legal regulations that restrict the range of products available to consumers</label>
+          <label class="mc-option"><input type="radio" name="t3_q38" value="C"> C. The way options are structured and presented in a decision-making environment</label>
+          <label class="mc-option"><input type="radio" name="t3_q38" value="D"> D. Computer algorithms used to personalise online shopping recommendations</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">39</div><span>Which of the following best describes the critics' view of nudge theory as presented in the passage?</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q39" value="A"> A. They believe it contradicts the fundamental principles of behavioural economics</label>
+          <label class="mc-option"><input type="radio" name="t3_q39" value="B"> B. They argue it is ineffective because most people are unaware of being nudged</label>
+          <label class="mc-option"><input type="radio" name="t3_q39" value="C"> C. They consider it ethically questionable and insufficiently radical to address structural problems</label>
+          <label class="mc-option"><input type="radio" name="t3_q39" value="D"> D. They claim it applies only to health-related decisions and not to financial behaviour</label>
+        </div>
+        <div class="mc-question">
+          <div class="mc-text"><div class="q-num">40</div><span>The writer's main purpose in this passage is to...</span></div>
+          <label class="mc-option"><input type="radio" name="t3_q40" value="A"> A. Argue that classical economic theory should be completely replaced by behavioural economics</label>
+          <label class="mc-option"><input type="radio" name="t3_q40" value="B"> B. Demonstrate that nudge theory is the most effective tool available to policymakers</label>
+          <label class="mc-option"><input type="radio" name="t3_q40" value="C"> C. Trace the development of theories that challenge the rational model of consumer behaviour</label>
+          <label class="mc-option"><input type="radio" name="t3_q40" value="D"> D. Evaluate whether priming or anchoring has a greater influence on purchasing decisions</label>
+        </div>
+      </div>
+
+      <div class="flex justify-between" style="margin-top:16px;gap:12px">
+        <button class="btn btn-secondary" onclick="switchPassage(1)">← Passage 2</button>
+        <button class="btn btn-primary btn-lg" onclick="submitTest()">✓ Submit &amp; Score</button>
+      </div>
+    </div><!-- /t3_passage-2 -->
+
+  </div><!-- /test-zone-03 -->
+
   <!-- SHARED RESULTS CARD -->
   <div class="results-card" id="results-card">
     <div style="display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center">
@@ -1128,6 +1497,31 @@ const PASSAGE_RANGES_02 = [
   { label: 'Passage 3 (Memory)', start: 27, end: 40 }
 ];
 
+const ANSWERS_03 = {
+  // Passage 1 (History of Glass) — T/F/NG
+  q1: 'FALSE', q2: 'FALSE', q3: 'TRUE', q4: 'FALSE', q5: 'NOT GIVEN', q6: 'TRUE', q7: 'FALSE',
+  // Passage 1 — MC
+  q8: 'C', q9: 'B', q10: 'C', q11: 'D', q12: 'C', q13: 'C',
+  // Passage 2 (Microplastics) — Sentence completion
+  q14: 'DEGRADATION', q15: 'FIBRES', q16: 'SATIATION', q17: 'BIOMAGNIFICATION',
+  q18: 'BLOOD', q19: 'INHALATION', q20: 'LOW',
+  // Passage 2 — MC
+  q21: 'C', q22: 'C', q23: 'C', q24: 'C', q25: 'B', q26: 'B',
+  // Passage 3 (Consumer Psychology) — Sentence completion
+  q27: 'HOMO ECONOMICUS', q28: 'BOUNDED RATIONALITY', q29: 'SATISFICE',
+  q30: 'ANCHORING', q31: 'PRIMING', q32: 'NUDGE', q33: 'SYMPTOMS',
+  // Passage 3 — MC
+  q34: 'C', q35: 'B', q36: 'C', q37: 'B', q38: 'C', q39: 'C', q40: 'C'
+};
+
+const PASSAGE_RANGES_03 = [
+  { label: 'Passage 1 (History of Glass)', start: 1, end: 13 },
+  { label: 'Passage 2 (Microplastics)', start: 14, end: 26 },
+  { label: 'Passage 3 (Consumer Psychology)', start: 27, end: 40 }
+];
+
+const ANSWERS_MAP = { '': ANSWERS, 't2_': ANSWERS_02, 't3_': ANSWERS_03 };
+
 let currentReadingTest = 1;
 let currentPassage = 0;
 let submitted = false;
@@ -1136,16 +1530,13 @@ let secondsLeft = 3600;
 
 function init() {
   const scores = getAllReadingScores();
-  if (scores.rdtest01) {
-    const s = scores.rdtest01;
-    document.getElementById('meta-rdtest01').textContent =
-      `Last: ${s.total}/40 — Band ${s.band} (${s.date})`;
-  }
-  if (scores.rdtest02) {
-    const s = scores.rdtest02;
-    document.getElementById('meta-rdtest02').textContent =
-      `Last: ${s.total}/40 — Band ${s.band} (${s.date})`;
-  }
+  ['rdtest01','rdtest02','rdtest03'].forEach((key,i) => {
+    if (scores[key]) {
+      const s = scores[key];
+      const el = document.getElementById('meta-' + key);
+      if (el) el.textContent = `Last: ${s.total}/40 — Band ${s.band} (${s.date})`;
+    }
+  });
 }
 
 function getAllReadingScores() {
@@ -1164,20 +1555,20 @@ function saveReadingScore(testId, passageScores, total) {
 }
 
 function selectTest(id) {
-  currentReadingTest = id === 'test02' ? 2 : 1;
+  currentReadingTest = id === 'test03' ? 3 : id === 'test02' ? 2 : 1;
   document.querySelectorAll('.test-sel-btn').forEach((b,i) =>
     b.classList.toggle('active', i === currentReadingTest - 1));
   document.getElementById('instructions-card').classList.remove('hidden');
-  document.getElementById('test-zone').classList.add('hidden');
-  document.getElementById('test-zone-02').classList.add('hidden');
+  ['test-zone','test-zone-02','test-zone-03'].forEach(z =>
+    document.getElementById(z).classList.add('hidden'));
   submitted = false;
 }
 
 function startTest() {
   document.getElementById('instructions-card').classList.add('hidden');
-  document.getElementById('test-zone').classList.add('hidden');
-  document.getElementById('test-zone-02').classList.add('hidden');
-  const zoneId = currentReadingTest === 2 ? 'test-zone-02' : 'test-zone';
+  ['test-zone','test-zone-02','test-zone-03'].forEach(z =>
+    document.getElementById(z).classList.add('hidden'));
+  const zoneId = currentReadingTest === 3 ? 'test-zone-03' : currentReadingTest === 2 ? 'test-zone-02' : 'test-zone';
   document.getElementById(zoneId).classList.remove('hidden');
   submitted = false;
   startTimer();
@@ -1204,7 +1595,7 @@ function updateTimerDisplay() {
   const m = Math.floor(secondsLeft / 60);
   const s = secondsLeft % 60;
   const display = `⏱ ${m}:${s.toString().padStart(2,'0')}`;
-  ['timer-display', 't2_timer-display'].forEach(id => {
+  ['timer-display', 't2_timer-display', 't3_timer-display'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.textContent = display; if (secondsLeft <= 600) el.classList.add('warning'); }
   });
@@ -1212,7 +1603,7 @@ function updateTimerDisplay() {
 
 function switchPassage(i) {
   currentPassage = i;
-  const zoneId = currentReadingTest === 2 ? 'test-zone-02' : 'test-zone';
+  const zoneId = currentReadingTest === 3 ? 'test-zone-03' : currentReadingTest === 2 ? 'test-zone-02' : 'test-zone';
   document.querySelectorAll(`#${zoneId} .passage-block`).forEach((b,j) =>
     b.classList.toggle('active', j === i));
   document.querySelectorAll(`#${zoneId} .passage-tab`).forEach((t,j) =>
@@ -1225,10 +1616,10 @@ function submitTest() {
   submitted = true;
   clearInterval(timerInterval);
 
-  const prefix = currentReadingTest === 2 ? 't2_' : '';
-  const activeRanges = currentReadingTest === 2 ? PASSAGE_RANGES_02 : PASSAGE_RANGES;
-  const testId = currentReadingTest === 2 ? 'rdtest02' : 'rdtest01';
-  const metaId = currentReadingTest === 2 ? 'meta-rdtest02' : 'meta-rdtest01';
+  const prefix = currentReadingTest === 3 ? 't3_' : currentReadingTest === 2 ? 't2_' : '';
+  const activeRanges = currentReadingTest === 3 ? PASSAGE_RANGES_03 : currentReadingTest === 2 ? PASSAGE_RANGES_02 : PASSAGE_RANGES;
+  const testId = currentReadingTest === 3 ? 'rdtest03' : currentReadingTest === 2 ? 'rdtest02' : 'rdtest01';
+  const metaId = currentReadingTest === 3 ? 'meta-rdtest03' : currentReadingTest === 2 ? 'meta-rdtest02' : 'meta-rdtest01';
 
   let total = 0;
   const passageScores = [0, 0, 0];
@@ -1252,7 +1643,7 @@ function submitTest() {
 function checkQ(n, prefix='') {
   const qkey = 'q' + n;
   const key = prefix + qkey;
-  const answer = (prefix ? ANSWERS_02 : ANSWERS)[qkey];
+  const answer = ANSWERS_MAP[prefix][qkey];
   const el = document.getElementById(key);
   if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) {
     return el.value.trim().toUpperCase() === answer;
@@ -1264,7 +1655,7 @@ function checkQ(n, prefix='') {
 function markQ(n, correct, prefix='') {
   const qkey = 'q' + n;
   const key = prefix + qkey;
-  const answer = (prefix ? ANSWERS_02 : ANSWERS)[qkey];
+  const answer = ANSWERS_MAP[prefix][qkey];
   const el = document.getElementById(key);
 
   if (el && el.tagName === 'INPUT' && el.type === 'text') {

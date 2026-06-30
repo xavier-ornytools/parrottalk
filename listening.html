@@ -157,7 +157,7 @@
 <div class="container" style="padding-top:32px;padding-bottom:80px">
 
   <!-- TEST SELECTOR -->
-  <div class="grid-2" style="margin-bottom:24px">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px">
     <button class="test-sel-btn active" onclick="selectTest('test01')">
       <div class="t-num">Test 01</div>
       <div class="t-name">Hotel · Museum · Urban Farming · Cognitive Load</div>
@@ -167,6 +167,11 @@
       <div class="t-num">Test 02</div>
       <div class="t-name">Fitness Centre · Science Museum · Climate · Behavioural Economics</div>
       <div class="t-meta" id="meta-test02">Not attempted yet</div>
+    </button>
+    <button class="test-sel-btn" disabled style="opacity:.55;cursor:not-allowed">
+      <div class="t-num" style="color:var(--text-muted)">Test 03</div>
+      <div class="t-name">Coming Soon</div>
+      <div class="t-meta">Audio files required — in preparation</div>
     </button>
   </div>
 
