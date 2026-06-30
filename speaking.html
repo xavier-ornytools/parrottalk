@@ -762,8 +762,8 @@ async function submitTest() {
     const base = { question: qi.question, part: qi.part };
     if (!rec) {
       transcribed++;
-      showProgress(transcribed, allQs.length + 1, `${transcribed}/${allQs.length} responses transcribed...`);
-      return { ...base, transcript: '(no recording provided)', pronunciationNotes: 'Question was skipped' };
+      showProgress(transcribed, allQs.length + 1, `${transcribed}/${allQs.length} responses processed...`);
+      return { ...base, transcript: '(no recording provided)', pronunciationNotes: 'Question was skipped', failed: false };
     }
     try {
       const audioData = await blobToBase64(rec.blob);
@@ -776,15 +776,33 @@ async function submitTest() {
       const d = await res.json();
       transcribed++;
       showProgress(transcribed, allQs.length + 1, `${transcribed}/${allQs.length} responses transcribed...`);
-      return { ...base, transcript: d.transcript || '', pronunciationNotes: d.pronunciationNotes || '' };
+      return { ...base, transcript: d.transcript || '', pronunciationNotes: d.pronunciationNotes || '', failed: false };
     } catch (err) {
       transcribed++;
-      showProgress(transcribed, allQs.length + 1, `${transcribed}/${allQs.length} responses transcribed...`);
-      return { ...base, transcript: '(transcription failed)', pronunciationNotes: 'Error: ' + err.message };
+      showProgress(transcribed, allQs.length + 1, `${transcribed}/${allQs.length} responses processed...`);
+      return { ...base, transcript: '(transcription failed)', pronunciationNotes: 'Error: ' + err.message, failed: true };
     }
   };
 
-  const qas = await Promise.all(allQs.map((_, i) => transcribeOne(i)));
+  // Batches of 3 to stay within Gemini free-tier rate limits
+  const qas = [];
+  for (let b = 0; b < allQs.length; b += 3) {
+    const batch = await Promise.all([b, b+1, b+2].filter(i => i < allQs.length).map(i => transcribeOne(i)));
+    qas.push(...batch);
+  }
+
+  // Guard: if majority of recordings failed, transcription is broken — don't call feedback
+  const actualRecordings = qas.filter(q => q.transcript !== '(no recording provided)');
+  const failedCount = actualRecordings.filter(q => q.failed).length;
+  if (actualRecordings.length > 0 && failedCount >= Math.ceil(actualRecordings.length / 2)) {
+    resultsEl.innerHTML = `
+      <div class="card card-sm" style="border-color:var(--danger);background:var(--danger-light)">
+        <p style="color:var(--danger);font-size:.875rem">🚫 <strong>Audio transcription failed</strong> for ${failedCount} of ${actualRecordings.length} recordings.<br>
+        This is usually a temporary API issue. Please wait 30 seconds and try again.</p>
+        <button class="btn" onclick="document.getElementById('spk-test-zone').classList.remove('hidden');document.getElementById('spk-results').classList.add('hidden');" style="margin-top:12px">← Back to test</button>
+      </div>`;
+    return;
+  }
 
   showProgress(allQs.length, allQs.length + 1, 'Generating IELTS band score evaluation...');
 
@@ -792,16 +810,20 @@ async function submitTest() {
     const res = await fetch('/api/speaking-feedback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ topic: t.topic, qas })
+      body: JSON.stringify({ topic: t.topic, qas: qas.map(({failed, ...q}) => q) })
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    if (!res.ok) {
+      let detail = `HTTP ${res.status}`;
+      try { const e = await res.json(); if (e.detail) detail += ' — ' + String(e.detail).substring(0, 120); } catch(_) {}
+      throw new Error(detail);
+    }
     const data = await res.json();
     renderSpeakingFeedback(data, currentSpeakingTest);
     saveSpeakingScore(data, currentSpeakingTest);
   } catch (err) {
     resultsEl.innerHTML = `
       <div class="card card-sm" style="border-color:var(--danger);background:var(--danger-light)">
-        <p style="color:var(--danger);font-size:.875rem">⚠️ AI evaluation failed. Please try again.<br><em>${err.message}</em></p>
+        <p style="color:var(--danger);font-size:.875rem">⚠️ AI evaluation failed. Please try again.<br><small style="opacity:.7">${err.message}</small></p>
         <button class="btn" onclick="document.getElementById('spk-test-zone').classList.remove('hidden');document.getElementById('spk-results').classList.add('hidden');" style="margin-top:12px">← Back to test</button>
       </div>`;
   }

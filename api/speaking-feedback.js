@@ -41,7 +41,7 @@ Be realistic and constructive. An average test-taker scores 5.5–6.5. Band 7+ r
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { temperature: 0.3, maxOutputTokens: 1500, responseMimeType: 'application/json' }
+          generationConfig: { temperature: 0.3, maxOutputTokens: 1500 }
         })
       }
     );
@@ -50,9 +50,11 @@ Be realistic and constructive. An average test-taker scores 5.5–6.5. Band 7+ r
       return res.status(502).json({ error: 'Gemini API error', detail: err });
     }
     const gemini = await r.json();
-    const text = gemini.candidates?.[0]?.content?.parts?.[0]?.text;
+    const text = gemini.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const match = text.match(/\{[\s\S]*\}/);
+    if (!match) return res.status(502).json({ error: 'No JSON in response', raw: text });
     try {
-      return res.status(200).json(JSON.parse(text));
+      return res.status(200).json(JSON.parse(match[0]));
     } catch {
       return res.status(502).json({ error: 'Failed to parse AI response', raw: text });
     }
