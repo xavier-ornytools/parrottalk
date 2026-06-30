@@ -753,19 +753,18 @@ async function submitTest() {
       </div>`;
   }
 
-  showProgress(0, allQs.length + 1, 'Starting transcription...');
+  showProgress(0, allQs.length + 1, 'Sending all recordings to AI simultaneously...');
 
-  const qas = [];
-  for (let i = 0; i < allQs.length; i++) {
+  let transcribed = 0;
+  const transcribeOne = async (i) => {
     const qi = allQs[i];
     const rec = recordings[i];
-    showProgress(i, allQs.length + 1, `Transcribing response ${i+1} of ${allQs.length}...`);
-
+    const base = { question: qi.question, part: qi.part };
     if (!rec) {
-      qas.push({ question: qi.question, part: qi.part, transcript: '(no recording provided)', pronunciationNotes: 'Question was skipped' });
-      continue;
+      transcribed++;
+      showProgress(transcribed, allQs.length + 1, `${transcribed}/${allQs.length} responses transcribed...`);
+      return { ...base, transcript: '(no recording provided)', pronunciationNotes: 'Question was skipped' };
     }
-
     try {
       const audioData = await blobToBase64(rec.blob);
       const res = await fetch('/api/speaking-transcribe', {
@@ -775,11 +774,17 @@ async function submitTest() {
       });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const d = await res.json();
-      qas.push({ question: qi.question, part: qi.part, transcript: d.transcript || '', pronunciationNotes: d.pronunciationNotes || '' });
+      transcribed++;
+      showProgress(transcribed, allQs.length + 1, `${transcribed}/${allQs.length} responses transcribed...`);
+      return { ...base, transcript: d.transcript || '', pronunciationNotes: d.pronunciationNotes || '' };
     } catch (err) {
-      qas.push({ question: qi.question, part: qi.part, transcript: '(transcription failed)', pronunciationNotes: 'Error: ' + err.message });
+      transcribed++;
+      showProgress(transcribed, allQs.length + 1, `${transcribed}/${allQs.length} responses transcribed...`);
+      return { ...base, transcript: '(transcription failed)', pronunciationNotes: 'Error: ' + err.message };
     }
-  }
+  };
+
+  const qas = await Promise.all(allQs.map((_, i) => transcribeOne(i)));
 
   showProgress(allQs.length, allQs.length + 1, 'Generating IELTS band score evaluation...');
 

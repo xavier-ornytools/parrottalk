@@ -168,10 +168,10 @@
       <div class="t-name">Fitness Centre · Science Museum · Climate · Behavioural Economics</div>
       <div class="t-meta" id="meta-test02">Not attempted yet</div>
     </button>
-    <button class="test-sel-btn" disabled style="opacity:.55;cursor:not-allowed">
-      <div class="t-num" style="color:var(--text-muted)">Test 03</div>
-      <div class="t-name">Coming Soon</div>
-      <div class="t-meta">Audio files required — in preparation</div>
+    <button class="test-sel-btn" onclick="selectTest('test03')">
+      <div class="t-num">Test 03</div>
+      <div class="t-name">Cycle Hire · Library · Environment · Sleep Science</div>
+      <div class="t-meta" id="meta-test03">Not attempted yet · 🤖 AI Voice</div>
     </button>
   </div>
 
@@ -273,17 +273,19 @@ let isPlaying = false;
 
 function init() {
   const scores = getAllScores();
-  ['test01','test02'].forEach(id => {
+  ['test01','test02','test03'].forEach(id => {
     const s = scores[id];
-    if (s) document.getElementById('meta-'+id).textContent =
-      `Last: ${s.total}/40 — Band ${s.band} (${s.date})`;
+    const el = document.getElementById('meta-'+id);
+    if (s && el) el.textContent = `Last: ${s.total}/40 — Band ${s.band} (${s.date})`;
   });
 }
 
 function selectTest(id) {
+  cancelTTS();
+  audio.pause(); setPlayIcon(false);
   currentTest = TESTS[id];
   document.querySelectorAll('.test-sel-btn').forEach((b,i) =>
-    b.classList.toggle('active', (i===0 && id==='test01') || (i===1 && id==='test02')));
+    b.classList.toggle('active', (i===0&&id==='test01')||(i===1&&id==='test02')||(i===2&&id==='test03')));
   document.getElementById('instructions-card').classList.remove('hidden');
   document.getElementById('test-zone').classList.add('hidden');
   submitted = false;
@@ -315,6 +317,7 @@ function buildTabs() {
 }
 
 function switchSection(i) {
+  cancelTTS();
   audio.pause(); setPlayIcon(false);
   currentSection = i;
   renderSection(i);
@@ -331,8 +334,72 @@ function setPlayIcon(playing) {
   isPlaying = playing;
 }
 
+function isTTS(sec) { return Array.isArray(sec.script); }
+
+// ── TTS state ────────────────────────────────────────────────────────────────
+let ttsQueue = [], ttsIdx = 0, ttsSpeaking = false;
+
+function cancelTTS() {
+  speechSynthesis.cancel();
+  ttsQueue = []; ttsIdx = 0; ttsSpeaking = false;
+}
+
+function speakNext(total) {
+  if (ttsIdx >= ttsQueue.length) return;
+  const line = ttsQueue[ttsIdx];
+  const u = new SpeechSynthesisUtterance(line.t);
+  u.lang = 'en-GB'; u.rate = line.r || 0.88; u.pitch = line.p || 1.0;
+  u.onend = () => {
+    ttsIdx++;
+    const pct = Math.round((ttsIdx / total) * 100);
+    const fill = document.getElementById('progress-fill');
+    const disp = document.getElementById('time-display');
+    if (fill) fill.style.width = pct + '%';
+    if (ttsIdx >= total) {
+      ttsSpeaking = false; setPlayIcon(false);
+      if (disp) disp.textContent = '✓ Done';
+      handleSectionEnd();
+    } else {
+      if (disp) disp.textContent = `${ttsIdx}/${total}`;
+      speakNext(total);
+    }
+  };
+  u.onerror = () => { ttsIdx++; speakNext(total); };
+  speechSynthesis.speak(u);
+}
+
+function handleSectionEnd() {
+  const tab = document.getElementById(`tab-${currentSection}`);
+  if (tab) tab.classList.add('done');
+  const allDone = currentTest.sections.every((_,i) =>
+    document.getElementById(`tab-${i}`)?.classList.contains('done'));
+  if (allDone) {
+    document.getElementById('submit-section').classList.remove('hidden');
+    toast('All sections listened! Submit your answers when ready.', 'success');
+  } else if (currentSection < currentTest.sections.length - 1) {
+    toast(`Section ${currentSection+1} done — switch to Section ${currentSection+2}`, 'info');
+  }
+}
+
 function togglePlay() {
   const sec = currentTest.sections[currentSection];
+  if (isTTS(sec)) {
+    if (ttsSpeaking && !speechSynthesis.paused) {
+      speechSynthesis.pause(); setPlayIcon(false); ttsSpeaking = false;
+    } else if (speechSynthesis.paused && ttsQueue.length > 0) {
+      speechSynthesis.resume(); setPlayIcon(true); ttsSpeaking = true;
+    } else {
+      cancelTTS();
+      ttsQueue = sec.script; ttsIdx = 0; ttsSpeaking = true;
+      setPlayIcon(true);
+      const disp = document.getElementById('time-display');
+      const fill = document.getElementById('progress-fill');
+      if (disp) disp.textContent = '1/' + sec.script.length;
+      if (fill) fill.style.width = '2%';
+      speakNext(sec.script.length);
+    }
+    return;
+  }
   const expected = sec.audio;
   if (!audio.src.endsWith(expected)) { audio.src = expected; }
   if (audio.paused) { audio.play(); setPlayIcon(true); }
@@ -348,20 +415,12 @@ audio.addEventListener('timeupdate', () => {
 
 audio.addEventListener('ended', () => {
   setPlayIcon(false);
-  const tab = document.getElementById(`tab-${currentSection}`);
-  if (tab) tab.classList.add('done');
-  const allDone = currentTest.sections.every((_,i) =>
-    document.getElementById(`tab-${i}`)?.classList.contains('done'));
-  if (allDone) {
-    document.getElementById('submit-section').classList.remove('hidden');
-    toast('All sections listened! Submit your answers when ready.', 'success');
-  } else if (currentSection < currentTest.sections.length - 1) {
-    toast(`Section ${currentSection+1} done — move to Section ${currentSection+2}`, 'info');
-  }
+  handleSectionEnd();
 });
 
 function seekAudio(e) {
-  if (!audio.duration) return;
+  const sec = currentTest.sections[currentSection];
+  if (isTTS(sec) || !audio.duration) return;
   const rect = e.currentTarget.getBoundingClientRect();
   audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
 }
@@ -374,7 +433,8 @@ function fmt(s) {
 // RENDER QUESTIONS
 function renderSection(i) {
   const sec = currentTest.sections[i];
-  document.getElementById('section-name').textContent = `Section ${sec.number} — ${sec.title}`;
+  const ttsTag = isTTS(sec) ? ' · 🤖 AI Voice' : '';
+  document.getElementById('section-name').textContent = `Section ${sec.number} — ${sec.title}${ttsTag}`;
   document.querySelectorAll('.section-block').forEach(b => b.classList.remove('active'));
   let block = document.getElementById('sec-block-'+i);
   if (!block) {
