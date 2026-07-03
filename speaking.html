@@ -152,6 +152,7 @@
   </style>
 </head>
 <body>
+<div class="toast-container" id="toast-container"></div>
 
 <!-- NAV -->
 <nav class="nav">
@@ -339,6 +340,35 @@ let currentMimeType = '';
 let prepIntervalId = null;
 let prepSecondsLeft = 60;
 let prepActive = false;
+
+// Web Speech API — live transcription
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const hasSpeechAPI = !!SpeechRecognition;
+let recognition = null;
+let liveTranscripts = {};
+let lastSpeakingPrompt = '';
+
+function initRecognition(idx) {
+  if (!hasSpeechAPI) return;
+  if (recognition) { try { recognition.abort(); } catch(e) {} }
+  recognition = new SpeechRecognition();
+  recognition.lang = 'en-US';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.onresult = (e) => {
+    let text = '';
+    for (let i = 0; i < e.results.length; i++) {
+      text += e.results[i][0].transcript + ' ';
+    }
+    liveTranscripts[idx] = text.trim();
+    const el = document.getElementById('transcript-live-' + idx);
+    if (el) {
+      el.textContent = text.trim();
+      el.style.padding = text.trim() ? '8px 12px' : '0';
+    }
+  };
+  recognition.onerror = () => {};
+}
 
 // ── Test selection ──────────────────────────────────────────────────────────
 
@@ -538,6 +568,7 @@ function renderTestZone() {
       </div>
       <button class="${btnCls}" id="spk-rec-btn" onclick="toggleRecording()"><span>${btnIcon}</span></button>
       <div id="spk-rec-status" style="margin-top:8px">${statusHTML}</div>
+      <div id="transcript-live-${recIdx}" style="margin-top:10px;min-height:0;padding:${liveTranscripts[recIdx]?'8px 12px':'0'};background:var(--surface);border-radius:var(--r);font-size:.8125rem;color:var(--text-muted);text-align:left;max-height:80px;overflow:auto">${liveTranscripts[recIdx]||''}</div>
       <div class="spk-nav" style="margin-top:24px">${navL}${navR}</div>
     </div>
     <div class="card card-sm" style="margin-top:12px;padding:12px 16px">
@@ -659,6 +690,15 @@ async function startRecording() {
     recSeconds = 0;
     startRecordingTimerDisplay();
 
+    // Live transcription via Web Speech API
+    const recIdx = getRecordingIndex(currentPart, currentQIdx);
+    initRecognition(recIdx);
+    if (hasSpeechAPI) {
+      try { recognition.start(); } catch(e) {}
+    } else {
+      toast('Live transcription requires Chrome or Edge. Your recording is saved but you will need to describe your answers manually.', 'warning');
+    }
+
     // Update button immediately without full re-render
     const btn = document.getElementById('spk-rec-btn');
     if (btn) { btn.className = 'record-btn-main recording'; btn.querySelector('span').textContent = '⏹'; }
@@ -681,6 +721,9 @@ async function startRecording() {
 function stopRecording() {
   if (mediaRecorder && mediaRecorder.state === 'recording') {
     mediaRecorder.stop();
+  }
+  if (hasSpeechAPI && recognition) {
+    try { recognition.stop(); } catch(e) {}
   }
 }
 
@@ -715,13 +758,72 @@ function readQuestion(text) {
 
 // ── Submit ──────────────────────────────────────────────────────────────────
 
-function checkAndSubmit() {
-  const missing = recordings.map((r,i) => r ? null : i+1).filter(Boolean);
-  if (missing.length > 0) {
-    const ok = confirm(`You haven't recorded question${missing.length>1?'s':''} ${missing.join(', ')}. Submit with your recorded responses only?`);
-    if (!ok) return;
+async function checkAndSubmit() {
+  const t = SPEAKING_TESTS[currentSpeakingTest];
+  const allQs = getAllQuestions(currentSpeakingTest);
+  const hasAnyTranscript = allQs.some((_, i) => liveTranscripts[i] && liveTranscripts[i].length > 5);
+  const hasAnyRecording = recordings.some(r => r !== null);
+
+  if (!hasAnyTranscript && !hasAnyRecording) {
+    toast('Please record at least one answer before submitting.', 'error');
+    return;
   }
-  submitTest();
+
+  // Build prompt from liveTranscripts
+  const p1Lines = t.part1.questions.map((q, i) => {
+    const idx = getRecordingIndex(1, i);
+    const tr = liveTranscripts[idx] || (recordings[idx] ? '(recorded — transcript unavailable)' : '(not recorded)');
+    return `Q: ${q}\nA: ${tr}`;
+  }).join('\n\n');
+
+  const p2Idx = getRecordingIndex(2, 0);
+  const p2tr = liveTranscripts[p2Idx] || (recordings[p2Idx] ? '(recorded — transcript unavailable)' : '(not recorded)');
+  const p2Bullets = t.part2.cue.bullets.map(b => `  • ${b}`).join('\n');
+  const p2Line = `Cue card: ${t.part2.cue.instruction}\n${p2Bullets}\n\nCandidate's answer:\n${p2tr}`;
+
+  const p3Lines = t.part3.questions.map((q, i) => {
+    const idx = getRecordingIndex(3, i);
+    const tr = liveTranscripts[idx] || (recordings[idx] ? '(recorded — transcript unavailable)' : '(not recorded)');
+    return `Q: ${q}\nA: ${tr}`;
+  }).join('\n\n');
+
+  lastSpeakingPrompt = `You are an expert IELTS Speaking examiner. Evaluate this candidate's performance for the topic: "${t.topic}".
+
+--- PART 1 — Interview ---
+${p1Lines}
+
+--- PART 2 — Long Turn ---
+${p2Line}
+
+--- PART 3 — Discussion ---
+${p3Lines}
+
+Give me:
+1. Overall Band score (5.0–9.0, half-band increments)
+2. Band + brief feedback for each criterion:
+   - Fluency & Coherence (FC)
+   - Lexical Resource (LR)
+   - Grammatical Range & Accuracy (GRA)
+   - Pronunciation (Pron)
+3. Top 2 things to improve`;
+
+  try { await navigator.clipboard.writeText(lastSpeakingPrompt); } catch(e) {}
+  window.open('https://claude.ai', '_blank');
+
+  document.getElementById('spk-test-zone').classList.add('hidden');
+  const resultsEl = document.getElementById('spk-results');
+  resultsEl.classList.remove('hidden');
+  resultsEl.innerHTML = `<div class="card" style="border-color:var(--primary);background:var(--primary-pale);text-align:center;padding:32px">
+    <div style="font-size:2.5rem;margin-bottom:12px">📋</div>
+    <h3 style="margin-bottom:8px">Prompt copié !</h3>
+    <p style="color:var(--text-muted);margin-bottom:20px">
+      Claude.ai est ouvert dans un nouvel onglet.<br>
+      Colle (Ctrl+V) et envoie — ton Band score arrive en 10 secondes.
+    </p>
+    <button onclick="(async()=>{try{await navigator.clipboard.writeText(lastSpeakingPrompt)}catch(e){}window.open('https://claude.ai','_blank')})()" class="btn btn-primary" style="margin-bottom:12px">🔁 Rouvrir Claude.ai + recopier</button>
+    <br>
+    <button class="btn" onclick="document.getElementById('spk-test-zone').classList.remove('hidden');document.getElementById('spk-results').classList.add('hidden');">← Retour au test</button>
+  </div>`;
 }
 
 async function blobToBase64(blob) {
@@ -956,6 +1058,15 @@ function saveSpeakingScore(data, testId) {
     date: new Date().toLocaleDateString('fr-FR')
   };
   localStorage.setItem('ielts_speaking_scores', JSON.stringify(spk));
+}
+
+function toast(msg, type='info') {
+  const c = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  c.appendChild(el);
+  setTimeout(() => el.remove(), 5000);
 }
 
 // Init
