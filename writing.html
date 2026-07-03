@@ -332,6 +332,11 @@ function selectWritingTest(n) {
 }
 
 function startWritingTest() {
+  document.getElementById('task1-answer').value = '';
+  document.getElementById('task2-answer').value = '';
+  document.getElementById('wc1').textContent = '0 words (minimum: 150)';
+  document.getElementById('wc2').textContent = '0 words (minimum: 250)';
+  document.querySelectorAll('.word-count').forEach(el => el.className = 'word-count');
   const d = WRITING_DATA[currentWritingTest];
   document.getElementById('writing-instructions').classList.add('hidden');
   document.getElementById('writing-test-zone').classList.remove('hidden');
@@ -401,13 +406,20 @@ async function getAIFeedback(task) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ task, taskType, prompt: promptText, essay, wordCount: essay.split(/\s+/).length, minWords })
     });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      const msg = res.status === 500 && errData.error === 'No API key configured'
+        ? 'AI feedback unavailable — GEMINI_API_KEY not set in Vercel environment.'
+        : `Server error (HTTP ${res.status})`;
+      throw new Error(msg);
+    }
     const data = await res.json();
     renderAIFeedback(feedbackBox, data, task);
   } catch (err) {
     feedbackBox.innerHTML = `<div class="card card-sm" style="border-color:var(--danger-light);background:var(--danger-light)">
-      <p style="color:var(--danger);font-size:.875rem">⚠️ AI feedback unavailable. Make sure the API is configured in Vercel environment variables.<br><em>${err.message}</em></p>
+      <p style="color:var(--danger);font-size:.875rem">⚠️ ${err.message}</p>
     </div>`;
+    btn.innerHTML = '🤖 AI feedback unavailable';
   }
   btn.disabled = false;
   btn.innerHTML = '🤖 Get AI Feedback';

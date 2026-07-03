@@ -219,7 +219,7 @@
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
         </button>
         <div class="audio-progress">
-          <div class="audio-bar" onclick="seekAudio(event)" id="progress-bar">
+          <div class="audio-bar" onclick="seekAudio(event, this)" id="progress-bar">
             <div class="audio-fill" id="progress-fill" style="width:0%"></div>
           </div>
           <div class="audio-time" id="time-display">0:00 / 0:00</div>
@@ -231,7 +231,10 @@
     <div id="questions-container"></div>
 
     <!-- SUBMIT -->
-    <div id="submit-section" class="hidden" style="text-align:center;padding:32px 0">
+    <div id="submit-hint" style="text-align:center;padding:20px 0 4px;color:var(--text-muted);font-size:.875rem">
+      Complete all 4 sections to submit
+    </div>
+    <div id="submit-section" class="hidden" style="text-align:center;padding:16px 0 32px">
       <p style="margin-bottom:16px;color:var(--text-muted)">All 4 sections complete. Ready to see your score?</p>
       <button class="btn btn-success btn-lg" onclick="submitTest()">✅ Submit & Score (40 questions)</button>
     </div>
@@ -266,6 +269,7 @@
 <script>
 let currentTest = TEST01;
 let currentSection = 0;
+let playingSection = 0;
 let audio = document.getElementById('audio-player');
 let sectionScores = [0,0,0,0];
 let submitted = false;
@@ -358,7 +362,7 @@ function speakNext(total) {
     if (ttsIdx >= total) {
       ttsSpeaking = false; setPlayIcon(false);
       if (disp) disp.textContent = '✓ Done';
-      handleSectionEnd();
+      handleSectionEnd(playingSection);
     } else {
       if (disp) disp.textContent = `${ttsIdx}/${total}`;
       speakNext(total);
@@ -368,16 +372,17 @@ function speakNext(total) {
   speechSynthesis.speak(u);
 }
 
-function handleSectionEnd() {
-  const tab = document.getElementById(`tab-${currentSection}`);
+function handleSectionEnd(sectionIdx) {
+  const tab = document.getElementById(`tab-${sectionIdx}`);
   if (tab) tab.classList.add('done');
   const allDone = currentTest.sections.every((_,i) =>
     document.getElementById(`tab-${i}`)?.classList.contains('done'));
   if (allDone) {
+    document.getElementById('submit-hint').style.display = 'none';
     document.getElementById('submit-section').classList.remove('hidden');
     toast('All sections listened! Submit your answers when ready.', 'success');
-  } else if (currentSection < currentTest.sections.length - 1) {
-    toast(`Section ${currentSection+1} done — switch to Section ${currentSection+2}`, 'info');
+  } else if (sectionIdx < currentTest.sections.length - 1) {
+    toast(`Section ${sectionIdx+1} done — switch to Section ${sectionIdx+2}`, 'info');
   }
 }
 
@@ -390,6 +395,7 @@ function togglePlay() {
       speechSynthesis.resume(); setPlayIcon(true); ttsSpeaking = true;
     } else {
       cancelTTS();
+      playingSection = currentSection;
       ttsQueue = sec.script; ttsIdx = 0; ttsSpeaking = true;
       setPlayIcon(true);
       const disp = document.getElementById('time-display');
@@ -402,7 +408,7 @@ function togglePlay() {
   }
   const expected = sec.audio;
   if (!audio.src.endsWith(expected)) { audio.src = expected; }
-  if (audio.paused) { audio.play(); setPlayIcon(true); }
+  if (audio.paused) { playingSection = currentSection; audio.play(); setPlayIcon(true); }
   else { audio.pause(); setPlayIcon(false); }
 }
 
@@ -415,13 +421,13 @@ audio.addEventListener('timeupdate', () => {
 
 audio.addEventListener('ended', () => {
   setPlayIcon(false);
-  handleSectionEnd();
+  handleSectionEnd(playingSection);
 });
 
-function seekAudio(e) {
+function seekAudio(e, el) {
   const sec = currentTest.sections[currentSection];
   if (isTTS(sec) || !audio.duration) return;
-  const rect = e.currentTarget.getBoundingClientRect();
+  const rect = el.getBoundingClientRect();
   audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
 }
 
@@ -508,6 +514,8 @@ function buildMatchingGroup(group) {
 // SCORING
 function submitTest() {
   if (submitted) return;
+  cancelTTS();
+  audio.pause(); setPlayIcon(false);
   submitted = true;
   let total = 0;
   sectionScores = [0,0,0,0];

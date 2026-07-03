@@ -278,10 +278,23 @@ function loadDashboard() {
     if (!bestReading || s.band > bestReading.band) bestReading = s;
   });
 
-  // Get best writing band
+  // Get best writing band — weighted formula (T1 + T2×2) / 3 per test
   let bestWriting = null;
+  const writingByTest = {};
   Object.values(writingScores).forEach(s => {
-    if (s.band && (!bestWriting || s.band > bestWriting.band)) bestWriting = s;
+    const tid = s.testId;
+    if (!writingByTest[tid]) writingByTest[tid] = { date: s.date };
+    if (s.task === 1) writingByTest[tid].t1 = s.band;
+    if (s.task === 2) writingByTest[tid].t2 = s.band;
+  });
+  Object.values(writingByTest).forEach(t => {
+    let band;
+    if (t.t1 != null && t.t2 != null) {
+      band = Math.round(((t.t1 + t.t2 * 2) / 3) * 2) / 2;
+    } else {
+      band = t.t1 ?? t.t2;
+    }
+    if (band && (!bestWriting || band > bestWriting.band)) bestWriting = { band, date: t.date };
   });
 
   // Get best speaking band
@@ -406,7 +419,7 @@ function buildHistory(scores) {
     return;
   }
   tests.forEach(([id, s]) => {
-    const testLabel = id === 'test01' ? 'Test 01' : 'Test 02';
+    const testLabel = id === 'test03' ? 'Test 03' : id === 'test02' ? 'Test 02' : 'Test 01';
     const secs = s.sectionScores || [0,0,0,0];
     tbody.innerHTML += `<tr>
       <td style="font-weight:600">${testLabel}</td>

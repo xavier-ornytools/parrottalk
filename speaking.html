@@ -843,7 +843,13 @@ async function submitTest() {
 
   // Sequential with 4s delay — Gemini free tier: 15 RPM max
   const qas = [];
+  const TRANSCRIPTION_TIMEOUT = 120000;
+  const transcriptionStart = Date.now();
   for (let i = 0; i < allQs.length; i++) {
+    if (Date.now() - transcriptionStart > TRANSCRIPTION_TIMEOUT) {
+      showProgress(transcribed, allQs.length + 1, 'Timeout reached — scoring with available responses...');
+      break;
+    }
     if (i > 0) {
       showProgress(transcribed, allQs.length + 1, `Waiting before next request (${i}/${allQs.length} done)...`);
       await new Promise(r => setTimeout(r, 4000));

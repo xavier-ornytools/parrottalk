@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
   const { audioData, mimeType, question, part } = req.body || {};
   if (!audioData || !mimeType) return res.status(400).json({ error: 'Missing audio data' });
