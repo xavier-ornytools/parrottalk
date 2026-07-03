@@ -238,7 +238,7 @@
       </div>
       <div class="flex gap-3 items-center">
         <div class="q-num" style="background:var(--dark)">4</div>
-        <p style="color:var(--text)">After all 3 passages, click <strong>Submit & Score</strong></p>
+        <p style="color:var(--text)">Done with at least one passage? Click <strong>Submit & Get Score</strong></p>
       </div>
     </div>
     <div class="card card-sm" style="background:var(--warning-light);border-color:var(--warning);margin-bottom:20px">
@@ -668,8 +668,8 @@
 
     <!-- SUBMIT -->
     <div style="text-align:center;padding:32px 0">
-      <p style="margin-bottom:16px;color:var(--text-muted)">Answered all 40 questions? Submit to see your band score.</p>
-      <button class="btn btn-success btn-lg" onclick="submitTest()">✅ Submit & Score (40 questions)</button>
+      <p style="margin-bottom:16px;color:var(--text-muted)">Done with some or all passages? Submit to see your score.</p>
+      <button class="btn btn-success btn-lg" onclick="submitTest()">✅ Submit & Get Score</button>
     </div>
 
   </div><!-- /test-zone -->
@@ -1031,7 +1031,7 @@
 
       <div class="flex justify-between" style="margin-top:16px;gap:12px">
         <button class="btn btn-secondary" onclick="switchPassage(1)">← Passage 2</button>
-        <button class="btn btn-primary btn-lg" onclick="submitTest()">✓ Submit & Score</button>
+        <button class="btn btn-primary btn-lg" onclick="submitTest()">✓ Submit & Get Score</button>
       </div>
     </div><!-- /t2_passage-2 -->
 
@@ -1395,7 +1395,7 @@
 
       <div class="flex justify-between" style="margin-top:16px;gap:12px">
         <button class="btn btn-secondary" onclick="switchPassage(1)">← Passage 2</button>
-        <button class="btn btn-primary btn-lg" onclick="submitTest()">✓ Submit &amp; Score</button>
+        <button class="btn btn-primary btn-lg" onclick="submitTest()">✓ Submit &amp; Get Score</button>
       </div>
     </div><!-- /t3_passage-2 -->
 
@@ -1621,10 +1621,11 @@ function submitTest() {
   const testId = currentReadingTest === 3 ? 'rdtest03' : currentReadingTest === 2 ? 'rdtest02' : 'rdtest01';
   const metaId = currentReadingTest === 3 ? 'meta-rdtest03' : currentReadingTest === 2 ? 'meta-rdtest02' : 'meta-rdtest01';
 
-  let total = 0;
+  let total = 0, answeredCount = 0;
   const passageScores = [0, 0, 0];
 
   for (let qn = 1; qn <= 40; qn++) {
+    if (isAnswered(qn, prefix)) answeredCount++;
     const correct = checkQ(qn, prefix);
     if (correct) total++;
     markQ(qn, correct, prefix);
@@ -1633,11 +1634,30 @@ function submitTest() {
     else passageScores[2] += correct ? 1 : 0;
   }
 
-  const band = getBand(total);
-  saveReadingScore(testId, passageScores, total);
-  showResults(total, band, passageScores, activeRanges);
+  if (answeredCount === 0) {
+    toast('Answer at least one question before submitting.', 'warning');
+    submitted = false;
+    return;
+  }
 
-  document.getElementById(metaId).textContent = `Last: ${total}/40 — Band ${band}`;
+  const isPartial = answeredCount < 40;
+  const scaledTotal = isPartial ? Math.round((total / answeredCount) * 40) : total;
+  const band = getBand(isPartial ? scaledTotal : total);
+  saveReadingScore(testId, passageScores, total);
+  showResults(total, band, passageScores, activeRanges, answeredCount, scaledTotal);
+
+  document.getElementById(metaId).textContent = isPartial
+    ? `Last: ${total}/${answeredCount} — ~Band ${band}`
+    : `Last: ${total}/40 — Band ${band}`;
+}
+
+function isAnswered(n, prefix='') {
+  const key = prefix + 'q' + n;
+  const el = document.getElementById(key);
+  if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) {
+    return el.value.trim() !== '';
+  }
+  return !!document.querySelector(`input[name="${key}"]:checked`);
 }
 
 function checkQ(n, prefix='') {
@@ -1705,14 +1725,17 @@ function markQ(n, correct, prefix='') {
   });
 }
 
-function showResults(total, band, passageScores, ranges) {
+function showResults(total, band, passageScores, ranges, answeredCount=40, scaledTotal=total) {
   const card = document.getElementById('results-card');
   card.classList.add('show');
-  document.getElementById('results-score').textContent = `${total}/40`;
-  document.getElementById('results-band').textContent = `Band ${band}`;
-  const gap = 35 - total;
-  document.getElementById('results-sub').textContent =
-    total >= 35 ? '🎉 Band 7.0 target reached!' : `${gap} more correct to reach Band 7.0`;
+  const isPartial = answeredCount < 40;
+  document.getElementById('results-score').textContent =
+    isPartial ? `${total}/${answeredCount}` : `${total}/40`;
+  document.getElementById('results-band').textContent =
+    isPartial ? `~Band ${band}` : `Band ${band}`;
+  document.getElementById('results-sub').textContent = isPartial
+    ? `⚠️ Approximate — ${answeredCount}/40 questions answered. Complete all 3 passages for an official score.`
+    : (total >= 35 ? '🎉 Band 7.0 target reached!' : `${35-total} more correct to reach Band 7.0`);
   document.getElementById('section-results').innerHTML = ranges.map((p,i) =>
     `<div class="sec-res">
        <div class="val">${passageScores[i]}/${p.end - p.start + 1}</div>

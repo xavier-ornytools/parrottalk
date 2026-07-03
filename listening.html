@@ -232,11 +232,11 @@
 
     <!-- SUBMIT -->
     <div id="submit-hint" style="text-align:center;padding:20px 0 4px;color:var(--text-muted);font-size:.875rem">
-      Complete all 4 sections to submit
+      Listen to at least 1 section to submit — more sections = more accurate score
     </div>
     <div id="submit-section" class="hidden" style="text-align:center;padding:16px 0 32px">
-      <p style="margin-bottom:16px;color:var(--text-muted)">All 4 sections complete. Ready to see your score?</p>
-      <button class="btn btn-success btn-lg" onclick="submitTest()">✅ Submit & Score (40 questions)</button>
+      <p style="margin-bottom:16px;color:var(--text-muted)">Ready to get your score?</p>
+      <button class="btn btn-success btn-lg" onclick="submitTest()">✅ Submit & Get Score</button>
     </div>
 
     <!-- RESULTS -->
@@ -375,14 +375,16 @@ function speakNext(total) {
 function handleSectionEnd(sectionIdx) {
   const tab = document.getElementById(`tab-${sectionIdx}`);
   if (tab) tab.classList.add('done');
-  const allDone = currentTest.sections.every((_,i) =>
+  const doneTabs = currentTest.sections.filter((_,i) =>
     document.getElementById(`tab-${i}`)?.classList.contains('done'));
-  if (allDone) {
+  if (doneTabs.length === 1) {
     document.getElementById('submit-hint').style.display = 'none';
     document.getElementById('submit-section').classList.remove('hidden');
-    toast('All sections listened! Submit your answers when ready.', 'success');
+    toast(`Section ${sectionIdx+1} done — submit now or continue for a better score.`, 'success');
+  } else if (doneTabs.length === currentTest.sections.length) {
+    toast('All 4 sections done! Submit when ready.', 'success');
   } else if (sectionIdx < currentTest.sections.length - 1) {
-    toast(`Section ${sectionIdx+1} done — switch to Section ${sectionIdx+2}`, 'info');
+    toast(`Section ${sectionIdx+1} done (${doneTabs.length}/4) — continue or submit now.`, 'info');
   }
 }
 
@@ -517,20 +519,26 @@ function submitTest() {
   cancelTTS();
   audio.pause(); setPlayIcon(false);
   submitted = true;
-  let total = 0;
+  let total = 0, maxPossible = 0;
   sectionScores = [0,0,0,0];
   currentTest.sections.forEach((sec, si) => {
+    const isDone = document.getElementById(`tab-${si}`)?.classList.contains('done');
+    const qs = getQuestions(sec);
     let secScore = 0;
-    getQuestions(sec).forEach(q => {
+    qs.forEach(q => {
       const ok = checkAnswer(q);
-      if (ok) { total++; secScore++; }
       markQuestion(q, ok);
+      if (isDone) { if (ok) { total++; secScore++; } }
     });
-    sectionScores[si] = secScore;
+    if (isDone) { sectionScores[si] = secScore; maxPossible += qs.length; }
   });
-  const band = getBand(total);
+  const isPartial = maxPossible < 40;
+  const scaledTotal = isPartial ? Math.round((total / maxPossible) * 40) : total;
+  const doneCount = currentTest.sections.filter((_,i) =>
+    document.getElementById(`tab-${i}`)?.classList.contains('done')).length;
+  const band = getBand(scaledTotal);
   saveScore(currentTest.id, sectionScores, total);
-  showResults(total, band);
+  showResults(total, band, isPartial, doneCount, maxPossible, scaledTotal);
 }
 
 function getQuestions(sec) {
@@ -562,20 +570,29 @@ function markQuestion(q, correct) {
   }
 }
 
-function showResults(total, band) {
+function showResults(total, band, isPartial=false, doneCount=4, maxPossible=40, scaledTotal=total) {
   const card = document.getElementById('results-card');
   card.classList.add('show');
-  document.getElementById('results-score').textContent = `${total}/40`;
-  document.getElementById('results-band').textContent = `Band ${band}`;
-  const gap = 35 - total;
-  document.getElementById('results-sub').textContent =
-    total >= 35 ? '🎉 Band 7.0 target reached!' : `${gap} more correct to reach Band 7.0`;
+  if (isPartial) {
+    document.getElementById('results-score').textContent = `${total}/${maxPossible}`;
+    document.getElementById('results-band').textContent  = `~Band ${band}`;
+    document.getElementById('results-sub').textContent   =
+      `⚠️ Approximate — ${doneCount}/4 sections only. Do all 4 for an official score.`;
+  } else {
+    document.getElementById('results-score').textContent = `${total}/40`;
+    document.getElementById('results-band').textContent  = `Band ${band}`;
+    const gap = 35 - total;
+    document.getElementById('results-sub').textContent   =
+      total >= 35 ? '🎉 Band 7.0 target reached!' : `${gap} more correct to reach Band 7.0`;
+  }
   document.getElementById('section-results').innerHTML =
-    currentTest.sections.map((s,i) => `
-      <div class="sec-res">
-        <div class="val">${sectionScores[i]}/10</div>
+    currentTest.sections.map((s,i) => {
+      const isDone = document.getElementById(`tab-${i}`)?.classList.contains('done');
+      return `<div class="sec-res">
+        <div class="val">${isDone ? sectionScores[i]+'/10' : '—'}</div>
         <div class="lbl">Section ${s.number}</div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   document.getElementById('submit-section').classList.add('hidden');
   card.scrollIntoView({ behavior: 'smooth', block: 'start' });
   const sc = getAllScores()[currentTest.id];
