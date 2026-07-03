@@ -82,6 +82,9 @@ Evaluate on all 4 IELTS criteria and return this exact JSON structure:
 
     if (!response.ok) {
       const errText = await response.text();
+      if (response.status === 429) {
+        return res.status(429).json({ error: 'Rate limit exceeded', rateLimit: true });
+      }
       return res.status(502).json({ error: `Gemini API error: ${response.status}`, detail: errText });
     }
 
