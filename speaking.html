@@ -183,9 +183,9 @@
           <span class="badge badge-dark">~11–14 min</span>
         </div>
         <h1>IELTS Speaking Test</h1>
-        <p>Record your voice · AI evaluates pronunciation, fluency &amp; grammar</p>
+        <p>Record your voice · AI evaluates fluency, vocabulary &amp; grammar</p>
         <div style="font-size:.875rem;font-weight:600;color:var(--text-muted);margin-top:12px">
-          🎙️ REAL VOICE RECORDING · GEMINI AI ANALYSIS · FC · LR · GRA · PRONUNCIATION
+          🎙️ REAL VOICE RECORDING · AI FEEDBACK · FC · LR · GRA · PRON*
         </div>
       </div>
       <div class="page-hero__mascot">
@@ -397,7 +397,7 @@ function renderPretest(n) {
       </div>
       <div class="card card-sm" style="background:var(--primary-pale);border-color:var(--primary-light);margin-bottom:20px">
         <p style="font-size:.875rem;color:var(--primary-dark)">
-          🦜 <strong>How it works:</strong> Record your spoken answers for each question. Gemini AI will transcribe your voice and evaluate Fluency, Vocabulary, Grammar and Pronunciation — just like a real IELTS examiner. Make sure your microphone is working before you start.
+          🦜 <strong>How it works:</strong> Record your spoken answers for each question. Your responses are transcribed and evaluated by an AI assistant across Fluency, Vocabulary, and Grammar criteria. Pronunciation is estimated from transcribed text only — not from the audio signal. Make sure your microphone is working before you start.
         </p>
       </div>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px">
@@ -1010,7 +1010,7 @@ function renderSpeakingFeedback(data, testId) {
     { key:'fc',   label:'Fluency & Coherence', color:'var(--primary)', bg:'var(--primary-light)' },
     { key:'lr',   label:'Lexical Resource',     color:'var(--primary)', bg:'var(--primary-light)' },
     { key:'gra',  label:'Grammar Range',         color:'var(--warning)', bg:'var(--warning-light)' },
-    { key:'pron', label:'Pronunciation',          color:'var(--purple)',  bg:'#F5F3FF' }
+    { key:'pron', label:'Pronunciation*',         color:'var(--purple)',  bg:'#F5F3FF' }
   ].map(c => `
     <div class="score-mini" style="background:${c.bg}">
       <div class="sm-tag">${c.key.toUpperCase()}</div>
@@ -1072,5 +1072,9 @@ function toast(msg, type='info') {
 // Init
 selectTest(1);
 </script>
+<footer style="text-align:center;padding:16px;font-size:.75rem;color:var(--text-muted);opacity:.7;border-top:1px solid var(--border);margin-top:32px">
+  <p>* Pronunciation is estimated from transcribed text only — not evaluated from the audio signal.</p>
+  <p style="margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
+</footer>
 </body>
 </html>

@@ -59,10 +59,10 @@
   <p>Your test scores, band results, and progress data are stored exclusively in your browser's localStorage. This data never leaves your device and is not transmitted to our servers. You can clear this data at any time by clearing your browser's site data.</p>
 
   <p><strong>Audio recordings (Speaking module)</strong></p>
-  <p>When you use the AI Speaking feedback feature, your audio recording is temporarily processed by Google's Gemini AI API to generate a transcript and feedback. The audio data is transmitted securely over HTTPS and is not stored by ParrotTalk at any point. Google processes this data in accordance with their own privacy policy and terms of service.</p>
+  <p>When you use the AI Speaking feedback feature, your voice is recorded locally in your browser. Your spoken answers are transcribed and the transcript is sent to an AI assistant for evaluation. No audio file is transmitted to or stored by ParrotTalk's servers. The AI service processes this data in accordance with its own privacy policy and terms of service.</p>
 
   <p><strong>Written text (Writing module)</strong></p>
-  <p>When you request AI feedback on a writing task, your text is sent temporarily to Google's Gemini AI API for evaluation. This data is not stored by ParrotTalk and is processed in accordance with Google's privacy policy.</p>
+  <p>When you request AI feedback on a writing task, your text is prepared as a prompt and sent to an AI assistant for evaluation. This data is not stored by ParrotTalk.</p>
 
   <p><strong>Email address (optional)</strong></p>
   <p>If you choose to subscribe to our newsletter, we collect your email address for the purpose of sending updates about new tests and features. You can unsubscribe at any time. We do not share your email with third parties.</p>
@@ -77,7 +77,7 @@
   </ul>
 
   <h2>4. Third-party services</h2>
-  <p><strong>Google Gemini API</strong> — Used to process audio recordings and written text for AI feedback. Data sent to Gemini is subject to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>. ParrotTalk does not retain copies of data submitted to this API.</p>
+  <p><strong>AI feedback service</strong> — Speaking transcripts and writing texts are sent to an external AI assistant for evaluation. ParrotTalk does not retain copies of data submitted for AI feedback.</p>
   <p><strong>Vercel</strong> — ParrotTalk is hosted on Vercel's infrastructure. Vercel may collect standard server logs (IP addresses, request times) in accordance with their own privacy policy. These logs are not used by ParrotTalk for tracking purposes.</p>
 
   <h2>5. Cookies</h2>
@@ -122,6 +122,7 @@
       </div>
     </div>
     <p class="footer__copy">© 2026 ParrotTalk · Free IELTS Preparation · parrottalk.app</p>
+    <p class="footer__copy" style="font-size:.75rem;opacity:.6;margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
   </div>
 </footer>
 
