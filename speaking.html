@@ -185,7 +185,7 @@
         <h1>IELTS Speaking Test</h1>
         <p>Record your voice · AI evaluates fluency, vocabulary &amp; grammar</p>
         <div style="font-size:.875rem;font-weight:600;color:var(--text-muted);margin-top:12px">
-          🎙️ REAL VOICE RECORDING · AI FEEDBACK · FC · LR · GRA · PRON*
+          🎙️ REAL VOICE RECORDING · AI FEEDBACK · FC · LR · GRA
         </div>
       </div>
       <div class="page-hero__mascot">
@@ -799,12 +799,11 @@ ${p2Line}
 ${p3Lines}
 
 Give me:
-1. Overall Band score (5.0–9.0, half-band increments)
+1. Overall Band score (5.0–9.0, half-band increments) based on FC, LR and GRA only
 2. Band + brief feedback for each criterion:
    - Fluency & Coherence (FC)
    - Lexical Resource (LR)
    - Grammatical Range & Accuracy (GRA)
-   - Pronunciation (Pron)
 3. Top 2 things to improve`;
 
   try { await navigator.clipboard.writeText(lastSpeakingPrompt); } catch(e) {}
@@ -1011,12 +1010,15 @@ function renderSpeakingFeedback(data, testId) {
     { key:'lr',   label:'Lexical Resource',     color:'var(--primary)', bg:'var(--primary-light)' },
     { key:'gra',  label:'Grammar Range',         color:'var(--warning)', bg:'var(--warning-light)' },
     { key:'pron', label:'Pronunciation*',         color:'var(--purple)',  bg:'#F5F3FF' }
-  ].map(c => `
-    <div class="score-mini" style="background:${c.bg}">
+  ].map(c => {
+    const isPron = c.key === 'pron';
+    return `
+    <div class="score-mini" style="background:${isPron ? '#F3F4F6' : c.bg};opacity:${isPron ? '.55' : '1'}">
       <div class="sm-tag">${c.key.toUpperCase()}</div>
-      <div class="sm-val" style="color:${c.color}">${data[c.key]||'—'}</div>
-      <div class="sm-name">${c.label}</div>
-    </div>`).join('');
+      <div class="sm-val" style="color:${isPron ? 'var(--text-muted)' : c.color};font-size:${isPron ? '.75rem' : ''}">${isPron ? 'N/A' : (data[c.key]||'—')}</div>
+      <div class="sm-name">${isPron ? 'Pronunciation' : c.label}</div>
+    </div>`;
+  }).join('');
 
   const strengthsHTML = (data.strengths||[]).map(s =>
     `<li style="font-size:.875rem;padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">${s}</li>`).join('');
@@ -1054,7 +1056,7 @@ function saveSpeakingScore(data, testId) {
   const spk = JSON.parse(localStorage.getItem('ielts_speaking_scores')||'{}');
   spk[`test0${testId}`] = {
     band: parseFloat(data.overall),
-    criteriaScores: { fc:data.fc, lr:data.lr, gra:data.gra, pron:data.pron },
+    criteriaScores: { fc:data.fc, lr:data.lr, gra:data.gra },
     date: new Date().toLocaleDateString('fr-FR')
   };
   localStorage.setItem('ielts_speaking_scores', JSON.stringify(spk));
@@ -1073,7 +1075,7 @@ function toast(msg, type='info') {
 selectTest(1);
 </script>
 <footer style="text-align:center;padding:16px;font-size:.75rem;color:var(--text-muted);opacity:.7;border-top:1px solid var(--border);margin-top:32px">
-  <p>* Pronunciation is estimated from transcribed text only — not evaluated from the audio signal.</p>
+  <p>Pronunciation is not assessed in the current version — it will be enabled once audio evaluation is available.</p>
   <p style="margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
 </footer>
 </body>
