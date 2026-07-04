@@ -9,6 +9,29 @@
 - [x] Pronunciation : "not assessed" dans Étape A, réactivée dans Étape 1 (audio Gemini)
 - [x] privacy.html highlight box : décrit le vrai flux (plus "Google's AI")
 
+## Fix CORS multi-origines (2026-07-04) ✅
+
+- [x] `ALLOWED_ORIGINS` = Set contenant `https://parrottalk.app`, `https://www.parrottalk.app`, `http://localhost:3000`, `http://localhost:8000`
+- [x] `Access-Control-Allow-Origin` renvoie l'origine de la requête si elle est dans la liste (jamais `*`)
+- [x] Fallback si origine absente ou non listée → `https://parrottalk.app`
+- [x] Preflight OPTIONS géré globalement pour toutes les routes
+- [x] Aucune référence résiduelle à l'ancienne constante `ALLOWED_ORIGIN`
+- [x] Tags `pre-cors-fix` et `post-cors-fix` posés
+
+**Test manuel après déploiement :**
+```bash
+# Doit renvoyer Access-Control-Allow-Origin: https://www.parrottalk.app
+curl -s -I -X OPTIONS https://api.parrottalk.app/evaluate/writing \
+  -H "Origin: https://www.parrottalk.app" \
+  -H "Access-Control-Request-Method: POST" | grep -i "access-control"
+
+# Doit renvoyer 403/réponse sans CORS header (origine non listée)
+curl -s -I -X OPTIONS https://api.parrottalk.app/evaluate/writing \
+  -H "Origin: https://evil.com" | grep -i "access-control"
+```
+
+---
+
 ## Fix post-Étape 1 — Corrections Fable (2026-07-04) ✅
 
 - [x] Constante modèle = `gemini-2.5-flash`, aucun `gemini-2.0` dans le code

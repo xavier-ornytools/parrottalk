@@ -3,22 +3,27 @@
 // Secrets (wrangler secret put): GEMINI_API_KEY
 // KV binding: RATE_KV
 
-const ALLOWED_ORIGIN = 'https://parrottalk.app';
+const ALLOWED_ORIGINS = new Set([
+  'https://parrottalk.app',
+  'https://www.parrottalk.app',
+  'http://localhost:3000',
+  'http://localhost:8000',
+]);
 const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 // ── CORS ────────────────────────────────────────────────────────────────────
 
 function corsHeaders(origin) {
-  const allowed = origin === ALLOWED_ORIGIN || origin === 'http://localhost:3000';
+  const allowed = ALLOWED_ORIGINS.has(origin);
   return {
-    'Access-Control-Allow-Origin': allowed ? origin : ALLOWED_ORIGIN,
+    'Access-Control-Allow-Origin': allowed ? origin : 'https://parrottalk.app',
     'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Max-Age': '86400',
   };
 }
 
-function json(data, status = 200, origin = ALLOWED_ORIGIN) {
+function json(data, status = 200, origin = 'https://parrottalk.app') {
   return new Response(JSON.stringify(data), {
     status,
     headers: { 'Content-Type': 'application/json', ...corsHeaders(origin) },
@@ -271,7 +276,7 @@ async function handleStats(env, origin) {
 
 export default {
   async fetch(req, env) {
-    const origin = req.headers.get('Origin') || ALLOWED_ORIGIN;
+    const origin = req.headers.get('Origin') || 'https://parrottalk.app';
     const url = new URL(req.url);
 
     if (req.method === 'OPTIONS') {
