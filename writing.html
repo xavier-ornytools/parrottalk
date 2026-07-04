@@ -385,6 +385,8 @@ function toggleSample(id) {
 }
 
 // AI FEEDBACK
+const WORKER_URL = 'https://api.parrottalk.app';
+
 async function getAIFeedback(task) {
   const d = WRITING_DATA[currentWritingTest];
   const essay = document.getElementById(`task${task}-answer`).value.trim();
@@ -395,43 +397,33 @@ async function getAIFeedback(task) {
   const promptText = task === 1 ? d.task1_instruction.replace(/<[^>]+>/g,'') : d.task2_instruction.replace(/<[^>]+>/g,'');
   const minWords = task === 1 ? 150 : 250;
   const taskType = task === 1 ? 'Task 1 (Graph description)' : 'Task 2 (Essay - discuss both views)';
+  const wordCount = essay.split(/\s+/).length;
   const btn = document.getElementById(`ai-btn-${task}`);
   const feedbackBox = document.getElementById(`ai-feedback-${task}`);
+
   btn.disabled = true;
   btn.innerHTML = `<div class="spinner" style="border-color:rgba(255,255,255,.3);border-top-color:white;width:16px;height:16px"></div> Analysing...`;
   feedbackBox.classList.remove('hidden');
   feedbackBox.innerHTML = `<div class="ai-feedback"><div class="ai-loading"><div class="spinner"></div><span>AI is evaluating your essay against IELTS criteria...</span></div></div>`;
-  const wordCount = essay.split(/\s+/).length;
-  lastWritingPrompt = `You are an expert IELTS examiner. Evaluate this Writing ${taskType} response.
 
-TASK PROMPT:
-${promptText}
+  try {
+    const res = await fetch(`${WORKER_URL}/evaluate/writing`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ task, taskType, prompt: promptText, essay, wordCount, minWords }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    renderAIFeedback(feedbackBox, data, task);
+  } catch (err) {
+    feedbackBox.innerHTML = `<div class="card card-sm" style="border-color:var(--danger);background:var(--danger-light)">
+      <p style="color:var(--danger);font-size:.875rem">⚠️ AI evaluation failed. Please try again.<br><small style="opacity:.7">${err.message}</small></p>
+    </div>`;
+  }
 
-STUDENT ESSAY (${wordCount} words):
-${essay}
-${wordCount < minWords ? `\n⚠️ Essay is ${minWords - wordCount} words SHORT of the minimum (${minWords} words required).` : ''}
-
-Give me:
-1. Overall Band score (5.0–9.0, half-band increments)
-2. Band + 2-3 sentence feedback for each of the 4 criteria:
-   - ${task === 1 ? 'Task Achievement' : 'Task Response'}
-   - Coherence & Cohesion
-   - Lexical Resource
-   - Grammatical Range & Accuracy
-3. One top tip to raise the band score`;
-
-  try { await navigator.clipboard.writeText(lastWritingPrompt); } catch(e) {}
-  window.open('https://claude.ai', '_blank');
-
-  feedbackBox.innerHTML = `<div class="card" style="border-color:var(--primary);background:var(--primary-pale);text-align:center;padding:28px">
-    <div style="font-size:2rem;margin-bottom:12px">📋</div>
-    <p style="font-weight:700;color:var(--dark);margin-bottom:8px">Prompt copié dans le presse-papier !</p>
-    <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:16px">
-      Claude.ai vient de s'ouvrir dans un nouvel onglet.<br>
-      Colle le prompt (Ctrl+V) et envoie — ton Band score arrive en 10 secondes.
-    </p>
-    <button onclick="(async()=>{try{await navigator.clipboard.writeText(lastWritingPrompt)}catch(e){}window.open('https://claude.ai','_blank')})()" class="btn btn-primary btn-sm">🔁 Rouvrir Claude.ai + recopier</button>
-  </div>`;
   btn.disabled = false;
   btn.innerHTML = '🤖 Get AI Feedback';
 }

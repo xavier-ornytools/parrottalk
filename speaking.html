@@ -185,7 +185,7 @@
         <h1>IELTS Speaking Test</h1>
         <p>Record your voice · AI evaluates fluency, vocabulary &amp; grammar</p>
         <div style="font-size:.875rem;font-weight:600;color:var(--text-muted);margin-top:12px">
-          🎙️ REAL VOICE RECORDING · AI FEEDBACK · FC · LR · GRA
+          🎙️ REAL VOICE RECORDING · AI FEEDBACK · FC · LR · GRA · PRON
         </div>
       </div>
       <div class="page-hero__mascot">
@@ -758,72 +758,7 @@ function readQuestion(text) {
 
 // ── Submit ──────────────────────────────────────────────────────────────────
 
-async function checkAndSubmit() {
-  const t = SPEAKING_TESTS[currentSpeakingTest];
-  const allQs = getAllQuestions(currentSpeakingTest);
-  const hasAnyTranscript = allQs.some((_, i) => liveTranscripts[i] && liveTranscripts[i].length > 5);
-  const hasAnyRecording = recordings.some(r => r !== null);
-
-  if (!hasAnyTranscript && !hasAnyRecording) {
-    toast('Please record at least one answer before submitting.', 'error');
-    return;
-  }
-
-  // Build prompt from liveTranscripts
-  const p1Lines = t.part1.questions.map((q, i) => {
-    const idx = getRecordingIndex(1, i);
-    const tr = liveTranscripts[idx] || (recordings[idx] ? '(recorded — transcript unavailable)' : '(not recorded)');
-    return `Q: ${q}\nA: ${tr}`;
-  }).join('\n\n');
-
-  const p2Idx = getRecordingIndex(2, 0);
-  const p2tr = liveTranscripts[p2Idx] || (recordings[p2Idx] ? '(recorded — transcript unavailable)' : '(not recorded)');
-  const p2Bullets = t.part2.cue.bullets.map(b => `  • ${b}`).join('\n');
-  const p2Line = `Cue card: ${t.part2.cue.instruction}\n${p2Bullets}\n\nCandidate's answer:\n${p2tr}`;
-
-  const p3Lines = t.part3.questions.map((q, i) => {
-    const idx = getRecordingIndex(3, i);
-    const tr = liveTranscripts[idx] || (recordings[idx] ? '(recorded — transcript unavailable)' : '(not recorded)');
-    return `Q: ${q}\nA: ${tr}`;
-  }).join('\n\n');
-
-  lastSpeakingPrompt = `You are an expert IELTS Speaking examiner. Evaluate this candidate's performance for the topic: "${t.topic}".
-
---- PART 1 — Interview ---
-${p1Lines}
-
---- PART 2 — Long Turn ---
-${p2Line}
-
---- PART 3 — Discussion ---
-${p3Lines}
-
-Give me:
-1. Overall Band score (5.0–9.0, half-band increments) based on FC, LR and GRA only
-2. Band + brief feedback for each criterion:
-   - Fluency & Coherence (FC)
-   - Lexical Resource (LR)
-   - Grammatical Range & Accuracy (GRA)
-3. Top 2 things to improve`;
-
-  try { await navigator.clipboard.writeText(lastSpeakingPrompt); } catch(e) {}
-  window.open('https://claude.ai', '_blank');
-
-  document.getElementById('spk-test-zone').classList.add('hidden');
-  const resultsEl = document.getElementById('spk-results');
-  resultsEl.classList.remove('hidden');
-  resultsEl.innerHTML = `<div class="card" style="border-color:var(--primary);background:var(--primary-pale);text-align:center;padding:32px">
-    <div style="font-size:2.5rem;margin-bottom:12px">📋</div>
-    <h3 style="margin-bottom:8px">Prompt copié !</h3>
-    <p style="color:var(--text-muted);margin-bottom:20px">
-      Claude.ai est ouvert dans un nouvel onglet.<br>
-      Colle (Ctrl+V) et envoie — ton Band score arrive en 10 secondes.
-    </p>
-    <button onclick="(async()=>{try{await navigator.clipboard.writeText(lastSpeakingPrompt)}catch(e){}window.open('https://claude.ai','_blank')})()" class="btn btn-primary" style="margin-bottom:12px">🔁 Rouvrir Claude.ai + recopier</button>
-    <br>
-    <button class="btn" onclick="document.getElementById('spk-test-zone').classList.remove('hidden');document.getElementById('spk-results').classList.add('hidden');">← Retour au test</button>
-  </div>`;
-}
+const WORKER_URL = 'https://api.parrottalk.app';
 
 async function blobToBase64(blob) {
   return new Promise((resolve, reject) => {
@@ -834,167 +769,73 @@ async function blobToBase64(blob) {
   });
 }
 
-// Convert any browser audio blob → WAV 16kHz mono (universally supported by Gemini)
-async function blobToWavBase64(blob) {
-  const ab = await blob.arrayBuffer();
-  const rawCtx = new AudioContext();
-  let decoded;
-  try { decoded = await rawCtx.decodeAudioData(ab); }
-  finally { rawCtx.close(); }
-
-  const targetSR = 16000;
-  const offCtx = new OfflineAudioContext(1, Math.ceil(decoded.duration * targetSR), targetSR);
-  const src = offCtx.createBufferSource();
-  src.buffer = decoded;
-  src.connect(offCtx.destination);
-  src.start(0);
-  const resampled = await offCtx.startRendering();
-
-  const pcm = resampled.getChannelData(0);
-  const samples = new Int16Array(pcm.length);
-  for (let i = 0; i < pcm.length; i++) {
-    const s = Math.max(-1, Math.min(1, pcm[i]));
-    samples[i] = (s < 0 ? s * 0x8000 : s * 0x7FFF) | 0;
-  }
-  const dataLen = samples.length * 2;
-  const wav = new ArrayBuffer(44 + dataLen);
-  const v = new DataView(wav);
-  const ws = (off, str) => { for (let i = 0; i < str.length; i++) v.setUint8(off + i, str.charCodeAt(i)); };
-  ws(0,'RIFF'); v.setUint32(4, 36 + dataLen, true); ws(8,'WAVE');
-  ws(12,'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true);
-  v.setUint16(22, 1, true); v.setUint32(24, targetSR, true);
-  v.setUint32(28, targetSR * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
-  ws(36,'data'); v.setUint32(40, dataLen, true);
-  new Int16Array(wav, 44).set(samples);
-
-  const bytes = new Uint8Array(wav);
-  let b64 = '';
-  for (let i = 0; i < bytes.length; i += 8192) b64 += String.fromCharCode(...bytes.subarray(i, i + 8192));
-  return { data: btoa(b64), mimeType: 'audio/wav' };
-}
-
-async function submitTest() {
+async function checkAndSubmit() {
   const t = SPEAKING_TESTS[currentSpeakingTest];
   const allQs = getAllQuestions(currentSpeakingTest);
+  const hasAnyRecording = recordings.some(r => r !== null);
+
+  if (!hasAnyRecording) {
+    toast('Please record at least one answer before submitting.', 'error');
+    return;
+  }
 
   document.getElementById('spk-test-zone').classList.add('hidden');
   const resultsEl = document.getElementById('spk-results');
   resultsEl.classList.remove('hidden');
-
-  function showProgress(step, total, msg) {
-    const pct = Math.round(step/total*100);
-    resultsEl.innerHTML = `
-      <div class="card card-lg" style="text-align:center;padding:40px 32px">
-        <div class="spinner" style="margin:0 auto 16px"></div>
-        <h3 style="margin-bottom:8px">Analysing your speaking test...</h3>
-        <p style="color:var(--text-muted);margin-bottom:16px">${msg}</p>
-        <div class="ai-progress-bar"><div class="ai-progress-fill" style="width:${pct}%"></div></div>
-        <div style="font-size:.8125rem;color:var(--text-muted)">${step} / ${total} steps complete</div>
-      </div>`;
-  }
-
-  showProgress(0, allQs.length + 1, 'Sending all recordings to AI simultaneously...');
-
-  let transcribed = 0;
-  const transcribeOne = async (i) => {
-    const qi = allQs[i];
-    const rec = recordings[i];
-    const base = { question: qi.question, part: qi.part };
-    if (!rec) {
-      transcribed++;
-      showProgress(transcribed, allQs.length + 1, `${transcribed}/${allQs.length} responses processed...`);
-      return { ...base, transcript: '(no recording provided)', pronunciationNotes: 'Question was skipped', failed: false };
-    }
-    try {
-      if (rec.blob.size < 100) throw new Error(`Recording empty (${rec.blob.size} bytes) — microphone may not be capturing audio`);
-      let audioData, mimeType;
-      let wavConversionError = null;
-      try {
-        const wav = await blobToWavBase64(rec.blob);
-        audioData = wav.data; mimeType = wav.mimeType;
-      } catch (wavErr) {
-        wavConversionError = wavErr.message;
-        audioData = await blobToBase64(rec.blob); mimeType = rec.mimeType.split(';')[0];
-      }
-      const res = await fetch('/api/speaking-transcribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ audioData, mimeType, question: qi.question, part: qi.part })
-      });
-      if (!res.ok) {
-        let detail = `HTTP ${res.status}`;
-        try {
-          const e = await res.json();
-          if (e.detail) detail += ': ' + String(e.detail).substring(0, 300);
-          if (e.sentMimeType) detail += ` [sent:${e.sentMimeType}, ${e.audioBytes}b]`;
-        } catch(_) {}
-        if (wavConversionError) detail += ` | WAV err: ${wavConversionError}`;
-        throw new Error(detail);
-      }
-      const d = await res.json();
-      transcribed++;
-      showProgress(transcribed, allQs.length + 1, `${transcribed}/${allQs.length} responses transcribed...`);
-      return { ...base, transcript: d.transcript || '', pronunciationNotes: d.pronunciationNotes || '', failed: false };
-    } catch (err) {
-      transcribed++;
-      showProgress(transcribed, allQs.length + 1, `${transcribed}/${allQs.length} responses processed...`);
-      return { ...base, transcript: '(transcription failed)', pronunciationNotes: 'Error: ' + err.message, failed: true };
-    }
-  };
-
-  // Sequential with 4s delay — Gemini free tier: 15 RPM max
-  const qas = [];
-  const TRANSCRIPTION_TIMEOUT = 120000;
-  const transcriptionStart = Date.now();
-  for (let i = 0; i < allQs.length; i++) {
-    if (Date.now() - transcriptionStart > TRANSCRIPTION_TIMEOUT) {
-      showProgress(transcribed, allQs.length + 1, 'Timeout reached — scoring with available responses...');
-      break;
-    }
-    if (i > 0) {
-      showProgress(transcribed, allQs.length + 1, `Waiting before next request (${i}/${allQs.length} done)...`);
-      await new Promise(r => setTimeout(r, 4000));
-    }
-    qas.push(await transcribeOne(i));
-  }
-
-  // Guard: if majority of recordings failed, transcription is broken — don't call feedback
-  const actualRecordings = qas.filter(q => q.transcript !== '(no recording provided)');
-  const failedCount = actualRecordings.filter(q => q.failed).length;
-  if (actualRecordings.length > 0 && failedCount >= Math.ceil(actualRecordings.length / 2)) {
-    const firstErr = actualRecordings.find(q => q.failed)?.pronunciationNotes || '';
-    const is429 = firstErr.includes('429') || firstErr.includes('quota') || firstErr.includes('Rate limit');
-    const errorTitle = is429
-      ? '⏳ <strong>Gemini API rate limit reached</strong>'
-      : '🚫 <strong>Audio transcription failed</strong> for ' + failedCount + ' of ' + actualRecordings.length + ' recordings';
-    const errorMsg = is429
-      ? 'Too many requests sent to Gemini today. Wait <strong>1–2 minutes</strong> then retry — or try again tomorrow if the daily quota is exhausted.'
-      : firstErr;
-    resultsEl.innerHTML = `
-      <div class="card card-sm" style="border-color:var(--danger);background:var(--danger-light)">
-        <p style="color:var(--danger);font-size:.875rem">${errorTitle}</p>
-        ${errorMsg ? `<p style="font-size:.8rem;margin-top:8px;${is429 ? '' : 'font-family:monospace;word-break:break-all;padding:8px;background:rgba(0,0,0,.05);border-radius:4px'}">${errorMsg}</p>` : ''}
-        <button class="btn" onclick="document.getElementById('spk-test-zone').classList.remove('hidden');document.getElementById('spk-results').classList.add('hidden');" style="margin-top:12px">← Back to test</button>
-      </div>`;
-    return;
-  }
-
-  showProgress(allQs.length, allQs.length + 1, 'Generating IELTS band score evaluation...');
+  resultsEl.innerHTML = `
+    <div class="card card-lg" style="text-align:center;padding:40px 32px">
+      <div class="spinner" style="margin:0 auto 16px"></div>
+      <h3 style="margin-bottom:8px">Sending audio to AI evaluator...</h3>
+      <p style="color:var(--text-muted)">This may take 15–30 seconds. Please wait.</p>
+    </div>`;
 
   try {
-    const res = await fetch('/api/speaking-feedback', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ topic: t.topic, qas: qas.map(({failed, ...q}) => q) })
-    });
-    if (!res.ok) {
-      let detail = `HTTP ${res.status}`;
-      try { const e = await res.json(); if (e.detail) detail += ' — ' + String(e.detail).substring(0, 120); } catch(_) {}
-      throw new Error(detail);
+    // Collect all recordings as base64
+    const recData = [];
+    for (let i = 0; i < allQs.length; i++) {
+      const rec = recordings[i];
+      const q = allQs[i];
+      if (!rec) { recData.push({ question: q.question, part: q.part, skipped: true }); continue; }
+      if (rec.blob.size < 100) { recData.push({ question: q.question, part: q.part, skipped: true }); continue; }
+      const audioBase64 = await blobToBase64(rec.blob);
+      recData.push({ question: q.question, part: q.part, audioBase64, mimeType: rec.mimeType.split(';')[0] });
     }
+
+    const allQuestions = allQs.map(q => q.question);
+
+    const formData = new FormData();
+    formData.append('topic', t.topic);
+    formData.append('questions', JSON.stringify(allQuestions));
+
+    // Attach first non-skipped recording as primary audio
+    // (Worker sends all audio inline to Gemini; for simplicity send the largest blob)
+    const mainRec = recData.find(r => !r.skipped && r.audioBase64);
+    if (!mainRec) throw new Error('No valid audio recordings found');
+
+    // Convert base64 back to Blob for FormData
+    const byteChars = atob(mainRec.audioBase64);
+    const byteArr = new Uint8Array(byteChars.length);
+    for (let i = 0; i < byteChars.length; i++) byteArr[i] = byteChars.charCodeAt(i);
+    formData.append('audio', new Blob([byteArr], { type: mainRec.mimeType }), 'speaking.webm');
+
+    // Also send transcripts as fallback context
+    const transcripts = allQs.map((q, i) => liveTranscripts[i] || '').filter(Boolean);
+    if (transcripts.length) formData.append('transcripts', JSON.stringify(transcripts));
+
+    const res = await fetch(`${WORKER_URL}/evaluate/speaking`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP ${res.status}`);
+    }
+
     const data = await res.json();
     renderSpeakingFeedback(data, currentSpeakingTest);
     saveSpeakingScore(data, currentSpeakingTest);
+
   } catch (err) {
     resultsEl.innerHTML = `
       <div class="card card-sm" style="border-color:var(--danger);background:var(--danger-light)">
@@ -1004,21 +845,19 @@ async function submitTest() {
   }
 }
 
+
 function renderSpeakingFeedback(data, testId) {
   const criteriaHTML = [
     { key:'fc',   label:'Fluency & Coherence', color:'var(--primary)', bg:'var(--primary-light)' },
     { key:'lr',   label:'Lexical Resource',     color:'var(--primary)', bg:'var(--primary-light)' },
     { key:'gra',  label:'Grammar Range',         color:'var(--warning)', bg:'var(--warning-light)' },
-    { key:'pron', label:'Pronunciation*',         color:'var(--purple)',  bg:'#F5F3FF' }
-  ].map(c => {
-    const isPron = c.key === 'pron';
-    return `
-    <div class="score-mini" style="background:${isPron ? '#F3F4F6' : c.bg};opacity:${isPron ? '.55' : '1'}">
+    { key:'pron', label:'Pronunciation',  color:'var(--purple)',  bg:'#F5F3FF' }
+  ].map(c => `
+    <div class="score-mini" style="background:${c.bg}">
       <div class="sm-tag">${c.key.toUpperCase()}</div>
-      <div class="sm-val" style="color:${isPron ? 'var(--text-muted)' : c.color};font-size:${isPron ? '.75rem' : ''}">${isPron ? 'N/A' : (data[c.key]||'—')}</div>
-      <div class="sm-name">${isPron ? 'Pronunciation' : c.label}</div>
-    </div>`;
-  }).join('');
+      <div class="sm-val" style="color:${c.color}">${data[c.key]||'—'}</div>
+      <div class="sm-name">${c.label}</div>
+    </div>`).join('');
 
   const strengthsHTML = (data.strengths||[]).map(s =>
     `<li style="font-size:.875rem;padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">${s}</li>`).join('');
@@ -1056,7 +895,7 @@ function saveSpeakingScore(data, testId) {
   const spk = JSON.parse(localStorage.getItem('ielts_speaking_scores')||'{}');
   spk[`test0${testId}`] = {
     band: parseFloat(data.overall),
-    criteriaScores: { fc:data.fc, lr:data.lr, gra:data.gra },
+    criteriaScores: { fc:data.fc, lr:data.lr, gra:data.gra, pron:data.pron },
     date: new Date().toLocaleDateString('fr-FR')
   };
   localStorage.setItem('ielts_speaking_scores', JSON.stringify(spk));
@@ -1075,7 +914,7 @@ function toast(msg, type='info') {
 selectTest(1);
 </script>
 <footer style="text-align:center;padding:16px;font-size:.75rem;color:var(--text-muted);opacity:.7;border-top:1px solid var(--border);margin-top:32px">
-  <p>Pronunciation is not assessed in the current version — it will be enabled once audio evaluation is available.</p>
+  <p>Pronunciation is evaluated by AI from your audio recording. AI estimate — may vary from official scores by ±0.5–1 band.</p>
   <p style="margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
 </footer>
 </body>
