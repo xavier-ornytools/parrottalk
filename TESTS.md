@@ -9,6 +9,28 @@
 - [x] Pronunciation : "not assessed" dans Étape A, réactivée dans Étape 1 (audio Gemini)
 - [x] privacy.html highlight box : décrit le vrai flux (plus "Google's AI")
 
+## Fix post-Étape 1 — Corrections Fable (2026-07-04) ✅
+
+- [x] Constante modèle = `gemini-2.5-flash`, aucun `gemini-2.0` dans le code
+- [x] Speaking : tous les blobs non-vides partent dans un seul FormData (`audio_0`…`audio_N` + `duration_N`)
+- [x] Worker : une seule requête Gemini avec parties texte/audio alternées
+- [x] Une évaluation speaking complète = 1 seul décompte rate limit / budget
+- [x] Question sans réponse gérée sans crash (blob absent → ignoré, non envoyé)
+- [x] Web Speech hors flux d'évaluation — `formData.append` n'envoie que `audio_N`/`duration_N`, pas de `transcripts`
+- [x] JSON de réponse contient `transcript` (ce que Gemini a entendu), affiché dans l'UI résultats
+- [x] Transcript non stocké dans les logs de calibration (seulement type + bands + durée)
+- [x] Coût : formule `32 tokens/s × durée_totale_secondes` en place — ordre de grandeur ~0,03 €/test complet
+- [x] `api/speaking-feedback.js`, `api/speaking-transcribe.js`, `api/writing-feedback.js` supprimés
+- [x] Tags `pre-fix-post-etape1` (→ `c6e5ed4`) et `post-fix-post-etape1` (→ `4301e8f`) posés
+
+**Actions manuelles Xavier avant déploiement :**
+1. Vérifier dans Vercel Dashboard → Settings → Environment Variables : si une variable `GEMINI_API_KEY` (ou similaire) existe pour les anciennes fonctions serverless → la supprimer. Si c'est la même clé que celle du Worker → la révoquer dans AI Studio et en régénérer une neuve dans Cloudflare Worker secrets.
+2. `cd worker && wrangler deploy` — redéploiement obligatoire pour activer toutes les corrections.
+3. Test desktop : enregistrer 2 minutes sur Part 2, vérifier que le transcript "What the AI heard" apparaît.
+4. Test mobile : vérifier que le micro fonctionne et que l'envoi des 9 blobs passe (réseau mobile).
+
+---
+
 ## Étape 1 — Worker Cloudflare (2026-07-04) — À tester après déploiement
 
 ### Sécurité
