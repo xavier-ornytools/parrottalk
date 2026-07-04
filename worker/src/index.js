@@ -4,7 +4,7 @@
 // KV binding: RATE_KV
 
 const ALLOWED_ORIGIN = 'https://parrottalk.app';
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 // ── CORS ────────────────────────────────────────────────────────────────────
 
@@ -33,36 +33,40 @@ async function checkRateLimit(env, ip) {
   const current = parseInt((await env.RATE_KV.get(key)) || '0');
   const limit = parseInt(env.DAILY_LIMIT_PER_IP || '10');
   if (current >= limit) return false;
-  await env.RATE_KV.put(key, String(current + 1), { expirationTtl: 90000 }); // 25h TTL
+  await env.RATE_KV.put(key, String(current + 1), { expirationTtl: 90000 });
   return true;
 }
 
 // ── Cost tracking ────────────────────────────────────────────────────────────
 
-async function checkAndUpdateBudget(env, estimatedCost) {
+async function checkAndUpdateBudget(env, costEur) {
   const month = new Date().toISOString().slice(0, 7);
   const key = `budget:${month}`;
   const current = parseFloat((await env.RATE_KV.get(key)) || '0');
   const limit = parseFloat(env.MONTHLY_BUDGET_EUR || '50');
   if (current >= limit) return { ok: false, current, limit };
-  const updated = current + estimatedCost;
-  await env.RATE_KV.put(key, String(updated), { expirationTtl: 2700000 }); // ~31 days
+  const updated = current + costEur;
+  await env.RATE_KV.put(key, String(updated), { expirationTtl: 2700000 });
   return { ok: true, current: updated, limit, alert: updated >= limit * 0.8 };
 }
 
-function estimateCost(env, inputTokens, outputTokens) {
-  const inRate = parseFloat(env.GEMINI_COST_PER_1K_INPUT_TOKENS || '0.000075');
-  const outRate = parseFloat(env.GEMINI_COST_PER_1K_OUTPUT_TOKENS || '0.0003');
-  return (inputTokens / 1000) * inRate + (outputTokens / 1000) * outRate;
+function estimateCost(env, textInputTokens, audioSeconds, outputTokens) {
+  const textRate  = parseFloat(env.GEMINI_COST_PER_1K_INPUT_TOKENS  || '0.0003');
+  const audioRate = parseFloat(env.GEMINI_COST_PER_1K_AUDIO_TOKENS  || '0.001');
+  const outRate   = parseFloat(env.GEMINI_COST_PER_1K_OUTPUT_TOKENS || '0.0003');
+  const audioTokens = audioSeconds * 32; // Gemini: 32 tokens/second audio
+  return (textInputTokens / 1000) * textRate
+       + (audioTokens     / 1000) * audioRate
+       + (outputTokens    / 1000) * outRate;
 }
 
 // ── Calibration logs ─────────────────────────────────────────────────────────
 
-async function logEvaluation(env, type, bands) {
-  const ts = Date.now();
-  const key = `log:${type}:${ts}`;
-  const entry = { type, bands, ts };
-  await env.RATE_KV.put(key, JSON.stringify(entry), { expirationTtl: 7776000 }); // 90 days
+async function logEvaluation(env, type, bands, durationSeconds) {
+  const key = `log:${type}:${Date.now()}`;
+  await env.RATE_KV.put(key, JSON.stringify({ type, bands, durationSeconds, ts: Date.now() }), {
+    expirationTtl: 7776000, // 90 jours
+  });
 }
 
 // ── Gemini call ───────────────────────────────────────────────────────────────
@@ -97,7 +101,11 @@ async function callGemini(env, contents, maxOutputTokens = 1024) {
   }
 
   const usage = data?.usageMetadata || {};
-  return { parsed, inputTokens: usage.promptTokenCount || 800, outputTokens: usage.candidatesTokenCount || 400 };
+  return {
+    parsed,
+    inputTokens:  usage.promptTokenCount     || 500,
+    outputTokens: usage.candidatesTokenCount || 500,
+  };
 }
 
 // ── /evaluate/writing ─────────────────────────────────────────────────────────
@@ -121,28 +129,26 @@ ${wordCount < (minWords || 0) ? `⚠️ Essay is ${(minWords || 0) - wordCount} 
 Return ONLY valid JSON — no markdown:
 {
   "band": "6.5",
-  "summary": "One sentence overall assessment",
+  "summary": "One sentence overall assessment. AI estimate — may vary from official scores by ±0.5–1 band.",
   "${criterion1key}": { "band": "6.5", "comment": "2-3 sentences on ${criterion1}" },
   "coherence": { "band": "6.5", "comment": "2-3 sentences on Coherence & Cohesion" },
-  "lexical": { "band": "6.5", "comment": "2-3 sentences on Lexical Resource" },
-  "grammar": { "band": "6.0", "comment": "2-3 sentences on Grammatical Range & Accuracy" },
+  "lexical":   { "band": "6.5", "comment": "2-3 sentences on Lexical Resource" },
+  "grammar":   { "band": "6.0", "comment": "2-3 sentences on Grammatical Range & Accuracy" },
   "topTip": "Single most impactful improvement"
 }
 
-Note at the end of summary: "AI estimate — may vary from official scores by ±0.5–1 band."
 Be realistic. An average test-taker scores 5.5–6.5.`;
 
   const { parsed, inputTokens, outputTokens } = await callGemini(env, [
     { role: 'user', parts: [{ text: userPrompt }] },
   ], 1024);
 
-  const cost = estimateCost(env, inputTokens, outputTokens);
+  const cost = estimateCost(env, inputTokens, 0, outputTokens);
   const budget = await checkAndUpdateBudget(env, cost);
   if (!budget.ok) return json({ error: 'Monthly evaluation budget reached — service resumes next month' }, 429, origin);
-
-  await logEvaluation(env, 'writing', { band: parsed.band, task: task || 1 });
-
   if (budget.alert) console.log(`[BUDGET ALERT] ${budget.current.toFixed(4)}€ / ${budget.limit}€`);
+
+  await logEvaluation(env, 'writing', { band: parsed.band, task: task || 1 }, 0);
 
   return json(parsed, 200, origin);
 }
@@ -151,65 +157,83 @@ Be realistic. An average test-taker scores 5.5–6.5.`;
 
 async function handleSpeaking(req, env, origin) {
   const formData = await req.formData();
-  const audioFile = formData.get('audio');
   const topic = formData.get('topic') || '';
   const questionsRaw = formData.get('questions') || '[]';
-
-  if (!audioFile) return json({ error: 'Missing audio file' }, 400, origin);
-
-  const audioBuffer = await audioFile.arrayBuffer();
-  const audioBytes = new Uint8Array(audioBuffer);
-  let b64 = '';
-  for (let i = 0; i < audioBytes.length; i += 8192) {
-    b64 += String.fromCharCode(...audioBytes.subarray(i, i + 8192));
-  }
-  const audioBase64 = btoa(b64);
-  const mimeType = audioFile.type || 'audio/webm';
-
   const questions = JSON.parse(questionsRaw);
-  const qText = questions.length
-    ? `\n\nTest questions asked:\n${questions.map((q, i) => `Q${i + 1}: ${q}`).join('\n')}`
-    : '';
 
-  const systemPrompt = `You are an expert IELTS examiner. Evaluate the following candidate's IELTS Speaking test on the topic: "${topic}".${qText}
+  // Collect all audio blobs (audio_0, audio_1, ...)
+  const audioParts = [];
+  let totalDurationSeconds = 0;
+  let idx = 0;
+  while (true) {
+    const audioFile = formData.get(`audio_${idx}`);
+    if (!audioFile) break;
+    const durationStr = formData.get(`duration_${idx}`);
+    const duration = parseFloat(durationStr || '0') || 0;
+    totalDurationSeconds += duration;
 
-Listen to the audio recording carefully. Evaluate across all 4 IELTS Speaking criteria including Pronunciation (evaluated from the audio signal).
+    const ab = await audioFile.arrayBuffer();
+    const bytes = new Uint8Array(ab);
+    let b64 = '';
+    for (let i = 0; i < bytes.length; i += 8192) {
+      b64 += String.fromCharCode(...bytes.subarray(i, i + 8192));
+    }
+    audioParts.push({
+      mimeType: audioFile.type || 'audio/webm',
+      data: btoa(b64),
+      question: questions[idx] || `Question ${idx + 1}`,
+      duration,
+    });
+    idx++;
+  }
+
+  if (audioParts.length === 0) return json({ error: 'No audio recordings received' }, 400, origin);
+
+  // Build Gemini multi-part content
+  // Each recording is preceded by its question label
+  const geminiParts = [];
+  audioParts.forEach((part, i) => {
+    geminiParts.push({ text: `Recording ${i + 1}: ${part.question}` });
+    geminiParts.push({ inlineData: { mimeType: part.mimeType, data: part.data } });
+  });
+
+  const systemPrompt = `You are an expert IELTS examiner. Evaluate the candidate's full IELTS Speaking test on the topic: "${topic}".
+
+The ${audioParts.length} audio recording(s) above correspond to the test questions, in order.
+Listen to each recording carefully. Evaluate holistically across all 4 IELTS Speaking criteria.
+Pronunciation must be evaluated from the audio signal — not inferred.
 
 Return ONLY valid JSON:
 {
-  "fc": 6.5,
-  "lr": 6.0,
-  "gra": 6.5,
-  "pron": 6.0,
-  "overall": 6.0,
+  "fc":   <number 0-9, halves allowed>,
+  "lr":   <number 0-9, halves allowed>,
+  "gra":  <number 0-9, halves allowed>,
+  "pron": <number 0-9, halves allowed>,
+  "overall": <average of all 4, rounded to nearest 0.5>,
+  "transcript": "Verbatim or close-verbatim transcript of the candidate's full speech, all parts concatenated.",
   "summary": "2-sentence holistic assessment. AI estimate — may vary from official scores by ±0.5–1 band.",
   "strengths": ["strength 1", "strength 2"],
-  "toFix": ["weakness 1", "weakness 2", "weakness 3"],
+  "toFix":    ["weakness 1", "weakness 2", "weakness 3"],
   "topTip": "One concrete actionable improvement"
 }
 
-overall = average of all 4 criteria, rounded to nearest 0.5.
-Be realistic. An average test-taker scores 5.5–6.5. Band 7+ requires consistent fluency and accurate complex grammar.`;
+Be realistic. Average test-taker: 5.5–6.5. Band 7+ requires consistent fluency and accurate complex grammar.`;
 
-  const { parsed, inputTokens, outputTokens } = await callGemini(env, [
-    {
-      role: 'user',
-      parts: [
-        { inlineData: { mimeType, data: audioBase64 } },
-        { text: systemPrompt },
-      ],
-    },
+  geminiParts.push({ text: systemPrompt });
+
+  const { parsed, outputTokens } = await callGemini(env, [
+    { role: 'user', parts: geminiParts },
   ], 1500);
 
-  const cost = estimateCost(env, inputTokens + 1000, outputTokens); // +1000 for audio tokens approx
+  const textInputTokens = 300 + audioParts.length * 20;
+  const cost = estimateCost(env, textInputTokens, totalDurationSeconds, outputTokens);
   const budget = await checkAndUpdateBudget(env, cost);
   if (!budget.ok) return json({ error: 'Monthly evaluation budget reached — service resumes next month' }, 429, origin);
+  if (budget.alert) console.log(`[BUDGET ALERT] ${budget.current.toFixed(4)}€ / ${budget.limit}€`);
 
   await logEvaluation(env, 'speaking', {
     fc: parsed.fc, lr: parsed.lr, gra: parsed.gra, pron: parsed.pron, overall: parsed.overall,
-  });
-
-  if (budget.alert) console.log(`[BUDGET ALERT] ${budget.current.toFixed(4)}€ / ${budget.limit}€`);
+  }, totalDurationSeconds);
 
   return json(parsed, 200, origin);
 }
@@ -218,20 +242,17 @@ Be realistic. An average test-taker scores 5.5–6.5. Band 7+ requires consisten
 
 async function handleStats(env, origin) {
   const month = new Date().toISOString().slice(0, 7);
-  const budgetKey = `budget:${month}`;
-  const current = parseFloat((await env.RATE_KV.get(budgetKey)) || '0');
+  const current = parseFloat((await env.RATE_KV.get(`budget:${month}`)) || '0');
   const limit = parseFloat(env.MONTHLY_BUDGET_EUR || '50');
 
-  // Count evaluations this month (approximate — scan log keys)
-  const listed = await env.RATE_KV.list({ prefix: `log:` });
-  const monthPrefix = `log:`;
+  const listed = await env.RATE_KV.list({ prefix: 'log:' });
   const thisMonthTs = new Date(month + '-01').getTime();
   let writingCount = 0;
   let speakingCount = 0;
   for (const key of listed.keys) {
     const ts = parseInt(key.name.split(':')[2] || '0');
     if (ts >= thisMonthTs) {
-      if (key.name.startsWith('log:writing:')) writingCount++;
+      if (key.name.startsWith('log:writing:'))  writingCount++;
       if (key.name.startsWith('log:speaking:')) speakingCount++;
     }
   }

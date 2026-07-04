@@ -760,15 +760,6 @@ function readQuestion(text) {
 
 const WORKER_URL = 'https://api.parrottalk.app';
 
-async function blobToBase64(blob) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result.split(',')[1]);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
-}
-
 async function checkAndSubmit() {
   const t = SPEAKING_TESTS[currentSpeakingTest];
   const allQs = getAllQuestions(currentSpeakingTest);
@@ -782,45 +773,33 @@ async function checkAndSubmit() {
   document.getElementById('spk-test-zone').classList.add('hidden');
   const resultsEl = document.getElementById('spk-results');
   resultsEl.classList.remove('hidden');
+
+  const validCount = recordings.filter((r, i) => r && r.blob && r.blob.size >= 100).length;
   resultsEl.innerHTML = `
     <div class="card card-lg" style="text-align:center;padding:40px 32px">
       <div class="spinner" style="margin:0 auto 16px"></div>
-      <h3 style="margin-bottom:8px">Sending audio to AI evaluator...</h3>
-      <p style="color:var(--text-muted)">This may take 15–30 seconds. Please wait.</p>
+      <h3 style="margin-bottom:8px">Sending ${validCount} recording(s) to AI evaluator...</h3>
+      <p style="color:var(--text-muted)">This may take 20–40 seconds. Please wait.</p>
     </div>`;
 
   try {
-    // Collect all recordings as base64
-    const recData = [];
-    for (let i = 0; i < allQs.length; i++) {
-      const rec = recordings[i];
-      const q = allQs[i];
-      if (!rec) { recData.push({ question: q.question, part: q.part, skipped: true }); continue; }
-      if (rec.blob.size < 100) { recData.push({ question: q.question, part: q.part, skipped: true }); continue; }
-      const audioBase64 = await blobToBase64(rec.blob);
-      recData.push({ question: q.question, part: q.part, audioBase64, mimeType: rec.mimeType.split(';')[0] });
-    }
-
-    const allQuestions = allQs.map(q => q.question);
-
     const formData = new FormData();
     formData.append('topic', t.topic);
-    formData.append('questions', JSON.stringify(allQuestions));
+    formData.append('questions', JSON.stringify(allQs.map(q => q.question)));
 
-    // Attach first non-skipped recording as primary audio
-    // (Worker sends all audio inline to Gemini; for simplicity send the largest blob)
-    const mainRec = recData.find(r => !r.skipped && r.audioBase64);
-    if (!mainRec) throw new Error('No valid audio recordings found');
+    let audioIndex = 0;
+    for (let i = 0; i < allQs.length; i++) {
+      const rec = recordings[i];
+      if (!rec || !rec.blob || rec.blob.size < 100) continue;
+      const mimeType = rec.mimeType ? rec.mimeType.split(';')[0] : 'audio/webm';
+      formData.append(`audio_${audioIndex}`, rec.blob, `q${i}.webm`);
+      // Duration in seconds: estimate from blob size if not stored (opus ~32 kbps = 4000 bytes/sec)
+      const durationSec = rec.duration || Math.round(rec.blob.size / 4000);
+      formData.append(`duration_${audioIndex}`, String(durationSec));
+      audioIndex++;
+    }
 
-    // Convert base64 back to Blob for FormData
-    const byteChars = atob(mainRec.audioBase64);
-    const byteArr = new Uint8Array(byteChars.length);
-    for (let i = 0; i < byteChars.length; i++) byteArr[i] = byteChars.charCodeAt(i);
-    formData.append('audio', new Blob([byteArr], { type: mainRec.mimeType }), 'speaking.webm');
-
-    // Also send transcripts as fallback context
-    const transcripts = allQs.map((q, i) => liveTranscripts[i] || '').filter(Boolean);
-    if (transcripts.length) formData.append('transcripts', JSON.stringify(transcripts));
+    if (audioIndex === 0) throw new Error('No valid audio recordings found');
 
     const res = await fetch(`${WORKER_URL}/evaluate/speaking`, {
       method: 'POST',
@@ -883,6 +862,7 @@ function renderSpeakingFeedback(data, testId) {
         </div>
       </div>
       ${data.topTip?`<div style="padding:12px 14px;background:var(--warning-light);border-radius:var(--r);font-size:.875rem;color:#92400E"><strong>💡 Top tip:</strong> ${data.topTip}</div>`:''}
+      ${data.transcript?`<details style="margin-top:12px"><summary style="font-size:.8125rem;color:var(--text-muted);cursor:pointer">What the AI heard (transcript)</summary><p style="font-size:.8125rem;color:var(--text);margin-top:8px;padding:10px;background:var(--bg-alt);border-radius:var(--r);line-height:1.6">${data.transcript}</p></details>`:''}
       <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <button class="btn" onclick="selectTest(${testId})">🔄 Redo Test 0${testId}</button>
         <a href="dashboard.html" class="btn btn-primary">View Dashboard →</a>
