@@ -1,10 +1,11 @@
 name = "parrottalk-api"
 main = "src/index.js"
 compatibility_date = "2024-01-01"
+workers_dev = true
 
 [[kv_namespaces]]
 binding = "RATE_KV"
-id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+id = "0da4e6df070a4012a69f941d2ed89eed"
 
 [vars]
 DAILY_LIMIT_PER_IP = "10"
