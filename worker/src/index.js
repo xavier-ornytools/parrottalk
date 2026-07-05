@@ -86,6 +86,7 @@ async function callGemini(env, contents, maxOutputTokens = 1024) {
         temperature: 0.3,
         maxOutputTokens,
         responseMimeType: 'application/json',
+        thinkingConfig: { thinkingBudget: 0 },
       },
     }),
   });
@@ -94,15 +95,25 @@ async function callGemini(env, contents, maxOutputTokens = 1024) {
     throw { status: res.status, message: err };
   }
   const data = await res.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  // Skip thinking parts (gemini-2.5-flash thinking mode) — keep only output text
+  const parts = data?.candidates?.[0]?.content?.parts ?? [];
+  const text = parts.filter(p => !p.thought).map(p => p.text || '').join('');
   if (!text) throw { status: 502, message: 'Empty response from Gemini' };
 
   let parsed;
-  try { parsed = JSON.parse(text); }
-  catch {
-    const match = text.match(/\{[\s\S]+\}/);
-    if (match) parsed = JSON.parse(match[0]);
-    else throw { status: 502, message: 'Could not parse AI response as JSON' };
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    // Strip markdown fences, then extract first complete {...} block
+    const clean = text.replace(/```[\w]*\n?/g, '').replace(/\n?```/g, '').trim();
+    const match = clean.match(/\{[\s\S]+\}/);
+    try {
+      if (!match) throw new Error('no JSON object found');
+      parsed = JSON.parse(match[0]);
+    } catch {
+      console.error('[Gemini parse error] raw text:', text);
+      throw { status: 502, message: 'Could not parse AI response as JSON' };
+    }
   }
 
   const usage = data?.usageMetadata || {};

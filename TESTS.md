@@ -54,6 +54,18 @@ curl -s -I -X OPTIONS https://api.parrottalk.app/evaluate/writing \
 
 ---
 
+## Fix gemini-2.5-flash thinking parts (2026-07-05) ✅
+
+- [x] Extraction du texte : `parts.filter(p => !p.thought).map(p => p.text).join('')` — ignore les thinking parts
+- [x] `thinkingConfig: { thinkingBudget: 0 }` ajouté dans `generationConfig` — thinking désactivé
+- [x] Fallback JSON : strip des fences markdown + regex `{...}` + `console.error` du texte brut si échec
+- [x] Test live : `/evaluate/writing` renvoie JSON valide avec band 6.5 et 4 critères ✅
+
+**Cause :** `gemini-2.5-flash` retourne par défaut des "thinking parts" (`{thought: true}`) en `parts[0]`.
+L'ancien code lisait `parts[0].text` = pensée interne ≠ JSON → `"Could not parse AI response as JSON"`.
+
+---
+
 ## Étape 1 — Worker Cloudflare (2026-07-04) — À tester après déploiement
 
 ### Sécurité
