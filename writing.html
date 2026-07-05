@@ -385,7 +385,7 @@ function toggleSample(id) {
 }
 
 // AI FEEDBACK
-const WORKER_URL = 'https://api.parrottalk.app';
+const API_BASE = 'https://parrottalk-api.foundry8.workers.dev';
 
 async function getAIFeedback(task) {
   const d = WRITING_DATA[currentWritingTest];
@@ -407,7 +407,7 @@ async function getAIFeedback(task) {
   feedbackBox.innerHTML = `<div class="ai-feedback"><div class="ai-loading"><div class="spinner"></div><span>AI is evaluating your essay against IELTS criteria...</span></div></div>`;
 
   try {
-    const res = await fetch(`${WORKER_URL}/evaluate/writing`, {
+    const res = await fetch(`${API_BASE}/evaluate/writing`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ task, taskType, prompt: promptText, essay, wordCount, minWords }),

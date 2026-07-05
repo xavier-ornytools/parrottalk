@@ -54,6 +54,15 @@ curl -s -I -X OPTIONS https://api.parrottalk.app/evaluate/writing \
 
 ---
 
+## Centralisation API_BASE (2026-07-05) ✅
+
+- [x] `writing.html` : `WORKER_URL` → `API_BASE = 'https://parrottalk-api.foundry8.workers.dev'`
+- [x] `speaking.html` : idem
+- [x] `grep -r "api.parrottalk.app" *.html *.js | grep -v privacy.html` → 0 résultat
+- [x] Migration DNS future : changer 1 ligne dans chaque fichier (`API_BASE`) ou extraire dans un fichier de config partagé
+
+---
+
 ## Fix gemini-2.5-flash thinking parts (2026-07-05) ✅
 
 - [x] Extraction du texte : `parts.filter(p => !p.thought).map(p => p.text).join('')` — ignore les thinking parts

@@ -758,7 +758,7 @@ function readQuestion(text) {
 
 // ── Submit ──────────────────────────────────────────────────────────────────
 
-const WORKER_URL = 'https://api.parrottalk.app';
+const API_BASE = 'https://parrottalk-api.foundry8.workers.dev';
 
 async function checkAndSubmit() {
   const t = SPEAKING_TESTS[currentSpeakingTest];
@@ -801,7 +801,7 @@ async function checkAndSubmit() {
 
     if (audioIndex === 0) throw new Error('No valid audio recordings found');
 
-    const res = await fetch(`${WORKER_URL}/evaluate/speaking`, {
+    const res = await fetch(`${API_BASE}/evaluate/speaking`, {
       method: 'POST',
       body: formData,
     });
