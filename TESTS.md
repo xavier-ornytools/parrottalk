@@ -1,5 +1,14 @@
 # ParrotTalk — Tests techniques
 
+## Audit lecture seule (2026-07-07) ✅
+
+Session d'audit pure suite au premier test blanc IELTS complet — **aucun
+fichier de code applicatif modifié**, rien à tester ici. Voir `AUDIT.md`
+(10 points investigués + 2 points complémentaires) et `CORRECTIONS-PLAN.md`
+(plan détaillé pour les sessions 2/3/4 à venir, fix band global décrit prêt
+à appliquer en tête de document). Tag posé avant session :
+`avant-audit-docs-2026-07-07`.
+
 ## Étape 0 — Honnêteté du site (2026-07-04) ✅
 
 - [x] `grep -ri "parrottalk.ai"` → 0 résultat
