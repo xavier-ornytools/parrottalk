@@ -467,3 +467,19 @@ function getScore(testId) {
 function getAllScores() {
   return JSON.parse(localStorage.getItem('ielts_scores') || '{}');
 }
+
+// ── PROGRESS (localStorage, incremental save per section/passage) ────────────
+// Aucune donnée personnelle : uniquement réponses de test + statut de
+// progression. Namespace par module (listening/reading) pour éviter toute
+// collision de testId entre les deux.
+function saveProgress(module, testId, data) {
+  const key = `ielts_progress_${module}_${testId}`;
+  localStorage.setItem(key, JSON.stringify({ ...data, updatedAt: Date.now() }));
+}
+function loadProgress(module, testId) {
+  const raw = localStorage.getItem(`ielts_progress_${module}_${testId}`);
+  return raw ? JSON.parse(raw) : null;
+}
+function clearProgress(module, testId) {
+  localStorage.removeItem(`ielts_progress_${module}_${testId}`);
+}

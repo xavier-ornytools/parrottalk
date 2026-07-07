@@ -439,6 +439,9 @@ function confirmReset() {
     localStorage.removeItem('ielts_reading_scores');
     localStorage.removeItem('ielts_writing_scores');
     localStorage.removeItem('ielts_speaking_scores');
+    // Progression en cours (nouveau, session 3) — même nettoyage
+    ['test01','test02','test03'].forEach(id => localStorage.removeItem(`ielts_progress_listening_${id}`));
+    ['rdtest01','rdtest02','rdtest03'].forEach(id => localStorage.removeItem(`ielts_progress_reading_${id}`));
     loadDashboard();
   }
 }

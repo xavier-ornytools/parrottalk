@@ -385,6 +385,9 @@
         </div>
       </div>
 
+      <div class="flex justify-end" style="margin-top:16px">
+        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage — Continue</button>
+      </div>
     </div><!-- /passage-0 -->
 
     <!-- PASSAGE 2: The Rise of Urban Farming (Q14–26) -->
@@ -555,6 +558,9 @@
         </div>
       </div>
 
+      <div class="flex justify-end" style="margin-top:16px">
+        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage — Continue</button>
+      </div>
     </div><!-- /passage-1 -->
 
     <!-- PASSAGE 3: The History of the Printing Press (Q27–40) -->
@@ -664,6 +670,9 @@
         </div>
       </div>
 
+      <div class="flex justify-end" style="margin-top:16px">
+        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage</button>
+      </div>
     </div><!-- /passage-2 -->
 
     <!-- SUBMIT -->
@@ -808,7 +817,7 @@
       </div>
 
       <div class="flex justify-end" style="margin-top:16px">
-        <button class="btn btn-primary" onclick="switchPassage(1)">Passage 2 → </button>
+        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage — Continue</button>
       </div>
     </div><!-- /t2_passage-0 -->
 
@@ -916,7 +925,7 @@
 
       <div class="flex justify-between" style="margin-top:16px">
         <button class="btn btn-secondary" onclick="switchPassage(0)">← Passage 1</button>
-        <button class="btn btn-primary" onclick="switchPassage(2)">Passage 3 →</button>
+        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage — Continue</button>
       </div>
     </div><!-- /t2_passage-1 -->
 
@@ -1031,6 +1040,7 @@
 
       <div class="flex justify-between" style="margin-top:16px;gap:12px">
         <button class="btn btn-secondary" onclick="switchPassage(1)">← Passage 2</button>
+        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage</button>
         <button class="btn btn-primary btn-lg" onclick="submitTest()">✓ Submit & Get Score</button>
       </div>
     </div><!-- /t2_passage-2 -->
@@ -1172,7 +1182,7 @@
 
       <div class="flex justify-between" style="margin-top:16px;gap:12px">
         <div></div>
-        <button class="btn btn-primary" onclick="switchPassage(1)">Passage 2 →</button>
+        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage — Continue</button>
       </div>
     </div><!-- /t3_passage-0 -->
 
@@ -1280,7 +1290,7 @@
 
       <div class="flex justify-between" style="margin-top:16px;gap:12px">
         <button class="btn btn-secondary" onclick="switchPassage(0)">← Passage 1</button>
-        <button class="btn btn-primary" onclick="switchPassage(2)">Passage 3 →</button>
+        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage — Continue</button>
       </div>
     </div><!-- /t3_passage-1 -->
 
@@ -1395,6 +1405,7 @@
 
       <div class="flex justify-between" style="margin-top:16px;gap:12px">
         <button class="btn btn-secondary" onclick="switchPassage(1)">← Passage 2</button>
+        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage</button>
         <button class="btn btn-primary btn-lg" onclick="submitTest()">✓ Submit &amp; Get Score</button>
       </div>
     </div><!-- /t3_passage-2 -->
@@ -1527,6 +1538,19 @@ let currentPassage = 0;
 let submitted = false;
 let timerInterval = null;
 let secondsLeft = 3600;
+let passagesDone = [false,false,false];
+let passageScoresLive = [0,0,0];
+let savedReadingAnswers = {};
+
+function currentPrefix() {
+  return currentReadingTest === 3 ? 't3_' : currentReadingTest === 2 ? 't2_' : '';
+}
+function currentRanges() {
+  return currentReadingTest === 3 ? PASSAGE_RANGES_03 : currentReadingTest === 2 ? PASSAGE_RANGES_02 : PASSAGE_RANGES;
+}
+function currentReadingTestId() {
+  return currentReadingTest === 3 ? 'rdtest03' : currentReadingTest === 2 ? 'rdtest02' : 'rdtest01';
+}
 
 function init() {
   const scores = getAllReadingScores();
@@ -1564,6 +1588,34 @@ function selectTest(id) {
   submitted = false;
 }
 
+// ── Finish passage : sauvegarde + navigation (une pierre deux coups) ────────
+function finishReadingPassage() {
+  const pi = currentPassage;
+  const prefix = currentPrefix();
+  const range = currentRanges()[pi];
+  if (!passagesDone[pi]) {
+    let score = 0;
+    for (let qn = range.start; qn <= range.end; qn++) {
+      const key = prefix + 'q' + qn;
+      const correct = checkQ(qn, prefix);
+      markQ(qn, correct, prefix);
+      if (correct) score++;
+      savedReadingAnswers[key] = getAnswerValue(key);
+    }
+    passageScoresLive[pi] = score;
+    passagesDone[pi] = true;
+    document.getElementById(prefix + 'ptab-' + pi)?.classList.add('done');
+    toast(`Passage ${pi+1} saved (${score}/${range.end-range.start+1}).`, 'success');
+  }
+  // Position de reprise sauvegardée = le PROCHAIN passage (pas celui qu'on
+  // vient de finir), pour reprendre au bon endroit après un rechargement.
+  const nextPassage = pi < 2 ? pi + 1 : pi;
+  saveProgress('reading', currentReadingTestId(), {
+    currentPassage: nextPassage, passagesDone, passageScores: passageScoresLive, answers: savedReadingAnswers,
+  });
+  if (pi < 2) switchPassage(pi + 1);
+}
+
 function startTest() {
   document.getElementById('instructions-card').classList.add('hidden');
   ['test-zone','test-zone-02','test-zone-03'].forEach(z =>
@@ -1571,9 +1623,57 @@ function startTest() {
   const zoneId = currentReadingTest === 3 ? 'test-zone-03' : currentReadingTest === 2 ? 'test-zone-02' : 'test-zone';
   document.getElementById(zoneId).classList.remove('hidden');
   submitted = false;
+
+  const saved = loadProgress('reading', currentReadingTestId());
+  if (saved) {
+    passagesDone = saved.passagesDone || [false,false,false];
+    passageScoresLive = saved.passageScores || [0,0,0];
+    savedReadingAnswers = saved.answers || {};
+    restoreReadingAnswers();
+  } else {
+    passagesDone = [false,false,false];
+    passageScoresLive = [0,0,0];
+    savedReadingAnswers = {};
+  }
+
   startTimer();
-  switchPassage(0);
-  toast('Test started — Read Passage 1 and answer Questions 1–13.', 'info');
+  switchPassage(saved ? (saved.currentPassage || 0) : 0);
+  toast(saved
+    ? `Progress restored — resuming at Passage ${(saved.currentPassage||0)+1}.`
+    : 'Test started — Read Passage 1 and answer Questions 1–13.', 'info');
+}
+
+// Lecture/écriture uniformes qu'il s'agisse d'un champ texte, d'un select,
+// ou d'un groupe de boutons radio (qui n'ont pas d'id, seulement un name).
+function getAnswerValue(key) {
+  const el = document.getElementById(key);
+  if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) return el.value;
+  const checked = document.querySelector(`input[name="${key}"]:checked`);
+  return checked ? checked.value : '';
+}
+function setAnswerValue(key, value) {
+  if (!value) return;
+  const el = document.getElementById(key);
+  if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) { el.value = value; return; }
+  const radio = document.querySelector(`input[name="${key}"][value="${value}"]`);
+  if (radio) radio.checked = true;
+}
+
+function restoreReadingAnswers() {
+  const prefix = currentPrefix();
+  Object.keys(savedReadingAnswers).forEach(key => {
+    setAnswerValue(key, savedReadingAnswers[key]);
+  });
+  const ranges = currentRanges();
+  passagesDone.forEach((done, pi) => {
+    if (!done) return;
+    const range = ranges[pi];
+    for (let qn = range.start; qn <= range.end; qn++) {
+      markQ(qn, checkQ(qn, prefix), prefix);
+    }
+    const tabId = prefix + 'ptab-' + pi;
+    document.getElementById(tabId)?.classList.add('done');
+  });
 }
 
 function startTimer() {
@@ -1628,7 +1728,10 @@ function submitTest() {
     if (isAnswered(qn, prefix)) answeredCount++;
     const correct = checkQ(qn, prefix);
     if (correct) total++;
-    markQ(qn, correct, prefix);
+    const pIdx = qn <= 13 ? 0 : qn <= 26 ? 1 : 2;
+    // Passages déjà validés via finishReadingPassage() sont déjà marqués —
+    // ré-appeler markQ() dupliquerait les indices "✓ réponse" affichés.
+    if (!passagesDone[pIdx]) markQ(qn, correct, prefix);
     if (qn <= 13) passageScores[0] += correct ? 1 : 0;
     else if (qn <= 26) passageScores[1] += correct ? 1 : 0;
     else passageScores[2] += correct ? 1 : 0;
@@ -1644,6 +1747,7 @@ function submitTest() {
   const scaledTotal = isPartial ? Math.round((total / answeredCount) * 40) : total;
   const band = getBand(isPartial ? scaledTotal : total);
   saveReadingScore(testId, passageScores, total);
+  clearProgress('reading', testId);
   showResults(total, band, passageScores, activeRanges, answeredCount, scaledTotal);
 
   document.getElementById(metaId).textContent = isPartial

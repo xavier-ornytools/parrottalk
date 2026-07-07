@@ -230,6 +230,11 @@
     <!-- QUESTIONS -->
     <div id="questions-container"></div>
 
+    <!-- FINISH SECTION (saves progress + navigates) -->
+    <div style="text-align:center;padding:16px 0">
+      <button class="btn btn-primary btn-lg" onclick="finishSection()" id="finish-section-btn">✅ I've finished this section — Continue</button>
+    </div>
+
     <!-- SUBMIT -->
     <div id="submit-hint" style="text-align:center;padding:20px 0 4px;color:var(--text-muted);font-size:.875rem">
       Listen to at least 1 section to submit — more sections = more accurate score
@@ -272,6 +277,8 @@ let currentSection = 0;
 let playingSection = 0;
 let audio = document.getElementById('audio-player');
 let sectionScores = [0,0,0,0];
+let sectionsDone = [false,false,false,false];
+let savedAnswers = {};
 let submitted = false;
 let isPlaying = false;
 
@@ -298,12 +305,25 @@ function selectTest(id) {
 function startTest() {
   document.getElementById('instructions-card').classList.add('hidden');
   document.getElementById('test-zone').classList.remove('hidden');
-  currentSection = 0;
   submitted = false;
-  sectionScores = [0,0,0,0];
+  const saved = loadProgress('listening', currentTest.id);
+  if (saved) {
+    currentSection = saved.currentSection || 0;
+    sectionsDone = saved.sectionsDone || [false,false,false,false];
+    sectionScores = saved.sectionScores || [0,0,0,0];
+    savedAnswers = saved.answers || {};
+  } else {
+    currentSection = 0;
+    sectionsDone = [false,false,false,false];
+    sectionScores = [0,0,0,0];
+    savedAnswers = {};
+  }
   buildTabs();
-  renderSection(0);
-  toast('Test started — Section 1 ready. Play the audio and answer the questions.', 'info');
+  renderSection(currentSection);
+  updateSubmitVisibility();
+  toast(saved
+    ? `Progress restored — resuming at Section ${currentSection+1}.`
+    : 'Test started — Section 1 ready. Play the audio and answer the questions.', 'info');
 }
 
 // TABS
@@ -312,7 +332,9 @@ function buildTabs() {
   wrap.innerHTML = '';
   currentTest.sections.forEach((sec, i) => {
     const btn = document.createElement('button');
-    btn.className = 'tab-btn' + (i===0 ? ' active' : '');
+    btn.className = 'tab-btn'
+      + (i === currentSection ? ' active' : '')
+      + (sectionsDone[i] ? ' done' : '');
     btn.textContent = `S${sec.number}`;
     btn.onclick = () => switchSection(i);
     btn.id = `tab-${i}`;
@@ -372,19 +394,78 @@ function speakNext(total) {
   speechSynthesis.speak(u);
 }
 
+// Découplé de la validation de section : la fin de l'audio n'affecte plus
+// jamais le score ni le statut "done" — seul le clic explicite sur
+// "I've finished this section" (finishSection()) valide une section.
 function handleSectionEnd(sectionIdx) {
-  const tab = document.getElementById(`tab-${sectionIdx}`);
-  if (tab) tab.classList.add('done');
-  const doneTabs = currentTest.sections.filter((_,i) =>
-    document.getElementById(`tab-${i}`)?.classList.contains('done'));
-  if (doneTabs.length === 1) {
+  if (!sectionsDone[sectionIdx]) {
+    toast(`Audio for Section ${sectionIdx+1} finished. Click "I've finished this section" when you're ready to continue.`, 'info');
+  }
+}
+
+// ── Finish section : sauvegarde + navigation (une pierre deux coups) ─────────
+function finishSection() {
+  const si = currentSection;
+  const sec = currentTest.sections[si];
+  if (!sectionsDone[si]) {
+    const qs = getQuestions(sec);
+    let score = 0;
+    qs.forEach(q => {
+      const ok = checkAnswer(q);
+      markQuestion(q, ok);
+      if (ok) score++;
+      const el = document.getElementById('q'+q.n);
+      if (el) savedAnswers['q'+q.n] = el.value;
+    });
+    sectionScores[si] = score;
+    sectionsDone[si] = true;
+    document.getElementById(`tab-${si}`)?.classList.add('done');
+    updateSubmitVisibility();
+    toast(`Section ${sec.number} saved (${score}/${qs.length}).`, 'success');
+  }
+  // On sauvegarde toujours la position de reprise = la PROCHAINE section
+  // (pas celle qu'on vient de finir), pour qu'un rechargement reprenne au
+  // bon endroit et non sur une section déjà validée.
+  const nextSection = si < currentTest.sections.length - 1 ? si + 1 : si;
+  saveProgress('listening', currentTest.id, {
+    currentSection: nextSection, sectionsDone, sectionScores, answers: savedAnswers,
+  });
+  if (si < currentTest.sections.length - 1) {
+    switchSection(si + 1);
+  } else {
+    document.getElementById('submit-hint')?.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+function updateSubmitVisibility() {
+  const doneCount = sectionsDone.filter(Boolean).length;
+  if (doneCount >= 1) {
     document.getElementById('submit-hint').style.display = 'none';
     document.getElementById('submit-section').classList.remove('hidden');
-    toast(`Section ${sectionIdx+1} done — submit now or continue for a better score.`, 'success');
-  } else if (doneTabs.length === currentTest.sections.length) {
-    toast('All 4 sections done! Submit when ready.', 'success');
-  } else if (sectionIdx < currentTest.sections.length - 1) {
-    toast(`Section ${sectionIdx+1} done (${doneTabs.length}/4) — continue or submit now.`, 'info');
+  }
+}
+
+function updateFinishButton(i) {
+  const btn = document.getElementById('finish-section-btn');
+  if (!btn) return;
+  const isLast = i === currentTest.sections.length - 1;
+  if (sectionsDone[i]) {
+    btn.textContent = isLast ? '✅ Section saved — Go to Submit' : '✅ Section saved — Next Section →';
+  } else {
+    btn.textContent = isLast ? "✅ I've finished this section" : "✅ I've finished this section — Continue";
+  }
+}
+
+function restoreSectionAnswers(sec, i) {
+  const qs = getQuestions(sec);
+  qs.forEach(q => {
+    const el = document.getElementById('q'+q.n);
+    if (!el) return;
+    const saved = savedAnswers['q'+q.n];
+    if (saved !== undefined) el.value = saved;
+  });
+  if (sectionsDone[i]) {
+    qs.forEach(q => markQuestion(q, checkAnswer(q)));
   }
 }
 
@@ -451,9 +532,11 @@ function renderSection(i) {
     block.id = 'sec-block-'+i;
     block.innerHTML = buildSectionHTML(sec);
     document.getElementById('questions-container').appendChild(block);
+    restoreSectionAnswers(sec, i);
   } else {
     block.classList.add('active');
   }
+  updateFinishButton(i);
 }
 
 function buildSectionHTML(sec) {
@@ -519,25 +602,26 @@ function submitTest() {
   cancelTTS();
   audio.pause(); setPlayIcon(false);
   submitted = true;
+  // Les scores viennent de finishSection() (sectionScores/sectionsDone déjà
+  // à jour) — plus de recalcul depuis les classes CSS ni de dépendance à la
+  // fin de l'audio.
   let total = 0, maxPossible = 0;
-  sectionScores = [0,0,0,0];
   currentTest.sections.forEach((sec, si) => {
-    const isDone = document.getElementById(`tab-${si}`)?.classList.contains('done');
-    const qs = getQuestions(sec);
-    let secScore = 0;
-    qs.forEach(q => {
-      const ok = checkAnswer(q);
-      markQuestion(q, ok);
-      if (isDone) { if (ok) { total++; secScore++; } }
-    });
-    if (isDone) { sectionScores[si] = secScore; maxPossible += qs.length; }
+    if (sectionsDone[si]) {
+      total += sectionScores[si];
+      maxPossible += getQuestions(sec).length;
+    } else {
+      // Section non validée : marquer visuellement les réponses saisies
+      // sans les compter, pour rester cohérent avec l'affichage existant.
+      getQuestions(sec).forEach(q => markQuestion(q, checkAnswer(q)));
+    }
   });
   const isPartial = maxPossible < 40;
   const scaledTotal = isPartial ? Math.round((total / maxPossible) * 40) : total;
-  const doneCount = currentTest.sections.filter((_,i) =>
-    document.getElementById(`tab-${i}`)?.classList.contains('done')).length;
+  const doneCount = sectionsDone.filter(Boolean).length;
   const band = getBand(scaledTotal);
   saveScore(currentTest.id, sectionScores, total);
+  clearProgress('listening', currentTest.id);
   showResults(total, band, isPartial, doneCount, maxPossible, scaledTotal);
 }
 
