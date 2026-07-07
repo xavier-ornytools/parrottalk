@@ -1,5 +1,39 @@
 # ParrotTalk — Tests techniques
 
+## Déploiement en production (2026-07-07) ✅
+
+Tag avant déploiement : `avant-deploiement-v2-2026-07-07`.
+
+**Périmètre** : site statique uniquement (`https://parrottalk.app`, Vercel). Le
+Worker Cloudflare n'a pas été touché — la seule modification qui le concerne
+(logging du prompt Writing, session 2) reste non déployée, comme décidé.
+
+**Mécanisme** : `git push origin main` vers `github.com/xavier-ornytools/parrottalk`
+— Vercel builde et déploie automatiquement sur push (pas d'action manuelle
+supplémentaire). 8 commits poussés (`bff5bed..f07d2a7`) : audit, band global +
+logging + UX Writing, persistance, garde timer, restauration automatique,
+réponses MC, score MC.
+
+**Vérifié en ligne après déploiement** :
+```bash
+curl -sL https://parrottalk.app/listening.html | grep -c finish-section-btn   # 1
+curl -sL https://parrottalk.app/dashboard.html  | grep -c "Math.round(rawAvg \* 2)"  # 1
+curl -sL https://parrottalk.app/listening.html  | grep -c "correctVal = String(q.answer)"  # 1
+curl -sL https://parrottalk.app/reading.html    | grep -c "if (timerInterval) clearInterval"  # 2
+```
+Les 4 correctifs clés (bouton de fin de section, band global, scoring MC,
+garde timer) sont confirmés présents dans le code réellement servi en
+production, pas seulement dans le repo local.
+
+**Test manuel à faire sur le site public (par toi)** :
+1. Aller sur https://parrottalk.app/listening.html
+2. Faire la section 1 (Test 01), cliquer "I've finished this section"
+3. Recharger la page (`Ctrl+R` / `Cmd+R`)
+4. Vérifier : retour direct dans le test (pas l'écran de sélection), section 1
+   toujours marquée faite, réponses toujours là si on clique son onglet
+5. Faire une section avec des questions à choix multiples, vérifier qu'elles
+   comptent bien dans le score final
+
 ## Fix #3 post-session 3 — score des choix multiples jamais compté (2026-07-07) ✅
 
 Tag avant fix : `avant-fix-scoring-mc-2026-07-07`.
