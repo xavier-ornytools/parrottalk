@@ -1,5 +1,63 @@
 # ParrotTalk — Tests techniques
 
+## Fix post-session 3 — restauration automatique manquante (2026-07-07) ✅
+
+Tag avant fix : `avant-fix-restauration-auto-2026-07-07`.
+
+**Rapporté par Xavier** : test manuel en Firefox réel échoue après la session 3 —
+section 1 finie, section 2 en cours, `Ctrl+R` → retour à l'écran de sélection,
+réponses apparemment toutes perdues. Le test jsdom de la session 3 donnait
+pourtant un ✅.
+
+**Diagnostic (confirmé avec un vrai Chrome piloté par Playwright, pas jsdom)** :
+`saveProgress()` écrivait bien dans `localStorage` au clic sur "finish", et
+`loadProgress()` fonctionnait bien — **mais uniquement à l'intérieur de
+`startTest()`**, qui n'est appelée que si l'utilisateur clique sur "▶ Start Test".
+Après un rechargement réel, la page revient à son état HTML initial (écran de
+sélection visible, zone de test cachée) — exactement comme au tout premier
+chargement. Rien ne déclenchait automatiquement la restauration : il fallait
+recliquer "Start Test" pour que la progression réapparaisse. Sans le savoir,
+Xavier a vu l'écran de sélection et conclu, à raison de son point de vue, que
+tout était perdu — alors que les données étaient bien là, juste inaccessibles
+sans ce clic supplémentaire non documenté.
+
+**Le vrai maillon manquant** : `loadProgress()` n'était jamais appelée dans
+`init()` (exécutée à chaque chargement de page), seulement dans `startTest()`
+(exécutée seulement sur clic).
+
+**Pourquoi le test jsdom donnait un faux positif** : il rappelait `startTest()`
+par programme juste après avoir simulé le "rechargement", ce qu'un vrai
+utilisateur ne fait pas automatiquement. Le test vérifiait donc que le
+mécanisme de sauvegarde/lecture fonctionnait *si* on rappelle `startTest()`,
+mais jamais ce qui se passe réellement à l'écran juste après un `Ctrl+R`, sans
+aucune action de l'utilisateur.
+
+### Correctif
+`listening.html` et `reading.html` : `init()` détecte maintenant une
+progression sauvegardée pour n'importe quel test (via une nouvelle fonction
+`findInProgressListeningTest()` / `findInProgressReadingTest()`) et rentre
+**automatiquement** dans la zone de test correspondante, sans attendre de clic.
+
+### Nouveau test de non-régression réel (vrai navigateur, pas jsdom)
+`tests/e2e-persistence.js` — pilote un vrai Chrome via `playwright-core`,
+reproduit exactement le scénario de Xavier (section 1 finie, section 2 remplie
+mais pas finalisée, **rechargement réel de la page**, **aucun clic après**), et
+vérifie l'état réel de l'écran. Ce test aurait détecté le bug immédiatement.
+
+```bash
+# Terminal 1 :
+cd /home/mac1/Bureau/parrottalk_restored && python3 -m http.server 8000
+# Terminal 2 :
+npm install --no-save   # installe playwright-core (nécessite Chrome installé)
+npm run test:e2e
+```
+Résultat obtenu : **9/9 passed** (Listening + Reading).
+
+Le smoke-test existant `npm test` (`tests/check.js`) montre 5 échecs
+pré-existants et sans rapport (fichiers `api/writing-feedback.js` etc. qui
+n'existent plus depuis la bascule vers le Worker Cloudflare) — vérifié
+identique avant/après cette session, non touché.
+
 ## Session 3 — Persistance + corrections voisines (2026-07-07) ✅
 
 Tag avant session : `avant-session3-persistance-2026-07-07`. Méthode : étapes

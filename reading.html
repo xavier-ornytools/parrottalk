@@ -1561,6 +1561,26 @@ function init() {
       if (el) el.textContent = `Last: ${s.total}/40 — Band ${s.band} (${s.date})`;
     }
   });
+
+  // Restauration automatique : si une progression existe (passage en cours
+  // interrompu par un rechargement), on y retourne directement — sinon un
+  // rechargement a l'air de tout effacer alors que les données sont là.
+  const resume = findInProgressReadingTest();
+  if (resume) {
+    currentReadingTest = resume.id === 'rdtest03' ? 3 : resume.id === 'rdtest02' ? 2 : 1;
+    document.querySelectorAll('.test-sel-btn').forEach((b,i) =>
+      b.classList.toggle('active', i === currentReadingTest - 1));
+    startTest();
+  }
+}
+
+function findInProgressReadingTest() {
+  let best = null;
+  ['rdtest01','rdtest02','rdtest03'].forEach(id => {
+    const p = loadProgress('reading', id);
+    if (p && (!best || p.updatedAt > best.updatedAt)) best = { id, ...p };
+  });
+  return best;
 }
 
 function getAllReadingScores() {

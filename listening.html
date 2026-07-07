@@ -289,6 +289,27 @@ function init() {
     const el = document.getElementById('meta-'+id);
     if (s && el) el.textContent = `Last: ${s.total}/40 — Band ${s.band} (${s.date})`;
   });
+
+  // Restauration automatique : si une progression existe (test en cours
+  // interrompu par un rechargement), on y retourne directement — l'utilisateur
+  // ne doit pas avoir à deviner qu'il faut recliquer "Start Test" pour la
+  // récupérer, sinon un rechargement a l'air de tout effacer.
+  const resume = findInProgressListeningTest();
+  if (resume) {
+    currentTest = TESTS[resume.id];
+    document.querySelectorAll('.test-sel-btn').forEach((b,i) =>
+      b.classList.toggle('active', (i===0&&resume.id==='test01')||(i===1&&resume.id==='test02')||(i===2&&resume.id==='test03')));
+    startTest();
+  }
+}
+
+function findInProgressListeningTest() {
+  let best = null;
+  ['test01','test02','test03'].forEach(id => {
+    const p = loadProgress('listening', id);
+    if (p && (!best || p.updatedAt > best.updatedAt)) best = { id, ...p };
+  });
+  return best;
 }
 
 function selectTest(id) {

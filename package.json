@@ -4,5 +4,12 @@
   "description": "Free AI-powered IELTS preparation platform",
   "engines": {
     "node": ">=18"
+  },
+  "scripts": {
+    "test": "node tests/check.js",
+    "test:e2e": "node tests/e2e-persistence.js"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.61.1"
   }
 }
