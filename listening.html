@@ -669,16 +669,20 @@ function getQuestions(sec) {
 
 function checkAnswer(q) {
   const el = document.getElementById('q'+q.n);
-  if (!el) return false;
-  const val = el.value.trim().toUpperCase();
-  const correct = q.answer.toUpperCase();
-  return val === correct || (q.alt||[]).map(a=>a.toUpperCase()).includes(val);
+  if (el) {
+    const val = el.value.trim().toUpperCase();
+    const correct = String(q.answer).toUpperCase();
+    return val === correct || (q.alt||[]).map(a=>a.toUpperCase()).includes(val);
+  }
+  // Question à choix multiples (buildMCGroup) : boutons radio name="q{n}",
+  // pas d'id partagé — q.answer y est l'index numérique de l'option correcte.
+  const checked = document.querySelector(`input[name="q${q.n}"]:checked`);
+  return !!checked && checked.value === String(q.answer);
 }
 
 function markQuestion(q, correct) {
   const el = document.getElementById('q'+q.n);
-  if (!el) return;
-  if (el.tagName === 'INPUT' || el.tagName === 'SELECT') {
+  if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) {
     el.classList.add(correct ? 'correct' : 'incorrect');
     el.disabled = true;
     if (!correct && el.tagName === 'INPUT') {
@@ -687,7 +691,17 @@ function markQuestion(q, correct) {
       hint.textContent = '✓ ' + q.answer;
       el.insertAdjacentElement('afterend', hint);
     }
+    return;
   }
+  // Question à choix multiples : boutons radio name="q{n}", pas d'id partagé.
+  const correctVal = String(q.answer);
+  document.querySelectorAll(`input[name="q${q.n}"]`).forEach(inp => {
+    inp.disabled = true;
+    const lbl = inp.closest('.mc-option');
+    if (!lbl) return;
+    if (inp.value === correctVal) lbl.classList.add('correct-ans');
+    else if (inp.checked && inp.value !== correctVal) lbl.classList.add('wrong-ans');
+  });
 }
 
 function showResults(total, band, isPartial=false, doneCount=4, maxPossible=40, scaledTotal=total) {

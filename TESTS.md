@@ -1,5 +1,39 @@
 # ParrotTalk — Tests techniques
 
+## Fix #3 post-session 3 — score des choix multiples jamais compté (2026-07-07) ✅
+
+Tag avant fix : `avant-fix-scoring-mc-2026-07-07`.
+
+**Corrige le second bug identifié (et volontairement non traité) dans le fix
+précédent** : `checkAnswer(q)` et `markQuestion(q, correct)` dans
+`listening.html` ne lisaient une réponse que via
+`document.getElementById('q'+q.n)` — ce qui retourne toujours rien pour les
+questions à choix multiples (`buildMCGroup()`, boutons radio `name="q{n}"`
+sans id partagé). Résultat : une question à choix multiples était **toujours**
+comptée fausse, y compris à la toute première soumission, sans lien avec un
+rechargement.
+
+### Correctif
+Même approche que celle déjà en place côté `reading.html` (`checkQ`/`markQ`) :
+- `checkAnswer(q)` : si aucun élément `id="q{n}"` n'existe, se rabat sur
+  `document.querySelector('input[name="q{n}"]:checked')` et compare sa valeur
+  à `String(q.answer)` (l'index numérique de l'option correcte, tel que généré
+  par `buildMCGroup()`).
+- `markQuestion(q, correct)` : ajoute une branche radio qui désactive les
+  boutons et applique les classes CSS déjà existantes mais jamais utilisées
+  `.correct-ans` / `.wrong-ans` sur le `.mc-option` correspondant (bonne
+  réponse toujours indiquée en vert, mauvais choix de l'utilisateur en rouge
+  si applicable).
+
+### Testé avec un vrai navigateur (Chrome via Playwright)
+- Section de 10 questions (5 texte + 5 choix multiples), toutes correctes →
+  **10/10** avant ET après rechargement (contre 5/10 avant ce fix).
+- Marquage visuel vérifié : bonne réponse en vert, mauvais choix en rouge,
+  boutons verrouillés après validation.
+- `tests/e2e-persistence.js` étendu avec `testListeningMCScoring()` (calcul
+  pur, isolé) et des vérifications de score ajoutées à
+  `testListeningTwoSectionsAndMC()`. **17/17 passed.**
+
 ## Fix #2 post-session 3 — réponses à choix multiples (radio) non restaurées (2026-07-07) ✅
 
 Tag avant fix : `avant-fix-restauration-multisection-2026-07-07`.

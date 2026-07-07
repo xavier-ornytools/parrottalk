@@ -110,6 +110,10 @@ async function testListeningTwoSectionsAndMC(browser) {
   await page.waitForTimeout(150);
 
   const scoreBeforeReload = await page.evaluate(() => sectionScores.slice());
+  // Section 2 = 5 questions texte (q11-15) + 5 questions à choix multiples
+  // (q16-20), toutes correctes ci-dessus => score complet attendu = 10.
+  check('Score section 2 = 10/10 (texte + choix multiples, calculé AVANT reload)',
+    scoreBeforeReload[1] === 10);
 
   await page.reload();
   await page.waitForTimeout(300);
@@ -122,6 +126,8 @@ async function testListeningTwoSectionsAndMC(browser) {
     JSON.stringify(state.sectionsDone) === JSON.stringify([true,true,false,false]));
   check('Scores des 2 sections inchangés par le reload (pas remis à 0)',
     JSON.stringify(state.sectionScores) === JSON.stringify(scoreBeforeReload));
+  check('Score section 2 toujours = 10/10 APRÈS reload (choix multiples comptés)',
+    state.sectionScores[1] === 10);
 
   await page.click('#tab-1');
   await page.waitForTimeout(100);
@@ -130,6 +136,49 @@ async function testListeningTwoSectionsAndMC(browser) {
     return r ? r.value : null;
   });
   check('Réponse MC (bouton radio q16) réaffichée cochée après reload', q16 === '1');
+
+  await page.close();
+}
+
+// Vérifie explicitement le CALCUL du score (pas seulement l'affichage) pour
+// un mélange de bonnes/mauvaises réponses en choix multiples, avant tout
+// rechargement — isole le bug de checkAnswer()/markQuestion() corrigé
+// séparément de la restauration après reload.
+async function testListeningMCScoring(browser) {
+  console.log('\n=== Listening : calcul du score pour les choix multiples (texte + MC) ===');
+  const page = await browser.newPage();
+  page.on('pageerror', err => console.log('  [JS ERROR]', err.message));
+
+  await page.goto(`${BASE_URL}/listening.html`);
+  await page.click('button:has-text("Start Test")');
+  await page.waitForTimeout(150);
+  await page.evaluate(() => switchSection(1)); // 5 texte (q11-15) + 5 MC (q16-20)
+
+  // Tout correct
+  await page.evaluate(() => {
+    getQuestions(currentTest.sections[1]).forEach(q => {
+      const el = document.getElementById('q'+q.n);
+      if (el) { el.value = q.answer; return; }
+      const radio = document.querySelector(`input[name="q${q.n}"][value="${q.answer}"]`);
+      if (radio) radio.checked = true;
+    });
+  });
+  await page.click('#finish-section-btn');
+  await page.waitForTimeout(150);
+
+  const scoreAllCorrect = await page.evaluate(() => sectionScores[1]);
+  check('10/10 quand texte ET choix multiples sont tous corrects', scoreAllCorrect === 10);
+
+  const marks = await page.evaluate(() => {
+    const correctLbl = document.querySelector('input[name="q16"][value="1"]').closest('.mc-option');
+    return { correctMarked: correctLbl.classList.contains('correct-ans') };
+  });
+  check('La bonne réponse MC est visuellement marquée (correct-ans)', marks.correctMarked);
+
+  await page.reload();
+  await page.waitForTimeout(300);
+  const scoreAfterReload = await page.evaluate(() => sectionScores[1]);
+  check('Score toujours 10/10 après reload', scoreAfterReload === 10);
 
   await page.close();
 }
@@ -180,6 +229,7 @@ async function main() {
   try {
     await testListening(browser);
     await testListeningTwoSectionsAndMC(browser);
+    await testListeningMCScoring(browser);
     await testReading(browser);
   } finally {
     await browser.close();
