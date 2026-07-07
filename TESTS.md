@@ -1,5 +1,48 @@
 # ParrotTalk — Tests techniques
 
+## Session UX du soir (2026-07-07) ✅
+
+Tag avant session : `avant-session-ux-2026-07-07-soir`. Périmètre strict : les
+2 corrections ci-dessous uniquement — pas touché à l'affichage par blocs (L1)
+ni aux accents audio (L8), réservés à des sessions dédiées.
+
+### Correction 1 — nom de l'épreuve dans l'encart de résultat ✅
+Commit `d5c740d`, dédié.
+- `listening.html` : "🎧 Listening — Final Score"
+- `reading.html` : "📖 Reading — Final Score" (encart partagé entre les 3 tests)
+- `writing.html` : "🤖 AI Analysis — ✍️ Writing Task {n}"
+- `speaking.html` : déjà conforme ("Speaking Test 0X — AI Results"), non touché
+
+Vérifié visuellement (vrai Chrome, submit réel) sur Listening et Reading.
+Writing vérifié par lecture de code (simple gabarit de texte, non testable
+sans appel réel à l'API Gemini).
+
+### Correction 2 — listes déroulantes remplacées par des options visibles ✅
+Commit `a7f3cb7`, dédié. Point 7 de l'audit initial.
+- `listening.html` : `buildMatchingGroup()` reprend le pattern déjà utilisé
+  par `buildMCGroup()` (boutons radio, classes `.mc-option` existantes)
+- `reading.html` : les 6 blocs `<select class="matching-select">` (Test01
+  Q14-19) réécrits sur le même modèle
+
+Aucun changement de logique nécessaire : `checkAnswer()`/`markQuestion()` et
+`checkQ()`/`markQ()` géraient déjà les radios génériquement depuis le fix du
+scoring MC — la conversion select→radio fonctionne directement avec le code
+existant.
+
+**Testé avec un vrai Chrome (Playwright)**, en particulier la persistance sur
+ces zones proches de la persistance validée précédemment : score et réponses
+corrects avant ET après un vrai rechargement, sur le groupe matching Listening
+(q21-25, section 3) et Reading Q14-19 (passage 2, Test01).
+`tests/e2e-persistence.js` étendu avec 2 nouveaux scénarios dédiés
+(`testListeningMatchingGroup`, `testReadingMatchingHeadings`).
+**24/24 passed** (suite complète, aucune régression).
+
+### Déploiement
+**Pas encore fait pour cette session-ci.** Les 2 commits (`d5c740d`,
+`a7f3cb7`) sont en local, prêts à pousser — `git push origin main` suffit
+(Vercel builde automatiquement), comme pour le déploiement précédent du
+même jour.
+
 ## Déploiement en production (2026-07-07) ✅
 
 Tag avant déploiement : `avant-deploiement-v2-2026-07-07`.
