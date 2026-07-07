@@ -1579,6 +1579,7 @@ function saveReadingScore(testId, passageScores, total) {
 }
 
 function selectTest(id) {
+  if (timerInterval) clearInterval(timerInterval);
   currentReadingTest = id === 'test03' ? 3 : id === 'test02' ? 2 : 1;
   document.querySelectorAll('.test-sel-btn').forEach((b,i) =>
     b.classList.toggle('active', i === currentReadingTest - 1));
@@ -1677,6 +1678,7 @@ function restoreReadingAnswers() {
 }
 
 function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
   secondsLeft = 3600;
   timerInterval = setInterval(() => {
     secondsLeft--;
