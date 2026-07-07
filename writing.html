@@ -200,12 +200,13 @@
 
       <textarea class="answer-area" id="task1-answer"
         placeholder="Write your Task 1 answer here..."
-        oninput="updateWordCount('task1-answer','wc1',150)"></textarea>
+        oninput="updateWordCount('task1-answer','wc1',150)"
+        style="border-left:4px solid #92400E"></textarea>
 
       <div class="wc-row">
         <div class="word-count" id="wc1">0 words (minimum: 150)</div>
         <div class="flex items-center gap-3">
-          <button class="ai-btn" onclick="getAIFeedback(1)" id="ai-btn-1">🤖 Get AI Feedback</button>
+          <button class="ai-btn" onclick="getAIFeedback(1)" id="ai-btn-1">🤖 Get AI Feedback — Task 1</button>
           <button class="btn btn-outline btn-sm" onclick="toggleSample('sample1')">👁 Band 7 Model Answer</button>
         </div>
       </div>
@@ -240,12 +241,12 @@
       <textarea class="answer-area" id="task2-answer"
         placeholder="Write your Task 2 answer here..."
         oninput="updateWordCount('task2-answer','wc2',250)"
-        style="min-height:300px"></textarea>
+        style="min-height:300px;border-left:4px solid var(--primary-dark)"></textarea>
 
       <div class="wc-row">
         <div class="word-count" id="wc2">0 words (minimum: 250)</div>
         <div class="flex items-center gap-3">
-          <button class="ai-btn" onclick="getAIFeedback(2)" id="ai-btn-2">🤖 Get AI Feedback</button>
+          <button class="ai-btn" onclick="getAIFeedback(2)" id="ai-btn-2">🤖 Get AI Feedback — Task 2</button>
           <button class="btn btn-outline btn-sm" onclick="toggleSample('sample2')">👁 Band 7 Model Answer</button>
         </div>
       </div>
@@ -417,7 +418,7 @@ async function getAIFeedback(task) {
       throw new Error(err.error || `HTTP ${res.status}`);
     }
     const data = await res.json();
-    renderAIFeedback(feedbackBox, data, task);
+    renderAIFeedback(feedbackBox, data, task, promptText);
   } catch (err) {
     feedbackBox.innerHTML = `<div class="card card-sm" style="border-color:var(--danger);background:var(--danger-light)">
       <p style="color:var(--danger);font-size:.875rem">⚠️ AI evaluation failed. Please try again.<br><small style="opacity:.7">${err.message}</small></p>
@@ -425,10 +426,10 @@ async function getAIFeedback(task) {
   }
 
   btn.disabled = false;
-  btn.innerHTML = '🤖 Get AI Feedback';
+  btn.innerHTML = `🤖 Get AI Feedback — Task ${task}`;
 }
 
-function renderAIFeedback(box, data, task) {
+function renderAIFeedback(box, data, task, promptText) {
   const criteriaKey = task === 1 ? ['taskAchievement','coherence','lexical','grammar'] : ['taskResponse','coherence','lexical','grammar'];
   const criteriaNames = task === 1
     ? ['Task Achievement','Coherence & Cohesion','Lexical Resource','Grammatical Range']
@@ -439,11 +440,13 @@ function renderAIFeedback(box, data, task) {
       <div class="criteria-name">${criteriaNames[i]}</div>
       <div class="criteria-text">${data[k]?.comment || ''}</div>
     </div>`).join('');
+  const promptExcerpt = promptText ? promptText.trim().slice(0, 100) + (promptText.trim().length > 100 ? '…' : '') : '';
   box.innerHTML = `<div class="ai-feedback">
     <div class="ai-feedback__header">
       <div class="ai-badge">🤖 AI Analysis</div>
       <h4 style="font-size:1rem">Estimated Band: <span style="color:var(--primary);font-size:1.25rem;font-weight:800">${data.band || '—'}</span></h4>
     </div>
+    ${promptExcerpt ? `<p style="font-size:.8125rem;color:var(--text-secondary,#64748B);margin-bottom:10px;font-style:italic">📋 Sujet évalué : "${promptExcerpt}"</p>` : ''}
     ${data.summary ? `<p style="font-size:.9375rem;color:var(--text);margin-bottom:12px">${data.summary}</p>` : ''}
     <div class="criteria-grid">${itemsHTML}</div>
     ${data.topTip ? `<div style="margin-top:12px;padding:12px 14px;background:var(--warning-light);border-radius:var(--r);font-size:.875rem;color:#92400E"><strong>💡 Top tip:</strong> ${data.topTip}</div>` : ''}

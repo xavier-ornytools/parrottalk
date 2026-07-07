@@ -164,7 +164,11 @@ Be realistic. An average test-taker scores 5.5–6.5.`;
   if (!budget.ok) return json({ error: 'Monthly evaluation budget reached — service resumes next month' }, 429, origin);
   if (budget.alert) console.log(`[BUDGET ALERT] ${budget.current.toFixed(4)}€ / ${budget.limit}€`);
 
-  await logEvaluation(env, 'writing', { band: parsed.band, task: task || 1 }, 0);
+  await logEvaluation(env, 'writing', {
+    band: parsed.band,
+    task: task || 1,
+    promptExcerpt: (prompt || '').slice(0, 300),
+  }, 0);
 
   return json(parsed, 200, origin);
 }

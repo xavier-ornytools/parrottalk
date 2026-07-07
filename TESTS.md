@@ -1,5 +1,46 @@
 # ParrotTalk — Tests techniques
 
+## Session 2 — Corrections sûres (2026-07-07) ✅
+
+Tag avant session : `avant-session2-corrections-2026-07-07`. Périmètre strict :
+3 corrections, persistance (point 3) explicitement hors scope.
+
+### 1. Band global (`dashboard.html:loadDashboard()`)
+```js
+const skills = { listening: 1.0, reading: 6.0, writing: 1.0, speaking: null };
+// avant : overall = "2.7" (impossible en IELTS)
+// après : overall = "2.5"
+```
+- [x] Vérifié via Node avec le cas de test exact de l'audit → `2.5` obtenu.
+- [ ] À vérifier dans le navigateur : ouvrir `dashboard.html` avec des scores
+      réels donnant une moyenne non ronde et confirmer l'affichage.
+
+### 2. Logging prompt Writing (`worker/src/index.js:logEvaluation()`)
+- Ajout de `promptExcerpt` (300 premiers caractères du prompt réellement
+  évalué) à l'objet loggé dans `handleWriting()`.
+- **Écart signalé** : `testId` n'est pas dans le payload envoyé par
+  `writing.html` (seulement `task`, `taskType`, `prompt`, `essay`, `wordCount`,
+  `minWords`) — non ajouté au log pour rester dans le périmètre strict de
+  cette session (fichier `worker/src/index.js` uniquement). Le `promptExcerpt`
+  suffit à identifier le sujet exact évalué.
+- [ ] **Nécessite un déploiement du Worker** pour être actif en production —
+      voir note ci-dessous, pas fait sans feu vert de Xavier.
+- [ ] À vérifier après déploiement : `wrangler tail` ou lecture KV après un
+      appel `/evaluate/writing`, confirmer la présence de `promptExcerpt`.
+
+### 3. Garde-fous UX Writing (`writing.html`)
+- [x] Boutons renommés "🤖 Get AI Feedback — Task 1/2" (y compris après
+      reset post-requête, oubli initial dans le code corrigé au passage).
+- [x] Bordure gauche colorée sur chaque `<textarea>` (ambre `#92400E` pour
+      Task 1, `var(--primary-dark)` pour Task 2), cohérent avec les badges
+      `task-tag` existants.
+- [x] Rappel du sujet évalué ajouté dans `renderAIFeedback()` (100 premiers
+      caractères du `promptText` déjà disponible côté client — voir
+      justification du choix client vs serveur dans le résumé de session).
+- [x] Syntaxe JS du script inline vérifiée (extraction + `node --check`).
+- [ ] À vérifier dans le navigateur : lancer un test Writing, cliquer les 2
+      boutons, confirmer visuellement bordures + libellés + rappel du sujet.
+
 ## Audit lecture seule (2026-07-07) ✅
 
 Session d'audit pure suite au premier test blanc IELTS complet — **aucun

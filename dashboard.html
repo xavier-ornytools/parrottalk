@@ -313,7 +313,8 @@ function loadDashboard() {
 
   // Calculate overall
   const available = Object.values(skills).filter(v => v !== null);
-  const overall = available.length ? (available.reduce((a,b) => a+b, 0) / available.length).toFixed(1) : null;
+  const rawAvg = available.length ? available.reduce((a,b) => a+b, 0) / available.length : null;
+  const overall = rawAvg !== null ? (Math.round(rawAvg * 2) / 2).toFixed(1) : null;
 
   if (!hasData) {
     document.getElementById('empty-state').classList.remove('hidden');
