@@ -1,5 +1,60 @@
 # ParrotTalk — Tests techniques
 
+## Session 3 — Persistance + corrections voisines (2026-07-07) ✅
+
+Tag avant session : `avant-session3-persistance-2026-07-07`. Méthode : étapes
+séquentielles, chacune committée séparément. **Allé jusqu'à Étape A + Étape B.
+Étape C (listes déroulantes) non commencée**, délibérément — voir raison
+ci-dessous.
+
+### Étape A — Persistance (PRIORITÉ ABSOLUE) ✅
+Commit dédié `7f5f446`. Bouton "J'ai fini cette section/ce passage" sur les
+4 sections Listening + 9 blocs Reading (3 tests × 3 passages). Sauvegarde
+`localStorage` incrémentale (`ielts_progress_{module}_{testId}`), découplée
+de la fin de l'audio.
+
+**Testé fonctionnellement avec jsdom** (pas seulement une vérification de
+syntaxe — un vrai navigateur simulé exécutant le code réel) :
+```bash
+cd /tmp && node test_persistence2.js   # Listening : section 1→fini→section 2→
+                                        # "reload"→score section 1 préservé→
+                                        # section 2 finie→submit→band agrégé→
+                                        # progression effacée. PASS.
+node test_reading.js                   # Reading : passage 1→fini→"reload"→
+                                        # réponses restaurées→passages 2+3→
+                                        # submit 40/40→progression effacée. PASS.
+```
+Un vrai bug a été trouvé et corrigé pendant ces tests : `currentSection`/
+`currentPassage` sauvegardé était celui qu'on venait de finir au lieu du
+suivant — un rechargement aurait fait revivre la section déjà validée au lieu
+de reprendre à la bonne section.
+
+**Test manuel à refaire dans un vrai navigateur** (les scripts jsdom
+couvrent la logique mais pas le rendu réel/l'audio) :
+- [ ] Listening : faire section 1, cliquer "I've finished", faire section 2,
+      recharger la page, vérifier que le score section 1 est toujours là au
+      dashboard après avoir fini et soumis
+- [ ] Reading : idem sur 2 des 3 passages avant rechargement
+- [ ] Dashboard : bouton "Reset all scores" nettoie bien aussi la progression
+      en cours (pas seulement les scores finaux)
+
+### Étape B — Garde clearInterval() minuteur Reading ✅
+Commit dédié `b421f12`. `startTimer()` et `selectTest()` font désormais
+`clearInterval()` avant de repartir — empêche l'empilement de plusieurs
+chronos si un test Reading est relancé en cours de session.
+- [ ] Test manuel : lancer un test Reading, cliquer sur un autre test avant la
+      fin, relancer, vérifier que le chrono ne défile pas anormalement vite.
+
+### Étape C — Listes déroulantes visibles — NON COMMENCÉE
+Raison : les étapes A+B ont demandé un débogage réel substantiel (voir le bug
+`currentSection` trouvé par les tests). L'étape C touche les mêmes zones
+fraîchement testées (`buildMatchingGroup()` en Listening, les 6 `<select>`
+Reading Q14-19) — la faire dans la foulée aurait augmenté le risque de
+régression sur la persistance qui vient d'être validée, sans le temps de la
+retester aussi rigoureusement. Xavier a explicitement autorisé à s'arrêter
+après B dans ce cas. Reste décrite en détail dans `CORRECTIONS-PLAN.md`
+(Session 4).
+
 ## Session 2 — Corrections sûres (2026-07-07) ✅
 
 Tag avant session : `avant-session2-corrections-2026-07-07`. Périmètre strict :
