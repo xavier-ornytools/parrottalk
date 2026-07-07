@@ -617,18 +617,23 @@ function buildMCGroup(group) {
 }
 
 function buildMatchingGroup(group) {
+  // Options visibles en permanence (boutons radio), au lieu d'un <select>
+  // qui masque tout sauf l'option choisie — conforme au format IELTS
+  // (toutes les options doivent rester lisibles pendant la préparation).
+  // Même pattern que buildMCGroup() : checkAnswer()/markQuestion() gèrent
+  // déjà les radios génériquement, aucun changement de logique nécessaire.
   const rows = group.questions.map(q => `
-    <div class="matching-row">
-      <div class="q-num">${q.n}</div>
-      <div class="matching-label">${q.text}</div>
-      <select class="matching-select" id="q${q.n}">
-        <option value="">— Select —</option>
-        ${group.options.map((o,i) => `<option value="${String.fromCharCode(65+i)}">${o}</option>`).join('')}
-      </select>
+    <div class="mc-question">
+      <div class="mc-text"><div class="q-num" style="flex-shrink:0">${q.n}</div><span>${q.text}</span></div>
+      <div>${group.options.map((o,i) => `
+        <label class="mc-option" id="mc-${q.n}-${i}">
+          <input type="radio" name="q${q.n}" value="${String.fromCharCode(65+i)}"> <span>${o}</span>
+        </label>`).join('')}
+      </div>
     </div>`).join('');
   return `<div class="question-group">
     <div class="group-instructions">${group.instructions}</div>
-    <div>${rows}</div>
+    ${rows}
   </div>`;
 }
 

@@ -183,6 +183,95 @@ async function testListeningMCScoring(browser) {
   await page.close();
 }
 
+// Groupe "matching" de Listening (section 3, q21-25) : anciennement un
+// <select>, converti en boutons radio visibles. Vérifie que le score et la
+// persistance fonctionnent toujours après la conversion.
+async function testListeningMatchingGroup(browser) {
+  console.log('\n=== Listening : groupe matching (ex-select → radios) ===');
+  const page = await browser.newPage();
+  page.on('pageerror', err => console.log('  [JS ERROR]', err.message));
+
+  await page.goto(`${BASE_URL}/listening.html`);
+  await page.click('button:has-text("Start Test")');
+  await page.waitForTimeout(150);
+  await page.evaluate(() => switchSection(2));
+  await page.waitForTimeout(150);
+
+  const noMoreSelect = await page.evaluate(() => {
+    const el = document.getElementById('q21');
+    return !el || el.tagName !== 'SELECT';
+  });
+  check('Plus de <select> pour le groupe matching (q21)', noMoreSelect);
+
+  await page.evaluate(() => {
+    getQuestions(currentTest.sections[2]).forEach(q => {
+      const el = document.getElementById('q'+q.n);
+      if (el) { el.value = q.answer; return; }
+      const radio = document.querySelector(`input[name="q${q.n}"][value="${q.answer}"]`);
+      if (radio) radio.checked = true;
+    });
+  });
+  await page.click('#finish-section-btn');
+  await page.waitForTimeout(150);
+  const scoreBefore = await page.evaluate(() => sectionScores[2]);
+
+  await page.reload();
+  await page.waitForTimeout(300);
+  await page.evaluate(() => switchSection(2));
+  await page.waitForTimeout(100);
+
+  const after = await page.evaluate(() => {
+    const checked = document.querySelector('input[name="q21"]:checked');
+    return { score: sectionScores[2], q21: checked ? checked.value : null };
+  });
+  check('Score du groupe matching conservé après reload', after.score === scoreBefore && scoreBefore > 0);
+  check('Réponse matching (q21) réaffichée cochée après reload', !!after.q21);
+
+  await page.close();
+}
+
+// Blocs Q14-19 "Matching Headings" de Reading (Test01) : anciennement 6
+// <select>, convertis en boutons radio visibles.
+async function testReadingMatchingHeadings(browser) {
+  console.log('\n=== Reading : Matching Headings Q14-19 (ex-select → radios) ===');
+  const page = await browser.newPage();
+  page.on('pageerror', err => console.log('  [JS ERROR]', err.message));
+
+  await page.goto(`${BASE_URL}/reading.html`);
+  await page.click('button:has-text("Start Test")');
+  await page.waitForTimeout(150);
+  await page.evaluate(() => switchPassage(1));
+  await page.waitForTimeout(150);
+
+  const noMoreSelect = await page.evaluate(() => document.querySelectorAll('select.matching-select').length === 0);
+  check('Plus aucun <select class="matching-select"> dans reading.html', noMoreSelect);
+
+  await page.evaluate(() => {
+    const range = currentRanges()[1];
+    for (let qn = range.start; qn <= range.end; qn++) {
+      setAnswerValue('q'+qn, ANSWERS_MAP[''][('q'+qn)]);
+    }
+  });
+  await page.evaluate(() => finishReadingPassage());
+  await page.waitForTimeout(150);
+  const scoreBefore = await page.evaluate(() => passageScoresLive[1]);
+  check('Score passage 2 = 13/13 (inclut Q14-19 matching)', scoreBefore === 13);
+
+  await page.reload();
+  await page.waitForTimeout(300);
+  await page.evaluate(() => switchPassage(1));
+  await page.waitForTimeout(100);
+
+  const after = await page.evaluate(() => {
+    const checked = document.querySelector('input[name="q14"]:checked');
+    return { score: passageScoresLive[1], q14: checked ? checked.value : null };
+  });
+  check('Score conservé après reload (toujours 13/13)', after.score === 13);
+  check('Réponse Q14 réaffichée cochée après reload', !!after.q14);
+
+  await page.close();
+}
+
 async function testReading(browser) {
   console.log('\n=== Reading : reload en plein milieu, sans re-cliquer ===');
   const page = await browser.newPage();
@@ -230,6 +319,8 @@ async function main() {
     await testListening(browser);
     await testListeningTwoSectionsAndMC(browser);
     await testListeningMCScoring(browser);
+    await testListeningMatchingGroup(browser);
+    await testReadingMatchingHeadings(browser);
     await testReading(browser);
   } finally {
     await browser.close();
