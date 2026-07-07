@@ -443,7 +443,7 @@ function renderAIFeedback(box, data, task, promptText) {
   const promptExcerpt = promptText ? promptText.trim().slice(0, 100) + (promptText.trim().length > 100 ? '…' : '') : '';
   box.innerHTML = `<div class="ai-feedback">
     <div class="ai-feedback__header">
-      <div class="ai-badge">🤖 AI Analysis</div>
+      <div class="ai-badge">🤖 AI Analysis — ✍️ Writing Task ${task}</div>
       <h4 style="font-size:1rem">Estimated Band: <span style="color:var(--primary);font-size:1.25rem;font-weight:800">${data.band || '—'}</span></h4>
     </div>
     ${promptExcerpt ? `<p style="font-size:.8125rem;color:var(--text-secondary,#64748B);margin-bottom:10px;font-style:italic">📋 Sujet évalué : "${promptExcerpt}"</p>` : ''}
