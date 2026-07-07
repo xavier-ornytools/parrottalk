@@ -75,6 +75,65 @@ async function testListening(browser) {
   await page.close();
 }
 
+// Reproduit le bug rapporté par Xavier après le premier fix : section 1 ET
+// section 2 finalisées (bouton cliqué sur les deux), puis reload. Vérifie
+// aussi la restauration visuelle des réponses à choix multiples (boutons
+// radio, section 2 questions 16-20 du Test 01) — pas seulement le texte.
+async function testListeningTwoSectionsAndMC(browser) {
+  console.log('\n=== Listening : 2 sections finalisées + réponses MC (radio), puis reload ===');
+  const page = await browser.newPage();
+  page.on('pageerror', err => console.log('  [JS ERROR]', err.message));
+
+  await page.goto(`${BASE_URL}/listening.html`);
+  await page.click('button:has-text("Start Test")');
+  await page.waitForTimeout(150);
+
+  await page.evaluate(() => {
+    getQuestions(currentTest.sections[0]).forEach(q => {
+      const el = document.getElementById('q'+q.n); if (el) el.value = q.answer;
+    });
+  });
+  await page.click('#finish-section-btn');
+  await page.waitForTimeout(150);
+
+  // Section 2 : questions texte (q11-15) ET à choix multiples (q16-20,
+  // boutons radio sans id — c'est précisément ce qui n'était pas restauré).
+  await page.evaluate(() => {
+    getQuestions(currentTest.sections[1]).forEach(q => {
+      const el = document.getElementById('q'+q.n);
+      if (el) { el.value = q.answer; return; }
+      const radio = document.querySelector(`input[name="q${q.n}"][value="${q.answer}"]`);
+      if (radio) radio.checked = true;
+    });
+  });
+  await page.click('#finish-section-btn');
+  await page.waitForTimeout(150);
+
+  const scoreBeforeReload = await page.evaluate(() => sectionScores.slice());
+
+  await page.reload();
+  await page.waitForTimeout(300);
+
+  const state = await page.evaluate(() => ({
+    sectionsDone: sectionsDone.slice(),
+    sectionScores: sectionScores.slice(),
+  }));
+  check('Section 1 ET 2 toujours marquées faites après reload',
+    JSON.stringify(state.sectionsDone) === JSON.stringify([true,true,false,false]));
+  check('Scores des 2 sections inchangés par le reload (pas remis à 0)',
+    JSON.stringify(state.sectionScores) === JSON.stringify(scoreBeforeReload));
+
+  await page.click('#tab-1');
+  await page.waitForTimeout(100);
+  const q16 = await page.evaluate(() => {
+    const r = document.querySelector('input[name="q16"]:checked');
+    return r ? r.value : null;
+  });
+  check('Réponse MC (bouton radio q16) réaffichée cochée après reload', q16 === '1');
+
+  await page.close();
+}
+
 async function testReading(browser) {
   console.log('\n=== Reading : reload en plein milieu, sans re-cliquer ===');
   const page = await browser.newPage();
@@ -120,6 +179,7 @@ async function main() {
   const browser = await chromium.launch({ executablePath: CHROME_PATH, headless: true });
   try {
     await testListening(browser);
+    await testListeningTwoSectionsAndMC(browser);
     await testReading(browser);
   } finally {
     await browser.close();

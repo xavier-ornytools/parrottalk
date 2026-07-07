@@ -1,5 +1,76 @@
 # ParrotTalk — Tests techniques
 
+## Fix #2 post-session 3 — réponses à choix multiples (radio) non restaurées (2026-07-07) ✅
+
+Tag avant fix : `avant-fix-restauration-multisection-2026-07-07`.
+
+**Rapporté par Xavier** : après le fix de restauration automatique, nouveau test
+manuel réel en Firefox — section 1 finie, section 2 finie (toast "section two
+saved" confirmé), `Ctrl+R` → réponses de section 2 disparues des cases à
+l'écran → soumission finale = 0/40, Band 1.
+
+**Diagnostic (vérifié avec un vrai Chrome via Playwright, en reproduisant
+exactement ce scénario à deux sections finalisées)** :
+
+`Michel/Bureau/parrottalk_restored/listening.html` a deux mécanismes
+différents pour lire une réponse selon le type de question :
+- Questions texte/select (`id="q{n}"`) : `document.getElementById('q'+n).value`
+- Questions à choix multiples (`buildMCGroup()`, boutons radio
+  `name="q{n}"` **sans id partagé**) : uniquement lisibles via
+  `document.querySelector('input[name="q{n}"]:checked')`
+
+Mon `finishSection()`/`restoreSectionAnswers()` de la session 3 utilisaient
+uniquement `document.getElementById('q'+q.n).value` — **qui retourne
+`null`/rien pour les questions à choix multiples**. Résultat : les réponses
+MC n'étaient ni capturées dans `savedAnswers`, ni réinjectées (radio recoché)
+au rechargement. Reading n'avait pas ce problème : `checkQ()`/`markQ()` y
+géraient déjà les radios via un repli `querySelector(':checked')` — Listening
+ne l'avait jamais eu.
+
+### Correctif appliqué (persistance uniquement)
+`listening.html` : ajout de `getAnswerValue(key)`/`setAnswerValue(key, value)`
+(même logique que celle déjà utilisée dans `reading.html`) — lisent/écrivent
+un champ texte/select via `id`, ou un bouton radio via
+`querySelector('input[name=...]:checked' / '[value=...]')`. `finishSection()`
+et `restoreSectionAnswers()` utilisent désormais ces helpers au lieu de l'accès
+direct `.value`.
+
+**Vérifié avec un vrai Chrome (Playwright)** : après le fix, un bouton radio
+coché avant "finish" reste correctement coché après un rechargement réel de
+la page (`tests/e2e-persistence.js`, nouveau test dédié).
+
+### ⚠️ Second bug trouvé, DISTINCT et PRÉ-EXISTANT — hors périmètre persistance
+
+En isolant precisément le cas radio, découverte d'un bug séparé, **indépendant
+de tout rechargement** : `checkAnswer(q)` dans `listening.html` fait
+`document.getElementById('q'+q.n)` et retourne `false` immédiatement si
+l'élément n'existe pas — **donc TOUTE question à choix multiples est toujours
+comptée comme fausse, même lors d'une toute première soumission, sans jamais
+recharger la page.** `markQuestion()` a la même limite (ne marque jamais les
+boutons radio visuellement corrects/incorrects).
+
+Vérifié : score d'une section à 10 questions (5 texte + 5 MC, toutes
+correctes) = **5/10 avant ET après reload** — identique, prouvant que ce n'est
+pas un problème de persistance mais un problème de calcul de score qui existait
+déjà avant cette session.
+
+**C'est probablement la vraie cause du "0/40, Band 1"** si le test que tu as
+fait à la main comportait beaucoup de questions à choix multiples : leur
+réponse était correcte, mais jamais comptée — que la page ait été rechargée
+ou non.
+
+**Je n'ai pas touché à `checkAnswer()`/`markQuestion()`** — ça sort du
+périmètre "persistance uniquement" que tu as fixé. Si tu veux que ce soit
+corrigé, dis-le et je le fais dans une prochaine session dédiée (ou
+maintenant si tu préfères) : le fix est le même principe que celui déjà fait
+côté Reading (`checkQ`/`markQ`), donc rapide et à faible risque.
+
+### Test de non-régression étendu
+`tests/e2e-persistence.js` complété avec un scénario "2 sections finalisées +
+réponses à choix multiples", vérifiant l'état visuel réel (bouton radio coché)
+après reload — pas seulement `localStorage`. **12/12 passed** (Listening x2 +
+Reading).
+
 ## Fix post-session 3 — restauration automatique manquante (2026-07-07) ✅
 
 Tag avant fix : `avant-fix-restauration-auto-2026-07-07`.

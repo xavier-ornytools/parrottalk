@@ -425,6 +425,24 @@ function handleSectionEnd(sectionIdx) {
 }
 
 // ── Finish section : sauvegarde + navigation (une pierre deux coups) ─────────
+// Lecture/écriture uniformes qu'il s'agisse d'un champ texte, d'un select,
+// ou d'un groupe de boutons radio (MC — qui n'ont pas d'id, seulement un
+// name). Sans ça, les réponses à choix multiples n'étaient ni capturées ni
+// restaurées (seuls les champs texte/select avaient un id="q{n}").
+function getAnswerValue(key) {
+  const el = document.getElementById(key);
+  if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) return el.value;
+  const checked = document.querySelector(`input[name="${key}"]:checked`);
+  return checked ? checked.value : '';
+}
+function setAnswerValue(key, value) {
+  if (!value) return;
+  const el = document.getElementById(key);
+  if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) { el.value = value; return; }
+  const radio = document.querySelector(`input[name="${key}"][value="${value}"]`);
+  if (radio) radio.checked = true;
+}
+
 function finishSection() {
   const si = currentSection;
   const sec = currentTest.sections[si];
@@ -435,8 +453,7 @@ function finishSection() {
       const ok = checkAnswer(q);
       markQuestion(q, ok);
       if (ok) score++;
-      const el = document.getElementById('q'+q.n);
-      if (el) savedAnswers['q'+q.n] = el.value;
+      savedAnswers['q'+q.n] = getAnswerValue('q'+q.n);
     });
     sectionScores[si] = score;
     sectionsDone[si] = true;
@@ -480,10 +497,8 @@ function updateFinishButton(i) {
 function restoreSectionAnswers(sec, i) {
   const qs = getQuestions(sec);
   qs.forEach(q => {
-    const el = document.getElementById('q'+q.n);
-    if (!el) return;
     const saved = savedAnswers['q'+q.n];
-    if (saved !== undefined) el.value = saved;
+    if (saved !== undefined) setAnswerValue('q'+q.n, saved);
   });
   if (sectionsDone[i]) {
     qs.forEach(q => markQuestion(q, checkAnswer(q)));
