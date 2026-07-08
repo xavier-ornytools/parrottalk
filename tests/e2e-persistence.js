@@ -424,6 +424,41 @@ async function testCookieBannerReject(browser) {
   await page.close();
 }
 
+async function testFAQAccessibleAndLinksWork(browser) {
+  console.log('\n=== FAQ : la section est accessible et ses liens légaux fonctionnent ===');
+  const page = await browser.newPage();
+  page.on('pageerror', err => console.log('  [JS ERROR]', err.message));
+
+  await page.goto(`${BASE_URL}/index.html`);
+  await page.evaluate(() => localStorage.removeItem('parrottalk_cookie_consent'));
+
+  const faqCount = await page.evaluate(() => document.querySelectorAll('#faq-list .faq-item').length);
+  check('Au moins 10 questions dans la FAQ', faqCount >= 10);
+
+  // Ouvrir la première question (comportement <details>/<summary>)
+  await page.click('#faq-list .faq-item summary');
+  await page.waitForTimeout(100);
+  const firstOpen = await page.evaluate(() => document.querySelector('#faq-list .faq-item').open);
+  check('Cliquer sur une question l\'ouvre (details/summary)', firstOpen);
+
+  // Suivre le premier lien vers privacy.html présent dans la FAQ
+  const privacyHref = await page.evaluate(() => {
+    const link = document.querySelector('#faq-list a[href="privacy.html"]');
+    return link ? link.getAttribute('href') : null;
+  });
+  check('La FAQ contient un lien vers privacy.html', privacyHref === 'privacy.html');
+
+  const privacyResp = await page.goto(`${BASE_URL}/privacy.html`);
+  check('privacy.html se charge sans erreur (200)', privacyResp.status() === 200);
+  const privacyTitle = await page.title();
+  check('privacy.html est bien la Privacy Policy', privacyTitle.includes('Privacy Policy'));
+
+  const termsResp = await page.goto(`${BASE_URL}/terms.html`);
+  check('terms.html se charge sans erreur (200)', termsResp.status() === 200);
+
+  await page.close();
+}
+
 async function main() {
   console.log('=== Test E2E persistance ParrotTalk (vrai navigateur) ===');
   console.log(`URL de base : ${BASE_URL} (lancer 'python3 -m http.server 8000' depuis le repo si besoin)`);
@@ -438,6 +473,7 @@ async function main() {
     await testSpeakingConsentGate(browser);
     await testCookieBannerBlocksGA4(browser);
     await testCookieBannerReject(browser);
+    await testFAQAccessibleAndLinksWork(browser);
   } finally {
     await browser.close();
   }

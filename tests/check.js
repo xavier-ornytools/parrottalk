@@ -112,6 +112,34 @@ check('startRecording checks consent before getUserMedia', () => {
 check('consent flag uses parrottalk_ prefix (survives dashboard reset)', () =>
   contains('speaking.html', 'parrottalk_consent_recording'));
 
+// FAQ
+console.log('\n[ FAQ ]');
+check('index.html has at least 10 FAQ items', () => {
+  const src = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  return (src.match(/class="faq-item"/g) || []).length >= 10;
+});
+check('FAQ states non-affiliation with IELTS/British Council', () =>
+  contains('index.html', 'not affiliated with, endorsed by, sponsored by, or connected'));
+check('FAQ states the band is an AI estimate, not an official result', () =>
+  contains('index.html', "it's an AI-generated estimate"));
+check('FAQ does not claim a measured accuracy figure (future tense only)', () => {
+  const src = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const faqSection = src.slice(src.indexOf('id="faq-list"'), src.indexOf('id="faq-list"') + 6000);
+  return !/±\s*\d+(\.\d+)?\s*%/.test(faqSection); // no invented precision percentage
+});
+check('FAQ no longer promises the site "will always be free"', () =>
+  !contains('index.html', 'will always be free'));
+check('FAQ links to privacy.html', () => {
+  const src = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const faqSection = src.slice(src.indexOf('id="faq-list"'), src.indexOf('id="faq-list"') + 6000);
+  return faqSection.includes('href="privacy.html"');
+});
+check('FAQ links to terms.html', () => {
+  const src = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const faqSection = src.slice(src.indexOf('id="faq-list"'), src.indexOf('id="faq-list"') + 6000);
+  return faqSection.includes('href="terms.html"');
+});
+
 console.log(`\n${'='.repeat(30)}`);
 console.log(`  ${passed} passed  |  ${failed} failed`);
 console.log('='.repeat(30) + '\n');

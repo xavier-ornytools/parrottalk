@@ -1,5 +1,93 @@
 # ParrotTalk — Tests techniques
 
+## FAQ v1 — construction par la preuve (2026-07-08) ✅
+
+Tag avant session : `site-session-2026-07-08-faq-v1`. Périmètre strict :
+la FAQ (`index.html#faq-list`), plus un aligmenent ponctuel d'une phrase
+de sur-promesse ("will always be free") trouvée juste en dessous dans la
+même page (hors périmètre strict mais directement liée au principe
+"aucune sur-promesse" rappelé pour cette session — signalé à Xavier).
+
+### Inspection préalable (avant écriture)
+Vérifié dans le code réel (pas de suppositions) avant de rédiger :
+- Les 4 sections ont bien 3 tests chacune (`TEST01/02/03` dans `js/data.js`,
+  `SPEAKING_TESTS` 1-3 dans `speaking.html`) — confirmé par "3 Tests
+  Available" déjà affiché sur la page d'accueil.
+- Speaking : le Worker (`worker/src/index.js`, `handleSpeaking`) note bien
+  sur 4 critères officiels IELTS (`fc`, `lr`, `gra`, `pron` = Fluency &
+  Coherence, Lexical Resource, Grammatical Range & Accuracy, Pronunciation).
+- Writing Task 1 est bien de type Academic (description de graphique/
+  tableau — confirmé dans `writing.html`), pas une lettre (General
+  Training).
+- **Point d'écart trouvé** : `js/data.js` n'a qu'une seule table de
+  conversion (`BAND_40`), utilisée à l'identique par Listening et Reading.
+  Pour Listening c'est correct (l'IELTS officiel utilise une table unique
+  Academic/GT). Pour Reading, ce n'est **pas** correct : l'IELTS officiel a
+  deux tables distinctes (Academic vs GT, GT plus stricte à score égal),
+  et ParrotTalk n'implémente que l'Academic. Déjà documenté comme dette
+  connue dans `CORRECTIONS-PLAN.md` (point 3), jamais corrigé. L'ancienne
+  FAQ ("scoring targets the Academic band scale") glissait sur ce point ;
+  la nouvelle FAQ le dit explicitement.
+- Email de contact et rétention des données vocales dans la FAQ alignés
+  mot pour mot avec `privacy.html` (0 jour de stockage audio/texte,
+  transitoire vers Gemini, 90 jours pour les métadonnées de score).
+
+### Réécriture de la FAQ
+Commit `<à renseigner>`.
+- 6 questions existantes conservées/reformulées (compte, mobile, cadence
+  des nouveaux tests — "regularly" remplacé par une formulation honnête
+  sans engagement de calendrier).
+- 5 nouvelles questions : ce qu'est ParrotTalk, non-affiliation IELTS
+  explicite, band = estimation vs score officiel, méthode de calibration
+  (angle preuve, AU FUTUR, aucun chiffre de précision inventé), et le
+  point Academic/General Training corrigé pour Reading.
+- Alignement avec `privacy.html`/`terms.html` : liens vers les deux dans
+  plusieurs réponses.
+
+**Testé avec** `tests/check.js` : 8 nouvelles vérifications statiques
+(≥10 questions FAQ, clause de non-affiliation présente, formulation
+"AI-generated estimate" présente, absence de tout pourcentage de précision
+inventé dans la FAQ, absence de "will always be free", liens vers
+`privacy.html`/`terms.html` présents). **65/70 passed** — les 5 échecs
+restants sont les mêmes routes API Vercel obsolètes déjà signalées comme
+préexistantes (session burn rate/legal v1, migration vers le Worker
+Cloudflare du 5 juillet, hors périmètre).
+
+**Testé avec un vrai Chrome (Playwright)** — nouveau scénario
+`testFAQAccessibleAndLinksWork` dans `tests/e2e-persistence.js` : la
+section FAQ est visible et cliquable (`<details>`/`<summary>` s'ouvre
+réellement), le lien vers `privacy.html` fonctionne et charge la bonne
+page (200, titre correct), le lien vers `terms.html` fonctionne (200).
+**43/43 passed** (suite complète, aucune régression).
+
+### Points signalés à Xavier (à valider)
+- **Fiabilité du mécanisme newsletter** : le code (`api/subscribe.js`) est
+  fonctionnel et utilise Brevo, mais le kernel Foundry note "Newsletter
+  opt-in non fonctionnel" — je n'ai pas pu vérifier si `BREVO_API_KEY` est
+  bien configuré côté Vercel en prod. La FAQ reste factuelle sur ce point
+  (elle ne promet pas que l'inscription fonctionne à 100%) mais ça
+  mériterait une vérification séparée.
+- **Chiffre "±0,5 à 1 band"** utilisé dans la FAQ pour expliquer l'écart
+  possible avec un score officiel : ce n'est pas un chiffre inventé pour
+  cette session, il est déjà présent ailleurs dans le produit (disclaimers
+  Writing/Speaking existants). Je le réutilise par cohérence, mais comme
+  c'est un chiffre numérique et que la consigne insiste sur "n'annonce
+  aucun chiffre de précision", je le signale explicitement pour que tu
+  puisses trancher si tu préfères le retirer aussi.
+- **Correctif Reading Academic/GT** : la nouvelle FAQ dit maintenant
+  explicitement que le score Reading ne reflète pas fidèlement le General
+  Training. C'est plus honnête, mais expose publiquement une limite
+  produit qui n'était qu'en interne (`CORRECTIONS-PLAN.md`) jusqu'ici. À
+  toi de juger si tu préfères corriger le code (ajouter la table GT)
+  avant de publier cette formulation, ou publier tel quel maintenant.
+
+### Déploiement
+**Pas encore fait.** Nouvelle règle : déployer en fin de session touchant
+le site — mais liste des changements à valider par Xavier avant le push,
+comme demandé pour cette session précisément.
+
+---
+
 ## Legal v1 — mentions légales, consentement RGPD (2026-07-08) ✅
 
 Tag avant session : `site-session-2026-07-08-legal-v1`. Tag après :
