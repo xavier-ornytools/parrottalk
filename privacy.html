@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/main.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
   <script src="js/analytics.js" async></script>
+  <script src="js/cookie-banner.js" defer></script>
   <style>
     .legal-content { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
     .legal-content h1 { font-size: clamp(1.75rem,4vw,2.25rem); margin-bottom: 8px; }
@@ -45,10 +46,10 @@
 
 <div class="legal-content">
   <h1>Privacy Policy</h1>
-  <p class="last-updated">Last updated: June 2026</p>
+  <p class="last-updated">Last updated: July 2026</p>
 
   <div class="legal-highlight">
-    <p>🦜 Short version: ParrotTalk does not create user accounts, does not sell your data, and stores your test scores only on your own device. When you request AI feedback, your essay or voice recording is sent to our proxy server, which forwards it to Google Gemini for evaluation. Audio and text are not retained beyond the evaluation.</p>
+    <p>🦜 Short version: ParrotTalk does not create user accounts and stores your test scores only on your own device. When you request AI feedback, your essay or voice recording is sent to our proxy server, which forwards it to Google Gemini for evaluation, then discards it — only your score is kept (90 days). We use Google Analytics 4 to understand traffic, but it only loads if you accept our cookie banner.</p>
   </div>
 
   <h2>1. Who we are</h2>
@@ -60,10 +61,13 @@
   <p>Your test scores, band results, and progress data are stored exclusively in your browser's localStorage. This data never leaves your device and is not transmitted to our servers. You can clear this data at any time by clearing your browser's site data.</p>
 
   <p><strong>Audio recordings (Speaking module)</strong></p>
-  <p>When you submit a speaking test for AI feedback, your audio recording is transmitted to our proxy server (api.parrottalk.app) and forwarded to Google Gemini Flash for evaluation. The audio is used solely for real-time scoring and is not retained by ParrotTalk or stored beyond the evaluation request. Google's privacy policy applies to data processed by Gemini.</p>
+  <p>When you submit a speaking test for AI feedback, your audio recording is transmitted to our Cloudflare Worker (parrottalk-api.foundry8.workers.dev) and forwarded to Google Gemini Flash for evaluation. The audio is used solely for real-time scoring and is not retained by ParrotTalk or stored beyond the evaluation request. Google's privacy policy applies to data processed by Gemini.</p>
 
   <p><strong>Written text (Writing module)</strong></p>
-  <p>When you request AI feedback on a writing task, your essay text is transmitted to our proxy server (api.parrottalk.app) and forwarded to Google Gemini Flash for evaluation. The text is not retained by ParrotTalk beyond the evaluation request.</p>
+  <p>When you request AI feedback on a writing task, your essay text is transmitted to our Cloudflare Worker (parrottalk-api.foundry8.workers.dev) and forwarded to Google Gemini Flash for evaluation. The text is not retained by ParrotTalk beyond the evaluation request.</p>
+
+  <p><strong>IP address (anti-abuse, temporary)</strong></p>
+  <p>Our Cloudflare Worker briefly stores your IP address to enforce a daily usage limit per user (kept about 25 hours) and to track an aggregate monthly cost counter across all users (kept about 31 days, not tied to any individual). This is used solely to prevent abuse and keep the free service sustainable — not for tracking or profiling.</p>
 
   <p><strong>Email address (optional)</strong></p>
   <p>If you choose to subscribe to our newsletter, we collect your email address for the purpose of sending updates about new tests and features. You can unsubscribe at any time. We do not share your email with third parties.</p>
@@ -71,18 +75,20 @@
   <h2>3. What we do not collect</h2>
   <ul>
     <li>We do not create user accounts or store personal profiles</li>
-    <li>We do not use tracking cookies or advertising trackers</li>
+    <li>We do not use advertising trackers or fingerprinting/behavioural tracking technologies</li>
     <li>We do not sell, rent, or share personal data with third parties</li>
     <li>We do not store audio recordings or written essays on our servers</li>
-    <li>We do not use fingerprinting or behavioural tracking technologies</li>
+    <li>We do not use Google Analytics cookies unless you explicitly accept them via our cookie banner (see §5)</li>
   </ul>
 
-  <h2>4. Third-party services</h2>
-  <p><strong>Google Gemini (Google LLC)</strong> — Speaking audio and writing essays submitted for AI feedback are forwarded to Google Gemini Flash via our proxy. Data is processed in accordance with Google's privacy policy and Gemini API terms of service. ParrotTalk does not retain copies of data submitted for AI evaluation.</p>
-  <p><strong>Vercel</strong> — ParrotTalk is hosted on Vercel's infrastructure. Vercel may collect standard server logs (IP addresses, request times) in accordance with their own privacy policy. These logs are not used by ParrotTalk for tracking purposes.</p>
+  <h2>4. Third-party services (sub-processors)</h2>
+  <p><strong>Vercel</strong> — hosts the ParrotTalk site. Vercel may collect standard server logs (IP addresses, request times) in accordance with their own privacy policy.</p>
+  <p><strong>Cloudflare</strong> — runs the Worker (parrottalk-api.foundry8.workers.dev) that proxies AI evaluation requests and enforces anti-abuse rate limiting.</p>
+  <p><strong>Google Gemini API (Google LLC)</strong> — receives your Speaking audio and Writing text to generate AI feedback. This involves an international transfer of data outside the EU/EEA to Google's infrastructure. This processing is governed by Google's own API terms and privacy policy; Google's handling and retention of the data it receives is Google's responsibility, not ParrotTalk's.</p>
+  <p><strong>Google Analytics 4</strong> (Measurement ID G-VV4Z9F7SZS) — only loads after you accept our cookie banner. Collects standard web-analytics events (page views, approximate location, device/browser type). This involves an international transfer of data to Google in the United States. You can opt out at any time by rejecting or clearing your cookie consent (see §5).</p>
 
   <h2>5. Cookies</h2>
-  <p>ParrotTalk does not use tracking cookies. We use browser localStorage to save your test scores and preferences locally. This is not a cookie and is not accessible to external services.</p>
+  <p>ParrotTalk itself only uses one small localStorage entry (not a cookie) to remember your cookie-consent choice. If you click "Accept" on our cookie banner, Google Analytics 4 is loaded and may set its own cookies to measure traffic. GA4 does <strong>not</strong> load until you accept — if you click "Reject" or simply ignore the banner, no analytics cookies are set. You can withdraw consent at any time by clearing your browser's site data for parrottalk.app; the banner will be shown again on your next visit.</p>
 
   <h2>6. Your rights (GDPR)</h2>
   <p>If you are located in the European Economic Area, you have the following rights:</p>
@@ -90,11 +96,19 @@
     <li><strong>Right of access</strong> — You can view all data stored locally by opening your browser's developer tools and inspecting localStorage under parrottalk.app</li>
     <li><strong>Right to erasure</strong> — You can delete all locally stored data at any time by clearing your browser's site data for parrottalk.app</li>
     <li><strong>Right to object</strong> — You can choose not to use the AI feedback features to avoid any data being sent to third-party APIs</li>
+    <li><strong>Right to withdraw consent</strong> — For Google Analytics specifically, reject or clear your cookie-banner choice at any time to stop GA4 from loading</li>
   </ul>
-  <p>Since ParrotTalk does not maintain a central database of user data, most GDPR rights are exercised directly through your browser rather than through a formal request to us.</p>
+  <p>Since ParrotTalk does not maintain a central database of user data, most GDPR rights are exercised directly through your browser rather than through a formal request to us. For anything else, contact us (see §10).</p>
 
   <h2>7. Data retention</h2>
-  <p>Audio recordings and written text submitted for AI feedback are not retained by ParrotTalk. Test scores and progress data stored in localStorage persist until you clear your browser data. Newsletter subscribers can request deletion of their email address at any time by unsubscribing or contacting us.</p>
+  <ul>
+    <li><strong>Test scores/progress</strong> — stored locally only, until you clear your browser data.</li>
+    <li><strong>Speaking audio and Writing text</strong> — not stored server-side at all. They are forwarded live to Google Gemini for evaluation and discarded immediately after the response. Google's own processing/retention of what it receives is governed by Google's terms, outside ParrotTalk's control.</li>
+    <li><strong>Evaluation metadata</strong> (band scores, token counts, cost, timestamp — no audio, no text, no name) — retained for 90 days in our Cloudflare Worker's storage for quality and cost monitoring, then automatically deleted.</li>
+    <li><strong>IP address</strong> — daily rate-limit counter kept about 25 hours; monthly aggregate cost counter kept about 31 days, not tied to an individual.</li>
+    <li><strong>Google Analytics data</strong> — retained according to Google's own configured Analytics data-retention settings, which are controlled by Google, not ParrotTalk.</li>
+    <li>Newsletter subscribers can request deletion of their email address at any time by unsubscribing or contacting us.</li>
+  </ul>
 
   <h2>8. Children's privacy</h2>
   <p>ParrotTalk is intended for users aged 16 and over. We do not knowingly collect personal data from children under 16. IELTS is an examination typically taken by adults and older teenagers preparing for academic or professional purposes.</p>
@@ -103,7 +117,7 @@
   <p>We may update this Privacy Policy from time to time. The date at the top of this page reflects the most recent revision. Continued use of ParrotTalk after any changes constitutes your acceptance of the updated policy.</p>
 
   <h2>10. Contact</h2>
-  <p>If you have questions about this Privacy Policy or how your data is handled, you can reach us at <strong>parrottalk.app</strong>. We aim to respond to all privacy-related queries within 30 days.</p>
+  <p>If you have questions about this Privacy Policy or how your data is handled, you can reach us at <strong>contact@parrottalk.app</strong>. We aim to respond to all privacy-related queries within 30 days.</p>
 </div>
 
 <!-- FOOTER -->
@@ -120,6 +134,8 @@
         <a href="speaking.html">Speaking</a>
         <a href="dashboard.html">Dashboard</a>
         <a href="privacy.html">Privacy Policy</a>
+        <a href="legal-notice.html">Legal Notice</a>
+        <a href="terms.html">Terms of Use</a>
       </div>
     </div>
     <p class="footer__copy">© 2026 ParrotTalk · Free IELTS Preparation · parrottalk.app</p>
