@@ -126,7 +126,7 @@
 <div class="container" style="padding-top:32px;padding-bottom:80px">
 
   <!-- TEST SELECTOR -->
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px">
+  <div class="grid-3" style="gap:12px;margin-bottom:24px">
     <button class="test-sel-btn active" onclick="selectWritingTest(1)" id="wbtn-1">
       <div class="t-num">Test 01</div>
       <div class="t-t1">📈 Task 1 — Line graph: renewable energy %</div>
@@ -160,7 +160,7 @@
     <div class="card card-sm" style="background:var(--surface);border-color:var(--border);margin-bottom:20px">
       <p style="font-size:.875rem;color:var(--text-muted)">⚖️ <strong>Scoring:</strong> Task 2 counts double. Final band = (T1 + T2×2) ÷ 3</p>
     </div>
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-3" style="flex-wrap:wrap">
       <button class="btn btn-primary btn-lg" onclick="startWritingTest()">▶ Start Test (60 min)</button>
       <span class="text-sm text-muted">Timer starts automatically</span>
     </div>

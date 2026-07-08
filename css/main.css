@@ -550,7 +550,7 @@ select.form-control { appearance: none; cursor: pointer; }
 }
 .footer__inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: gap; }
 .footer__logo { display: flex; align-items: center; gap: 10px; color: var(--white); font-weight: 800; font-size: 1rem; }
-.footer__links { display: flex; gap: 24px; }
+.footer__links { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
 .footer__links a { font-size: .875rem; color: rgba(255,255,255,.45); transition: color .2s; }
 .footer__links a:hover { color: var(--white); }
 .footer__copy { font-size: .8125rem; margin-top: 24px; text-align: center; }
