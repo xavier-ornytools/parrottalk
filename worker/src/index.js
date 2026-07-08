@@ -55,11 +55,10 @@ async function checkAndUpdateBudget(env, costEur) {
   return { ok: true, current: updated, limit, alert: updated >= limit * 0.8 };
 }
 
-function estimateCost(env, textInputTokens, audioSeconds, outputTokens) {
+function estimateCost(env, textInputTokens, audioTokens, outputTokens) {
   const textRate  = parseFloat(env.GEMINI_COST_PER_1K_INPUT_TOKENS  || '0.0003');
   const audioRate = parseFloat(env.GEMINI_COST_PER_1K_AUDIO_TOKENS  || '0.001');
-  const outRate   = parseFloat(env.GEMINI_COST_PER_1K_OUTPUT_TOKENS || '0.0003');
-  const audioTokens = audioSeconds * 32; // Gemini: 32 tokens/second audio
+  const outRate   = parseFloat(env.GEMINI_COST_PER_1K_OUTPUT_TOKENS || '0.0025');
   return (textInputTokens / 1000) * textRate
        + (audioTokens     / 1000) * audioRate
        + (outputTokens    / 1000) * outRate;
@@ -67,9 +66,16 @@ function estimateCost(env, textInputTokens, audioSeconds, outputTokens) {
 
 // ── Calibration logs ─────────────────────────────────────────────────────────
 
-async function logEvaluation(env, type, bands, durationSeconds) {
+async function logEvaluation(env, type, bands, durationSeconds, usage) {
   const key = `log:${type}:${Date.now()}`;
-  await env.RATE_KV.put(key, JSON.stringify({ type, bands, durationSeconds, ts: Date.now() }), {
+  await env.RATE_KV.put(key, JSON.stringify({
+    type, bands, durationSeconds, ts: Date.now(),
+    promptTokenCount:     usage?.promptTokenCount     ?? null,
+    candidatesTokenCount: usage?.candidatesTokenCount ?? null,
+    totalTokenCount:      usage?.totalTokenCount       ?? null,
+    audioTokenCount:      usage?.audioTokenCount       ?? null,
+    costEur:              usage?.costEur               ?? null,
+  }), {
     expirationTtl: 7776000, // 90 jours
   });
 }
@@ -117,10 +123,20 @@ async function callGemini(env, contents, maxOutputTokens = 1024) {
   }
 
   const usage = data?.usageMetadata || {};
+  if (usage.promptTokenCount == null || usage.candidatesTokenCount == null) {
+    console.warn('[usageMetadata manquant] fallback 500/500 tokens appliqué — réponse Gemini incomplète ou format changé', JSON.stringify(usage));
+  }
+  const promptDetails = usage.promptTokensDetails || [];
+  const audioDetail = promptDetails.find(d => d.modality === 'AUDIO');
+  const textDetail  = promptDetails.find(d => d.modality === 'TEXT');
+
   return {
     parsed,
-    inputTokens:  usage.promptTokenCount     || 500,
-    outputTokens: usage.candidatesTokenCount || 500,
+    inputTokens:  usage.promptTokenCount     ?? 500,
+    outputTokens: usage.candidatesTokenCount ?? 500,
+    totalTokens:  usage.totalTokenCount ?? null,
+    audioTokens:  audioDetail ? audioDetail.tokenCount : null,
+    textTokens:   textDetail  ? textDetail.tokenCount  : null,
   };
 }
 
@@ -155,7 +171,7 @@ Return ONLY valid JSON — no markdown:
 
 Be realistic. An average test-taker scores 5.5–6.5.`;
 
-  const { parsed, inputTokens, outputTokens } = await callGemini(env, [
+  const { parsed, inputTokens, outputTokens, totalTokens } = await callGemini(env, [
     { role: 'user', parts: [{ text: userPrompt }] },
   ], 1024);
 
@@ -168,7 +184,13 @@ Be realistic. An average test-taker scores 5.5–6.5.`;
     band: parsed.band,
     task: task || 1,
     promptExcerpt: (prompt || '').slice(0, 300),
-  }, 0);
+  }, 0, {
+    promptTokenCount: inputTokens,
+    candidatesTokenCount: outputTokens,
+    totalTokenCount: totalTokens,
+    audioTokenCount: null,
+    costEur: cost,
+  });
 
   return json(parsed, 200, origin);
 }
@@ -241,19 +263,31 @@ Be realistic. Average test-taker: 5.5–6.5. Band 7+ requires consistent fluency
 
   geminiParts.push({ text: systemPrompt });
 
-  const { parsed, outputTokens } = await callGemini(env, [
+  const { parsed, inputTokens, outputTokens, totalTokens, audioTokens, textTokens } = await callGemini(env, [
     { role: 'user', parts: geminiParts },
   ], 1500);
 
-  const textInputTokens = 300 + audioParts.length * 20;
-  const cost = estimateCost(env, textInputTokens, totalDurationSeconds, outputTokens);
+  // Répartition texte/audio pour le coût : on préfère le détail par modalité renvoyé
+  // par Gemini (audioTokens/textTokens réels) ; sinon on retombe sur l'estimation par
+  // durée (32 tokens/s), moins précise mais toujours basée sur inputTokens réel.
+  const hasModalityDetail = audioTokens != null || textTokens != null;
+  const audioTokensForCost = hasModalityDetail ? (audioTokens || 0) : Math.round(totalDurationSeconds * 32);
+  const textTokensForCost  = hasModalityDetail ? (textTokens  || 0) : inputTokens;
+
+  const cost = estimateCost(env, textTokensForCost, audioTokensForCost, outputTokens);
   const budget = await checkAndUpdateBudget(env, cost);
   if (!budget.ok) return json({ error: 'Monthly evaluation budget reached — service resumes next month' }, 429, origin);
   if (budget.alert) console.log(`[BUDGET ALERT] ${budget.current.toFixed(4)}€ / ${budget.limit}€`);
 
   await logEvaluation(env, 'speaking', {
     fc: parsed.fc, lr: parsed.lr, gra: parsed.gra, pron: parsed.pron, overall: parsed.overall,
-  }, totalDurationSeconds);
+  }, totalDurationSeconds, {
+    promptTokenCount: inputTokens,
+    candidatesTokenCount: outputTokens,
+    totalTokenCount: totalTokens,
+    audioTokenCount: audioTokensForCost,
+    costEur: cost,
+  });
 
   return json(parsed, 200, origin);
 }
@@ -269,13 +303,53 @@ async function handleStats(env, origin) {
   const thisMonthTs = new Date(month + '-01').getTime();
   let writingCount = 0;
   let speakingCount = 0;
+
+  let totalPromptTokens = 0;
+  let totalCandidatesTokens = 0;
+  let totalTokens = 0;
+  let totalAudioTokens = 0;
+  let totalCostEur = 0;
+  const byDay = {}; // 'YYYY-MM-DD' -> { tokens, costEur, calls }
+
   for (const key of listed.keys) {
     const ts = parseInt(key.name.split(':')[2] || '0');
     if (ts >= thisMonthTs) {
       if (key.name.startsWith('log:writing:'))  writingCount++;
       if (key.name.startsWith('log:speaking:')) speakingCount++;
     }
+
+    const raw = await env.RATE_KV.get(key.name);
+    if (!raw) continue;
+    let entry;
+    try { entry = JSON.parse(raw); } catch { continue; }
+
+    const prompt = entry.promptTokenCount || 0;
+    const cand   = entry.candidatesTokenCount || 0;
+    const tot    = entry.totalTokenCount || (prompt + cand);
+    const audio  = entry.audioTokenCount || 0;
+    const costEur = entry.costEur || 0;
+
+    totalPromptTokens     += prompt;
+    totalCandidatesTokens += cand;
+    totalTokens           += tot;
+    totalAudioTokens      += audio;
+    totalCostEur          += costEur;
+
+    const day = new Date(entry.ts || ts).toISOString().slice(0, 10);
+    if (!byDay[day]) byDay[day] = { tokens: 0, costEur: 0, calls: 0 };
+    byDay[day].tokens  += tot;
+    byDay[day].costEur += costEur;
+    byDay[day].calls   += 1;
   }
+
+  const history = Object.entries(byDay)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([date, v]) => ({ date, tokens: v.tokens, cost_eur: parseFloat(v.costEur.toFixed(4)), calls: v.calls }));
+
+  // Burn rate : moyenne quotidienne sur les jours d'activité des 7 derniers jours
+  const last7 = history.slice(-7);
+  const burnRatePerDayEur    = last7.length ? last7.reduce((s, h) => s + h.cost_eur, 0) / last7.length : 0;
+  const burnRatePerDayTokens = last7.length ? Math.round(last7.reduce((s, h) => s + h.tokens, 0) / last7.length) : 0;
 
   return json({
     month,
@@ -284,6 +358,19 @@ async function handleStats(env, origin) {
     budget_pct: parseFloat(((current / limit) * 100).toFixed(1)),
     alert: current >= limit * 0.8,
     evaluations: { writing: writingCount, speaking: speakingCount, total: writingCount + speakingCount },
+    tokens: {
+      prompt:     totalPromptTokens,
+      candidates: totalCandidatesTokens,
+      total:      totalTokens,
+      audio:      totalAudioTokens,
+    },
+    cost_estimate_eur_alltime: parseFloat(totalCostEur.toFixed(4)),
+    burn_rate: {
+      per_day_eur:    parseFloat(burnRatePerDayEur.toFixed(4)),
+      per_day_tokens: burnRatePerDayTokens,
+      window_days:    last7.length,
+    },
+    history, // [{date, tokens, cost_eur, calls}] — borné par le TTL 90j des logs
   }, 200, origin);
 }
 
