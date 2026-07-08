@@ -33,7 +33,7 @@ Vérifié dans le code réel (pas de suppositions) avant de rédiger :
   transitoire vers Gemini, 90 jours pour les métadonnées de score).
 
 ### Réécriture de la FAQ
-Commit `<à renseigner>`.
+Commit `aff4364`.
 - 6 questions existantes conservées/reformulées (compte, mobile, cadence
   des nouveaux tests — "regularly" remplacé par une formulation honnête
   sans engagement de calendrier).
