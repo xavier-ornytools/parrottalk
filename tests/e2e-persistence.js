@@ -4,6 +4,12 @@
 // survivre à un vrai rechargement de page (Ctrl+R / page.reload()), SANS
 // action supplémentaire de l'utilisateur.
 //
+// Étendu en session "legal v1" (2026-07-08) avec 3 scénarios de conformité :
+// testSpeakingConsentGate (le consentement micro bloque bien l'enregistrement
+// Speaking tant que la case n'est pas cochée), testCookieBannerBlocksGA4 et
+// testCookieBannerReject (le bandeau cookies bloque réellement le chargement
+// de GA4 tant qu'il n'est pas accepté, et respecte un Reject).
+//
 // Pourquoi un vrai navigateur et pas jsdom : un premier test jsdom donnait un
 // faux positif — il rappelait startTest() par programme après le "rechargement"
 // simulé, ce qu'un vrai utilisateur ne fait pas forcément. Ce test-ci pilote un
@@ -311,6 +317,113 @@ async function testReading(browser) {
   await page.close();
 }
 
+async function testSpeakingConsentGate(browser) {
+  console.log('\n=== Speaking : le consentement micro bloque l\'enregistrement ===');
+  const page = await browser.newPage();
+  page.on('pageerror', err => console.log('  [JS ERROR]', err.message));
+
+  await page.goto(`${BASE_URL}/speaking.html`);
+  await page.evaluate(() => localStorage.removeItem('parrottalk_consent_recording'));
+  await page.reload();
+  await page.waitForTimeout(200);
+
+  await page.click('button:has-text("Start Test 01")');
+  await page.waitForTimeout(150);
+  await page.click('#spk-rec-btn');
+  await page.waitForTimeout(200);
+
+  const gateVisible = await page.evaluate(() =>
+    !document.getElementById('consent-gate-overlay').classList.contains('hidden'));
+  check('Panneau de consentement affiché avant tout accès au micro', gateVisible);
+
+  const acceptDisabledBeforeCheck = await page.evaluate(() =>
+    document.getElementById('consent-gate-accept').disabled);
+  check('Bouton Continue désactivé tant que la case n\'est pas cochée', acceptDisabledBeforeCheck);
+
+  await page.check('#consent-gate-checkbox');
+  await page.waitForTimeout(50);
+  const acceptEnabledAfterCheck = await page.evaluate(() =>
+    !document.getElementById('consent-gate-accept').disabled);
+  check('Bouton Continue activé une fois la case cochée', acceptEnabledAfterCheck);
+
+  await page.click('#consent-gate-accept');
+  await page.waitForTimeout(200);
+
+  const consentStored = await page.evaluate(() =>
+    localStorage.getItem('parrottalk_consent_recording') === 'granted');
+  check('Consentement mémorisé en localStorage après acceptation', consentStored);
+
+  const gateHiddenAfter = await page.evaluate(() =>
+    document.getElementById('consent-gate-overlay').classList.contains('hidden'));
+  check('Panneau masqué après acceptation', gateHiddenAfter);
+
+  await page.close();
+}
+
+async function testCookieBannerBlocksGA4(browser) {
+  console.log('\n=== Bandeau cookies : GA4 ne charge pas avant acceptation ===');
+  const page = await browser.newPage();
+  page.on('pageerror', err => console.log('  [JS ERROR]', err.message));
+
+  await page.goto(`${BASE_URL}/index.html`);
+  await page.evaluate(() => localStorage.removeItem('parrottalk_cookie_consent'));
+  await page.reload();
+  await page.waitForTimeout(300);
+
+  const bannerVisibleFirstVisit = await page.evaluate(() => !!document.getElementById('cookie-banner'));
+  check('Bandeau cookies affiché à la première visite', bannerVisibleFirstVisit);
+
+  const ga4NotLoadedBefore = await page.evaluate(() =>
+    !Array.from(document.scripts).some(s => s.src.includes('googletagmanager.com')));
+  check('GA4 non chargé avant consentement', ga4NotLoadedBefore);
+
+  await page.click('#cookie-banner-accept');
+  await page.waitForTimeout(300);
+
+  const ga4LoadedAfterAccept = await page.evaluate(() =>
+    Array.from(document.scripts).some(s => s.src.includes('googletagmanager.com')));
+  check('GA4 chargé juste après clic sur Accept', ga4LoadedAfterAccept);
+
+  const bannerGoneAfterChoice = await page.evaluate(() => !document.getElementById('cookie-banner'));
+  check('Bandeau disparu après le choix', bannerGoneAfterChoice);
+
+  await page.reload();
+  await page.waitForTimeout(300);
+  const bannerNotShownAgain = await page.evaluate(() => !document.getElementById('cookie-banner'));
+  check('Bandeau ne réapparaît pas après reload une fois le choix fait', bannerNotShownAgain);
+
+  await page.close();
+}
+
+async function testCookieBannerReject(browser) {
+  console.log('\n=== Bandeau cookies : Reject garde GA4 désactivé ===');
+  const page = await browser.newPage();
+  page.on('pageerror', err => console.log('  [JS ERROR]', err.message));
+
+  await page.goto(`${BASE_URL}/index.html`);
+  await page.evaluate(() => localStorage.removeItem('parrottalk_cookie_consent'));
+  await page.reload();
+  await page.waitForTimeout(300);
+
+  await page.click('#cookie-banner-reject');
+  await page.waitForTimeout(200);
+
+  const ga4StillNotLoaded = await page.evaluate(() =>
+    !Array.from(document.scripts).some(s => s.src.includes('googletagmanager.com')));
+  check('GA4 reste absent après Reject', ga4StillNotLoaded);
+
+  const consentDenied = await page.evaluate(() =>
+    localStorage.getItem('parrottalk_cookie_consent') === 'denied');
+  check('Choix "denied" mémorisé en localStorage', consentDenied);
+
+  await page.reload();
+  await page.waitForTimeout(300);
+  const bannerNotShownAgain = await page.evaluate(() => !document.getElementById('cookie-banner'));
+  check('Bandeau ne réapparaît pas après reload après un Reject', bannerNotShownAgain);
+
+  await page.close();
+}
+
 async function main() {
   console.log('=== Test E2E persistance ParrotTalk (vrai navigateur) ===');
   console.log(`URL de base : ${BASE_URL} (lancer 'python3 -m http.server 8000' depuis le repo si besoin)`);
@@ -322,6 +435,9 @@ async function main() {
     await testListeningMatchingGroup(browser);
     await testReadingMatchingHeadings(browser);
     await testReading(browser);
+    await testSpeakingConsentGate(browser);
+    await testCookieBannerBlocksGA4(browser);
+    await testCookieBannerReject(browser);
   } finally {
     await browser.close();
   }

@@ -1,5 +1,117 @@
 # ParrotTalk — Tests techniques
 
+## Legal v1 — mentions légales, consentement RGPD (2026-07-08) ✅
+
+Tag avant session : `site-session-2026-07-08-legal-v1`. Tag après :
+`post-legal-v1-20260708`.
+
+Périmètre strict : les 3 documents légaux (Legal Notice, Terms of Use,
+Privacy Policy réécrite), le consentement micro avant enregistrement
+Speaking, la bannière de consentement cookies bloquant GA4, et les liens
+de pied de page vers les 3 pages légales. Pas d'autre modif fonctionnelle.
+
+### Contexte déclencheur
+GA4 a été installé le jour même (commit `1b028cf`, tag
+`site-session-2026-07-08-ga4-tag`) — ce qui invalidait la Privacy Policy
+existante ("no tracking cookies", lignes 74/77/84-85). Corrigé dans cette
+session, avec mise en conformité RGPD complète avant l'arrivée des
+premiers testeurs externes le 2026-08-15.
+
+### 1. Trois documents légaux
+Commit `aba6a99`.
+- `legal-notice.html` (nouveau) — mentions légales, éditeur individuel non
+  professionnel (exception LCEN art. 6-III), pas d'adresse publiée.
+- `terms.html` (nouveau) — CGU : bande = estimation IA (pas un score IELTS
+  officiel), non-affiliation IELTS/British Council/IDP/Cambridge (+ mention
+  marques), service "tel quel"/bêta, aucune garantie de disponibilité.
+- `privacy.html` (réécrite) — corrige les fausses affirmations sur les
+  cookies, documente GA4 comme sous-traitant, précise la rétention réelle
+  (audio/texte : 0 jour côté ParrotTalk — traitement transitoire, transmis
+  à Gemini puis jeté ; métadonnées d'évaluation : 90 jours KV ; IP
+  anti-abus : ~25h), et le transfert international vers Google (Gemini,
+  GA4).
+- Contact harmonisé sur `contact@parrottalk.app` (et non `.ai`, erreur
+  corrigée en cours de session) dans les 3 documents.
+- ⚠️ Note explicite dans `legal-notice.html` et `terms.html` : ces textes
+  n'ont pas été rédigés par un professionnel du droit ; à faire relire
+  avant le 2026-08-15 si possible.
+
+**Testé avec** `tests/check.js` : existence des 2 nouveaux fichiers,
+absence de la fausse mention "no tracking cookies", présence de
+`contact@parrottalk.app` partout, présence des clauses non-affiliation/
+"as is" dans `terms.html`.
+
+### 2. Consentement micro avant enregistrement (Speaking)
+Commit `eb1008a`.
+- Nouveau panneau `#consent-gate-overlay` (markup statique, hors des
+  templates régénérés `renderPretest()`/`renderTestZone()`), case à cocher
+  + bouton Continue désactivé tant que non cochée.
+- `startRecording()` intercepte AVANT tout appel à `getUserMedia` si
+  `localStorage.parrottalk_consent_recording !== 'granted'`.
+- Clé `parrottalk_consent_recording` (préfixe `parrottalk_`, pas `ielts_`
+  — ne sera donc jamais effacée par le bouton "Reset all scores" du
+  dashboard).
+- Persistant : demandé une seule fois, pas de re-demande par question.
+
+**Testé avec un vrai Chrome (Playwright)** — nouveau scénario
+`testSpeakingConsentGate` dans `tests/e2e-persistence.js` : le panneau
+s'affiche au premier clic sur le micro, le bouton Continue reste
+désactivé tant que la case n'est pas cochée puis s'active une fois
+cochée, l'accord est mémorisé en localStorage et le panneau se masque.
+**37/37 passed** (suite complète, aucune régression).
+
+### 3. Bannière de consentement cookies (bloque GA4 réellement)
+Commit `04119cb`.
+- `js/analytics.js` réécrit : ne charge/exécute plus `gtag()` que si
+  `localStorage.parrottalk_cookie_consent === 'granted'`.
+- Nouveau `js/cookie-banner.js` : bannière Accept/Reject affichée une
+  seule fois (tant qu'aucun choix n'est stocké), sur les 9 pages HTML du
+  site.
+- Clé `parrottalk_cookie_consent` (`granted` / `denied`) — le choix n'est
+  jamais redemandé une fois posé, y compris après reload.
+
+**Testé avec un vrai Chrome (Playwright)** — 2 nouveaux scénarios
+`testCookieBannerBlocksGA4` et `testCookieBannerReject` : aucun
+`<script>` GA4 (`googletagmanager.com`) injecté avant clic sur Accept,
+injecté juste après ; Reject garde GA4 désactivé et mémorise le choix ;
+le bandeau ne réapparaît jamais après reload une fois un choix fait.
+**37/37 passed** (suite complète, incluse dans le total ci-dessus).
+
+### 4. Accessibilité des pages légales depuis tout le site
+Inclus dans les commits `aba6a99`/`eb1008a`/`04119cb`.
+- Footer riche (`index.html`, `privacy.html`, `legal-notice.html`,
+  `terms.html`) : liens Legal Notice + Terms of Use ajoutés dans
+  `.footer__links`.
+- Footers minimalistes (`listening.html`, `reading.html`, `writing.html`,
+  `speaking.html`, `dashboard.html`) : une ligne de liens ajoutée, texte
+  de non-affiliation existant non touché.
+
+**Testé avec** `tests/check.js` : les 7 pages du site contiennent bien un
+lien vers `legal-notice.html` et `terms.html`. **58/63 passed** — les 5
+échecs restants sont préexistants et sans rapport avec cette session
+(3 routes API Vercel citées dans check.js n'existent plus depuis la
+migration vers le Worker Cloudflare, commit `4301e8f` du 5 juillet ;
+non corrigé ici, hors périmètre).
+
+### À vérifier manuellement avant le 2026-08-15
+- [ ] Relecture des 3 documents légaux par un professionnel du droit
+- [ ] Vérifier en prod (`https://parrottalk.app`) qu'aucun cookie/requête
+      `googletagmanager.com` ne part avant acceptation (onglet Réseau)
+- [ ] Vérifier la durée de rétention GA4 configurée côté Google Analytics
+      (Admin > Data Settings > Data Retention) et l'aligner avec le texte
+      de la Privacy Policy si besoin
+- [ ] Corriger séparément les 3 routes API obsolètes dans `tests/check.js`
+      (pré-existant, sans rapport avec cette session)
+
+### Déploiement
+**Pas encore fait.** Les 4 commits (`aba6a99`, `eb1008a`, `04119cb`, et le
+commit tests à suivre) sont en local, prêts à pousser —
+`git push origin main` suffit (Vercel builde automatiquement). En attente
+du feu vert de Xavier avant déploiement, comme convenu pour cette
+session.
+
+---
+
 ## Session UX du soir (2026-07-07) ✅
 
 Tag avant session : `avant-session-ux-2026-07-07-soir`. Périmètre strict : les

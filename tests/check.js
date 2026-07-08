@@ -73,6 +73,45 @@ check('no bare Test02 hardcode', () => {
   return !src.includes("? 'Test 01' : 'Test 02'");
 });
 
+// Legal pages
+console.log('\n[ Legal pages ]');
+['legal-notice.html', 'terms.html'].forEach(f => check(f, () => exists(f)));
+check('privacy.html mentions Google Analytics',        () => contains('privacy.html', 'Google Analytics'));
+check('privacy.html no false no-cookies claim',        () => !contains('privacy.html', 'do not use tracking cookies'));
+check('privacy.html contact is contact@parrottalk.app', () => contains('privacy.html', 'contact@parrottalk.app'));
+check('legal-notice.html contact is contact@parrottalk.app', () => contains('legal-notice.html', 'contact@parrottalk.app'));
+check('terms.html contact is contact@parrottalk.app',  () => contains('terms.html', 'contact@parrottalk.app'));
+check('terms.html non-affiliation clause',             () => contains('terms.html', 'British Council'));
+check('terms.html as-is/beta clause',                  () => contains('terms.html', '"as is"'));
+
+// Legal pages reachable from every page
+console.log('\n[ Legal pages reachable from every page ]');
+['index.html','listening.html','reading.html','writing.html','speaking.html','dashboard.html','privacy.html']
+  .forEach(f => {
+    check(`${f} links to legal-notice.html`, () => contains(f, 'legal-notice.html'));
+    check(`${f} links to terms.html`,        () => contains(f, 'terms.html'));
+  });
+
+// Cookie consent / GA4 gating
+console.log('\n[ Cookie consent / GA4 gating ]');
+check('analytics.js gated by consent key', () => contains('js/analytics.js', 'parrottalk_cookie_consent'));
+check('analytics.js exposes a consent-gated loader', () =>
+  contains('js/analytics.js', '__ptLoadAnalyticsIfConsented'));
+check('cookie-banner.js exists', () => exists('js/cookie-banner.js'));
+['index.html','listening.html','reading.html','writing.html','speaking.html','dashboard.html','privacy.html']
+  .forEach(f => check(`${f} loads cookie-banner.js`, () => contains(f, 'js/cookie-banner.js')));
+
+// Speaking recording consent gate
+console.log('\n[ Speaking recording consent gate ]');
+check('consent-gate-overlay markup present', () => contains('speaking.html', 'consent-gate-overlay'));
+check('startRecording checks consent before getUserMedia', () => {
+  const src = fs.readFileSync(path.join(root, 'speaking.html'), 'utf8');
+  const fn = src.slice(src.indexOf('async function startRecording'));
+  return fn.slice(0, 150).includes('hasRecordingConsent');
+});
+check('consent flag uses parrottalk_ prefix (survives dashboard reset)', () =>
+  contains('speaking.html', 'parrottalk_consent_recording'));
+
 console.log(`\n${'='.repeat(30)}`);
 console.log(`  ${passed} passed  |  ${failed} failed`);
 console.log('='.repeat(30) + '\n');
