@@ -1,5 +1,67 @@
 # ParrotTalk — Tests techniques
 
+## Corrections post-audit — bloquant mobile + importants (2026-07-08) ✅
+
+Suite de l'audit complet du même jour ([[Journal/2026-07-08_parrottalk-audit-complet]]
+côté Obsidian). Tag avant : `site-session-2026-07-08-audit-fixes`. Périmètre
+strict : le BLOQUANT + les 3 IMPORTANTS de l'audit. Le COSMÉTIQUE (`js/app.js`
+orphelin, routes API Vercel obsolètes, résidus `.ai` dans la doc) est
+volontairement laissé de côté cette session.
+
+### 1. [BLOQUANT] Bandeau cookies casse le mobile
+Commit `1201a6e`.
+- `css/main.css` : `.cookie-banner__text { flex: 0 0 auto; }` ajouté dans le
+  bloc `@media (max-width:600px)`, avant le passage en `flex-direction:column`
+  — neutralise le `flex-basis:320px` hérité qui s'appliquait à la hauteur au
+  lieu de la largeur en mode colonne.
+- **Découverte en cours de route** : ce bug était en réalité couplé à la
+  Correction 2 — tant que `index.html` avait un débordement horizontal
+  (footer 8 liens sans wrap), le navigateur mobile élargissait le "layout
+  viewport" de toute la page, ce qui faussait aussi le rendu du bandeau
+  cookies (boutons Accept/Reject devenus non cliquables après le premier
+  correctif isolé). Les deux corrections ont dû être appliquées ensemble.
+
+**Testé avec un vrai clic simulé (Playwright, pas juste visuel)**, à 375×667 :
+- Hauteur du bandeau : 407px → **154px**
+- Bouton "Start Test 01" de Speaking : **cliquable** bannière affichée (`tap()` réel, pas de timeout)
+- Boutons **Accept** et **Reject** : cliquables, comportement inchangé (GA4 se charge/reste éteint correctement)
+
+### 2. [IMPORTANT] Débordement horizontal mobile
+Commit `0332442`.
+- `css/main.css` : `.footer__links` — ajout de `flex-wrap: wrap; justify-content: center;` (8 liens désormais, aucun wrap avant)
+- `listening.html`, `reading.html`, `writing.html` : le sélecteur de test (3 cartes) utilisait un `style="display:grid;grid-template-columns:repeat(3,1fr)"` **en ligne**, qui ne respectait aucun media query (spécificité CSS). Remplacé par `class="grid-3"` (classe déjà responsive, collapse en 1 colonne sous 600px), gap/margin conservés en inline.
+- `writing.html` : un `<div class="flex items-center gap-3">` (bouton Start + note "Timer starts automatically") ne wrappait pas — ajout de `style="flex-wrap:wrap"`.
+
+**Testé avec un vrai Chrome (Playwright)**, mesure `scrollWidth` vs `clientWidth` à 375px sur les 9 pages : **0px de débordement partout** (avant : 348px sur index.html, 31-48px sur listening/reading/writing).
+
+### 3. [IMPORTANT] Config Foundry — email .ai → .app
+Hors repo site (repo `FOUNDRY`) : `ops/sites.yaml`, `site_registry.py`,
+`config/sites.json` — `email: contact@parrottalk.ai` → `contact@parrottalk.app`.
+Vérifié : plus aucune occurrence de `.ai` dans ces 3 fichiers. Les résidus
+dans la documentation/exemples Foundry sont laissés tels quels (cosmétique,
+hors périmètre).
+
+### 4. [IMPORTANT] TEST-CHECKLIST.md mis à jour
+Commit `8ed23ff`.
+Deux nouvelles sections ajoutées (renumérotées proprement, section Bugs
+repoussée en fin de fichier) : **8. Légal, cookies & consentement micro**
+(12 points : liens footer, bandeau cookies Accept/Reject/Network, bandeau
+utilisable en fenêtre réduite, consentement micro bloque Speaking et
+survit au reset dashboard) et **9. FAQ** (7 points : accessibilité, liens
+Privacy/Terms, non-affiliation, band=estimation, absence de mention
+newsletter). Total : 38 → **57** points.
+
+**Testé avec** `tests/check.js` (67/70, 5 échecs préexistants hors
+périmètre — routes API Vercel obsolètes, migration du 5 juillet) et
+`tests/e2e-persistence.js` (**43/43 passed**, aucune régression sur les
+scénarios existants).
+
+### Déploiement
+Pas encore fait — liste des changements soumise à Xavier avant
+`git push origin main`, comme convenu pour cette session.
+
+---
+
 ## FAQ v1 — décisions de Xavier appliquées (2026-07-08) ✅
 
 Suite directe de la session "FAQ v1 — construction par la preuve"
