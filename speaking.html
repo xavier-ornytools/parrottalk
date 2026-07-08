@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/main.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
   <script src="js/analytics.js" async></script>
+  <script src="js/cookie-banner.js" defer></script>
   <style>
     .spk-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
 
@@ -144,6 +145,39 @@
       margin-bottom:16px; text-align:left;
     }
 
+    /* Recording consent gate */
+    .consent-gate-overlay {
+      position:fixed; inset:0; z-index:10000;
+      background:rgba(15,23,42,.55);
+      display:flex; align-items:center; justify-content:center; padding:16px;
+    }
+    .consent-gate-panel {
+      background:var(--white); border-radius:var(--r-lg); max-width:440px;
+      padding:24px; box-shadow:0 20px 50px rgba(0,0,0,.3); text-align:left;
+    }
+    .consent-gate-panel h3 { margin-bottom:10px; font-size:1.0625rem; }
+    .consent-gate-panel p { font-size:.875rem; line-height:1.6; color:var(--text); margin-bottom:0; }
+    .consent-gate-panel a { color:var(--primary); }
+    .consent-gate-label {
+      display:flex; gap:8px; align-items:flex-start; font-size:.8125rem;
+      color:var(--text); margin:16px 0; cursor:pointer;
+    }
+    .consent-gate-label input { margin-top:3px; }
+    .consent-gate-actions { display:flex; gap:10px; justify-content:flex-end; }
+    .consent-gate-actions button {
+      padding:8px 18px; border-radius:var(--r); font-size:.875rem;
+      cursor:pointer; font-family:inherit; font-weight:600; transition:.2s;
+    }
+    .consent-gate-cancel {
+      background:var(--white); border:1.5px solid var(--border); color:var(--text);
+    }
+    .consent-gate-cancel:hover { border-color:var(--danger); color:var(--danger); }
+    .consent-gate-accept {
+      background:var(--primary); border:none; color:white;
+    }
+    .consent-gate-accept:hover:not(:disabled) { background:var(--primary-dark); }
+    .consent-gate-accept:disabled { opacity:.5; cursor:not-allowed; }
+
     @media(max-width:600px){
       .spk-grid-3 { grid-template-columns:1fr; }
       .question-text { font-size:1rem; }
@@ -154,6 +188,22 @@
 </head>
 <body>
 <div class="toast-container" id="toast-container"></div>
+
+<!-- CONSENT GATE: microphone / voice data (must precede any getUserMedia call) -->
+<div id="consent-gate-overlay" class="consent-gate-overlay hidden">
+  <div class="consent-gate-panel" role="dialog" aria-modal="true" aria-labelledby="consent-gate-title">
+    <h3 id="consent-gate-title">🎙️ Before you record</h3>
+    <p>ParrotTalk needs access to your microphone to run the Speaking test. Your recording is sent to our server and forwarded to Google Gemini (Google LLC) for AI evaluation, then discarded — it is not stored. Only your band scores are kept (for 90 days) to build your practice history. Full details in our <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</p>
+    <label class="consent-gate-label">
+      <input type="checkbox" id="consent-gate-checkbox" onchange="document.getElementById('consent-gate-accept').disabled = !this.checked">
+      I understand and agree to my voice being recorded and processed by Google Gemini for evaluation.
+    </label>
+    <div class="consent-gate-actions">
+      <button class="consent-gate-cancel" onclick="declineRecordingConsent()">Cancel</button>
+      <button class="consent-gate-accept" id="consent-gate-accept" disabled onclick="acceptRecordingConsent()">Continue</button>
+    </div>
+  </div>
+</div>
 
 <!-- NAV -->
 <nav class="nav">
@@ -658,7 +708,31 @@ function toggleRecording() {
   }
 }
 
+// ── Recording consent gate ───────────────────────────────────────────────────
+
+function hasRecordingConsent() {
+  return localStorage.getItem('parrottalk_consent_recording') === 'granted';
+}
+function showConsentGate() {
+  document.getElementById('consent-gate-overlay').classList.remove('hidden');
+}
+function hideConsentGate() {
+  document.getElementById('consent-gate-overlay').classList.add('hidden');
+  document.getElementById('consent-gate-checkbox').checked = false;
+  document.getElementById('consent-gate-accept').disabled = true;
+}
+function acceptRecordingConsent() {
+  localStorage.setItem('parrottalk_consent_recording', 'granted');
+  hideConsentGate();
+  startRecording();
+}
+function declineRecordingConsent() {
+  hideConsentGate();
+  toast('Microphone consent is required to record your Speaking answers.', 'info');
+}
+
 async function startRecording() {
+  if (!hasRecordingConsent()) { showConsentGate(); return; }
   const errEl = document.getElementById('spk-mic-error');
   if (errEl) errEl.classList.add('hidden');
 
@@ -897,6 +971,7 @@ selectTest(1);
 <footer style="text-align:center;padding:16px;font-size:.75rem;color:var(--text-muted);opacity:.7;border-top:1px solid var(--border);margin-top:32px">
   <p>Pronunciation is evaluated by AI from your audio recording. AI estimate — may vary from official scores by ±0.5–1 band.</p>
   <p style="margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
+  <p style="margin-top:8px"><a href="privacy.html" style="color:inherit;text-decoration:underline">Privacy Policy</a> · <a href="legal-notice.html" style="color:inherit;text-decoration:underline">Legal Notice</a> · <a href="terms.html" style="color:inherit;text-decoration:underline">Terms of Use</a></p>
 </footer>
 </body>
 </html>
