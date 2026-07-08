@@ -110,7 +110,40 @@
 
 ---
 
-## 8. Bugs / observations libres
+## 8. Légal, cookies & consentement micro *(nouveau — 8 juillet 2026)*
+
+| # | Ce qu'on teste | Résultat | Notes |
+|---|---|---|---|
+| 8.1 | Footer (n'importe quelle page) : lien **Legal Notice** présent et fonctionnel | | |
+| 8.2 | Footer : lien **Terms of Use** présent et fonctionnel | | |
+| 8.3 | Footer : lien **Privacy Policy** présent, mentionne bien Google Analytics comme sous-traitant | | |
+| 8.4 | Site data vidée (étape 0) → recharger une page → **bandeau cookies apparaît** | | |
+| 8.5 | AVANT de cliquer sur le bandeau : DevTools → Network → aucune requête vers `googletagmanager.com` | | |
+| 8.6 | Cliquer **Accept** → le bandeau disparaît → une requête `googletagmanager.com` apparaît dans Network | | |
+| 8.7 | Vider les données, recharger, cliquer **Reject** → bandeau disparaît, **aucune** requête `googletagmanager.com` | | |
+| 8.8 | Recharger la page après un choix (Accept ou Reject) → **le bandeau ne réapparaît pas** | | |
+| 8.9 | Réduire la fenêtre du navigateur (ou tester sur téléphone) → le bandeau reste compact, les boutons Accept/Reject restent cliquables, rien ne bloque le contenu en dessous | | |
+| 8.10 | Site data vidée → aller sur **Speaking** → cliquer le micro **avant** tout → un panneau **"Before you record"** apparaît (case à cocher + bouton Continue grisé) | | |
+| 8.11 | Cocher la case → le bouton **Continue** s'active → cliquer → le navigateur demande l'accès au micro | | |
+| 8.12 | Aller sur **Dashboard** → cliquer **"Reset all scores"** → revenir sur Speaking → le consentement micro **n'est pas redemandé** (déjà accordé, survit au reset) | | |
+
+---
+
+## 9. FAQ *(nouveau — 8 juillet 2026)*
+
+| # | Ce qu'on teste | Résultat | Notes |
+|---|---|---|---|
+| 9.1 | Page d'accueil → section **"Common Questions"** visible, au moins 10 questions | | |
+| 9.2 | Cliquer une question → elle s'ouvre (accordéon) | | |
+| 9.3 | La question "affiliated with IELTS..." répond clairement **NON** | | |
+| 9.4 | La question sur le score répond que c'est une **estimation IA**, pas un résultat officiel | | |
+| 9.5 | Le lien vers **Privacy Policy** dans la FAQ fonctionne | | |
+| 9.6 | Le lien vers **Terms of Use** dans la FAQ fonctionne | | |
+| 9.7 | Aucune mention de newsletter/inscription dans la FAQ (retirée volontairement — canal pas encore vérifié) | | |
+
+---
+
+## 10. Bugs / observations libres
 
 *(Écrire ici tout ce qui semble bizarre, cassé, ou inattendu)*
 
@@ -124,6 +157,6 @@
 
 ---
 
-**Total testé :** _____ / 38  
+**Total testé :** _____ / 57  
 **Bugs critiques :** _____  
 **Commentaire général :**
