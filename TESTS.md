@@ -1,5 +1,51 @@
 # ParrotTalk — Tests techniques
 
+## FAQ v1 — décisions de Xavier appliquées (2026-07-08) ✅
+
+Suite directe de la session "FAQ v1 — construction par la preuve"
+ci-dessous (non déployée à l'époque). Tag avant : `site-session-2026-07-08-faq-v1-decisions`.
+Périmètre strict : appliquer les 3 décisions de Xavier sur les 3 points
+signalés, rien d'autre.
+
+### Décision 1 — Academic / General Training : on publie tel quel
+La formulation FAQ existante était déjà honnête et non maquillée — aucun
+changement de texte nécessaire. Ajouté à `CORRECTIONS-PLAN.md` (section 3,
+Session 3) une note de priorité business : la table de conversion Reading
+General Training doit être ajoutée **avant tout lancement payant**, les
+marchés cibles (Inde, Vietnam, Nigeria, Philippines) comptant une forte
+proportion de candidats GT (immigration).
+
+### Décision 2 — "±0,5 à 1 band" : gardé, reformulé en mise en garde
+Phrase retenue (`index.html`, FAQ "Is the band score I receive an
+official IELTS result?") :
+
+> ⚠️ Word of caution: your estimated band may differ from an official
+> result by roughly ±0.5 to 1 band — this is not a measured accuracy
+> figure or a guarantee, just a heads-up on how much variance to expect.
+
+Explicitement présentée comme un avertissement de prudence, jamais comme
+une performance mesurée ou une garantie.
+
+### Décision 3 — Newsletter retirée de la FAQ
+La question "How often are new tests added?" ne renvoie plus vers
+l'inscription newsletter (canal noté "non fonctionnel" côté Foundry, clé
+Brevo non vérifiée en prod). `api/subscribe.js` et la section newsletter
+du site restent inchangés — seule la mention côté FAQ a été retirée.
+
+**Testé avec** `tests/check.js` : 2 nouvelles vérifications (aucune
+mention "newsletter"/"subscribe" dans la FAQ ; la phrase du band contient
+bien "not a measured accuracy figure or a guarantee"). **67/70 passed**
+(5 échecs préexistants inchangés, hors périmètre).
+
+**Testé avec un vrai Chrome (Playwright)** : suite complète inchangée,
+**43/43 passed**, aucune régression introduite par ces 3 ajustements de
+contenu.
+
+### Déploiement
+Poussé après validation de Xavier — voir tag `post-faq-v1-decisions-20260708`.
+
+---
+
 ## FAQ v1 — construction par la preuve (2026-07-08) ✅
 
 Tag avant session : `site-session-2026-07-08-faq-v1`. Périmètre strict :

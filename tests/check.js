@@ -139,6 +139,13 @@ check('FAQ links to terms.html', () => {
   const faqSection = src.slice(src.indexOf('id="faq-list"'), src.indexOf('id="faq-list"') + 6000);
   return faqSection.includes('href="terms.html"');
 });
+check('FAQ does not mention the newsletter (Brevo not verified in prod)', () => {
+  const src = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const faqSection = src.slice(src.indexOf('id="faq-list"'), src.indexOf('id="faq-list"') + 6000);
+  return !/newsletter|subscribe/i.test(faqSection);
+});
+check('FAQ band-variance sentence reads as a caution, not a guarantee', () =>
+  contains('index.html', 'not a measured accuracy figure or a guarantee'));
 
 console.log(`\n${'='.repeat(30)}`);
 console.log(`  ${passed} passed  |  ${failed} failed`);

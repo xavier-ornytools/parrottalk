@@ -176,7 +176,18 @@ conditions réelles que le symptôme apparaît bien lors d'un changement de
 *test* (relance) et non de *passage* comme initialement supposé — l'audit a
 infirmé l'hypothèse littérale sur `switchPassage()`.
 
-### 3. Tables de conversion Reading Academic / General Training
+### 3. 🔴 PRIORITAIRE avant lancement payant — Tables de conversion Reading Academic / General Training
+
+**Décision Xavier (2026-07-08, session FAQ v1)** : à faire **avant tout
+lancement payant** — pas juste "un jour". Raison business : les marchés
+cibles pour un futur produit payant (Inde, Vietnam, Nigeria, Philippines)
+comptent une forte proportion de candidats **General Training**
+(immigration), pas seulement Academic. Publier une note payante sans
+scoring GT fidèle serait trompeur pour une part significative des clients
+visés. La FAQ publiée le 8 juillet dit désormais explicitement que le GT
+n'est pas encore fidèlement couvert (transparence assumée en attendant ce
+correctif) — voir `index.html#faq-list`, question "Is this for IELTS
+Academic or General Training?".
 
 **Fichier** : `js/data.js` (+ consommateurs `reading.html`)
 
