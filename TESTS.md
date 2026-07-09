@@ -1,5 +1,47 @@
 # ParrotTalk — Tests techniques
 
+## Polish du bloc #pre-beta : bande de fermeture + texte court (2026-07-09) ✅
+
+Tag avant : `ops-session-2026-07-09-prebeta-polish`. Branche
+`feature/pre-beta-polish`, repartie de `main`. Périmètre strict : 3
+retouches demandées par Xavier sur `#pre-beta` uniquement, rien d'autre
+touché (boutons, formulaire `#beta-feedback`, bande du haut inchangés).
+
+### 1. Bande de fermeture en bas de `#pre-beta`
+`css/main.css` : nouvelle règle `.pre-beta__stripe--bottom { top: auto; bottom: 0; }`,
+qui réutilise la classe de base `.pre-beta__stripe` (même dégradé 4
+couleurs, même hauteur 4px) sans dupliquer les valeurs de couleur. La
+bande du haut n'a pas été modifiée. `index.html` : `<div class="pre-beta__stripe pre-beta__stripe--bottom"></div>`
+ajouté juste avant la fermeture de `</section>`.
+
+### 2. Nouveau texte du paragraphe, centré, en 3 blocs
+Le texte fourni par Xavier remplace l'ancien paragraphe unique, éclaté en
+3 `<p class="pre-beta__body">` distincts (mêmes sauts de ligne que
+demandé). Badge et titre inchangés. Déjà centré grâce à
+`.pre-beta__inner{text-align:center}` existant (posé lors d'une session
+précédente), aucune nouvelle règle de centrage nécessaire.
+
+### 3. Aucun ajout d'inscription/newsletter
+Rien ajouté dans `#pre-beta` en dehors des 3 retouches demandées.
+
+**Testé avec :**
+- `npm test` (`tests/check.js`) : 67/72, identique aux sessions précédentes.
+- Vérification réelle (Playwright, Chrome système), desktop 1440x900 et
+  mobile 375x667 : 0px de débordement horizontal dans les deux cas.
+  Comparaison programmatique des deux bandes (`getComputedStyle` sur
+  `background-image` et `height`) : **identiques bit pour bit**
+  (`backgroundImage` égal, `height` égal), positionnées respectivement en
+  haut (`y≈172px`) et en bas (`y≈723px`) du bloc en desktop. Captures
+  d'écran du bloc complet sur les deux tailles d'écran confirmant le
+  rendu symétrique et le texte centré.
+
+### Déploiement
+Livré sur `feature/pre-beta-polish`, pas mergé ni poussé sur `main` :
+cette session n'a pas demandé de mise en ligne automatique, en attente de
+validation de Xavier.
+
+---
+
 ## Mascottes spécifiques par épreuve (2026-07-09) ✅
 
 Tag avant : `ops-session-2026-07-09-mascots`. Branche `feature/skill-mascots`.

@@ -651,6 +651,7 @@ select.form-control { appearance: none; cursor: pointer; }
   position: absolute; top: 0; left: 0; right: 0; height: 4px;
   background: linear-gradient(90deg, var(--c-listening), var(--c-reading), var(--c-writing), var(--c-speaking));
 }
+.pre-beta__stripe--bottom { top: auto; bottom: 0; }
 .pre-beta__inner {
   display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center;
   text-align: center;
