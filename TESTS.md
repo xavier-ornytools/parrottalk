@@ -36,9 +36,8 @@ Rien ajouté dans `#pre-beta` en dehors des 3 retouches demandées.
   rendu symétrique et le texte centré.
 
 ### Déploiement
-Livré sur `feature/pre-beta-polish`, pas mergé ni poussé sur `main` :
-cette session n'a pas demandé de mise en ligne automatique, en attente de
-validation de Xavier.
+Validé par Xavier, mergé sur `main` (fast-forward, commit `a6b7b90`) et
+poussé sur `origin/main`. Déploiement Vercel automatique attendu.
 
 ---
 
