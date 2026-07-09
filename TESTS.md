@@ -1,5 +1,30 @@
 # ParrotTalk — Tests techniques
 
+## Mascottes spécifiques par épreuve (2026-07-09) ✅
+
+Tag avant : `ops-session-2026-07-09-mascots`. Branche `feature/skill-mascots`.
+Les 4 pages d'épreuve (listening/reading/writing/speaking.html) affichaient
+toutes la même image générique `img/parrot-practice.png` dans le bandeau
+`.page-hero__mascot`. Les 4 images spécifiques fournies par Xavier
+existaient déjà dans `img/` (`mascot-listening.png`, `mascot-reading.png`,
+`mascot-writing.png`, `mascot-speaking.png`), confirmées identiques par
+hash MD5 aux fichiers envoyés dans le chat, mais jamais branchées dans le
+HTML. Une ligne changée par page (`src` uniquement, `alt` déjà correct).
+`index.html` (bloc pré-bêta) continue d'utiliser `parrot-practice.png`,
+non concerné par la demande.
+
+**Testé avec :**
+- `npm test` : 67/72, identique aux sessions précédentes.
+- Vérification réelle (Playwright, Chrome système) : les 4 pages chargent
+  bien leur image spécifique (`img.complete === true`, `naturalWidth` 1254
+  confirmé), captures d'écran des 4 bandeaux comparées visuellement, aucune
+  déformation (images déjà carrées, compatibles avec `object-fit:contain`).
+
+### Déploiement
+Mergé sur `main` et poussé sur `origin/main`.
+
+---
+
 ## Retouches UX du bloc pré-bêta (2026-07-09) ✅
 
 Suite directe de la session précédente, une fois le bloc pré-bêta validé et
