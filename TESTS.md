@@ -78,9 +78,10 @@ Fichier : `index.html`, section `#beta-feedback`, insérée avant le footer.
   le site, confirme la réception.
 
 ### Déploiement
-Travail livré sur la branche `feature/pre-beta-kit`, pas encore mergé ni
-poussé sur `main`. En attente de validation de Xavier (notamment le collage
-de la clé Web3Forms) avant merge et déploiement Vercel.
+Clé Web3Forms collée par Xavier, testée en local (envoi réel confirmé reçu
+sur contact@parrottalk.app). Mergé sur `main` (fast-forward, commit
+`fae12a6`) et poussé sur `origin/main`. Déploiement Vercel automatique
+attendu à la suite du push, à vérifier par Xavier sur le site en ligne.
 
 ---
 
