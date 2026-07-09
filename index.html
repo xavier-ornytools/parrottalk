@@ -71,6 +71,32 @@
   </div>
 </section>
 
+<!-- PRE-BETA KIT -->
+<section id="pre-beta" class="pre-beta">
+  <div class="pre-beta__stripe"></div>
+  <div class="container">
+    <div class="pre-beta__inner">
+      <div class="pre-beta__text">
+        <div class="hero__eyebrow">
+          <span>🧪</span> Pré-bêta amicale · Tes retours comptent
+        </div>
+        <h2>Aide-moi à peaufiner ParrotTalk</h2>
+        <p class="pre-beta__body">
+          ParrotTalk est en test privé (pré-bêta). J'ai créé un examen blanc IELTS complet, avec les quatre épreuves et une correction par IA, et j'ai besoin de tes retours avant de le lancer vraiment. Fais un examen (tu peux ne faire qu'une seule épreuve de 30 à 40 minutes et reprendre un autre jour), puis dis-moi ce qui bugue, ce qui n'est pas clair, ou ce qui te semble étrange. Tu peux télécharger la fiche de test et me la renvoyer par mail, ou remplir le formulaire rapide ci-dessous. Merci énormément pour ton aide, elle m'est vraiment précieuse !
+        </p>
+        <div class="pre-beta__actions">
+          <a href="beta/ParrotTalk_Mail-Beta.pdf" download class="btn btn-secondary">📄 Télécharger la lettre (PDF)</a>
+          <a href="beta/TEST_Bug_ParrotTalk_FR_contact_clean.pdf" download class="btn btn-secondary">🐞 Télécharger la fiche de test (PDF)</a>
+          <a href="#beta-feedback" class="btn btn-primary">✍️ Donner mon avis</a>
+        </div>
+      </div>
+      <div class="pre-beta__visual">
+        <img src="img/parrot-practice.png" alt="ParrotTalk, pré-bêta amicale" style="width:220px;max-width:100%">
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- FEATURES STRIP -->
 <div class="features-strip">
   <div class="container">
@@ -374,6 +400,116 @@
   </div>
 </section>
 
+<!-- BETA FEEDBACK FORM -->
+<section id="beta-feedback" class="section" style="background:var(--surface)">
+  <div class="container" style="max-width:720px">
+    <div style="text-align:center;margin-bottom:32px">
+      <div class="section-label">📝 Retour rapide</div>
+      <h2>Ton avis compte</h2>
+      <p class="section-subtitle" style="margin:12px auto 0">Deux minutes suffisent. Ce formulaire part directement par mail, aucune donnée n'est stockée ailleurs.</p>
+    </div>
+
+    <form id="beta-feedback-form" onsubmit="handleBetaFeedback(event)" class="card card-lg">
+      <input type="hidden" name="access_key" value="XAVIER_COLLE_SA_CLE_WEB3FORMS_ICI">
+      <input type="hidden" name="subject" value="Nouveau retour pre-beta ParrotTalk">
+      <input type="checkbox" name="botcheck" class="hidden" style="display:none">
+
+      <div class="form-group">
+        <label class="form-label" for="beta-firstname">Prénom (optionnel)</label>
+        <input type="text" id="beta-firstname" name="prenom" class="form-control" placeholder="Ton prénom">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="beta-email">Email (pour te recontacter, optionnel)</label>
+        <input type="email" id="beta-email" name="email" class="form-control" placeholder="ton@email.com">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Appareil utilisé</label>
+        <div class="beta-check-row">
+          <label><input type="radio" name="appareil" value="Mobile"> Mobile</label>
+          <label><input type="radio" name="appareil" value="Ordinateur"> Ordinateur</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Épreuve(s) testée(s)</label>
+        <div class="beta-check-row">
+          <label style="color:var(--c-listening)"><input type="checkbox" name="epreuves" value="Listening"> Listening</label>
+          <label style="color:var(--c-reading)"><input type="checkbox" name="epreuves" value="Reading"> Reading</label>
+          <label style="color:var(--c-writing)"><input type="checkbox" name="epreuves" value="Writing"> Writing</label>
+          <label style="color:var(--c-speaking)"><input type="checkbox" name="epreuves" value="Speaking"> Speaking</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="beta-good">Ce qui a bien marché</label>
+        <textarea id="beta-good" name="ce_qui_marche" class="form-control" placeholder="Ce que tu as trouvé réussi, agréable, clair..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="beta-bugs">Bugs rencontrés (où, quand, ce qui s'est passé)</label>
+        <textarea id="beta-bugs" name="bugs" class="form-control" placeholder="Ex : sur mobile, à l'étape 2 du Speaking, le micro ne s'est pas activé..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="beta-unclear">Points pas clairs ou moments d'hésitation</label>
+        <textarea id="beta-unclear" name="points_pas_clairs" class="form-control"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Le band estimé par ParrotTalk te semble-t-il correspondre à ton niveau ?</label>
+        <div class="beta-check-row">
+          <label><input type="radio" name="band_correspond" value="Oui"> Oui</label>
+          <label><input type="radio" name="band_correspond" value="Plutôt oui"> Plutôt oui</label>
+          <label><input type="radio" name="band_correspond" value="Plutôt non"> Plutôt non</label>
+          <label><input type="radio" name="band_correspond" value="Non"> Non</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="beta-note">Note globale (1 à 10)</label>
+        <select id="beta-note" name="note_globale" class="form-control">
+          <option value="">Choisir une note</option>
+          <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+          <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+          <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tu recommandes ?</label>
+        <div class="beta-check-row">
+          <label><input type="radio" name="recommande" value="Oui"> Oui</label>
+          <label><input type="radio" name="recommande" value="Non"> Non</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="beta-remarks">Remarques libres</label>
+        <textarea id="beta-remarks" name="remarques_libres" class="form-control"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label style="display:flex;align-items:flex-start;gap:10px;font-size:.875rem;color:var(--text-muted)">
+          <input type="checkbox" required name="consentement" style="margin-top:3px">
+          J'accepte que mes retours et mon email soient utilisés pour améliorer ParrotTalk. Voir la <a href="privacy.html" class="text-primary">Privacy Policy</a>.
+        </label>
+      </div>
+
+      <button type="submit" id="beta-submit-btn" class="btn btn-primary btn-lg w-full">Envoyer mon retour</button>
+      <p id="beta-feedback-error" class="hidden" style="color:var(--danger);margin-top:12px;font-weight:600;text-align:center">Un problème est survenu. Merci de réessayer.</p>
+    </form>
+
+    <div id="beta-feedback-success" class="hidden card card-lg" style="text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:12px">🦜</div>
+      <h3>Merci, ton retour est bien parti !</h3>
+      <p style="margin-top:8px">Il vient d'être envoyé directement par mail. Ta contribution est vraiment précieuse pour la suite de ParrotTalk.</p>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer class="footer">
   <div class="container">
@@ -428,6 +564,33 @@
         alert('Something went wrong. Please try again.');
       }
     } catch { btn.disabled = false; btn.textContent = 'Subscribe'; }
+  }
+
+  async function handleBetaFeedback(e) {
+    e.preventDefault();
+    const form = document.getElementById('beta-feedback-form');
+    const btn = document.getElementById('beta-submit-btn');
+    const errorMsg = document.getElementById('beta-feedback-error');
+    errorMsg.classList.add('hidden');
+    btn.disabled = true; btn.textContent = 'Envoi en cours...';
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(form)
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        form.classList.add('hidden');
+        document.getElementById('beta-feedback-success').classList.remove('hidden');
+      } else {
+        btn.disabled = false; btn.textContent = 'Envoyer mon retour';
+        errorMsg.classList.remove('hidden');
+      }
+    } catch {
+      btn.disabled = false; btn.textContent = 'Envoyer mon retour';
+      errorMsg.classList.remove('hidden');
+    }
   }
 </script>
 </body>

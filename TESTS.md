@@ -1,5 +1,89 @@
 # ParrotTalk — Tests techniques
 
+## Bloc pré-bêta sur la home + formulaire de retour Web3Forms (2026-07-09) ✅
+
+Pré-bêta amicale lancée (posts Facebook/LinkedIn de Xavier), le kit testeur
+(lettre d'invitation + fiche de test) est maintenant accessible directement
+depuis la home, sans dépendre de l'email envoyé au préalable. Tag avant :
+`ops-session-2026-07-09`. Travail fait sur la branche `feature/pre-beta-kit`,
+pas sur `main`. Périmètre strict : `index.html` (home uniquement) et
+`css/main.css`, aucun autre fichier touché.
+
+Note de scope, à traiter avant la vraie bêta internationale : cette section
+est volontairement en français alors que le reste du site est en anglais
+(exception assumée pour la pré-bêta amicale francophone). À rebasculer en
+anglais quand la bêta internationale sera lancée.
+
+### 1. [NOUVEAU] Bloc invitation pré-bêta sur la home
+Fichier : `index.html`, section `#pre-beta`, insérée juste après le hero et
+avant la bande de fonctionnalités.
+- Bandeau dégradé 4 couleurs (une par épreuve) en haut de la section, badge
+  façon `.hero__eyebrow`, texte d'invitation intégré tel quel (fourni par
+  Xavier), 3 boutons : téléchargement lettre PDF, téléchargement fiche de
+  test PDF, ancre vers le formulaire de retour.
+- Les deux PDF (`ParrotTalk_Mail-Beta.pdf`, `TEST_Bug_ParrotTalk_FR_contact_clean.pdf`)
+  ont été copiés dans un nouveau dossier `beta/` à la racine du repo (pas
+  `/public/beta/` : ce repo n'a pas de dossier `/public/`, les assets vivent
+  à plat comme `img/`, `css/`, `js/`, `audio/`, donc `beta/` suit la même
+  convention).
+
+### 2. [NOUVEAU] Formulaire de retour en ligne (Web3Forms)
+Fichier : `index.html`, section `#beta-feedback`, insérée avant le footer.
+- Formulaire HTML natif (pas d'iframe), `fetch()` vers
+  `https://api.web3forms.com/submit`, honeypot `botcheck` caché, champ
+  `access_key` en placeholder littéral `XAVIER_COLLE_SA_CLE_WEB3FORMS_ICI` :
+  **action manuelle restante pour Xavier**, coller la vraie clé publique
+  associée à contact@parrottalk.app avant mise en prod.
+  Cette clé est une clé publique de routage (pas un secret), elle peut donc
+  rester dans le HTML client sans risque.
+- Tous les champs demandés sont présents (prénom, email, appareil, épreuves
+  testées, ce qui a marché, bugs, points pas clairs, correspondance du band,
+  note globale, recommandation, remarques libres, consentement avec lien
+  vers `privacy.html`).
+- JS `handleBetaFeedback()` : `preventDefault` + `fetch` + bascule d'un état
+  "formulaire" vers un état "confirmation" affiché inline, sans redirection
+  (même mécanique que `handleSubscribe()` déjà en place pour la newsletter).
+
+**Testé avec :**
+- `npm test` (`tests/check.js`) : 67/72 passés. Les 5 échecs restants
+  (`api/writing-feedback.js`, `api/speaking-transcribe.js`,
+  `api/speaking-feedback.js` introuvables) sont préexistants, liés à la
+  suppression de ces fichiers lors d'une session antérieure (voir plus bas
+  dans ce fichier), aucun rapport avec cette session.
+- Vérification mobile réelle à 375x667 avec Playwright (Chrome système,
+  `/usr/bin/google-chrome`, `playwright-core` déjà en devDependency) :
+  aucun débordement horizontal avant ni après le choix cookies
+  (`document.body.scrollWidth - window.innerWidth === 0`), le CTA hero
+  "Start Free Practice" reste accessible, le clic sur "Donner mon avis"
+  amène le titre du formulaire à `y ≈ 230px` (bien sous la nav fixe de
+  64px grâce à `scroll-margin-top` sur `#beta-feedback`), et le bandeau
+  cookies disparaît définitivement après clic sur Accept (formulaire et
+  boutons pleinement cliquables ensuite).
+- Point vérifié et assumé, pas corrigé : en scroll continu (testé pixel par
+  pixel de 0 à 1800px), les boutons du bloc pré-bêta traversent
+  transitoirement la zone du bandeau cookies tant que celui-ci est affiché,
+  le temps de quelques dizaines de pixels de scroll. Vérification faite que
+  ce comportement est générique au site (le bouton "Start Now" de la
+  section 100% Free et le bouton "Subscribe" de la newsletter font
+  exactement la même chose ailleurs sur la page) : c'est une conséquence
+  inévitable de
+  tout bandeau `position:fixed` en bas d'écran traversé par du scroll, pas
+  une régression propre à cette session, et différent du bug bloquant du
+  08/07 (qui était un rendu cassé du bandeau lui-même, occupant 407px de
+  vide). Ce point disparaît définitivement dès que l'utilisateur accepte ou
+  refuse les cookies (vérifié ci-dessus).
+- Pas testé (nécessite la vraie clé Web3Forms de Xavier) : la réception
+  réelle d'un envoi sur la boîte contact@parrottalk.app. Action manuelle
+  restante : Xavier colle sa clé `access_key`, fait un envoi de test depuis
+  le site, confirme la réception.
+
+### Déploiement
+Travail livré sur la branche `feature/pre-beta-kit`, pas encore mergé ni
+poussé sur `main`. En attente de validation de Xavier (notamment le collage
+de la clé Web3Forms) avant merge et déploiement Vercel.
+
+---
+
 ## Corrections post-audit — bloquant mobile + importants (2026-07-08) ✅
 
 Suite de l'audit complet du même jour ([[Journal/2026-07-08_parrottalk-audit-complet]]
