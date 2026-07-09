@@ -23,7 +23,8 @@ une section encadrée haut + bas, cohérente avec `#pre-beta`.
   d'écran confirmant le rendu.
 
 ### Déploiement
-Pas encore mergé sur `main`, en attente de validation de Xavier.
+Validé par Xavier, mergé sur `main` (fast-forward, commit `635a787`) et
+poussé sur `origin/main`. Déploiement Vercel automatique attendu.
 
 ---
 
