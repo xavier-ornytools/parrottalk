@@ -672,6 +672,7 @@ select.form-control { appearance: none; cursor: pointer; }
   position: absolute; bottom: 0; left: 0; right: 0; height: 4px;
   background: linear-gradient(90deg, var(--c-listening), var(--c-reading), var(--c-writing), var(--c-speaking));
 }
+.beta-feedback__stripe--top { bottom: auto; top: 0; }
 .beta-check-row { display: flex; gap: 18px; flex-wrap: wrap; }
 .beta-check-row label {
   display: flex; align-items: center; gap: 6px;

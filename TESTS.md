@@ -1,5 +1,32 @@
 # ParrotTalk — Tests techniques
 
+## Encadrement du formulaire de retour (2026-07-09) ✅
+
+Tag avant : `ops-session-2026-07-09-feedback-frame`. Branche
+`feature/beta-feedback-frame`, repartie de `main`. Périmètre strict :
+`#beta-feedback` uniquement, pour l'encadrer visuellement comme le reste
+de la home. Rien d'autre touché.
+
+`#beta-feedback` avait déjà une bande dégradée en bas (`.beta-feedback__stripe`,
+ajoutée lors d'une session précédente) mais rien en haut, contrairement au
+bloc `#pre-beta` qui a les deux. Ajout d'un modificateur `.beta-feedback__stripe--top`
+(`css/main.css`, réutilise la classe de base, ne change que la position)
+et du `<div>` correspondant juste après l'ouverture de la section, pour
+une section encadrée haut + bas, cohérente avec `#pre-beta`.
+
+**Testé avec :**
+- `npm test` : 67/72, inchangé.
+- Vérification réelle (Playwright, Chrome système), desktop 1440x900 et
+  mobile 375x667 : 0px de débordement, comparaison programmatique des
+  deux bandes de `#beta-feedback` (dégradé et hauteur identiques,
+  confirmé via `getComputedStyle`), captures d'écran des deux tailles
+  d'écran confirmant le rendu.
+
+### Déploiement
+Pas encore mergé sur `main`, en attente de validation de Xavier.
+
+---
+
 ## Polish du bloc #pre-beta : bande de fermeture + texte court (2026-07-09) ✅
 
 Tag avant : `ops-session-2026-07-09-prebeta-polish`. Branche
