@@ -1,5 +1,58 @@
 # ParrotTalk — Tests techniques
 
+## Retouches UX du bloc pré-bêta (2026-07-09) ✅
+
+Suite directe de la session précédente, une fois le bloc pré-bêta validé et
+déployé par Xavier. Tag avant : `ops-session-2026-07-09-ux-tweaks`. Travail
+fait sur la branche `feature/pre-beta-ux-polish`, pas sur `main`. Périmètre
+strict : `index.html` et `css/main.css`, 3 retouches demandées par Xavier.
+
+### 1. Bande dégradée dupliquée en fin de section formulaire
+`.pre-beta__stripe` (haut du bloc `#pre-beta`) n'a pas été modifiée. Ajout
+d'une règle jumelle `.beta-feedback__stripe` (`position:absolute;bottom:0`),
+`#beta-feedback` passée en `position:relative`, et ajout du `<div>`
+correspondant juste avant la fermeture de la section. Même dégradé 4
+couleurs, même rendu, à l'autre bout de la page.
+
+### 2. Correction du mot "bugue" en "bug"
+Texte d'invitation (`#pre-beta`) : "ce qui bugue" devient "ce qui a un bug".
+Xavier a aussi demandé une légère relecture de syntaxe du même paragraphe :
+la phrase à double "et" a été scindée pour fluidifier la lecture ("avant de
+le lancer pour de bon" au lieu d'un enchaînement de deux "et"), sans changer
+le ton ni le sens du texte.
+
+### 3. Centrage des titres et textes courts de la home
+Portée validée par Xavier : centrer titres/sous-titres/paragraphes courts,
+laisser alignés à gauche les blocs longs (réponses FAQ, formulaire, cartes
+module/why-card, liste à puces de la section 100% Free).
+- `.hero__text` (+ `.hero__actions`, `.hero__stats`) centrés dans `css/main.css`.
+- Colonne de texte de la section "Everything You Need. All in One Place."
+  centrée (`text-align:center` sur le conteneur).
+- Section "100% Free" : titre/paragraphe/bouton centrés, la checklist à
+  coches conserve `text-align:left` explicite pour ne pas devenir illisible.
+- Bannière CTA finale ("Ready to reach Band 7?") : titre/paragraphe/boutons
+  centrés, paragraphe recentré via `margin:auto` (au lieu de `margin:0`).
+- Bloc `#pre-beta` : déjà centré en mobile, centrage étendu au desktop pour
+  cohérence avec le reste de la page.
+- Sections déjà centrées (Modules, Why ParrotTalk, FAQ, Email Capture) :
+  aucun changement.
+
+**Testé avec :**
+- `npm test` (`tests/check.js`) : 67/72, chiffres identiques à la session
+  précédente (les 5 échecs restent les mêmes routes API préexistantes).
+- Vérification visuelle réelle desktop (1440x900) et mobile (375x667) avec
+  Playwright (Chrome système) : 0px de débordement horizontal dans les deux
+  cas, captures d'écran des 4 sections retouchées comparées visuellement,
+  formulaire et checklist confirmés toujours alignés à gauche, bande
+  colorée confirmée identique en haut du bloc pré-bêta et en bas du
+  formulaire de retour.
+
+### Déploiement
+Mergé sur `main` et poussé sur `origin/main` à la demande de Xavier
+("envoie tout direct quand tu as fini, ce sont de petites modifications").
+
+---
+
 ## Bloc pré-bêta sur la home + formulaire de retour Web3Forms (2026-07-09) ✅
 
 Pré-bêta amicale lancée (posts Facebook/LinkedIn de Xavier), le kit testeur
