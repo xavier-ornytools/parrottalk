@@ -444,12 +444,15 @@ function renderAIFeedback(box, data, task, promptText) {
   const criteriaNames = task === 1
     ? ['Task Achievement','Coherence & Cohesion','Lexical Resource','Grammatical Range']
     : ['Task Response','Coherence & Cohesion','Lexical Resource','Grammatical Range'];
-  const itemsHTML = criteriaKey.map((k,i) => `
+  const itemsHTML = criteriaKey.map((k,i) => {
+    const critBand = clampBand(data[k]?.band);
+    return `
     <div class="criteria-item">
-      <div class="criteria-band">${data[k]?.band || '—'}</div>
+      <div class="criteria-band">${critBand ?? '—'}</div>
       <div class="criteria-name">${criteriaNames[i]}</div>
       <div class="criteria-text">${data[k]?.comment || ''}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   const promptExcerpt = promptText ? promptText.trim().slice(0, 100) + (promptText.trim().length > 100 ? '…' : '') : '';
   const displayBand = clampBand(data.band);
   box.innerHTML = `<div class="ai-feedback">

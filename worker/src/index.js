@@ -190,6 +190,18 @@ Be realistic. An average test-taker scores 5.5–6.5.`;
     console.warn('[clampBand] band Writing invalide, mis à null', { task });
   }
 
+  // Même garde-fou sur les 4 sous-critères (taskAchievement/taskResponse,
+  // coherence, lexical, grammar) : chacun porte son propre band Gemini,
+  // niché dans un sous-objet { band, comment }.
+  [criterion1key, 'coherence', 'lexical', 'grammar'].forEach(key => {
+    if (!parsed[key]) return;
+    parsed[key].band = clampBand(parsed[key].band);
+    if (parsed[key].band === null) {
+      parsed[key].bandError = 'AI returned an invalid band value.';
+      console.warn('[clampBand] band Writing invalide (critère)', { task, key });
+    }
+  });
+
   const cost = estimateCost(env, inputTokens, 0, outputTokens);
   const budget = await checkAndUpdateBudget(env, cost);
   if (!budget.ok) return json({ error: 'Monthly evaluation budget reached — service resumes next month' }, 429, origin);
@@ -282,10 +294,25 @@ Be realistic. Average test-taker: 5.5–6.5. Band 7+ requires consistent fluency
     { role: 'user', parts: geminiParts },
   ], 1500);
 
-  parsed.overall = clampBand(parsed.overall);
-  if (parsed.overall === null) {
-    parsed.overallError = 'AI returned an invalid overall band value.';
-    console.warn('[clampBand] overall Speaking invalide, mis à null');
+  // Chaque critère est clampé individuellement, puis "overall" est recalculé
+  // à partir des 4 valeurs déjà clampées (pas de la valeur brute renvoyée par
+  // Gemini pour "overall") : on ne fait pas confiance à l'arithmétique du
+  // modèle, même pour une simple moyenne.
+  ['fc', 'lr', 'gra', 'pron'].forEach(key => {
+    parsed[key] = clampBand(parsed[key]);
+    if (parsed[key] === null) {
+      parsed[`${key}Error`] = 'AI returned an invalid band value.';
+      console.warn(`[clampBand] ${key} Speaking invalide, mis à null`);
+    }
+  });
+
+  const criteria = [parsed.fc, parsed.lr, parsed.gra, parsed.pron];
+  if (criteria.every(v => v !== null)) {
+    parsed.overall = clampBand(criteria.reduce((a, b) => a + b, 0) / 4);
+  } else {
+    parsed.overall = null;
+    parsed.overallError = 'AI returned an invalid criterion value, overall band could not be computed.';
+    console.warn('[clampBand] overall Speaking non calculable, un critère est invalide');
   }
 
   // Répartition texte/audio pour le coût : on préfère le détail par modalité renvoyé

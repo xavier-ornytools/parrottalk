@@ -915,12 +915,15 @@ function renderSpeakingFeedback(data, testId) {
     { key:'lr',   label:'Lexical Resource',     color:'var(--primary)', bg:'var(--primary-light)' },
     { key:'gra',  label:'Grammar Range',         color:'var(--warning)', bg:'var(--warning-light)' },
     { key:'pron', label:'Pronunciation',  color:'var(--purple)',  bg:'#F5F3FF' }
-  ].map(c => `
+  ].map(c => {
+    const val = clampBand(data[c.key]);
+    return `
     <div class="score-mini" style="background:${c.bg}">
       <div class="sm-tag">${c.key.toUpperCase()}</div>
-      <div class="sm-val" style="color:${c.color}">${data[c.key]||'—'}</div>
+      <div class="sm-val" style="color:${c.color}">${val ?? '—'}</div>
       <div class="sm-name">${c.label}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   const strengthsHTML = (data.strengths||[]).map(s =>
     `<li style="font-size:.875rem;padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">${s}</li>`).join('');
@@ -960,7 +963,7 @@ function saveSpeakingScore(data, testId) {
   const spk = JSON.parse(localStorage.getItem('ielts_speaking_scores')||'{}');
   spk[`test0${testId}`] = {
     band,
-    criteriaScores: { fc:data.fc, lr:data.lr, gra:data.gra, pron:data.pron },
+    criteriaScores: { fc:clampBand(data.fc), lr:clampBand(data.lr), gra:clampBand(data.gra), pron:clampBand(data.pron) },
     date: new Date().toLocaleDateString('fr-FR')
   };
   localStorage.setItem('ielts_speaking_scores', JSON.stringify(spk));
