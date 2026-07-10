@@ -140,6 +140,15 @@ async function callGemini(env, contents, maxOutputTokens = 1024) {
   };
 }
 
+// ── Band clamping ─────────────────────────────────────────────────────────────
+// Un band renvoyé par Gemini n'est jamais garanti d'être un multiple de 0.5 ni
+// borné entre 0 et 9 : on le force côté code avant tout log ou renvoi au client.
+function clampBand(x) {
+  const n = typeof x === 'number' ? x : parseFloat(x);
+  if (!Number.isFinite(n)) return null;
+  return Math.min(9, Math.max(0, Math.round(n * 2) / 2));
+}
+
 // ── /evaluate/writing ─────────────────────────────────────────────────────────
 
 async function handleWriting(req, env, origin) {
@@ -174,6 +183,12 @@ Be realistic. An average test-taker scores 5.5–6.5.`;
   const { parsed, inputTokens, outputTokens, totalTokens } = await callGemini(env, [
     { role: 'user', parts: [{ text: userPrompt }] },
   ], 1024);
+
+  parsed.band = clampBand(parsed.band);
+  if (parsed.band === null) {
+    parsed.bandError = 'AI returned an invalid band value.';
+    console.warn('[clampBand] band Writing invalide, mis à null', { task });
+  }
 
   const cost = estimateCost(env, inputTokens, 0, outputTokens);
   const budget = await checkAndUpdateBudget(env, cost);
@@ -266,6 +281,12 @@ Be realistic. Average test-taker: 5.5–6.5. Band 7+ requires consistent fluency
   const { parsed, inputTokens, outputTokens, totalTokens, audioTokens, textTokens } = await callGemini(env, [
     { role: 'user', parts: geminiParts },
   ], 1500);
+
+  parsed.overall = clampBand(parsed.overall);
+  if (parsed.overall === null) {
+    parsed.overallError = 'AI returned an invalid overall band value.';
+    console.warn('[clampBand] overall Speaking invalide, mis à null');
+  }
 
   // Répartition texte/audio pour le coût : on préfère le détail par modalité renvoyé
   // par Gemini (audioTokens/textTokens réels) ; sinon on retombe sur l'estimation par

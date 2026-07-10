@@ -900,7 +900,16 @@ async function checkAndSubmit() {
 }
 
 
+// Défense en profondeur : le Worker clampe déjà "overall" avant renvoi, mais on
+// revérifie ici au cas où une réponse plus ancienne ou non clampée arriverait.
+function clampBand(x) {
+  const n = typeof x === 'number' ? x : parseFloat(x);
+  if (!Number.isFinite(n)) return null;
+  return Math.min(9, Math.max(0, Math.round(n * 2) / 2));
+}
+
 function renderSpeakingFeedback(data, testId) {
+  const displayOverall = clampBand(data.overall);
   const criteriaHTML = [
     { key:'fc',   label:'Fluency & Coherence', color:'var(--primary)', bg:'var(--primary-light)' },
     { key:'lr',   label:'Lexical Resource',     color:'var(--primary)', bg:'var(--primary-light)' },
@@ -922,7 +931,7 @@ function renderSpeakingFeedback(data, testId) {
     <div class="card card-lg">
       <div class="flex items-center justify-between" style="margin-bottom:16px">
         <h3>Speaking Test 0${testId} — AI Results</h3>
-        <span class="badge badge-primary">Band ${data.overall||'—'}</span>
+        <span class="badge badge-primary">Band ${displayOverall ?? '—'}</span>
       </div>
       <div class="score-mini-grid">${criteriaHTML}</div>
       ${data.summary?`<p style="font-size:.9375rem;color:var(--text);margin-bottom:16px">${data.summary}</p>`:''}
@@ -946,10 +955,11 @@ function renderSpeakingFeedback(data, testId) {
 }
 
 function saveSpeakingScore(data, testId) {
-  if (!data.overall) return;
+  const band = clampBand(data.overall);
+  if (band === null) return;
   const spk = JSON.parse(localStorage.getItem('ielts_speaking_scores')||'{}');
   spk[`test0${testId}`] = {
-    band: parseFloat(data.overall),
+    band,
     criteriaScores: { fc:data.fc, lr:data.lr, gra:data.gra, pron:data.pron },
     date: new Date().toLocaleDateString('fr-FR')
   };
