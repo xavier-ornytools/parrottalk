@@ -275,7 +275,7 @@
             <div class="criteria-item-small"><div class="ci-tag">TA</div><div class="ci-name">Task Achievement</div><p>Overview + main data features + comparisons</p></div>
             <div class="criteria-item-small"><div class="ci-tag">CC</div><div class="ci-name">Coherence & Cohesion</div><p>Logical paragraph progression + linking</p></div>
             <div class="criteria-item-small"><div class="ci-tag">LR</div><div class="ci-name">Lexical Resource</div><p>Precise graph vocabulary, varied collocations</p></div>
-            <div class="criteria-item-small"><div class="ci-tag">GRA</div><div class="ci-name">Grammatical Range</div><p>Variety + accuracy of structures</p></div>
+            <div class="criteria-item-small"><div class="ci-tag">GRA</div><div class="ci-name">Grammatical Range and Accuracy</div><p>Variety + accuracy of structures</p></div>
           </div>
         </div>
         <div>
@@ -284,7 +284,7 @@
             <div class="criteria-item-small"><div class="ci-tag">TR</div><div class="ci-name">Task Response</div><p>Both views addressed + clear opinion</p></div>
             <div class="criteria-item-small"><div class="ci-tag">CC</div><div class="ci-name">Coherence & Cohesion</div><p>5-paragraph structure + cohesive devices</p></div>
             <div class="criteria-item-small"><div class="ci-tag">LR</div><div class="ci-name">Lexical Resource</div><p>Academic vocabulary, avoid repetition</p></div>
-            <div class="criteria-item-small"><div class="ci-tag">GRA</div><div class="ci-name">Grammatical Range</div><p>Complex sentences, variety of tenses</p></div>
+            <div class="criteria-item-small"><div class="ci-tag">GRA</div><div class="ci-name">Grammatical Range and Accuracy</div><p>Complex sentences, variety of tenses</p></div>
           </div>
         </div>
       </div>
@@ -442,8 +442,8 @@ function clampBand(x) {
 function renderAIFeedback(box, data, task, promptText) {
   const criteriaKey = task === 1 ? ['taskAchievement','coherence','lexical','grammar'] : ['taskResponse','coherence','lexical','grammar'];
   const criteriaNames = task === 1
-    ? ['Task Achievement','Coherence & Cohesion','Lexical Resource','Grammatical Range']
-    : ['Task Response','Coherence & Cohesion','Lexical Resource','Grammatical Range'];
+    ? ['Task Achievement','Coherence & Cohesion','Lexical Resource','Grammatical Range and Accuracy']
+    : ['Task Response','Coherence & Cohesion','Lexical Resource','Grammatical Range and Accuracy'];
   const itemsHTML = criteriaKey.map((k,i) => {
     const critBand = clampBand(data[k]?.band);
     return `

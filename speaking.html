@@ -913,7 +913,7 @@ function renderSpeakingFeedback(data, testId) {
   const criteriaHTML = [
     { key:'fc',   label:'Fluency & Coherence', color:'var(--primary)', bg:'var(--primary-light)' },
     { key:'lr',   label:'Lexical Resource',     color:'var(--primary)', bg:'var(--primary-light)' },
-    { key:'gra',  label:'Grammar Range',         color:'var(--warning)', bg:'var(--warning-light)' },
+    { key:'gra',  label:'Grammatical Range and Accuracy', color:'var(--warning)', bg:'var(--warning-light)' },
     { key:'pron', label:'Pronunciation',  color:'var(--purple)',  bg:'#F5F3FF' }
   ].map(c => {
     const val = clampBand(data[c.key]);
