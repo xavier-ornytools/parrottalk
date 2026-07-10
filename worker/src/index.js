@@ -167,6 +167,11 @@ ${essay}
 
 ${wordCount < (minWords || 0) ? `⚠️ Essay is ${(minWords || 0) - wordCount} words short of the minimum.` : ''}
 
+GRADING RULES (apply strictly):
+- If the essay does not address the task prompt (off topic, or answers a different question), penalize ${criterion1} heavily, even if the English itself is excellent. A fluent essay on the wrong topic cannot score highly on this criterion.
+- If the response is written as notes, bullet points, or short fragments instead of full paragraphs, penalize both ${criterion1} and Coherence and Cohesion.
+- If the content reads as a memorized or generic answer with no real connection to the specific prompt given, penalize severely.
+
 Return ONLY valid JSON — no markdown:
 {
   "band": "6.5",
@@ -271,6 +276,7 @@ async function handleSpeaking(req, env, origin) {
 The ${audioParts.length} audio recording(s) above correspond to the test questions, in order.
 Listen to each recording carefully. Evaluate holistically across all 4 IELTS Speaking criteria.
 Pronunciation must be evaluated from the audio signal — not inferred.
+For Lexical Resource (lr), treat the candidate's ability to paraphrase or describe a concept when a precise word is missing (circumlocution) as a positive sign of communicative skill, not a weakness to penalize.
 
 Return ONLY valid JSON:
 {
