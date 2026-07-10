@@ -1,5 +1,41 @@
 # ParrotTalk — Tests techniques
 
+## Balise de vérification Google Search Console (2026-07-10) ✅
+
+Tag avant : `ops-session-2026-07-10-gsc-verification`. Branche
+`feature/gsc-verification`, repartie de `main`. Périmètre strict : une
+seule balise `<meta>` ajoutée dans `index.html`, rien d'autre touché.
+
+La vérification Search Console par méthode GA4 avait échoué ("aucun code
+de suivi Analytics trouvé sur la page d'index") car le tag GA4 ne se
+charge qu'après consentement cookies, invisible pour le robot Google.
+Bascule sur la méthode balise HTML meta : ajoutée en dur dans le
+`<head>` de `index.html`, avant les scripts, sans aucune condition de
+consentement (`js/cookie-banner.js`, `js/analytics.js` non modifiés).
+
+```html
+<meta name="google-site-verification" content="EHtVno9eNHVqmMhtAGzPRdLt6PP1LnHX1_pGuPoH6SQ" />
+```
+
+**Point de convention à ne jamais oublier :** cette balise doit rester en
+place définitivement une fois la propriété validée par Google. Ne jamais
+la retirer dans une session future, y compris lors d'un reformatage du
+`<head>`.
+
+**Testé avec :**
+- `npm test` (`tests/check.js`) : 67/72, identique aux sessions
+  précédentes (5 échecs préexistants, sans rapport).
+- Vérification visuelle du `<head>` : balise présente ligne 6, avant les
+  deux `<script>` (`analytics.js`, `cookie-banner.js`), aucune condition
+  JS autour.
+
+### Déploiement
+En cours : merge sur `main` et push prévus juste après, puis vérification
+réelle dans le code source de https://www.parrottalk.app une fois Vercel
+redéployé.
+
+---
+
 ## Encadrement du formulaire de retour (2026-07-09) ✅
 
 Tag avant : `ops-session-2026-07-09-feedback-frame`. Branche
