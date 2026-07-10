@@ -862,19 +862,21 @@ async function checkAndSubmit() {
     formData.append('topic', t.topic);
     formData.append('questions', JSON.stringify(allQs.map(q => q.question)));
 
-    let audioIndex = 0;
+    // Chaque blob garde l'index réel de sa question (audio_<i>), pas un
+    // compteur contigu : si une question est sautée, les suivantes ne se
+    // décalent plus et restent associées à la bonne question côté Worker.
+    let sentCount = 0;
     for (let i = 0; i < allQs.length; i++) {
       const rec = recordings[i];
       if (!rec || !rec.blob || rec.blob.size < 100) continue;
-      const mimeType = rec.mimeType ? rec.mimeType.split(';')[0] : 'audio/webm';
-      formData.append(`audio_${audioIndex}`, rec.blob, `q${i}.webm`);
+      formData.append(`audio_${i}`, rec.blob, `q${i}.webm`);
       // Duration in seconds: estimate from blob size if not stored (opus ~32 kbps = 4000 bytes/sec)
       const durationSec = rec.duration || Math.round(rec.blob.size / 4000);
-      formData.append(`duration_${audioIndex}`, String(durationSec));
-      audioIndex++;
+      formData.append(`duration_${i}`, String(durationSec));
+      sentCount++;
     }
 
-    if (audioIndex === 0) throw new Error('No valid audio recordings found');
+    if (sentCount === 0) throw new Error('No valid audio recordings found');
 
     const res = await fetch(`${API_BASE}/evaluate/speaking`, {
       method: 'POST',

@@ -236,45 +236,42 @@ async function handleSpeaking(req, env, origin) {
   const questionsRaw = formData.get('questions') || '[]';
   const questions = JSON.parse(questionsRaw);
 
-  // Collect all audio blobs (audio_0, audio_1, ...)
-  const audioParts = [];
+  // Chaque enregistrement est associé à l'index réel de sa question
+  // (audio_<questionIndex>), plus de compteur contigu séparé : une question
+  // sautée par le candidat ne décale plus l'étiquette des questions suivantes.
+  // Une question sans enregistrement est marquée comme sautée dans le prompt
+  // Gemini, au lieu d'être silencieusement omise.
+  const geminiParts = [];
   let totalDurationSeconds = 0;
-  let idx = 0;
-  while (true) {
-    const audioFile = formData.get(`audio_${idx}`);
-    if (!audioFile) break;
-    const durationStr = formData.get(`duration_${idx}`);
+  let recordedCount = 0;
+  for (let i = 0; i < questions.length; i++) {
+    const questionText = questions[i] || `Question ${i + 1}`;
+    const audioFile = formData.get(`audio_${i}`);
+    if (!audioFile) {
+      geminiParts.push({ text: `Question ${i + 1} (${questionText}): skipped by candidate, no recording provided.` });
+      continue;
+    }
+    recordedCount++;
+    const durationStr = formData.get(`duration_${i}`);
     const duration = parseFloat(durationStr || '0') || 0;
     totalDurationSeconds += duration;
 
     const ab = await audioFile.arrayBuffer();
     const bytes = new Uint8Array(ab);
     let b64 = '';
-    for (let i = 0; i < bytes.length; i += 8192) {
-      b64 += String.fromCharCode(...bytes.subarray(i, i + 8192));
+    for (let j = 0; j < bytes.length; j += 8192) {
+      b64 += String.fromCharCode(...bytes.subarray(j, j + 8192));
     }
-    audioParts.push({
-      mimeType: audioFile.type || 'audio/webm',
-      data: btoa(b64),
-      question: questions[idx] || `Question ${idx + 1}`,
-      duration,
-    });
-    idx++;
+    const mimeType = audioFile.type || 'audio/webm';
+    geminiParts.push({ text: `Recording (Question ${i + 1}): ${questionText}` });
+    geminiParts.push({ inlineData: { mimeType, data: btoa(b64) } });
   }
 
-  if (audioParts.length === 0) return json({ error: 'No audio recordings received' }, 400, origin);
-
-  // Build Gemini multi-part content
-  // Each recording is preceded by its question label
-  const geminiParts = [];
-  audioParts.forEach((part, i) => {
-    geminiParts.push({ text: `Recording ${i + 1}: ${part.question}` });
-    geminiParts.push({ inlineData: { mimeType: part.mimeType, data: part.data } });
-  });
+  if (recordedCount === 0) return json({ error: 'No audio recordings received' }, 400, origin);
 
   const systemPrompt = `You are an expert IELTS examiner. Evaluate the candidate's full IELTS Speaking test on the topic: "${topic}".
 
-The ${audioParts.length} audio recording(s) above correspond to the test questions, in order.
+The recordings and skipped-question notes above correspond to the test questions, in order. ${recordedCount} of ${questions.length} questions have an audio recording; skipped questions are marked as such and simply provide no evidence for that response.
 Listen to each recording carefully. Evaluate holistically across all 4 IELTS Speaking criteria.
 Pronunciation must be evaluated from the audio signal — not inferred.
 For Lexical Resource (lr), treat the candidate's ability to paraphrase or describe a concept when a precise word is missing (circumlocution) as a positive sign of communicative skill, not a weakness to penalize.
