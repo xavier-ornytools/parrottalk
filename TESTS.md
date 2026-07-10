@@ -30,9 +30,11 @@ la retirer dans une session future, y compris lors d'un reformatage du
   JS autour.
 
 ### Déploiement
-En cours : merge sur `main` et push prévus juste après, puis vérification
-réelle dans le code source de https://www.parrottalk.app une fois Vercel
-redéployé.
+Mergé sur `main` (fast-forward, commit `721c49f`) et poussé sur
+`origin/main`. Vérifié réellement avec `curl https://www.parrottalk.app/`
+juste après déploiement Vercel : la balise est présente dans le HTML brut
+retourné par le serveur (donc visible par un robot sans exécuter de JS),
+avant les deux `<script>`, exactement comme prévu.
 
 ---
 
