@@ -167,9 +167,10 @@ ${essay}
 
 ${wordCount < (minWords || 0) ? `⚠️ Essay is ${(minWords || 0) - wordCount} words short of the minimum.` : ''}
 
-GRADING RULES (apply strictly):
+GRADING RULES (hard numeric caps, not suggestions; apply these strictly regardless of how good the content otherwise is):
 - If the essay does not address the task prompt (off topic, or answers a different question), penalize ${criterion1} heavily, even if the English itself is excellent. A fluent essay on the wrong topic cannot score highly on this criterion.
-- If the response is written as notes, bullet points, or short fragments instead of full paragraphs, penalize both ${criterion1} and Coherence and Cohesion.
+- If the response is written mainly as notes, bullet points, or short fragments instead of full paragraphs, cap both ${criterion1} and Coherence and Cohesion at 5.0 maximum, regardless of content quality.
+- If the essay is severely under length (fewer than 80 percent of the required minimum, i.e. fewer than ${Math.round((minWords || 0) * 0.8)} words for this task), cap ${criterion1} at 5.0 maximum.
 - If the content reads as a memorized or generic answer with no real connection to the specific prompt given, penalize severely.
 
 Return ONLY valid JSON — no markdown:
