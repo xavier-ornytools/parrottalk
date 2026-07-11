@@ -32,7 +32,16 @@ function json(data, status = 200, origin = 'https://parrottalk.app') {
 
 // ── Rate limiting ────────────────────────────────────────────────────────────
 
+// Liste d'IP exemptées du quota quotidien, définie par variable d'environnement
+// Wrangler (EXEMPT_IPS, séparées par des virgules), jamais en dur dans le code.
+// DAILY_LIMIT_PER_IP reste inchangé pour toutes les autres IP.
+function isExemptIp(env, ip) {
+  const list = (env.EXEMPT_IPS || '').split(',').map(s => s.trim()).filter(Boolean);
+  return list.includes(ip);
+}
+
 async function checkRateLimit(env, ip) {
+  if (isExemptIp(env, ip)) return true;
   const today = new Date().toISOString().slice(0, 10);
   const key = `rl:${ip}:${today}`;
   const current = parseInt((await env.RATE_KV.get(key)) || '0');
