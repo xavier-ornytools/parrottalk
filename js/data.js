@@ -30,6 +30,7 @@ const TEST01 = {
       audio: 'audio/test01/section1.mp3',
       type: 'form',
       formTitle: 'THE GRAND MERIDIAN HOTEL — RESERVATION FORM',
+      instructions: 'Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.',
       questions: [
         { n:1,  label:'Guest surname',        answer:'HENDERSON',                    alt:['henderson'] },
         { n:2,  label:'Arrival date',         answer:'14TH',                         alt:['14th','fourteenth','14'] },
@@ -121,6 +122,7 @@ const TEST01 = {
       audio: 'audio/test01/section4.mp3',
       type: 'form',
       formTitle: 'COGNITIVE LOAD THEORY — LECTURE NOTES',
+      instructions: 'Write NO MORE THAN THREE WORDS for each answer.',
       questions: [
         { n:31, label:'Theory founder',                           answer:'SWELLER',              alt:['sweller','john sweller'] },
         { n:32, label:'Decade of development',                    answer:'1980S',                alt:['1980s','1980'] },
@@ -149,6 +151,7 @@ const TEST02 = {
       audio: 'audio/test02/section1.mp3',
       type: 'form',
       formTitle: 'WESTSIDE FITNESS CENTRE — NEW MEMBER FORM',
+      instructions: 'Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.',
       questions: [
         { n:1,  label:'Surname',                 answer:'GRIFFITHS',                  alt:['griffiths'] },
         { n:2,  label:'Date of birth',           answer:'23RD MARCH',                 alt:['23rd march','march 23','23 march'] },
@@ -246,6 +249,7 @@ const TEST02 = {
       audio: 'audio/test02/section4.mp3',
       type: 'form',
       formTitle: 'BEHAVIOURAL ECONOMICS — LECTURE NOTES',
+      instructions: 'Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.',
       questions: [
         { n:31, label:'Combines economics with',                  answer:'PSYCHOLOGY',           alt:['psychology'] },
         { n:32, label:'Classical assumption: humans are',         answer:'RATIONAL',             alt:['rational','perfectly rational'] },
@@ -273,6 +277,7 @@ const TEST03 = {
       title: 'CycleCity — Membership Registration',
       type: 'form',
       formTitle: 'CYCLECITY MEMBERSHIP FORM — Q1–10',
+      instructions: 'Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.',
       script: [
         {t:"Good morning, CycleCity membership, how can I help you today?", r:0.85, p:1.1},
         {t:"Hi there — I'd like to sign up for a bike hire membership, please.", r:0.92, p:0.88},
@@ -422,6 +427,7 @@ const TEST03 = {
       title: 'Lecture — Sleep & Cognitive Performance',
       type: 'form',
       formTitle: 'SLEEP & COGNITIVE PERFORMANCE — LECTURE NOTES',
+      instructions: 'Write NO MORE THAN TWO WORDS for each answer.',
       script: [
         {t:"Good afternoon, and welcome to today's lecture on sleep and cognitive performance.", r:0.85, p:1.0},
         {t:"We all know sleep matters for physical health, but today we focus specifically on its impact on cognitive performance — our ability to think, reason, and remember.", r:0.85, p:1.0},
