@@ -116,6 +116,28 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// Dernier recours avant l'échec complet du parse JSON : le champ transcripts
+// (transcript par question) est le plus long de la réponse, donc le plus
+// exposé à une troncature en pleine génération. On l'excise et on referme
+// l'objet pour récupérer au moins les bands et le transcript unique, plutôt
+// que de tout perdre pour un champ de confort d'affichage. Un candidat ne
+// doit jamais perdre son évaluation à cause du transcript par question.
+function salvageByDroppingTranscripts(rawText) {
+  const idx = rawText.indexOf('"transcripts"');
+  if (idx === -1) return null;
+  const truncated = rawText.slice(0, idx).replace(/,\s*$/, '') + '}';
+  try {
+    return JSON.parse(truncated);
+  } catch {
+    const clean = truncated.replace(/```[\w]*\n?/g, '').replace(/\n?```/g, '').trim();
+    try {
+      return JSON.parse(clean);
+    } catch {
+      return null;
+    }
+  }
+}
+
 // Délais avant chaque nouvelle tentative (2 tentatives supplémentaires au
 // maximum, jamais plus). setTimeout via un await ne consomme aucun temps CPU
 // sur Cloudflare Workers, seule l'exécution JS réelle est comptée dans la
@@ -178,8 +200,14 @@ async function callGemini(env, contents, maxOutputTokens = 1024) {
       if (!match) throw new Error('no JSON object found');
       parsed = JSON.parse(match[0]);
     } catch {
-      console.error('[Gemini parse error] raw text:', text);
-      throw { status: 502, message: 'Could not parse AI response as JSON', retries: retriesUsed };
+      const salvaged = salvageByDroppingTranscripts(clean) || salvageByDroppingTranscripts(text);
+      if (salvaged) {
+        console.warn('[Gemini parse] transcripts excisé, bands et transcript récupérés malgré une réponse tronquée ou malformée');
+        parsed = salvaged;
+      } else {
+        console.error('[Gemini parse error] raw text:', text);
+        throw { status: 502, message: 'Could not parse AI response as JSON', retries: retriesUsed };
+      }
     }
   }
 
@@ -400,9 +428,15 @@ Be realistic. Average test-taker: 5.5–6.5. Band 7+ requires consistent fluency
 
   geminiParts.push({ text: systemPrompt });
 
+  // 16000 tokens : marge confortable (environ 2,3x) sur le besoin réaliste
+  // d'un candidat bavard (10 à 15 min de parole, transcript complet plus
+  // transcript par question plus feedback, environ 6900 tokens au pire cas
+  // estimé), tout en restant loin du plafond du modèle (environ 65000).
+  // L'ancienne valeur de 1500 tronquait la réponse en plein milieu du JSON
+  // dès qu'un candidat parlait un peu, avant même l'ajout de transcripts.
   const { parsed, inputTokens, outputTokens, totalTokens, audioTokens, textTokens } = await callGemini(env, [
     { role: 'user', parts: geminiParts },
-  ], 1500);
+  ], 16000);
 
   // Vérité terrain sur les questions sautées : vient de la construction du
   // prompt (index réellement absents dans la requête), jamais de ce que
@@ -414,10 +448,18 @@ Be realistic. Average test-taker: 5.5–6.5. Band 7+ requires consistent fluency
   // pas exploitable, on la retire pour que le client retombe proprement sur
   // l'ancien bloc transcript unique au lieu d'une page cassée.
   if (isValidTranscriptsArray(parsed.transcripts)) {
-    parsed.transcripts = parsed.transcripts.map(t => ({
-      q: Number(t.q),
-      text: typeof t.text === 'string' ? t.text : '',
-    }));
+    // Filet de sécurité secondaire : une entrée individuelle anormalement
+    // longue (largement au delà d'une réponse Part 2 de 2 minutes) est
+    // tronquée proprement avec une mention explicite, plutôt que de compter
+    // uniquement sur max_output_tokens pour éviter tout débordement.
+    const MAX_TRANSCRIPT_ENTRY_CHARS = 2500;
+    parsed.transcripts = parsed.transcripts.map(t => {
+      let entryText = typeof t.text === 'string' ? t.text : '';
+      if (entryText.length > MAX_TRANSCRIPT_ENTRY_CHARS) {
+        entryText = entryText.slice(0, MAX_TRANSCRIPT_ENTRY_CHARS) + ' [response truncated]';
+      }
+      return { q: Number(t.q), text: entryText };
+    });
   } else {
     delete parsed.transcripts;
   }
