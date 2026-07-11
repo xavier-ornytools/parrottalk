@@ -80,31 +80,83 @@ async function logEvaluation(env, type, bands, durationSeconds, usage) {
   });
 }
 
+// Journal minimal des échecs Gemini (après épuisement des tentatives) : aucun
+// contenu candidat, seulement de quoi diagnostiquer après coup sans dépendre
+// d'une écoute wrangler tail en direct au moment précis de l'incident.
+async function logGeminiFailure(env, endpoint, status, message, retries) {
+  const key = `error:${Date.now()}`;
+  await env.RATE_KV.put(key, JSON.stringify({
+    ts: Date.now(),
+    endpoint,
+    status,
+    message: (message || '').slice(0, 200),
+    retries: retries || 0,
+  }), {
+    expirationTtl: 7776000, // 90 jours, cohérent avec logEvaluation
+  });
+
+  const day = new Date().toISOString().slice(0, 10);
+  const counterKey = `errors:${day}`;
+  const current = parseInt((await env.RATE_KV.get(counterKey)) || '0');
+  await env.RATE_KV.put(counterKey, String(current + 1), { expirationTtl: 172800 }); // 2 jours
+}
+
 // ── Gemini call ───────────────────────────────────────────────────────────────
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Délais avant chaque nouvelle tentative (2 tentatives supplémentaires au
+// maximum, jamais plus). setTimeout via un await ne consomme aucun temps CPU
+// sur Cloudflare Workers, seule l'exécution JS réelle est comptée dans la
+// limite du plan : ces attentes n'ont donc pas d'impact sur le quota CPU.
+// Pire cas ajouté en temps d'horloge : 2s + 5s = 7s, uniquement quand Gemini
+// est réellement en échec, jamais sur le chemin nominal.
+const GEMINI_RETRY_DELAYS_MS = [2000, 5000];
+
 async function callGemini(env, contents, maxOutputTokens = 1024) {
-  const res = await fetch(`${GEMINI_URL}?key=${env.GEMINI_API_KEY}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents,
-      generationConfig: {
-        temperature: 0.3,
-        maxOutputTokens,
-        responseMimeType: 'application/json',
-        thinkingConfig: { thinkingBudget: 0 },
-      },
-    }),
+  const body = JSON.stringify({
+    contents,
+    generationConfig: {
+      temperature: 0.3,
+      maxOutputTokens,
+      responseMimeType: 'application/json',
+      thinkingConfig: { thinkingBudget: 0 },
+    },
   });
-  if (!res.ok) {
-    const err = await res.text();
-    throw { status: res.status, message: err };
+
+  let res;
+  let retriesUsed = 0;
+  for (let attempt = 0; attempt <= GEMINI_RETRY_DELAYS_MS.length; attempt++) {
+    res = await fetch(`${GEMINI_URL}?key=${env.GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body,
+    });
+    if (res.ok) break;
+
+    // On ne retente jamais sur un 4xx autre que 429 (requête malformée, clé
+    // API invalide, quota Gemini définitivement dépassé...) : ces cas ne se
+    // corrigent pas en réessayant. Seuls 503 (surcharge) et 429 (rate limit
+    // Gemini, distinct de nos propres quotas internes) sont retentés.
+    const retryable = res.status === 503 || res.status === 429;
+    const hasDelayLeft = attempt < GEMINI_RETRY_DELAYS_MS.length;
+    if (!retryable || !hasDelayLeft) {
+      const err = await res.text();
+      throw { status: res.status, message: err, retries: retriesUsed };
+    }
+
+    retriesUsed++;
+    console.warn(`[callGemini] statut ${res.status} de Gemini, nouvelle tentative ${retriesUsed} dans ${GEMINI_RETRY_DELAYS_MS[attempt]} ms`);
+    await sleep(GEMINI_RETRY_DELAYS_MS[attempt]);
   }
+
   const data = await res.json();
   // Skip thinking parts (gemini-2.5-flash thinking mode) — keep only output text
   const parts = data?.candidates?.[0]?.content?.parts ?? [];
   const text = parts.filter(p => !p.thought).map(p => p.text || '').join('');
-  if (!text) throw { status: 502, message: 'Empty response from Gemini' };
+  if (!text) throw { status: 502, message: 'Empty response from Gemini', retries: retriesUsed };
 
   let parsed;
   try {
@@ -118,7 +170,7 @@ async function callGemini(env, contents, maxOutputTokens = 1024) {
       parsed = JSON.parse(match[0]);
     } catch {
       console.error('[Gemini parse error] raw text:', text);
-      throw { status: 502, message: 'Could not parse AI response as JSON' };
+      throw { status: 502, message: 'Could not parse AI response as JSON', retries: retriesUsed };
     }
   }
 
@@ -383,6 +435,9 @@ async function handleStats(env, origin) {
   const current = parseFloat((await env.RATE_KV.get(`budget:${month}`)) || '0');
   const limit = parseFloat(env.MONTHLY_BUDGET_EUR || '50');
 
+  const today = new Date().toISOString().slice(0, 10);
+  const geminiErrorsToday = parseInt((await env.RATE_KV.get(`errors:${today}`)) || '0');
+
   const listed = await env.RATE_KV.list({ prefix: 'log:' });
   const thisMonthTs = new Date(month + '-01').getTime();
   let writingCount = 0;
@@ -441,6 +496,7 @@ async function handleStats(env, origin) {
     budget_limit_eur: limit,
     budget_pct: parseFloat(((current / limit) * 100).toFixed(1)),
     alert: current >= limit * 0.8,
+    gemini_errors_today: geminiErrorsToday,
     evaluations: { writing: writingCount, speaking: speakingCount, total: writingCount + speakingCount },
     tokens: {
       prompt:     totalPromptTokens,
@@ -494,6 +550,9 @@ export default {
       const status = err.status || 500;
       const message = typeof err.message === 'string' ? err.message : 'Internal error';
       console.error('[Worker error]', status, message);
+      if (url.pathname === '/evaluate/writing' || url.pathname === '/evaluate/speaking') {
+        await logGeminiFailure(env, url.pathname, status, message, err.retries);
+      }
       return json({ error: message }, status, origin);
     }
   },
