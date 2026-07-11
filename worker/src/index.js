@@ -321,6 +321,15 @@ Be realistic. An average test-taker scores 5.5–6.5.`;
   return json(parsed, 200, origin);
 }
 
+// Validation minimale du tableau transcripts renvoyé par Gemini : si la forme
+// n'est pas exploitable, le client retombe sur l'ancien bloc transcript
+// unique plutôt que d'afficher une page cassée.
+function isValidTranscriptsArray(transcripts) {
+  return Array.isArray(transcripts) && transcripts.every(t =>
+    t && typeof t === 'object' && Number.isFinite(Number(t.q))
+  );
+}
+
 // ── /evaluate/speaking ────────────────────────────────────────────────────────
 
 async function handleSpeaking(req, env, origin) {
@@ -335,12 +344,14 @@ async function handleSpeaking(req, env, origin) {
   // Une question sans enregistrement est marquée comme sautée dans le prompt
   // Gemini, au lieu d'être silencieusement omise.
   const geminiParts = [];
+  const skippedQuestions = []; // numéros 1-indexés, pour affichage direct au candidat
   let totalDurationSeconds = 0;
   let recordedCount = 0;
   for (let i = 0; i < questions.length; i++) {
     const questionText = questions[i] || `Question ${i + 1}`;
     const audioFile = formData.get(`audio_${i}`);
     if (!audioFile) {
+      skippedQuestions.push(i + 1);
       geminiParts.push({ text: `Question ${i + 1} (${questionText}): skipped by candidate, no recording provided.` });
       continue;
     }
@@ -368,6 +379,7 @@ The recordings and skipped-question notes above correspond to the test questions
 Listen to each recording carefully. Evaluate holistically across all 4 IELTS Speaking criteria.
 Pronunciation must be evaluated from the audio signal — not inferred.
 For Lexical Resource (lr), treat the candidate's ability to paraphrase or describe a concept when a precise word is missing (circumlocution) as a positive sign of communicative skill, not a weakness to penalize.
+In addition to the full transcript field below, also break it down per question in the transcripts array: one entry per question that actually has an audio recording above, in the same order, with q as the question number shown in the Recording labels and text as that question's individual transcript only. Do not include an entry for a skipped question.
 
 Return ONLY valid JSON:
 {
@@ -377,6 +389,7 @@ Return ONLY valid JSON:
   "pron": <number 0-9, halves allowed>,
   "overall": <average of all 4, rounded to nearest 0.5>,
   "transcript": "Verbatim or close-verbatim transcript of the candidate's full speech, all parts concatenated.",
+  "transcripts": [{ "q": 1, "text": "individual transcript for this question only" }],
   "summary": "2-sentence holistic assessment. AI estimate — may vary from official scores by ±0.5–1 band.",
   "strengths": ["strength 1", "strength 2"],
   "toFix":    ["weakness 1", "weakness 2", "weakness 3"],
@@ -390,6 +403,24 @@ Be realistic. Average test-taker: 5.5–6.5. Band 7+ requires consistent fluency
   const { parsed, inputTokens, outputTokens, totalTokens, audioTokens, textTokens } = await callGemini(env, [
     { role: 'user', parts: geminiParts },
   ], 1500);
+
+  // Vérité terrain sur les questions sautées : vient de la construction du
+  // prompt (index réellement absents dans la requête), jamais de ce que
+  // Gemini déclare, pour que l'affichage reste fiable même si le modèle se
+  // trompe sur ce point précis.
+  parsed.skippedQuestions = skippedQuestions;
+
+  // Transcript structuré par question : si la forme renvoyée par Gemini n'est
+  // pas exploitable, on la retire pour que le client retombe proprement sur
+  // l'ancien bloc transcript unique au lieu d'une page cassée.
+  if (isValidTranscriptsArray(parsed.transcripts)) {
+    parsed.transcripts = parsed.transcripts.map(t => ({
+      q: Number(t.q),
+      text: typeof t.text === 'string' ? t.text : '',
+    }));
+  } else {
+    delete parsed.transcripts;
+  }
 
   // Chaque critère est clampé individuellement, puis "overall" est recalculé
   // à partir des 4 valeurs déjà clampées (pas de la valeur brute renvoyée par

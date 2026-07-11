@@ -910,6 +910,48 @@ function clampBand(x) {
   return Math.min(9, Math.max(0, Math.round(n * 2) / 2));
 }
 
+// Restitution question par question. skippedQuestions vient du Worker (index
+// réellement absents au moment de l'envoi), jamais de ce que Gemini déclare
+// dans transcripts, pour que l'affichage des sauts reste fiable même si le
+// modèle se trompe. Si transcripts n'est pas exploitable (absent ou vide,
+// déjà filtré côté Worker en cas de forme invalide), on retombe sur l'ancien
+// bloc transcript unique.
+function buildTranscriptSection(data, testId) {
+  const skipped = Array.isArray(data.skippedQuestions) ? data.skippedQuestions : [];
+  const skippedSet = new Set(skipped);
+  const skippedNoteHTML = skipped.length
+    ? `<p style="font-size:.8125rem;color:var(--danger);margin-bottom:8px"><strong>Questions skipped:</strong> ${skipped.join(', ')}. The band above takes these missing responses into account.</p>`
+    : '';
+
+  const hasStructured = Array.isArray(data.transcripts) && data.transcripts.length > 0;
+  if (!hasStructured) {
+    const fallback = data.transcript
+      ? `<details style="margin-top:12px"><summary style="font-size:.8125rem;color:var(--text-muted);cursor:pointer">What the AI heard (transcript)</summary><p style="font-size:.8125rem;color:var(--text);margin-top:8px;padding:10px;background:var(--bg-alt);border-radius:var(--r);line-height:1.6">${data.transcript}</p></details>`
+      : '';
+    return skippedNoteHTML + fallback;
+  }
+
+  const allQs = getAllQuestions(testId);
+  const byQ = {};
+  data.transcripts.forEach(t => { byQ[t.q] = t.text; });
+
+  const rowsHTML = allQs.map((q, i) => {
+    const qNum = i + 1;
+    const isSkipped = skippedSet.has(qNum);
+    const text = isSkipped
+      ? '<em style="color:var(--danger)">Question skipped</em>'
+      : (byQ[qNum] || '<em style="color:var(--text-muted)">(no transcript provided)</em>');
+    return `
+      <div style="padding:8px 0;border-bottom:1px solid var(--border-light)">
+        <div style="font-size:.75rem;font-weight:700;color:var(--text-muted);margin-bottom:2px">Question ${qNum}</div>
+        <div style="font-size:.8125rem;color:var(--text);margin-bottom:4px">${escQ(q.question)}</div>
+        <div style="font-size:.8125rem;color:var(--text)">${text}</div>
+      </div>`;
+  }).join('');
+
+  return `${skippedNoteHTML}<details style="margin-top:12px" open><summary style="font-size:.8125rem;color:var(--text-muted);cursor:pointer">What the AI heard, question by question</summary><div style="margin-top:8px">${rowsHTML}</div></details>`;
+}
+
 function renderSpeakingFeedback(data, testId) {
   const displayOverall = clampBand(data.overall);
   const criteriaHTML = [
@@ -951,7 +993,7 @@ function renderSpeakingFeedback(data, testId) {
         </div>
       </div>
       ${data.topTip?`<div style="padding:12px 14px;background:var(--warning-light);border-radius:var(--r);font-size:.875rem;color:#92400E"><strong>💡 Top tip:</strong> ${data.topTip}</div>`:''}
-      ${data.transcript?`<details style="margin-top:12px"><summary style="font-size:.8125rem;color:var(--text-muted);cursor:pointer">What the AI heard (transcript)</summary><p style="font-size:.8125rem;color:var(--text);margin-top:8px;padding:10px;background:var(--bg-alt);border-radius:var(--r);line-height:1.6">${data.transcript}</p></details>`:''}
+      ${buildTranscriptSection(data, testId)}
       <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <button class="btn" onclick="selectTest(${testId})">🔄 Redo Test 0${testId}</button>
         <a href="dashboard.html" class="btn btn-primary">View Dashboard →</a>
