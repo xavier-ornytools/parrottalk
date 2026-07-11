@@ -43,6 +43,9 @@
 | 2.7 | Section 1 dans le tableau résultats affiche "X/10", les autres affichent "—" | | |
 | 2.8 | Recharger → faire Sections 1+2 → soumettre → "2/4 sections" dans le warning | | |
 | 2.9 | Faire les 4 sections → soumettre → **Band normale sans ⚠️ warning** | | |
+| 2.10 | Cliquer Start → badge minuteur **32:00** visible à côté des onglets de section *(nouveau, L5)* | | |
+| 2.11 | Laisser le minuteur descendre sous 10:00 → badge passe en couleur alerte | | |
+| 2.12 | Laisser expirer le minuteur (ou tester avec `?timer=60` dans l'URL) → soumission automatique, même si l'audio est en train de jouer | | |
 
 ---
 
@@ -157,6 +160,6 @@
 
 ---
 
-**Total testé :** _____ / 57  
+**Total testé :** _____ / 60  
 **Bugs critiques :** _____  
 **Commentaire général :**
