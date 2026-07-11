@@ -190,6 +190,38 @@ Be realistic. An average test-taker scores 5.5–6.5.`;
     { role: 'user', parts: [{ text: userPrompt }] },
   ], 1024);
 
+  // Plafonds appliqués en code, pas seulement demandés au prompt : un test réel
+  // a montré que Gemini peut écrire dans son commentaire que le plafond est
+  // appliqué tout en renvoyant un chiffre qui l'ignore. Même philosophie que
+  // clampBand : une règle qui doit être absolue ne peut pas dépendre de
+  // l'obéissance du modèle aux instructions du prompt.
+  const essayWordCount = essay.trim() ? essay.trim().split(/\s+/).length : 0;
+  const underLengthThreshold = Math.round((minWords || 0) * 0.8);
+  const isSeverelyUnderLength = essayWordCount < underLengthThreshold;
+
+  const nonEmptyLines = essay.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  const bulletLines = nonEmptyLines.filter(l => /^([-*•]|\d+[.)])\s/.test(l));
+  const isBulletFormat = nonEmptyLines.length > 0 && (bulletLines.length / nonEmptyLines.length) > 0.5;
+
+  const capsApplied = [];
+  if (isSeverelyUnderLength) capsApplied.push('under_length');
+  if (isBulletFormat) capsApplied.push('bullet_format');
+
+  if ((isSeverelyUnderLength || isBulletFormat) && parsed[criterion1key]) {
+    const rawTaskBand = parseFloat(parsed[criterion1key].band);
+    if (Number.isFinite(rawTaskBand)) parsed[criterion1key].band = Math.min(5.0, rawTaskBand);
+  }
+  if (isBulletFormat && parsed.coherence) {
+    const rawCoherenceBand = parseFloat(parsed.coherence.band);
+    if (Number.isFinite(rawCoherenceBand)) parsed.coherence.band = Math.min(5.0, rawCoherenceBand);
+  }
+  if (capsApplied.length > 0) {
+    const rawOverallBand = parseFloat(parsed.band);
+    if (Number.isFinite(rawOverallBand)) parsed.band = Math.min(5.0, rawOverallBand);
+    parsed.capsApplied = capsApplied;
+    console.warn('[caps] plafond Writing appliqué en code', { task, capsApplied, essayWordCount, underLengthThreshold });
+  }
+
   parsed.band = clampBand(parsed.band);
   if (parsed.band === null) {
     parsed.bandError = 'AI returned an invalid band value.';

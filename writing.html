@@ -444,13 +444,29 @@ function renderAIFeedback(box, data, task, promptText) {
   const criteriaNames = task === 1
     ? ['Task Achievement','Coherence & Cohesion','Lexical Resource','Grammatical Range and Accuracy']
     : ['Task Response','Coherence & Cohesion','Lexical Resource','Grammatical Range and Accuracy'];
+  // Notes de plafond : capsApplied vient du Worker (plafond appliqué en
+  // code, pas seulement demandé au prompt). "under_length" ne concerne que
+  // le critère de tâche (Task Achievement/Response) ; "bullet_format"
+  // concerne à la fois ce critère et Coherence and Cohesion.
+  const capsApplied = data.capsApplied || [];
+  const capMessages = {
+    under_length: 'Score capped at 5.0: response significantly under minimum length',
+    bullet_format: 'Score capped at 5.0: response written as notes instead of paragraphs',
+  };
   const itemsHTML = criteriaKey.map((k,i) => {
     const critBand = clampBand(data[k]?.band);
+    const appliesTo = k === criteriaKey[0] ? capsApplied
+      : k === 'coherence' ? capsApplied.filter(c => c === 'bullet_format')
+      : [];
+    const capNoteHTML = appliesTo.length
+      ? `<div class="criteria-cap-note" style="margin-top:6px;font-size:.75rem;font-weight:700;color:var(--danger)">${appliesTo.map(c => capMessages[c] || '').join(' · ')}</div>`
+      : '';
     return `
     <div class="criteria-item">
       <div class="criteria-band">${critBand ?? '—'}</div>
       <div class="criteria-name">${criteriaNames[i]}</div>
       <div class="criteria-text">${data[k]?.comment || ''}</div>
+      ${capNoteHTML}
     </div>`;
   }).join('');
   const promptExcerpt = promptText ? promptText.trim().slice(0, 100) + (promptText.trim().length > 100 ? '…' : '') : '';
