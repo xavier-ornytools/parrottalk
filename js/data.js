@@ -268,6 +268,9 @@ const TEST02 = {
 
 // ── TEST 03 DATA — TTS (SpeechSynthesis, no MP3 required) ────────────────────
 // script[] = [{t:'text', r:rate, p:pitch}]  r=0.85 staff/lecturer  r=0.92 student
+// lang = accent de la section (comme le vrai IELTS, qui mélange les accents
+// entre sections). Repli automatique sur en-GB si la voix n'existe pas sur la
+// machine du candidat, voir resolveAccent() dans listening.html.
 const TEST03 = {
   id: 'test03',
   title: 'Listening Test 03',
@@ -276,6 +279,7 @@ const TEST03 = {
       number: 1,
       title: 'CycleCity — Membership Registration',
       type: 'form',
+      lang: 'en-GB',
       formTitle: 'CYCLECITY MEMBERSHIP FORM — Q1–10',
       instructions: 'Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.',
       script: [
@@ -319,6 +323,7 @@ const TEST03 = {
       number: 2,
       title: 'Westfield Library — Orientation & Services',
       type: 'mixed',
+      lang: 'en-AU',
       script: [
         {t:"Welcome to Westfield Public Library. I'm going to give you a quick tour and explain how everything works.", r:0.85, p:1.05},
         {t:"If you look at the map you've been given, you'll see areas labelled A to H. Let me tell you where the key facilities are.", r:0.85, p:1.05},
@@ -368,6 +373,7 @@ const TEST03 = {
       number: 3,
       title: 'Environmental Science — Research Discussion',
       type: 'mixed',
+      lang: 'en-US',
       script: [
         {t:"Right, Sarah, Marcus — let's check in on where you are with the research project. What's the focus again?", r:0.85, p:1.0},
         {t:"We're researching Arctic ice coverage — specifically how the rate of decline has accelerated over the past thirty years.", r:0.9, p:1.15},
@@ -426,6 +432,7 @@ const TEST03 = {
       number: 4,
       title: 'Lecture — Sleep & Cognitive Performance',
       type: 'form',
+      lang: 'en-GB',
       formTitle: 'SLEEP & COGNITIVE PERFORMANCE — LECTURE NOTES',
       instructions: 'Write NO MORE THAN TWO WORDS for each answer.',
       script: [

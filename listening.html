@@ -438,17 +438,50 @@ function isTTS(sec) { return Array.isArray(sec.script); }
 
 // ── TTS state ────────────────────────────────────────────────────────────────
 let ttsQueue = [], ttsIdx = 0, ttsSpeaking = false;
+let activeAccentLang = 'en-GB', activeAccentVoice = null;
+let playToken = 0;
 
 function cancelTTS() {
   speechSynthesis.cancel();
   ttsQueue = []; ttsIdx = 0; ttsSpeaking = false;
+  playToken++;
+}
+
+// Les voix disponibles dépendent de la machine du candidat (OS, navigateur) et
+// se chargent parfois de façon asynchrone (voiceschanged), d'où le cache et le
+// filet de sécurité à 1s si l'événement ne se déclenche jamais.
+let voicesCache = null;
+function getVoicesAsync() {
+  if (voicesCache) return Promise.resolve(voicesCache);
+  return new Promise(resolve => {
+    const v = speechSynthesis.getVoices();
+    if (v.length) { voicesCache = v; resolve(v); return; }
+    speechSynthesis.addEventListener('voiceschanged', () => {
+      voicesCache = speechSynthesis.getVoices();
+      resolve(voicesCache);
+    }, { once: true });
+    setTimeout(() => { voicesCache = speechSynthesis.getVoices(); resolve(voicesCache); }, 1000);
+  });
+}
+
+// Repli propre sur en-GB si l'accent demandé pour la section (en-AU, en-US...)
+// n'a aucune voix installée sur la machine du candidat.
+function resolveAccent(voices, wantedLang) {
+  const norm = l => (l || '').replace('_', '-').toLowerCase();
+  const target = norm(wantedLang);
+  const match = voices.find(v => norm(v.lang) === target);
+  if (match) return { lang: wantedLang, voice: match };
+  const gb = voices.find(v => norm(v.lang) === 'en-gb');
+  return { lang: 'en-GB', voice: gb || null };
 }
 
 function speakNext(total) {
   if (ttsIdx >= ttsQueue.length) return;
   const line = ttsQueue[ttsIdx];
   const u = new SpeechSynthesisUtterance(line.t);
-  u.lang = 'en-GB'; u.rate = line.r || 0.88; u.pitch = line.p || 1.0;
+  u.lang = activeAccentLang;
+  if (activeAccentVoice) u.voice = activeAccentVoice;
+  u.rate = line.r || 0.88; u.pitch = line.p || 1.0;
   u.onend = () => {
     ttsIdx++;
     const pct = Math.round((ttsIdx / total) * 100);
@@ -567,6 +600,7 @@ function togglePlay() {
       speechSynthesis.resume(); setPlayIcon(true); ttsSpeaking = true;
     } else {
       cancelTTS();
+      const token = playToken;
       playingSection = currentSection;
       ttsQueue = sec.script; ttsIdx = 0; ttsSpeaking = true;
       setPlayIcon(true);
@@ -574,7 +608,13 @@ function togglePlay() {
       const fill = document.getElementById('progress-fill');
       if (disp) disp.textContent = '1/' + sec.script.length;
       if (fill) fill.style.width = '2%';
-      speakNext(sec.script.length);
+      getVoicesAsync().then(voices => {
+        if (token !== playToken) return; // section changée pendant la résolution des voix
+        const resolved = resolveAccent(voices, sec.lang || 'en-GB');
+        activeAccentLang = resolved.lang;
+        activeAccentVoice = resolved.voice;
+        speakNext(sec.script.length);
+      });
     }
     return;
   }
