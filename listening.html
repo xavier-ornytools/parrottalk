@@ -208,8 +208,18 @@
         <p style="color:var(--text)">After all 4 sections, click <strong>Submit & Score</strong></p>
       </div>
     </div>
-    <div class="card card-sm" style="background:var(--warning-light);border-color:var(--warning);margin-bottom:20px">
+    <div class="card card-sm" id="mode-banner-exam" style="background:var(--warning-light);border-color:var(--warning);margin-bottom:12px">
       <p style="color:#92400E;font-size:.875rem">⚠️ Real IELTS conditions: one listen only, no pausing. Challenge yourself!</p>
+    </div>
+    <div class="card card-sm hidden" id="mode-banner-practice" style="background:var(--primary-pale);border-color:var(--primary);margin-bottom:12px">
+      <p style="font-size:.875rem">🔓 Practice mode active: replay allowed, this is not exam conditions. Your score will not be comparable to a real test.</p>
+    </div>
+    <div class="card card-sm" style="margin-bottom:20px">
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:.875rem">
+        <input type="checkbox" id="practice-mode-toggle" onchange="onModeToggleChange()">
+        <span>Practice mode: replay allowed, not exam conditions</span>
+      </label>
+      <p id="mode-lock-note" class="hidden" style="font-size:.75rem;color:var(--text-muted);margin-top:6px">🔒 Mode locked, this test is already in progress. Submit or clear it to change mode.</p>
     </div>
     <button class="btn btn-primary btn-lg" onclick="startTest()">▶ Start Test</button>
   </div>
@@ -297,6 +307,12 @@ let savedAnswers = {};
 let submitted = false;
 let isPlaying = false;
 let timerInterval = null;
+// Mode examen (par défaut) : un seul lancement par section, ni pause ni
+// retour arrière, comme le vrai IELTS. Mode practice : comportement libre
+// (pause/reprise/seek), choisi UNIQUEMENT avant "Start Test" et verrouillé
+// pour la durée de la tentative (voir setupModeToggle/startTest).
+let examMode = true;
+let sectionsPlayed = [false,false,false,false];
 // 32 min = 30 min d'épreuve + 2 min de vérification (comme le vrai IELTS
 // Listening version ordinateur). ?timer=N (secondes) réservé au test, pour
 // vérifier l'expiration sans attendre 32 minutes ; ignoré si absent/invalide.
@@ -345,6 +361,46 @@ function selectTest(id) {
   document.getElementById('instructions-card').classList.remove('hidden');
   document.getElementById('test-zone').classList.add('hidden');
   submitted = false;
+  setupModeToggle(id);
+}
+
+// Le mode (examen/practice) ne se choisit qu'ici, avant "Start Test". Si le
+// test a déjà une progression sauvegardée, le mode est verrouillé sur celui
+// choisi au départ (sinon la contrainte "usage unique" ne vaudrait rien : il
+// suffirait de rebasculer en practice en cours de route pour débloquer le
+// replay).
+function setupModeToggle(id) {
+  const saved = loadProgress('listening', id);
+  const toggle = document.getElementById('practice-mode-toggle');
+  const lockNote = document.getElementById('mode-lock-note');
+  if (saved) {
+    const savedExam = saved.examMode !== undefined ? saved.examMode : false;
+    toggle.checked = !savedExam;
+    toggle.disabled = true;
+    lockNote.classList.remove('hidden');
+  } else {
+    toggle.checked = false;
+    toggle.disabled = false;
+    lockNote.classList.add('hidden');
+  }
+  onModeToggleChange();
+}
+
+function onModeToggleChange() {
+  const practice = document.getElementById('practice-mode-toggle').checked;
+  document.getElementById('mode-banner-exam').classList.toggle('hidden', practice);
+  document.getElementById('mode-banner-practice').classList.toggle('hidden', !practice);
+}
+
+// Sauvegarde immédiate de currentSection/sectionsDone/sectionScores/answers
+// ET du mode/des sections déjà jouées, pour que le mode reste verrouillé et
+// qu'une section déjà écoutée ne redevienne pas rejouable après un simple
+// rechargement de page.
+function persistProgress(nextSection) {
+  saveProgress('listening', currentTest.id, {
+    currentSection: nextSection !== undefined ? nextSection : currentSection,
+    sectionsDone, sectionScores, answers: savedAnswers, examMode, sectionsPlayed,
+  });
 }
 
 function startTest() {
@@ -357,12 +413,17 @@ function startTest() {
     sectionsDone = saved.sectionsDone || [false,false,false,false];
     sectionScores = saved.sectionScores || [0,0,0,0];
     savedAnswers = saved.answers || {};
+    examMode = saved.examMode !== undefined ? saved.examMode : false;
+    sectionsPlayed = saved.sectionsPlayed || [false,false,false,false];
   } else {
     currentSection = 0;
     sectionsDone = [false,false,false,false];
     sectionScores = [0,0,0,0];
     savedAnswers = {};
+    examMode = !document.getElementById('practice-mode-toggle').checked;
+    sectionsPlayed = [false,false,false,false];
   }
+  persistProgress();
   buildTabs();
   renderSection(currentSection);
   updateSubmitVisibility();
@@ -551,9 +612,7 @@ function finishSection() {
   // (pas celle qu'on vient de finir), pour qu'un rechargement reprenne au
   // bon endroit et non sur une section déjà validée.
   const nextSection = si < currentTest.sections.length - 1 ? si + 1 : si;
-  saveProgress('listening', currentTest.id, {
-    currentSection: nextSection, sectionsDone, sectionScores, answers: savedAnswers,
-  });
+  persistProgress(nextSection);
   if (si < currentTest.sections.length - 1) {
     switchSection(si + 1);
   } else {
@@ -591,30 +650,59 @@ function restoreSectionAnswers(sec, i) {
   }
 }
 
+// Lance la file TTS depuis le début, identique en mode examen et en mode
+// practice, seule la réaction aux clics suivants diffère (voir togglePlay).
+function startTTSPlayback(sec) {
+  cancelTTS();
+  const token = playToken;
+  playingSection = currentSection;
+  ttsQueue = sec.script; ttsIdx = 0; ttsSpeaking = true;
+  setPlayIcon(true);
+  const disp = document.getElementById('time-display');
+  const fill = document.getElementById('progress-fill');
+  if (disp) disp.textContent = '1/' + sec.script.length;
+  if (fill) fill.style.width = '2%';
+  getVoicesAsync().then(voices => {
+    if (token !== playToken) return; // section changée pendant la résolution des voix
+    const resolved = resolveAccent(voices, sec.lang || 'en-GB');
+    activeAccentLang = resolved.lang;
+    activeAccentVoice = resolved.voice;
+    speakNext(sec.script.length);
+  });
+}
+
 function togglePlay() {
   const sec = currentTest.sections[currentSection];
+
+  // Mode examen : un seul lancement par section, ni pause ni reprise. Le
+  // bouton est normalement désactivé une fois joué (updatePlayButtonState),
+  // ces gardes sont un filet de sécurité si l'appel arrive quand même.
+  if (examMode) {
+    if (sectionsPlayed[currentSection]) return;
+    if (isTTS(sec)) {
+      if (ttsSpeaking) return;
+      startTTSPlayback(sec);
+    } else {
+      if (isPlaying) return;
+      const expected = sec.audio;
+      if (!audio.src.endsWith(expected)) { audio.src = expected; }
+      playingSection = currentSection;
+      audio.play(); setPlayIcon(true);
+    }
+    sectionsPlayed[currentSection] = true;
+    persistProgress();
+    updatePlayButtonState();
+    return;
+  }
+
+  // Mode practice : comportement libre (pause/reprise), inchangé.
   if (isTTS(sec)) {
     if (ttsSpeaking && !speechSynthesis.paused) {
       speechSynthesis.pause(); setPlayIcon(false); ttsSpeaking = false;
     } else if (speechSynthesis.paused && ttsQueue.length > 0) {
       speechSynthesis.resume(); setPlayIcon(true); ttsSpeaking = true;
     } else {
-      cancelTTS();
-      const token = playToken;
-      playingSection = currentSection;
-      ttsQueue = sec.script; ttsIdx = 0; ttsSpeaking = true;
-      setPlayIcon(true);
-      const disp = document.getElementById('time-display');
-      const fill = document.getElementById('progress-fill');
-      if (disp) disp.textContent = '1/' + sec.script.length;
-      if (fill) fill.style.width = '2%';
-      getVoicesAsync().then(voices => {
-        if (token !== playToken) return; // section changée pendant la résolution des voix
-        const resolved = resolveAccent(voices, sec.lang || 'en-GB');
-        activeAccentLang = resolved.lang;
-        activeAccentVoice = resolved.voice;
-        speakNext(sec.script.length);
-      });
+      startTTSPlayback(sec);
     }
     return;
   }
@@ -638,7 +726,8 @@ audio.addEventListener('ended', () => {
 
 function seekAudio(e, el) {
   const sec = currentTest.sections[currentSection];
-  if (isTTS(sec) || !audio.duration) return;
+  // Mode examen : la barre de progression informe, elle ne pilote plus.
+  if (examMode || isTTS(sec) || !audio.duration) return;
   const rect = el.getBoundingClientRect();
   audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
 }
@@ -666,6 +755,18 @@ function renderSection(i) {
     block.classList.add('active');
   }
   updateFinishButton(i);
+  updatePlayButtonState();
+}
+
+// Mode examen : le bouton Play est désactivé dès qu'une section a été jouée
+// une fois (usage unique), et la barre de progression perd son curseur
+// cliquable. Mode practice : toujours actif, comportement libre.
+function updatePlayButtonState() {
+  const btn = document.getElementById('play-btn');
+  const bar = document.getElementById('progress-bar');
+  const used = examMode && sectionsPlayed[currentSection];
+  if (btn) btn.disabled = used;
+  if (bar) bar.classList.toggle('no-seek', examMode);
 }
 
 function buildSectionHTML(sec) {
