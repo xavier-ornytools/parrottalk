@@ -297,6 +297,7 @@
 <div class="toast-container" id="toast-container"></div>
 
 <script src="js/data.js"></script>
+<script src="js/feedback-gate.js"></script>
 <script>
 const WRITING_DATA = {
   1: {
@@ -352,6 +353,7 @@ function startWritingTest(resume = false) {
     document.getElementById('task1-answer').value = '';
     document.getElementById('task2-answer').value = '';
     clearDraft();
+    clearWritingFeedback();
   }
   updateWordCount('task1-answer','wc1',150);
   updateWordCount('task2-answer','wc2',250);
@@ -475,22 +477,63 @@ function renderAIFeedback(box, data, task, promptText) {
   }).join('');
   const promptExcerpt = promptText ? promptText.trim().slice(0, 100) + (promptText.trim().length > 100 ? '…' : '') : '';
   const displayBand = clampBand(data.band);
-  box.innerHTML = `<div class="ai-feedback">
+
+  // Le band de la tâche (hero) reste toujours visible et exact : démo produit.
+  // Le détail par critère, le sujet évalué, le résumé et le conseil passent
+  // derrière le micro-feedback (FeedbackGate).
+  const heroHTML = `
+    <div class="card card-sm fb-hero">
+      <div class="fb-hero__label">✍️ Writing Task ${task} — Estimated Band</div>
+      <div class="fb-hero__band">${displayBand ?? '—'}</div>
+      <div class="fb-hero__note">AI estimate — your free instant result.</div>
+    </div>`;
+
+  const detailHTML = `<div class="ai-feedback" style="margin-top:16px">
     <div class="ai-feedback__header">
       <div class="ai-badge">🤖 AI Analysis — ✍️ Writing Task ${task}</div>
-      <h4 style="font-size:1rem">Estimated Band: <span style="color:var(--primary);font-size:1.25rem;font-weight:800">${displayBand ?? '—'}</span></h4>
     </div>
     ${promptExcerpt ? `<p style="font-size:.8125rem;color:var(--text-secondary,#64748B);margin-bottom:10px;font-style:italic">📋 Sujet évalué : "${promptExcerpt}"</p>` : ''}
     ${data.summary ? `<p style="font-size:.9375rem;color:var(--text);margin-bottom:12px">${data.summary}</p>` : ''}
     <div class="criteria-grid">${itemsHTML}</div>
     ${data.topTip ? `<div style="margin-top:12px;padding:12px 14px;background:var(--warning-light);border-radius:var(--r);font-size:.875rem;color:#92400E"><strong>💡 Top tip:</strong> ${data.topTip}</div>` : ''}
   </div>`;
+
+  FeedbackGate.render(box, { type: 'writing', testId: currentWritingTest, band: displayBand, heroHTML, detailHTML });
+
   if (displayBand !== null) {
     const testKey = `test${String(currentWritingTest).padStart(2,'0')}-task${task}`;
     const wScores = JSON.parse(localStorage.getItem('ielts_writing_scores') || '{}');
     wScores[testKey] = { band: displayBand, task, testId: currentWritingTest, date: new Date().toLocaleDateString('fr-FR') };
     localStorage.setItem('ielts_writing_scores', JSON.stringify(wScores));
   }
+  saveWritingFeedback(task, data, promptText);
+}
+
+// Persistance des résultats IA pour les retrouver débloqués après un
+// rechargement (pas les questions). Stockés par test et par tâche, localement.
+function saveWritingFeedback(task, data, promptText) {
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem('ielts_writing_feedback') || '{}'); } catch (e) { saved = {}; }
+  if (saved.testId !== currentWritingTest) saved = { testId: currentWritingTest, tasks: {} };
+  if (!saved.tasks) saved.tasks = {};
+  saved.tasks[task] = { data, promptText };
+  try { localStorage.setItem('ielts_writing_feedback', JSON.stringify(saved)); } catch (e) {}
+}
+function clearWritingFeedback() {
+  try { localStorage.removeItem('ielts_writing_feedback'); } catch (e) {}
+}
+function restoreWritingFeedback() {
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem('ielts_writing_feedback') || 'null'); } catch (e) { saved = null; }
+  if (!saved || !saved.tasks || saved.testId !== currentWritingTest) return;
+  [1, 2].forEach(task => {
+    const t = saved.tasks[task];
+    if (!t || !t.data) return;
+    const box = document.getElementById(`ai-feedback-${task}`);
+    if (!box) return;
+    box.classList.remove('hidden');
+    renderAIFeedback(box, t.data, task, t.promptText);
+  });
 }
 
 // ---- AUTOSAVE (anti-perte de copie) ----
@@ -546,7 +589,23 @@ window.addEventListener('DOMContentLoaded', () => {
   if (t1) t1.addEventListener('input', scheduleSaveDraft);
   if (t2) t2.addEventListener('input', scheduleSaveDraft);
   restoreDraftIfAny();
+  tryRestoreWritingFeedbackOnLoad();
 });
+
+// Au rechargement, si un résultat IA a été rendu, on rouvre la zone (sans
+// effacer) et on réaffiche le rapport débloqué — jamais les questions déjà
+// répondues (le FeedbackGate voit le flag localStorage).
+function tryRestoreWritingFeedbackOnLoad() {
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem('ielts_writing_feedback') || 'null'); } catch (e) { saved = null; }
+  if (!saved || !saved.tasks) return;
+  currentWritingTest = saved.testId || 1;
+  selectWritingTest(currentWritingTest);
+  if (document.getElementById('writing-test-zone').classList.contains('hidden')) {
+    startWritingTest(true);
+  }
+  restoreWritingFeedback();
+}
 
 // Filet de sécurité : prévenir avant de quitter s'il reste du texte non soumis.
 window.addEventListener('beforeunload', (e) => {

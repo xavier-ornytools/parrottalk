@@ -301,6 +301,7 @@
 
 </div>
 
+<script src="js/feedback-gate.js"></script>
 <script>
 const SPEAKING_TESTS = {
   1: {
@@ -425,6 +426,7 @@ function initRecognition(idx) {
 
 function selectTest(n) {
   if (mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+  clearSpeakingFeedback();
   currentSpeakingTest = n;
   currentPart = 0;
   currentQIdx = 0;
@@ -974,10 +976,20 @@ function renderSpeakingFeedback(data, testId) {
   const fixHTML = (data.toFix||[]).map(f =>
     `<li style="font-size:.875rem;padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">${f}</li>`).join('');
 
-  document.getElementById('spk-results').innerHTML = `
-    <div class="card card-lg">
+  // Le band global (hero) reste toujours visible et exact : c'est la démo
+  // produit. Le détail par critère, les points forts/à corriger, le conseil et
+  // le transcript passent derrière le micro-feedback (FeedbackGate).
+  const heroHTML = `
+    <div class="card card-lg fb-hero">
+      <div class="fb-hero__label">Speaking Test 0${testId} — Overall Band</div>
+      <div class="fb-hero__band">${displayOverall ?? '—'}</div>
+      <div class="fb-hero__note">AI estimate — your free instant result.</div>
+    </div>`;
+
+  const detailHTML = `
+    <div class="card card-lg" style="margin-top:16px">
       <div class="flex items-center justify-between" style="margin-bottom:16px">
-        <h3>Speaking Test 0${testId} — AI Results</h3>
+        <h3>Detailed feedback — Speaking Test 0${testId}</h3>
         <span class="badge badge-primary">Band ${displayOverall ?? '—'}</span>
       </div>
       <div class="score-mini-grid">${criteriaHTML}</div>
@@ -999,6 +1011,33 @@ function renderSpeakingFeedback(data, testId) {
         <a href="dashboard.html" class="btn btn-primary">View Dashboard →</a>
       </div>
     </div>`;
+
+  FeedbackGate.render(document.getElementById('spk-results'),
+    { type: 'speaking', testId: testId, band: displayOverall, heroHTML: heroHTML, detailHTML: detailHTML });
+
+  saveSpeakingFeedback(data, testId);
+}
+
+// Persistance du résultat pour le retrouver débloqué après un rechargement
+// (pas les questions). Aucune donnée nominative : c'est le même résultat d'IA
+// que celui déjà stocké côté band, gardé localement pour l'affichage.
+function saveSpeakingFeedback(data, testId) {
+  try { localStorage.setItem('ielts_speaking_feedback', JSON.stringify({ data, testId })); } catch (e) {}
+}
+function clearSpeakingFeedback() {
+  try { localStorage.removeItem('ielts_speaking_feedback'); } catch (e) {}
+}
+function restoreSpeakingFeedback() {
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem('ielts_speaking_feedback') || 'null'); } catch (e) { saved = null; }
+  if (!saved || !saved.data) return false;
+  currentSpeakingTest = saved.testId;
+  [1,2,3].forEach(i => { const b = document.getElementById('spk-btn-'+i); if (b) b.classList.toggle('active', i===saved.testId); });
+  document.getElementById('spk-pretest')?.classList.add('hidden');
+  document.getElementById('spk-test-zone')?.classList.add('hidden');
+  document.getElementById('spk-results').classList.remove('hidden');
+  renderSpeakingFeedback(saved.data, saved.testId);
+  return true;
 }
 
 function saveSpeakingScore(data, testId) {
@@ -1022,8 +1061,9 @@ function toast(msg, type='info') {
   setTimeout(() => el.remove(), 5000);
 }
 
-// Init
-selectTest(1);
+// Init — au rechargement, si un résultat a été rendu, on le restaure débloqué
+// (le FeedbackGate ne repose pas les questions déjà répondues) ; sinon, sélection.
+if (!restoreSpeakingFeedback()) selectTest(1);
 </script>
 <footer style="text-align:center;padding:16px;font-size:.75rem;color:var(--text-muted);opacity:.7;border-top:1px solid var(--border);margin-top:32px">
   <p>Pronunciation is evaluated by AI from your audio recording. AI estimate — may vary from official scores by ±0.5–1 band.</p>

@@ -110,6 +110,49 @@ async function logGeminiFailure(env, endpoint, status, message, retries) {
   await env.RATE_KV.put(counterKey, String(current + 1), { expirationTtl: 172800 }); // 2 jours
 }
 
+// ── Micro-feedback post-score ─────────────────────────────────────────────────
+// Réponses au micro-questionnaire affiché après le band (échange de valeur :
+// le détail se débloque après 3 réponses). Même stockage anonyme que les logs
+// de calibration (KV, TTL 90 jours). AUCUNE donnée nominative : on ne stocke
+// que des valeurs d'énumération connues + le band et le type d'épreuve de la
+// session. Toute valeur inconnue est ramenée à null (défense contre un POST
+// falsifié et garantie que rien de libre/nominatif n'entre dans les logs).
+const FEEDBACK_ENUMS = {
+  scoreVsExpected: new Set(['lower', 'expected', 'higher']),
+  examTiming:      new Set(['within_1m', '1_3m', 'not_booked', 'practicing']),
+  mostHelpful:     new Set(['practice_tests', 'detailed_corrections', 'speaking_practice', 'tips_strategies']),
+};
+
+function sanitizeFeedback(body) {
+  const b = body || {};
+  const pick = (field) => (FEEDBACK_ENUMS[field].has(b[field]) ? b[field] : null);
+  const bandNum = parseFloat(b.band);
+  const type = b.type === 'writing' || b.type === 'speaking' ? b.type : null;
+  return {
+    type,
+    band:    Number.isFinite(bandNum) ? Math.min(9, Math.max(0, bandNum)) : null,
+    testId:  Number.isInteger(b.testId) && b.testId >= 1 && b.testId <= 9 ? b.testId : null,
+    scoreVsExpected: pick('scoreVsExpected'),
+    examTiming:      pick('examTiming'),
+    mostHelpful:     pick('mostHelpful'),
+    betaRating: Number.isInteger(b.betaRating) && b.betaRating >= 1 && b.betaRating <= 10 ? b.betaRating : null,
+  };
+}
+
+async function logFeedback(env, fb) {
+  const key = `feedback:${Date.now()}`;
+  await env.RATE_KV.put(key, JSON.stringify({ ...fb, ts: Date.now() }), {
+    expirationTtl: 7776000, // 90 jours, cohérent avec logEvaluation
+  });
+}
+
+async function handleFeedback(req, env, origin) {
+  let body = {};
+  try { body = await req.json(); } catch { body = {}; }
+  await logFeedback(env, sanitizeFeedback(body));
+  return json({ ok: true }, 200, origin);
+}
+
 // ── Gemini call ───────────────────────────────────────────────────────────────
 
 function sleep(ms) {
@@ -620,6 +663,12 @@ export default {
         const allowed = await checkRateLimit(env, ip);
         if (!allowed) return json({ error: 'Daily evaluation limit reached. Try again tomorrow.' }, 429, origin);
         return await handleSpeaking(req, env, origin);
+      }
+
+      if (url.pathname === '/feedback' && req.method === 'POST') {
+        // Pas de rate-limit ici : le feedback ne coûte rien (aucun appel Gemini)
+        // et partager le compteur rl: mangerait le quota d'évaluation du candidat.
+        return await handleFeedback(req, env, origin);
       }
 
       if (url.pathname === '/stats' && req.method === 'GET') {
