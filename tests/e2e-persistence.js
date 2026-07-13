@@ -468,7 +468,7 @@ async function testWritingAutosaveRecovery(browser) {
   page.on('pageerror', err => console.log('  [JS ERROR]', err.message));
 
   await page.goto(`${BASE_URL}/writing.html`);
-  await page.evaluate(() => localStorage.removeItem('ielts_writing_draft'));
+  await page.evaluate(() => { localStorage.clear(); sessionStorage.clear(); });
   await page.reload();
   await page.waitForTimeout(150);
 
@@ -482,10 +482,10 @@ async function testWritingAutosaveRecovery(browser) {
   await page.waitForTimeout(1000); // laisse le debounce (800ms) écrire le brouillon
 
   const draftStored = await page.evaluate(() => {
-    const d = JSON.parse(localStorage.getItem('ielts_writing_draft') || 'null');
+    const d = JSON.parse(localStorage.getItem('ielts_writing_draft_test1') || 'null');
     return d && d.task1 && d.task2;
   });
-  check('Brouillon écrit en localStorage pendant la saisie', !!draftStored);
+  check('Brouillon écrit en localStorage (clé par test) pendant la saisie', !!draftStored);
 
   // Rechargement accidentel : AUCUN clic ensuite.
   await page.reload();
@@ -513,23 +513,24 @@ async function testWritingFreshStartClearsDraft(browser) {
   page.on('pageerror', err => console.log('  [JS ERROR]', err.message));
 
   await page.goto(`${BASE_URL}/writing.html`);
-  // Brouillon résiduel injecté à la main, puis on force l'écran d'accueil.
+  // Brouillon résiduel du Test 1 injecté à la main. sessionStorage vide (nouvel
+  // onglet) → écran d'accueil, pas de reprise auto. On clique Start (Test 1),
+  // ce qui doit effacer le brouillon de ce test et vider les champs.
   await page.evaluate(() => {
-    localStorage.setItem('ielts_writing_draft', JSON.stringify({
+    localStorage.clear(); sessionStorage.clear();
+    localStorage.setItem('ielts_writing_draft_test1', JSON.stringify({
       testId: 1, task1: 'vieux texte', task2: '', savedAt: Date.now()
     }));
   });
-  // On NE recharge pas (sinon auto-reprise) : on clique Start directement,
-  // ce qui doit effacer le brouillon et vider les champs.
   await page.click('button:has-text("Start Test")');
   await page.waitForTimeout(150);
 
   const state = await page.evaluate(() => ({
     v1: document.getElementById('task1-answer').value,
-    draft: localStorage.getItem('ielts_writing_draft'),
+    draft: localStorage.getItem('ielts_writing_draft_test1'),
   }));
   check('Champ Task 1 vide après un démarrage neuf', state.v1 === '');
-  check('Brouillon résiduel effacé du localStorage', state.draft === null);
+  check('Brouillon résiduel (clé par test) effacé du localStorage', state.draft === null);
 
   await page.close();
 }
