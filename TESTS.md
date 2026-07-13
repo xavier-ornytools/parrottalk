@@ -1,5 +1,39 @@
 # ParrotTalk — Tests techniques
 
+## robots.txt + sitemap.xml (2026-07-13) ✅
+
+Tag avant : `seo-session-2026-07-13-robots-sitemap`. Branche `seo/robots-sitemap`,
+repartie de `main`. Chantier identifié à l'audit conformité : `/robots.txt` était
+en 404. ParrotTalk est classé n°1 par ChatGPT pour les outils IELTS gratuits avec
+IA, le canal IA fait l'essentiel du trafic → accueil explicite des crawlers IA.
+
+- `robots.txt` : `Allow: /` explicite pour GPTBot, OAI-SearchBot, ChatGPT-User,
+  ClaudeBot, Claude-User, PerplexityBot, Google-Extended, Googlebot, Bingbot ;
+  règle par défaut permissive (`User-agent: *` `Allow: /`) ; ligne
+  `Sitemap: https://www.parrottalk.app/sitemap.xml`.
+- `sitemap.xml` : 9 pages (accueil `/`, les 4 épreuves + dashboard, 3 pages
+  légales), URLs canoniques `https://www.parrottalk.app/`. La FAQ est une section
+  de l'accueil (pas de page dédiée), couverte par l'URL racine.
+- Domaine canonique confirmé par test réel : `parrottalk.app` renvoie 308 →
+  `www.parrottalk.app`.
+
+**Testé avec :**
+- Local : `/robots.txt` → 200 `text/plain`, `/sitemap.xml` → 200
+  `application/xml`, XML bien formé (9 `<loc>`), 9 URLs = 9 fichiers réels.
+- `vercel.json` audité : aucun `rewrite`/`redirect` ne touche `/robots.txt` ni
+  `/sitemap.xml` (les rewrites ne visent que `/api/`).
+- Validation navigateur manuelle par Xavier (serveur local) avant merge.
+
+### Déploiement
+Mergé sur `main` (merge commit `be32f22`) et poussé. Worker inchangé. Déploiement
+Vercel confirmé par `curl` : `www.parrottalk.app/robots.txt` → 200 `text/plain`
+(agents IA + moteurs + ligne Sitemap présents), `www.parrottalk.app/sitemap.xml`
+→ 200 `application/xml` (9 URLs), et `parrottalk.app/robots.txt` suit le 308 vers
+le www (200 final). Déclaration du sitemap dans Search Console faite par Xavier
+lui-même (hors périmètre code).
+
+---
+
 ## Optimisation des images WebP (2026-07-13) ✅
 
 Tag avant : `ux-session-2026-07-13-image-optim`. Branche
