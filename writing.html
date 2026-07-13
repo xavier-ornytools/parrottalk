@@ -335,12 +335,9 @@ function selectWritingTest(n) {
   if (btn3) btn3.classList.toggle('active', n===3);
 }
 
-function startWritingTest() {
-  document.getElementById('task1-answer').value = '';
-  document.getElementById('task2-answer').value = '';
-  document.getElementById('wc1').textContent = '0 words (minimum: 150)';
-  document.getElementById('wc2').textContent = '0 words (minimum: 250)';
-  document.querySelectorAll('.word-count').forEach(el => el.className = 'word-count');
+// resume=true : on rouvre la zone de test sans effacer les réponses (reprise
+// d'un brouillon après un rechargement). resume=false (défaut) : démarrage neuf.
+function startWritingTest(resume = false) {
   const d = WRITING_DATA[currentWritingTest];
   document.getElementById('writing-instructions').classList.add('hidden');
   document.getElementById('writing-test-zone').classList.remove('hidden');
@@ -351,9 +348,16 @@ function startWritingTest() {
   document.getElementById('sample1-text').innerHTML = d.task1_sample;
   document.getElementById('task2-instruction').innerHTML = d.task2_instruction;
   document.getElementById('sample2-text').innerHTML = d.task2_sample;
+  if (!resume) {
+    document.getElementById('task1-answer').value = '';
+    document.getElementById('task2-answer').value = '';
+    clearDraft();
+  }
+  updateWordCount('task1-answer','wc1',150);
+  updateWordCount('task2-answer','wc2',250);
   totalSeconds = 3600;
   startTimer();
-  toast('Test started — 60 minutes. Begin with Task 1 (20 min).', 'info');
+  if (!resume) toast('Test started — 60 minutes. Begin with Task 1 (20 min).', 'info');
 }
 
 function startTimer() {
@@ -488,6 +492,70 @@ function renderAIFeedback(box, data, task, promptText) {
     localStorage.setItem('ielts_writing_scores', JSON.stringify(wScores));
   }
 }
+
+// ---- AUTOSAVE (anti-perte de copie) ----
+// L'essai ne vivait que dans le DOM : un rechargement de page perdait 40 min de
+// rédaction. On sauvegarde en continu dans localStorage et on restaure au
+// chargement. Aucune donnée quittant le navigateur : purement local.
+const DRAFT_KEY = 'ielts_writing_draft';
+let draftSaveTimer = null;
+
+function saveDraft() {
+  const t1 = document.getElementById('task1-answer').value;
+  const t2 = document.getElementById('task2-answer').value;
+  if (!t1 && !t2) return;
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({
+      testId: currentWritingTest, task1: t1, task2: t2, savedAt: Date.now()
+    }));
+  } catch (e) { /* quota plein ou stockage bloqué : on n'interrompt pas la saisie */ }
+}
+
+function scheduleSaveDraft() {
+  clearTimeout(draftSaveTimer);
+  draftSaveTimer = setTimeout(saveDraft, 800);
+}
+
+function clearDraft() {
+  try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+}
+
+function hasUnsavedWork() {
+  const t1 = document.getElementById('task1-answer');
+  const t2 = document.getElementById('task2-answer');
+  return !!((t1 && t1.value.trim()) || (t2 && t2.value.trim()));
+}
+
+function restoreDraftIfAny() {
+  let draft = null;
+  try { draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); } catch (e) { draft = null; }
+  if (!draft || (!draft.task1 && !draft.task2)) return;
+  currentWritingTest = draft.testId || 1;
+  selectWritingTest(currentWritingTest);
+  document.getElementById('task1-answer').value = draft.task1 || '';
+  document.getElementById('task2-answer').value = draft.task2 || '';
+  startWritingTest(true);
+  let when = '';
+  try { when = new Date(draft.savedAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); } catch (e) {}
+  toast(`📝 Draft recovered${when ? ` (saved at ${when})` : ''}. You can keep writing.`, 'info');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const t1 = document.getElementById('task1-answer');
+  const t2 = document.getElementById('task2-answer');
+  if (t1) t1.addEventListener('input', scheduleSaveDraft);
+  if (t2) t2.addEventListener('input', scheduleSaveDraft);
+  restoreDraftIfAny();
+});
+
+// Filet de sécurité : prévenir avant de quitter s'il reste du texte non soumis.
+window.addEventListener('beforeunload', (e) => {
+  if (hasUnsavedWork()) {
+    saveDraft();
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 
 function toast(msg, type='info') {
   const c = document.getElementById('toast-container');

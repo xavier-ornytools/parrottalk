@@ -459,6 +459,81 @@ async function testFAQAccessibleAndLinksWork(browser) {
   await page.close();
 }
 
+// Writing : l'essai ne vivait que dans le DOM. Autosave localStorage +
+// restauration au chargement. On tape dans les deux tâches, on recharge SANS
+// re-cliquer, et on vérifie que le texte revient tout seul.
+async function testWritingAutosaveRecovery(browser) {
+  console.log('\n=== Writing : reload en plein milieu, l\'essai est récupéré ===');
+  const page = await browser.newPage();
+  page.on('pageerror', err => console.log('  [JS ERROR]', err.message));
+
+  await page.goto(`${BASE_URL}/writing.html`);
+  await page.evaluate(() => localStorage.removeItem('ielts_writing_draft'));
+  await page.reload();
+  await page.waitForTimeout(150);
+
+  await page.click('button:has-text("Start Test")');
+  await page.waitForTimeout(150);
+
+  const t1 = 'This is my Task 1 answer describing the graph in detail over the period.';
+  const t2 = 'This is my Task 2 essay discussing both views before giving my own opinion clearly.';
+  await page.fill('#task1-answer', t1);
+  await page.fill('#task2-answer', t2);
+  await page.waitForTimeout(1000); // laisse le debounce (800ms) écrire le brouillon
+
+  const draftStored = await page.evaluate(() => {
+    const d = JSON.parse(localStorage.getItem('ielts_writing_draft') || 'null');
+    return d && d.task1 && d.task2;
+  });
+  check('Brouillon écrit en localStorage pendant la saisie', !!draftStored);
+
+  // Rechargement accidentel : AUCUN clic ensuite.
+  await page.reload();
+  await page.waitForTimeout(400);
+
+  const state = await page.evaluate(() => ({
+    zoneHidden: document.getElementById('writing-test-zone').classList.contains('hidden'),
+    v1: document.getElementById('task1-answer').value,
+    v2: document.getElementById('task2-answer').value,
+    wc1: document.getElementById('wc1').textContent,
+  }));
+  check('Zone de test visible automatiquement après reload (pas l\'écran d\'accueil)', state.zoneHidden === false);
+  check('Task 1 restaurée à l\'identique', state.v1 === t1);
+  check('Task 2 restaurée à l\'identique', state.v2 === t2);
+  check('Compteur de mots recalculé après restauration', /\d+ words/.test(state.wc1) && !state.wc1.startsWith('0 words'));
+
+  await page.close();
+}
+
+// Un démarrage neuf (bouton Start depuis l'écran d'accueil) doit repartir
+// d'une page blanche et effacer tout brouillon résiduel.
+async function testWritingFreshStartClearsDraft(browser) {
+  console.log('\n=== Writing : un démarrage neuf efface le brouillon résiduel ===');
+  const page = await browser.newPage();
+  page.on('pageerror', err => console.log('  [JS ERROR]', err.message));
+
+  await page.goto(`${BASE_URL}/writing.html`);
+  // Brouillon résiduel injecté à la main, puis on force l'écran d'accueil.
+  await page.evaluate(() => {
+    localStorage.setItem('ielts_writing_draft', JSON.stringify({
+      testId: 1, task1: 'vieux texte', task2: '', savedAt: Date.now()
+    }));
+  });
+  // On NE recharge pas (sinon auto-reprise) : on clique Start directement,
+  // ce qui doit effacer le brouillon et vider les champs.
+  await page.click('button:has-text("Start Test")');
+  await page.waitForTimeout(150);
+
+  const state = await page.evaluate(() => ({
+    v1: document.getElementById('task1-answer').value,
+    draft: localStorage.getItem('ielts_writing_draft'),
+  }));
+  check('Champ Task 1 vide après un démarrage neuf', state.v1 === '');
+  check('Brouillon résiduel effacé du localStorage', state.draft === null);
+
+  await page.close();
+}
+
 async function main() {
   console.log('=== Test E2E persistance ParrotTalk (vrai navigateur) ===');
   console.log(`URL de base : ${BASE_URL} (lancer 'python3 -m http.server 8000' depuis le repo si besoin)`);
@@ -470,6 +545,8 @@ async function main() {
     await testListeningMatchingGroup(browser);
     await testReadingMatchingHeadings(browser);
     await testReading(browser);
+    await testWritingAutosaveRecovery(browser);
+    await testWritingFreshStartClearsDraft(browser);
     await testSpeakingConsentGate(browser);
     await testCookieBannerBlocksGA4(browser);
     await testCookieBannerReject(browser);
