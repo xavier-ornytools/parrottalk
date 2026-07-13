@@ -1,5 +1,47 @@
 # ParrotTalk — Tests techniques
 
+## Autosave Writing anti-perte de copie (2026-07-13) ✅
+
+Branche `feat/writing-autosave`, repartie de `main`. Périmètre : `writing.html`
+(logique d'autosave) + `tests/e2e-persistence.js` (nouveau test). Corrige le
+risque n°1 (CRITIQUE) de l'audit système du 13/07 : l'essai Writing ne vivait
+que dans le DOM, un rechargement de page / crash / fermeture d'onglet perdait
+jusqu'à 40 min de rédaction.
+
+Trois changements dans `writing.html` :
+- Autosave continu de l'essai dans `localStorage` (clé `ielts_writing_draft`,
+  debounce 800 ms). Purement local, aucune donnée ne quitte le navigateur.
+- Restauration automatique au chargement (`restoreDraftIfAny` sur
+  `DOMContentLoaded`) : la zone de test se rouvre avec les deux tâches et les
+  compteurs de mots recalculés, sans aucun clic de l'utilisateur.
+- `startWritingTest(resume)` : un démarrage neuf (bouton Start) efface le
+  brouillon et repart d'une page blanche ; une reprise (`resume=true`) conserve
+  le texte restauré. Garde `beforeunload` : confirmation avant de quitter s'il
+  reste du texte non soumis, avec sauvegarde au passage.
+
+**Testé avec :**
+- `node tests/e2e-persistence.js` (Playwright, Chrome système) : **50/50, 0
+  échec, 0 erreur JS**. 7 vérifications Writing ajoutées (brouillon écrit
+  pendant la saisie, zone rouverte automatiquement après reload, Task 1 et
+  Task 2 restaurées à l'identique, compteur de mots recalculé, démarrage neuf
+  qui vide le champ et efface le brouillon). Les 43 tests préexistants
+  (persistance Listening/Reading, consentement micro, bandeau cookies, FAQ)
+  ne régressent pas.
+- **Vérification navigateur manuelle par Xavier** sur le serveur local
+  (`http://localhost:8000/writing.html`, branche `feat/writing-autosave`) :
+  autosave + restauration OK, garde `beforeunload` OK, reset propre au Start
+  OK. Validée avant merge.
+
+### Déploiement
+Mergé sur `main` (merge commit `7fa7eeb`, `feat/writing-autosave` conservée) et
+poussé sur `origin/main`. Déploiement Vercel confirmé réellement par `curl
+https://www.parrottalk.app/writing.html` : tous les marqueurs du nouveau code
+sont présents dans le HTML servi en production (clé `ielts_writing_draft`,
+`restoreDraftIfAny`, garde `beforeunload`, toast « Draft recovered », chemin de
+reprise `startWritingTest(true)`), réponse HTTP 200.
+
+---
+
 ## Balise de vérification Google Search Console (2026-07-10) ✅
 
 Tag avant : `ops-session-2026-07-10-gsc-verification`. Branche
