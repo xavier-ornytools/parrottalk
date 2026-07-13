@@ -73,19 +73,21 @@ async function testSpeakingGateFlow(browser) {
   check('Détail verrouillé au départ (aucun .is-open)', (await page.locator('.feedback-detail.is-open').count()) === 0);
   check('Carte de déblocage présente', (await page.locator('.fb-gate').count()) === 1);
   check('Progression 1 / 3', (await page.textContent('.fb-progress__label')).trim() === '1 / 3');
-  check('Q1 = comparaison au score attendu', (await page.textContent('.fb-q__text')).includes('compare to what you expected'));
+  check('Q1 = comparaison au score attendu', (await page.textContent('.fb-q__text')).includes('Compared to what you expected'));
+  check('Q1 = échelle 5 niveaux', (await page.locator('.fb-q__opts .fb-opt').count()) === 5);
 
-  await page.click('.fb-opt[data-val="expected"]');
-  await page.waitForTimeout(250);
+  await page.click('.fb-opt[data-val="about_right"]');
+  await page.waitForTimeout(600);
   check('Progression passe à 2 / 3', (await page.textContent('.fb-progress__label')).trim() === '2 / 3');
   check('Q2 = date de l\'examen', (await page.textContent('.fb-q__text')).includes('When is your IELTS exam'));
+  check('Q2 = échelle 5 niveaux', (await page.locator('.fb-q__opts .fb-opt').count()) === 5);
 
-  await page.click('.fb-opt[data-val="1_3m"]');
-  await page.waitForTimeout(250);
+  await page.click('.fb-opt[data-val="3_6m"]');
+  await page.waitForTimeout(600);
   check('Progression passe à 3 / 3', (await page.textContent('.fb-progress__label')).trim() === '3 / 3');
 
   await page.click('.fb-opt[data-val="detailed_corrections"]');
-  await page.waitForTimeout(750); // laisse l'animation de sortie retirer la carte (~530ms)
+  await page.waitForTimeout(1000); // laisse l'état sélectionné + l'animation retirer la carte
 
   check('Après la 3e réponse : détail révélé (.is-open)', (await page.locator('.feedback-detail.is-open').count()) >= 1);
   check('Carte de déblocage retirée', (await page.locator('.fb-gate').count()) === 0);
@@ -93,17 +95,17 @@ async function testSpeakingGateFlow(browser) {
   check('unlock mémorisé en localStorage', (await page.evaluate(() => localStorage.getItem('ielts_feedback_unlocked'))) === '1');
 
   const answers = await page.evaluate(() => JSON.parse(localStorage.getItem('ielts_feedback_answers') || '{}'));
-  check('Les 3 réponses mémorisées', answers.scoreVsExpected === 'expected' && answers.examTiming === '1_3m' && answers.mostHelpful === 'detailed_corrections');
+  check('Les 3 réponses mémorisées (nouvelles échelles)', answers.scoreVsExpected === 'about_right' && answers.examTiming === '3_6m' && answers.mostHelpful === 'detailed_corrections');
 
-  check('POST /feedback envoyé avec type+band+réponses', captured.some(p => p && p.type === 'speaking' && p.band === 6.5 && p.scoreVsExpected === 'expected' && p.mostHelpful === 'detailed_corrections'));
+  check('POST /feedback envoyé avec type+band+réponses', captured.some(p => p && p.type === 'speaking' && p.band === 6.5 && p.scoreVsExpected === 'about_right' && p.mostHelpful === 'detailed_corrections'));
 
-  // Note de beta 1-10
-  check('Note de beta proposée (10 boutons)', (await page.locator('.fb-rating__btn').count()) === 10);
-  await page.click('.fb-rating__btn[data-n="8"]');
-  await page.waitForTimeout(200);
+  // Note de beta : échelle 5 niveaux
+  check('Note de beta = échelle 5 niveaux', (await page.locator('.fb-rating__scale .fb-opt').count()) === 5);
+  await page.click('.fb-rating__scale .fb-opt[data-n="4"]');
+  await page.waitForTimeout(650);
   check('Remerciement après la note', await page.locator('.fb-rating__thanks').isVisible());
   check('rated mémorisé en localStorage', (await page.evaluate(() => localStorage.getItem('ielts_feedback_rated'))) === '1');
-  check('POST /feedback envoyé avec betaRating', captured.some(p => p && p.betaRating === 8));
+  check('POST /feedback envoyé avec betaRating 1-5', captured.some(p => p && p.betaRating === 4));
 
   await page.close();
 }
@@ -119,9 +121,9 @@ async function testSpeakingReloadRestore(browser) {
   await page.evaluate(m => { document.getElementById('spk-results').classList.remove('hidden'); renderSpeakingFeedback(m, 1); }, SPK_MOCK);
   await page.waitForTimeout(100);
   // Répondre aux 3 questions
-  await page.click('.fb-opt[data-val="higher"]'); await page.waitForTimeout(220);
-  await page.click('.fb-opt[data-val="within_1m"]'); await page.waitForTimeout(220);
-  await page.click('.fb-opt[data-val="speaking_practice"]'); await page.waitForTimeout(400);
+  await page.click('.fb-opt[data-val="much_higher"]'); await page.waitForTimeout(600);
+  await page.click('.fb-opt[data-val="within_1m"]'); await page.waitForTimeout(600);
+  await page.click('.fb-opt[data-val="speaking_practice"]'); await page.waitForTimeout(900);
 
   await page.reload();
   await page.waitForTimeout(400);
@@ -157,9 +159,9 @@ async function testWritingUnlockAppliesToBothTasks(browser) {
   check('Task 1 : détail verrouillé + carte présente', (await page.locator('#ai-feedback-1 .fb-gate').count()) === 1 && (await page.locator('#ai-feedback-1 .feedback-detail.is-open').count()) === 0);
 
   // Répondre aux 3 questions
-  await page.click('#ai-feedback-1 .fb-opt[data-val="lower"]'); await page.waitForTimeout(220);
-  await page.click('#ai-feedback-1 .fb-opt[data-val="not_booked"]'); await page.waitForTimeout(220);
-  await page.click('#ai-feedback-1 .fb-opt[data-val="practice_tests"]'); await page.waitForTimeout(450);
+  await page.click('#ai-feedback-1 .fb-opt[data-val="much_lower"]'); await page.waitForTimeout(600);
+  await page.click('#ai-feedback-1 .fb-opt[data-val="not_booked"]'); await page.waitForTimeout(600);
+  await page.click('#ai-feedback-1 .fb-opt[data-val="practice_tests"]'); await page.waitForTimeout(1000);
   check('Task 1 : détail révélé après 3 réponses', (await page.locator('#ai-feedback-1 .feedback-detail.is-open').count()) === 1);
 
   // Rendu du feedback de la Task 2 APRÈS déblocage → détail direct, pas de carte

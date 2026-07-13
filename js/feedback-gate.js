@@ -2,7 +2,7 @@
  *
  * Le band global reste toujours visible, exact, gratuit (la démo produit).
  * Le rapport détaillé se débloque après 3 questions à un clic. Une dernière
- * question de note (1 à 10) est proposée, optionnelle, tout en bas du rapport.
+ * question de note (échelle 5 niveaux) est proposée, optionnelle, en bas.
  *
  * Données envoyées au Worker (POST /feedback, fire-and-forget) : uniquement des
  * valeurs d'énumération + le band et le type d'épreuve. Aucune donnée nominative.
@@ -28,20 +28,32 @@
   var QUESTIONS = [
     {
       id: 'scoreVsExpected',
-      text: 'How does this score compare to what you expected?',
-      options: [['lower', 'Lower'], ['expected', 'About what I expected'], ['higher', 'Higher']]
+      text: 'Compared to what you expected, this score is:',
+      options: [
+        ['much_lower', 'Much lower'], ['a_bit_lower', 'A bit lower'], ['about_right', 'About right'],
+        ['a_bit_higher', 'A bit higher'], ['much_higher', 'Much higher']
+      ]
     },
     {
       id: 'examTiming',
       text: 'When is your IELTS exam?',
-      options: [['within_1m', 'Within 1 month'], ['1_3m', '1–3 months'], ['not_booked', 'Not booked yet'], ['practicing', 'Just practicing']]
+      options: [
+        ['within_1m', 'Within 1 month'], ['1_3m', '1–3 months'], ['3_6m', '3–6 months'],
+        ['not_booked', 'Not booked yet'], ['practicing', 'Just practicing']
+      ]
     },
     {
       id: 'mostHelpful',
       text: 'What would help you most before your exam?',
-      options: [['practice_tests', 'More practice tests'], ['detailed_corrections', 'More detailed corrections'], ['speaking_practice', 'Speaking practice'], ['tips_strategies', 'Tips and strategies']]
+      options: [
+        ['practice_tests', 'More practice tests'], ['detailed_corrections', 'More detailed corrections'],
+        ['speaking_practice', 'Speaking practice'], ['tips_strategies', 'Tips and strategies']
+      ]
     }
   ];
+
+  // Note de beta : échelle 5 niveaux (valeur 1 à 5).
+  var RATING = [[1, 'Poor'], [2, 'Fair'], [3, 'Good'], [4, 'Very good'], [5, 'Excellent']];
 
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
@@ -96,7 +108,7 @@
         '<div class="fb-gate__head">' +
           '<div class="fb-gate__icon" aria-hidden="true">🔒</div>' +
           '<h3 class="fb-gate__title">Unlock your detailed feedback</h3>' +
-          '<p class="fb-gate__sub">30 seconds, 3 taps. Your answers help our AI become more accurate for candidates like you.</p>' +
+          '<p class="fb-gate__sub">30 seconds, 3 taps, and your detailed report unlocks. Your answers help our AI become more accurate.</p>' +
         '</div>' +
         '<div class="fb-progress" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="' + step + '">' +
           '<div class="fb-progress__track"><div class="fb-progress__bar" style="width:' + barPct + '%"></div></div>' +
@@ -109,18 +121,23 @@
       var buttons = gate.querySelectorAll('.fb-opt');
       for (var i = 0; i < buttons.length; i++) {
         buttons[i].addEventListener('click', function (ev) {
-          onAnswer(q, ev.currentTarget.getAttribute('data-val'));
+          onAnswer(q, ev.currentTarget.getAttribute('data-val'), ev.currentTarget);
         });
       }
     }
 
-    function onAnswer(q, val) {
+    function onAnswer(q, val, btnEl) {
       answers[q.id] = val;
       ga('feedback_answer', { fb_question: q.id, fb_answer: val, fb_type: opts.type, fb_band: opts.band });
-      var qEl = gate.querySelector('.fb-q');
-      if (qEl) qEl.classList.add('fb-q--out');
+      // État sélectionné visible, puis transition vers la question suivante.
+      var qWrap = gate.querySelector('.fb-q');
+      if (qWrap) qWrap.classList.add('fb-locked');
+      if (btnEl) btnEl.classList.add('fb-opt--selected');
       step += 1;
-      setTimeout(renderStep, 180);
+      setTimeout(function () {
+        if (qWrap) qWrap.classList.add('fb-q--out');
+        setTimeout(renderStep, 160);
+      }, 300);
     }
 
     function complete() {
@@ -159,23 +176,27 @@
 
     var wrap = document.createElement('div');
     wrap.className = 'fb-rating';
-    var btns = '';
-    for (var n = 1; n <= 10; n++) {
-      btns += '<button type="button" class="fb-rating__btn" data-n="' + n + '">' + n + '</button>';
-    }
+    var btns = RATING.map(function (r) {
+      return '<button type="button" class="fb-opt" data-n="' + r[0] + '">' + r[1] + '</button>';
+    }).join('');
     wrap.innerHTML =
       '<div class="fb-rating__q">ParrotTalk is still in beta. How would you rate it so far?</div>' +
       '<div class="fb-rating__scale">' + btns + '</div>';
     detailEl.appendChild(wrap);
 
-    var buttons = wrap.querySelectorAll('.fb-rating__btn');
+    var scale = wrap.querySelector('.fb-rating__scale');
+    var buttons = wrap.querySelectorAll('.fb-opt');
     for (var i = 0; i < buttons.length; i++) {
       buttons[i].addEventListener('click', function (ev) {
         var n = parseInt(ev.currentTarget.getAttribute('data-n'), 10);
         lsSet(LS_RATED, '1');
         ga('feedback_rating', { fb_rating: n, fb_type: opts.type });
         postFeedback({ type: opts.type, testId: opts.testId, band: opts.band, betaRating: n });
-        wrap.innerHTML = '<div class="fb-rating__thanks">Thanks — that helps us improve ParrotTalk 🙌</div>';
+        ev.currentTarget.classList.add('fb-opt--selected');
+        if (scale) scale.classList.add('fb-locked');
+        setTimeout(function () {
+          wrap.innerHTML = '<div class="fb-rating__thanks">Thanks — that helps us improve ParrotTalk 🙌</div>';
+        }, 450);
       });
     }
   }

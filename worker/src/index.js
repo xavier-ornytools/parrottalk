@@ -118,8 +118,8 @@ async function logGeminiFailure(env, endpoint, status, message, retries) {
 // session. Toute valeur inconnue est ramenée à null (défense contre un POST
 // falsifié et garantie que rien de libre/nominatif n'entre dans les logs).
 const FEEDBACK_ENUMS = {
-  scoreVsExpected: new Set(['lower', 'expected', 'higher']),
-  examTiming:      new Set(['within_1m', '1_3m', 'not_booked', 'practicing']),
+  scoreVsExpected: new Set(['much_lower', 'a_bit_lower', 'about_right', 'a_bit_higher', 'much_higher']),
+  examTiming:      new Set(['within_1m', '1_3m', '3_6m', 'not_booked', 'practicing']),
   mostHelpful:     new Set(['practice_tests', 'detailed_corrections', 'speaking_practice', 'tips_strategies']),
 };
 
@@ -135,7 +135,7 @@ function sanitizeFeedback(body) {
     scoreVsExpected: pick('scoreVsExpected'),
     examTiming:      pick('examTiming'),
     mostHelpful:     pick('mostHelpful'),
-    betaRating: Number.isInteger(b.betaRating) && b.betaRating >= 1 && b.betaRating <= 10 ? b.betaRating : null,
+    betaRating: Number.isInteger(b.betaRating) && b.betaRating >= 1 && b.betaRating <= 5 ? b.betaRating : null,
   };
 }
 

@@ -752,45 +752,54 @@ select.form-control { appearance: none; cursor: pointer; }
   font-size: 1.0625rem; font-weight: 700; color: var(--text);
   text-align: center; margin-bottom: 16px; line-height: 1.4;
 }
-.fb-q__opts { display: flex; flex-direction: column; gap: 10px; }
+.fb-q__opts { display: flex; flex-direction: column; gap: 12px; }
 
-/* Boutons larges, confortables au doigt (mobile d'abord). */
+/* Boutons de réponse type Typeform : larges, pleine largeur, coins arrondis,
+   survol et état sélectionné évidents, confortables au doigt (mobile d'abord). */
 .fb-opt {
-  width: 100%; min-height: 54px; padding: 14px 18px;
-  font-size: 1rem; font-weight: 600; color: var(--text);
-  background: var(--white); border: 1.5px solid var(--border);
-  border-radius: var(--r); cursor: pointer; text-align: center;
-  transition: transform .12s ease, border-color .15s ease, background .15s ease, box-shadow .15s ease;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; min-height: 60px; padding: 16px 22px;
+  font-size: 1.0625rem; font-weight: 600; color: var(--text);
+  background: var(--white); border: 2px solid var(--border);
+  border-radius: var(--r-lg); cursor: pointer; text-align: center;
+  box-shadow: var(--sh-sm);
+  transition: transform .14s ease, border-color .15s ease, background .15s ease, box-shadow .15s ease, color .15s ease;
   -webkit-tap-highlight-color: transparent;
 }
-.fb-opt:hover { border-color: var(--primary); background: var(--primary-pale); }
-.fb-opt:active { transform: scale(.97); }
-.fb-opt:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.fb-opt:hover {
+  border-color: var(--primary); background: var(--primary-pale);
+  transform: translateY(-2px); box-shadow: var(--sh);
+}
+.fb-opt:active { transform: translateY(0) scale(.99); }
+.fb-opt:focus-visible { outline: 3px solid var(--primary-light); outline-offset: 2px; }
+/* État sélectionné, montré brièvement avant de passer à la suite. */
+.fb-opt--selected,
+.fb-opt--selected:hover {
+  background: var(--primary); border-color: var(--primary); color: var(--white);
+  transform: translateY(0); box-shadow: var(--sh);
+}
+/* Pendant la transition (ou après une note choisie), on neutralise les clics
+   et on estompe les options non retenues. */
+.fb-locked .fb-opt { pointer-events: none; }
+.fb-locked .fb-opt:not(.fb-opt--selected) { opacity: .5; }
 
-/* Note de beta 1 à 10, tout en bas du rapport. */
+/* Note de beta : échelle 5 niveaux, mêmes boutons que les questions. */
 .fb-rating {
   margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-light);
   text-align: center;
 }
-.fb-rating__q { font-size: .9375rem; font-weight: 700; color: var(--text); margin-bottom: 14px; }
+.fb-rating__q { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 14px; }
 .fb-rating__scale {
-  display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; max-width: 460px; margin: 0 auto;
+  display: flex; flex-wrap: wrap; gap: 10px; max-width: 640px; margin: 0 auto;
 }
-.fb-rating__btn {
-  min-height: 44px; padding: 0; font-size: .9375rem; font-weight: 700;
-  color: var(--primary-dark); background: var(--primary-pale);
-  border: 1px solid var(--primary-light); border-radius: var(--r-sm);
-  cursor: pointer; transition: transform .12s ease, background .15s ease, color .15s ease;
-  -webkit-tap-highlight-color: transparent;
-}
-.fb-rating__btn:hover { background: var(--primary); color: var(--white); }
-.fb-rating__btn:active { transform: scale(.92); }
+.fb-rating__scale .fb-opt { flex: 1 1 110px; min-height: 54px; font-size: 1rem; padding: 14px 12px; }
 .fb-rating__thanks {
-  font-size: 1rem; font-weight: 700; color: var(--success-dark);
+  font-size: 1.0625rem; font-weight: 700; color: var(--success-dark);
   animation: fbFadeIn .4s ease both;
 }
 
 @media (max-width: 640px) {
   .fb-hero__band { font-size: 3rem; }
-  .fb-rating__scale { grid-template-columns: repeat(5, 1fr); max-width: 320px; }
+  .fb-rating__scale .fb-opt { flex: 1 1 45%; }
 }
