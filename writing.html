@@ -161,8 +161,8 @@
       <p style="font-size:.875rem;color:var(--text-muted)">⚖️ <strong>Scoring:</strong> Task 2 counts double. Final band = (T1 + T2×2) ÷ 3</p>
     </div>
     <div class="flex items-center gap-3" style="flex-wrap:wrap">
-      <button class="btn btn-primary btn-lg" onclick="startWritingTest()">▶ Start Test (60 min)</button>
-      <span class="text-sm text-muted">Timer starts automatically</span>
+      <button class="btn btn-primary btn-lg" id="start-writing-btn" onclick="startWritingTest()">▶ Start Test 01 (60 min)</button>
+      <span class="text-sm text-muted">The 60-minute timer starts only when you click Start.</span>
     </div>
   </div>
 
@@ -323,22 +323,39 @@ const WRITING_DATA = {
   }
 };
 
-let currentWritingTest = 1;
-let lastWritingPrompt = '';
+let currentWritingTest = 1;   // test ACTIF (chargé/démarré) : source de vérité pour l'évaluation et les logs
+let pendingTest = 1;          // test choisi sur l'écran d'accueil, pas encore démarré
+let testStarted = false;      // un test est-il en cours (zone de test affichée) ?
 let globalInterval = null;
 let totalSeconds = 3600;
+// sessionStorage (pas localStorage) : survit au rechargement du MÊME onglet, pas
+// à une arrivée fraîche. Sépare "reload en cours de test" de "ouverture de page".
+const SESSION_ACTIVE_KEY = 'ielts_writing_session';
+function draftKey(n) { return 'ielts_writing_draft_test' + n; }
+
+function highlightTest(n) {
+  [1,2,3].forEach(i => { const b = document.getElementById('wbtn-' + i); if (b) b.classList.toggle('active', i === n); });
+  const startBtn = document.getElementById('start-writing-btn');
+  if (startBtn) startBtn.textContent = '▶ Start Test 0' + n + ' (60 min)';
+}
 
 function selectWritingTest(n) {
-  currentWritingTest = n;
-  document.getElementById('wbtn-1').classList.toggle('active', n===1);
-  document.getElementById('wbtn-2').classList.toggle('active', n===2);
-  const btn3 = document.getElementById('wbtn-3');
-  if (btn3) btn3.classList.toggle('active', n===3);
+  if (testStarted && n !== currentWritingTest) {
+    // Changer de test EN COURS : confirmation (perte du travail), puis reset propre.
+    const ok = confirm('Switch to Test 0' + n + '? Your current test, answers and timer will be reset.');
+    if (!ok) { highlightTest(currentWritingTest); return; }
+    resetToLanding(n);
+    return;
+  }
+  if (testStarted) { highlightTest(currentWritingTest); return; } // reclic sur le test actif : rien
+  pendingTest = n;
+  highlightTest(n);
 }
 
 // resume=true : on rouvre la zone de test sans effacer les réponses (reprise
 // d'un brouillon après un rechargement). resume=false (défaut) : démarrage neuf.
 function startWritingTest(resume = false) {
+  if (!resume) currentWritingTest = pendingTest; // le Start explicite fixe le test actif
   const d = WRITING_DATA[currentWritingTest];
   document.getElementById('writing-instructions').classList.add('hidden');
   document.getElementById('writing-test-zone').classList.remove('hidden');
@@ -349,17 +366,21 @@ function startWritingTest(resume = false) {
   document.getElementById('sample1-text').innerHTML = d.task1_sample;
   document.getElementById('task2-instruction').innerHTML = d.task2_instruction;
   document.getElementById('sample2-text').innerHTML = d.task2_sample;
+  highlightTest(currentWritingTest);
   if (!resume) {
     document.getElementById('task1-answer').value = '';
     document.getElementById('task2-answer').value = '';
-    clearDraft();
+    ['ai-feedback-1','ai-feedback-2'].forEach(id => { const b = document.getElementById(id); if (b) { b.classList.add('hidden'); b.innerHTML = ''; } });
+    clearDraft(currentWritingTest);
     clearWritingFeedback();
   }
   updateWordCount('task1-answer','wc1',150);
   updateWordCount('task2-answer','wc2',250);
   totalSeconds = 3600;
   startTimer();
-  if (!resume) toast('Test started — 60 minutes. Begin with Task 1 (20 min).', 'info');
+  testStarted = true;
+  try { sessionStorage.setItem(SESSION_ACTIVE_KEY, String(currentWritingTest)); } catch (e) {}
+  if (!resume) toast('Test 0' + currentWritingTest + ' started — 60 minutes. Begin with Task 1 (20 min).', 'info');
 }
 
 function startTimer() {
@@ -403,7 +424,12 @@ async function getAIFeedback(task) {
     toast('Please write at least 50 words before requesting AI feedback.', 'error');
     return;
   }
-  const promptText = task === 1 ? d.task1_instruction.replace(/<[^>]+>/g,'') : d.task2_instruction.replace(/<[^>]+>/g,'');
+  // Cohérence absolue : on envoie à Gemini (et donc on logge) EXACTEMENT l'énoncé
+  // affiché au candidat, lu depuis le DOM, jamais une source parallèle qui
+  // pourrait avoir divergé du test réellement à l'écran.
+  const instrEl = document.getElementById(`task${task}-instruction`);
+  const shownInstr = instrEl ? instrEl.innerHTML : (task === 1 ? d.task1_instruction : d.task2_instruction);
+  const promptText = shownInstr.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
   const minWords = task === 1 ? 150 : 250;
   const taskType = task === 1 ? 'Task 1 (Graph description)' : 'Task 2 (Essay - discuss both views)';
   const wordCount = essay.split(/\s+/).length;
@@ -540,15 +566,15 @@ function restoreWritingFeedback() {
 // L'essai ne vivait que dans le DOM : un rechargement de page perdait 40 min de
 // rédaction. On sauvegarde en continu dans localStorage et on restaure au
 // chargement. Aucune donnée quittant le navigateur : purement local.
-const DRAFT_KEY = 'ielts_writing_draft';
 let draftSaveTimer = null;
 
 function saveDraft() {
+  if (!testStarted) return; // rien à sauver hors d'un test en cours
   const t1 = document.getElementById('task1-answer').value;
   const t2 = document.getElementById('task2-answer').value;
   if (!t1 && !t2) return;
   try {
-    localStorage.setItem(DRAFT_KEY, JSON.stringify({
+    localStorage.setItem(draftKey(currentWritingTest), JSON.stringify({
       testId: currentWritingTest, task1: t1, task2: t2, savedAt: Date.now()
     }));
   } catch (e) { /* quota plein ou stockage bloqué : on n'interrompt pas la saisie */ }
@@ -559,8 +585,8 @@ function scheduleSaveDraft() {
   draftSaveTimer = setTimeout(saveDraft, 800);
 }
 
-function clearDraft() {
-  try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+function clearDraft(n) {
+  try { localStorage.removeItem(draftKey(n == null ? currentWritingTest : n)); } catch (e) {}
 }
 
 function hasUnsavedWork() {
@@ -569,18 +595,45 @@ function hasUnsavedWork() {
   return !!((t1 && t1.value.trim()) || (t2 && t2.value.trim()));
 }
 
-function restoreDraftIfAny() {
+// Reset propre : arrête le chrono, vide champs/compteurs/feedback, revient à
+// l'écran d'accueil avec le test n sélectionné mais PAS démarré (aucun chrono).
+function resetToLanding(n) {
+  if (globalInterval) { clearInterval(globalInterval); globalInterval = null; }
+  clearDraft(currentWritingTest);
+  clearWritingFeedback();
+  document.getElementById('task1-answer').value = '';
+  document.getElementById('task2-answer').value = '';
+  updateWordCount('task1-answer','wc1',150);
+  updateWordCount('task2-answer','wc2',250);
+  ['ai-feedback-1','ai-feedback-2'].forEach(id => { const b = document.getElementById(id); if (b) { b.classList.add('hidden'); b.innerHTML = ''; } });
+  totalSeconds = 3600;
+  const disp = document.getElementById('global-timer'); if (disp) { disp.textContent = '60:00'; disp.className = 'timer-display'; }
+  document.getElementById('writing-test-zone').classList.add('hidden');
+  document.getElementById('writing-instructions').classList.remove('hidden');
+  testStarted = false;
+  try { sessionStorage.removeItem(SESSION_ACTIVE_KEY); } catch (e) {}
+  pendingTest = n;
+  highlightTest(n);
+}
+
+// Reprise après un rechargement EN COURS de test (même onglet) : restaure le bon
+// test, son brouillon et son rapport. Jamais déclenché à une arrivée fraîche.
+function resumeTest(n) {
+  currentWritingTest = n;
+  pendingTest = n;
+  startWritingTest(true); // ouvre la zone sans effacer, chrono relancé
   let draft = null;
-  try { draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); } catch (e) { draft = null; }
-  if (!draft || (!draft.task1 && !draft.task2)) return;
-  currentWritingTest = draft.testId || 1;
-  selectWritingTest(currentWritingTest);
-  document.getElementById('task1-answer').value = draft.task1 || '';
-  document.getElementById('task2-answer').value = draft.task2 || '';
-  startWritingTest(true);
-  let when = '';
-  try { when = new Date(draft.savedAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); } catch (e) {}
-  toast(`📝 Draft recovered${when ? ` (saved at ${when})` : ''}. You can keep writing.`, 'info');
+  try { draft = JSON.parse(localStorage.getItem(draftKey(n)) || 'null'); } catch (e) { draft = null; }
+  if (draft && (draft.task1 || draft.task2)) {
+    document.getElementById('task1-answer').value = draft.task1 || '';
+    document.getElementById('task2-answer').value = draft.task2 || '';
+    updateWordCount('task1-answer','wc1',150);
+    updateWordCount('task2-answer','wc2',250);
+    let when = '';
+    try { when = new Date(draft.savedAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); } catch (e) {}
+    toast(`📝 Draft recovered${when ? ` (saved at ${when})` : ''}. You can keep writing.`, 'info');
+  }
+  restoreWritingFeedback();
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -588,24 +641,15 @@ window.addEventListener('DOMContentLoaded', () => {
   const t2 = document.getElementById('task2-answer');
   if (t1) t1.addEventListener('input', scheduleSaveDraft);
   if (t2) t2.addEventListener('input', scheduleSaveDraft);
-  restoreDraftIfAny();
-  tryRestoreWritingFeedbackOnLoad();
-});
-
-// Au rechargement, si un résultat IA a été rendu, on rouvre la zone (sans
-// effacer) et on réaffiche le rapport débloqué — jamais les questions déjà
-// répondues (le FeedbackGate voit le flag localStorage).
-function tryRestoreWritingFeedbackOnLoad() {
-  let saved = null;
-  try { saved = JSON.parse(localStorage.getItem('ielts_writing_feedback') || 'null'); } catch (e) { saved = null; }
-  if (!saved || !saved.tasks) return;
-  currentWritingTest = saved.testId || 1;
-  selectWritingTest(currentWritingTest);
-  if (document.getElementById('writing-test-zone').classList.contains('hidden')) {
-    startWritingTest(true);
+  highlightTest(pendingTest);
+  // Reload dans le MÊME onglet en cours de test → on restaure ; une arrivée
+  // fraîche (nouvel onglet, retour plus tard) → écran d'accueil, aucun chrono.
+  let sessionTest = 0;
+  try { sessionTest = parseInt(sessionStorage.getItem(SESSION_ACTIVE_KEY) || '0', 10); } catch (e) {}
+  if (sessionTest >= 1 && sessionTest <= 3) {
+    resumeTest(sessionTest);
   }
-  restoreWritingFeedback();
-}
+});
 
 // Filet de sécurité : prévenir avant de quitter s'il reste du texte non soumis.
 window.addEventListener('beforeunload', (e) => {
