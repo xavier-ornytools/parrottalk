@@ -408,6 +408,7 @@ function startTest() {
   document.getElementById('test-zone').classList.remove('hidden');
   submitted = false;
   const saved = loadProgress('listening', currentTest.id);
+  if (!saved) window.ptEvent && window.ptEvent('test_started', { section: 'listening', test_number: currentTest.id });
   if (saved) {
     currentSection = saved.currentSection || 0;
     sectionsDone = saved.sectionsDone || [false,false,false,false];
@@ -594,6 +595,7 @@ function finishSection() {
   const si = currentSection;
   const sec = currentTest.sections[si];
   if (!sectionsDone[si]) {
+    window.ptEvent && window.ptEvent('section_completed', { section: 'listening', test_number: currentTest.id });
     const qs = getQuestions(sec);
     let score = 0;
     qs.forEach(q => {

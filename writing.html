@@ -381,6 +381,7 @@ function startWritingTest(resume = false) {
   testStarted = true;
   try { sessionStorage.setItem(SESSION_ACTIVE_KEY, String(currentWritingTest)); } catch (e) {}
   if (!resume) toast('Test 0' + currentWritingTest + ' started — 60 minutes. Begin with Task 1 (20 min).', 'info');
+  if (!resume) window.ptEvent && window.ptEvent('test_started', { section: 'writing', test_number: currentWritingTest });
 }
 
 function startTimer() {
@@ -424,6 +425,7 @@ async function getAIFeedback(task) {
     toast('Please write at least 50 words before requesting AI feedback.', 'error');
     return;
   }
+  window.ptEvent && window.ptEvent('section_completed', { section: 'writing', test_number: currentWritingTest });
   // Cohérence absolue : on envoie à Gemini (et donc on logge) EXACTEMENT l'énoncé
   // affiché au candidat, lu depuis le DOM, jamais une source parallèle qui
   // pourrait avoir divergé du test réellement à l'écran.
@@ -503,6 +505,7 @@ function renderAIFeedback(box, data, task, promptText) {
   }).join('');
   const promptExcerpt = promptText ? promptText.trim().slice(0, 100) + (promptText.trim().length > 100 ? '…' : '') : '';
   const displayBand = clampBand(data.band);
+  window.ptEvent && window.ptEvent('evaluation_received', { section: 'writing', band_score: displayBand });
 
   // Le band de la tâche (hero) reste toujours visible et exact : démo produit.
   // Le détail par critère, le sujet évalué, le résumé et le conseil passent

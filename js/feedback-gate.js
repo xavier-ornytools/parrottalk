@@ -61,7 +61,9 @@
   function isRated() { return lsGet(LS_RATED) === '1'; }
 
   function ga(event, params) {
-    try { if (typeof window.gtag === 'function') window.gtag('event', event, params || {}); } catch (e) {}
+    // Passe par window.ptEvent (analytics.js) : respecte l'exclusion du trafic
+    // interne (pt_internal) et le garde consentement. No-op si ptEvent absent.
+    try { if (typeof window.ptEvent === 'function') window.ptEvent(event, params || {}); } catch (e) {}
   }
 
   // Envoi non bloquant : l'UI ne dépend jamais du réseau (mobile lent inclus).
@@ -150,6 +152,7 @@
         mostHelpful: answers.mostHelpful
       });
       ga('feedback_unlocked', { fb_type: opts.type, fb_band: opts.band });
+      ga('feedback_completed', { section: opts.type });
 
       // Révèle tous les rapports détaillés de la page (ex. les 2 tâches Writing)
       // et retire les éventuelles autres cartes de déblocage encore ouvertes.
@@ -191,6 +194,7 @@
         var n = parseInt(ev.currentTarget.getAttribute('data-n'), 10);
         lsSet(LS_RATED, '1');
         ga('feedback_rating', { fb_rating: n, fb_type: opts.type });
+        ga('beta_rating_given', { rating: n });
         postFeedback({ type: opts.type, testId: opts.testId, band: opts.band, betaRating: n });
         ev.currentTarget.classList.add('fb-opt--selected');
         if (scale) scale.classList.add('fb-locked');

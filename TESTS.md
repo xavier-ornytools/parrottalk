@@ -1,5 +1,52 @@
 # ParrotTalk — Tests techniques
 
+## Key events GA4 + exclusion du trafic interne (2026-07-13) ✅
+
+Tag avant : `measure-session-2026-07-13-ga4-events`. Branche `feat/ga4-key-events`,
+repartie de `main`. Chantier de mesure : savoir combien de visiteurs FONT quelque
+chose, pas juste combien arrivent. Aucune nouvelle UI, aucun flux modifié : des
+appels `gtag` aux endroits existants.
+
+### Référence des events (à utiliser pour lire les rapports GA4)
+
+| Event | Params | Émis quand / où |
+|---|---|---|
+| `test_started` | `section`, `test_number` | Démarrage d'un test (Writing `startWritingTest` hors reprise, Speaking `startTest`, Reading/Listening `startTest` hors reprise) |
+| `section_completed` | `section`, `test_number` | Writing : soumission d'une tâche (`getAIFeedback`) ; Speaking : soumission (`checkAndSubmit`) ; Reading : `finishReadingPassage` ; Listening : `finishSection` |
+| `evaluation_received` | `section`, `band_score` | Retour du band IA (Writing `renderAIFeedback`, Speaking `renderSpeakingFeedback`) |
+| `feedback_completed` | `section` | Les 3 questions du micro-feedback répondues (`js/feedback-gate.js`) |
+| `beta_rating_given` | `rating` | Note de beta 1-5 cliquée (`js/feedback-gate.js`) |
+
+`section` ∈ {writing, speaking, reading, listening}. `test_number` = numéro (1/2/3)
+ou id (`test01`…) selon la page. Writing/Speaking émettent les 5 events ;
+Reading/Listening émettent `test_started` + `section_completed`.
+
+### Exclusion du trafic interne
+
+- Marqueur `localStorage.pt_internal = "1"`, posé par la page cachée **`/internal.html`**
+  (noindex, aucun lien depuis le site, un bouton pour activer/désactiver).
+- `js/analytics.js` : helper `window.ptEvent(name, params)` centralise tout envoi.
+  Si `pt_internal=1` → **aucun key event n'est envoyé** ET le `page_view` est marqué
+  `traffic_type=internal` (via `gtag('config', ID, {traffic_type:'internal'})`,
+  méthode standard GA4 filtrable côté propriété).
+- Consentement respecté : `ptEvent` n'envoie que si GA4 est déjà chargé (bandeau
+  cookies accepté), et n'initialise jamais GA4 de lui-même. Bandeau inchangé.
+- `js/feedback-gate.js` : son helper `ga()` délègue désormais à `ptEvent` (donc les
+  events feedback respectent aussi l'exclusion interne).
+
+### Testé avec
+- `node tests/e2e-ga4-events.js` (Playwright, vrai Chrome, vrai `googletagmanager`
+  bloqué, `window.gtag` remplacé par un enregistreur) : **14/14**. Les 5 events
+  partent avec leurs params sur les bonnes pages ; en mode interne (`pt_internal=1`)
+  **aucun event n'est émis** ; `/internal.html` pose bien le marqueur.
+- Non-régression : feedback 31/31, persistance 50/50, cycle de vie Writing 30/30,
+  images 27/27.
+
+### Déploiement
+Non déployé : en attente de la vérification locale de Xavier (aucun merge sans feu vert).
+
+---
+
 ## robots.txt + sitemap.xml (2026-07-13) ✅
 
 Tag avant : `seo-session-2026-07-13-robots-sitemap`. Branche `seo/robots-sitemap`,

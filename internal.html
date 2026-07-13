@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Internal mode</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; background: #0F172A; color: #E2E8F0;
+      display: flex; min-height: 100vh; align-items: center; justify-content: center; margin: 0; padding: 24px; }
+    .card { text-align: center; max-width: 480px; }
+    .status { font-size: 1.75rem; font-weight: 800; margin-bottom: 12px; }
+    .on { color: #22C55E; } .off { color: #EF4444; }
+    p { color: #94A3B8; font-size: .95rem; line-height: 1.5; }
+    button { margin-top: 20px; padding: 12px 22px; border: 1px solid #475569; background: #1E293B;
+      color: #E2E8F0; border-radius: 10px; cursor: pointer; font-size: 1rem; }
+    button:hover { background: #334155; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="status on" id="status">Internal mode ON</div>
+    <p id="hint">Ce navigateur est marqué comme <strong>trafic interne</strong> : aucun key event GA4 n'est envoyé, et le page_view est marqué <code>traffic_type=internal</code> (filtrable dans GA4).</p>
+    <button onclick="toggleInternal()" id="toggle">Désactiver le mode interne</button>
+  </div>
+  <script>
+    function render(on) {
+      var s = document.getElementById('status');
+      s.textContent = on ? 'Internal mode ON' : 'Internal mode OFF';
+      s.className = 'status ' + (on ? 'on' : 'off');
+      document.getElementById('toggle').textContent = on ? 'Désactiver le mode interne' : 'Réactiver le mode interne';
+    }
+    function toggleInternal() {
+      try {
+        if (localStorage.getItem('pt_internal') === '1') { localStorage.removeItem('pt_internal'); render(false); }
+        else { localStorage.setItem('pt_internal', '1'); render(true); }
+      } catch (e) {}
+    }
+    // À l'ouverture : pose le marqueur.
+    try { localStorage.setItem('pt_internal', '1'); } catch (e) {}
+    render(true);
+  </script>
+</body>
+</html>
