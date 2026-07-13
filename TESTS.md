@@ -1,5 +1,46 @@
 # ParrotTalk — Tests techniques
 
+## Optimisation des images WebP (2026-07-13) ✅
+
+Tag avant : `ux-session-2026-07-13-image-optim`. Branche
+`perf/image-optimization`, repartie de `main`. Durcissement 3 de l'audit
+système. Marché cible en 3G à données chères (Pakistan, Ouzbékistan, Vietnam,
+Algérie), 1er sur ChatGPT : chaque Mo de trop fait fuir des visiteurs.
+
+Toutes les images affichées converties en WebP (Pillow, q80 illustrations, q88
+graphiques pour la lisibilité) et redimensionnées à ~2x leur taille d'affichage
+réelle (logo 1254px → 96px, mascottes 260px → 520px, héros → 960-1140px, app-mockup
+→ 840px). `loading="lazy"` sur les 4 images de l'accueil sous la ligne de
+flottaison (hero-rocket et logo restent eager). PNG d'affichage remplacés
+supprimés (13). Contenu et layout inchangés : seules les images et leurs
+attributs bougent (mêmes aspect ratios, mêmes tailles CSS). Pas de fallback
+`<picture>` (WebP supporté par tous les navigateurs cibles).
+
+**Mesures avant / après (images affichées) :**
+- Accueil : ~9,6 Mo → **349 Ko** total, dont **110 Ko** au 1er rendu (le reste en lazy).
+- Exercice (listening/reading/writing/speaking) : ~2,3 Mo → **~30 Ko**.
+- Dashboard : ~1,7 Mo → **58 Ko**.
+- `img/` global : 18 Mo → **2,1 Mo** (dont 1,5 Mo de `banner-hero.png` orpheline,
+  jamais affichée ni en méta — laissée hors périmètre, **à supprimer dans un
+  prochain chantier**).
+
+**Testé avec :**
+- `node tests/e2e-images.js` (Playwright, Chrome) : **27/27** sur 9 pages —
+  chaque image affichée se décode (`naturalWidth>0`, lazy-load déclenché par
+  défilement + `img.decode()` déterministe), toutes en WebP, zéro erreur HTTP.
+- Non-régression : cycle de vie Writing **30/30**, persistance **50/50**,
+  feedback **31/31**.
+- **Validation navigateur manuelle par Xavier** (serveur local) : accueil + 5
+  pages d'exercice, desktop + mobile simulé, aucune image floue ni déformée.
+
+### Déploiement
+Mergé sur `main` (merge commit `60efaf0`) et poussé. Worker inchangé.
+Déploiement Vercel confirmé par `curl` : `index.html` sert 6 références `.webp`
+(0 `.png`), les WebP arrivent en `Content-Type: image/webp`, l'ancien
+`logo-official.png` renvoie 404 (supprimé de la prod).
+
+---
+
 ## Cycle de vie Writing + cohérence énoncé/évaluation (2026-07-13) ✅
 
 Tag avant : `ux-session-2026-07-13-writing-lifecycle`. Branche
