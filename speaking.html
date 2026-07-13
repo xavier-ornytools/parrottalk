@@ -481,6 +481,7 @@ function renderPretest(n) {
 }
 
 function startTest() {
+  window.ptEvent && window.ptEvent('test_started', { section: 'speaking', test_number: currentSpeakingTest });
   currentPart = 1;
   currentQIdx = 0;
   document.getElementById('spk-pretest').classList.add('hidden');
@@ -846,6 +847,7 @@ async function checkAndSubmit() {
     toast('Please record at least one answer before submitting.', 'error');
     return;
   }
+  window.ptEvent && window.ptEvent('section_completed', { section: 'speaking', test_number: currentSpeakingTest });
 
   document.getElementById('spk-test-zone').classList.add('hidden');
   const resultsEl = document.getElementById('spk-results');
@@ -956,6 +958,7 @@ function buildTranscriptSection(data, testId) {
 
 function renderSpeakingFeedback(data, testId) {
   const displayOverall = clampBand(data.overall);
+  window.ptEvent && window.ptEvent('evaluation_received', { section: 'speaking', band_score: displayOverall });
   const criteriaHTML = [
     { key:'fc',   label:'Fluency & Coherence', color:'var(--primary)', bg:'var(--primary-light)' },
     { key:'lr',   label:'Lexical Resource',     color:'var(--primary)', bg:'var(--primary-light)' },

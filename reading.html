@@ -1653,6 +1653,7 @@ function finishReadingPassage() {
   const prefix = currentPrefix();
   const range = currentRanges()[pi];
   if (!passagesDone[pi]) {
+    window.ptEvent && window.ptEvent('section_completed', { section: 'reading', test_number: currentReadingTest });
     let score = 0;
     for (let qn = range.start; qn <= range.end; qn++) {
       const key = prefix + 'q' + qn;
@@ -1684,6 +1685,7 @@ function startTest() {
   submitted = false;
 
   const saved = loadProgress('reading', currentReadingTestId());
+  if (!saved) window.ptEvent && window.ptEvent('test_started', { section: 'reading', test_number: currentReadingTest });
   if (saved) {
     passagesDone = saved.passagesDone || [false,false,false];
     passageScoresLive = saved.passageScores || [0,0,0];
