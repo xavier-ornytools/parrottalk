@@ -1,5 +1,59 @@
 # ParrotTalk — Tests techniques
 
+## Cycle de vie Writing + cohérence énoncé/évaluation (2026-07-13) ✅
+
+Tag avant : `ux-session-2026-07-13-writing-lifecycle`. Branche
+`fix/writing-lifecycle`, repartie de `main`.
+
+**Deux symptômes, une cause + un bug de cohérence critique.** À l'ouverture, le
+Test 1 se lançait tout seul (chrono compris) et les boutons Test 2/3 étaient
+sans effet. Cause : `restoreDraftIfAny`/`tryRestoreWritingFeedbackOnLoad`
+s'exécutaient au chargement dès qu'un brouillon/feedback traînait en
+localStorage, et `selectWritingTest` ne re-rendait pas. **Bug de cohérence
+confirmé** : `getAIFeedback` envoyait `WRITING_DATA[currentWritingTest]` ;
+cliquer Test 2 après affichage du Test 1 mettait `currentWritingTest=2` en
+silence (écran inchangé), donc l'énoncé envoyé à Gemini et enregistré dans les
+logs était celui du Test 2 alors que le candidat répondait au Test 1. Des
+évaluations passées ont pu être faites contre le mauvais énoncé (non
+quantifiable côté client : logs KV sans endpoint de listing).
+
+Corrections : écran d'accueil sans test lancé ni chrono ; le chrono ne démarre
+qu'à un Start explicite ; changer de test avant démarrage change le choix, en
+cours de test demande confirmation puis reset propre (chrono, champs, compteurs,
+feedback) ; cohérence garantie par construction (`currentWritingTest` == test
+affiché) ET `getAIFeedback` lit désormais l'énoncé **exactement depuis le DOM
+affiché** ; autosave à **une clé par test** (`ielts_writing_draft_test<n>`, un
+brouillon du Test 1 ne peut plus se restaurer dans le Test 2) ; restauration au
+rechargement **gated par sessionStorage** (seul un reload du même onglet en
+cours de test restaure ; une arrivée fraîche montre l'accueil).
+
+**Testé avec :**
+- `node tests/e2e-writing-lifecycle.js` (Playwright, Chrome) : **30/30**. Accueil
+  sans chrono, sélection réelle des 3 tests, changement avant/après démarrage
+  (avec confirmation annuler/accepter), reprise au rechargement, isolation des
+  brouillons par test, et surtout **cohérence** : POST `/evaluate/writing`
+  intercepté, `prompt` envoyé == énoncé affiché au caractère près, bien celui du
+  test choisi et jamais d'un autre.
+- Non-régression : `tests/e2e-persistence.js` **50/50** (2 tests Writing mis à
+  jour à la clé par test) et `tests/e2e-feedback.js` **31/31**.
+- **Validation navigateur manuelle par Xavier** (serveur local) : 3 tests,
+  changement avant/après démarrage, rechargement en cours de test.
+
+**Audit des autres sections (constat, non corrigé cette session) :** Speaking
+n'a PAS le défaut (écran de pré-test à l'ouverture, pas de chrono). Listening et
+Reading ont le même motif d'auto-reprise (`init()` → `startTest()` +
+`startTimer()` au chargement si progression en localStorage, non borné à la
+session) mais c'était un choix délibéré de la session du 07/07 ; le même garde
+`sessionStorage` pourrait leur être appliqué si on veut aligner le comportement.
+
+### Déploiement
+Mergé sur `main` (merge commit `6b52be1`) et poussé. Worker inchangé (pas de
+redéploiement). Déploiement Vercel confirmé par `curl` sur
+`www.parrottalk.app/writing.html` : clé par test, bouton Start explicite et
+garde `sessionStorage` présents dans le HTML servi.
+
+---
+
 ## Micro-feedback post-score (2026-07-13) ✅
 
 Tag avant : `ui-session-2026-07-13-micro-feedback`. Branche
