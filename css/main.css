@@ -803,3 +803,17 @@ select.form-control { appearance: none; cursor: pointer; }
   .fb-hero__band { font-size: 3rem; }
   .fb-rating__scale .fb-opt { flex: 1 1 45%; }
 }
+
+/* ── Liens sociaux du footer (discrets, harmonieux) ───────────────────────── */
+.footer-social {
+  margin-top: 10px !important;
+  display: flex; gap: 16px; justify-content: center; align-items: center;
+}
+.footer-social a {
+  color: var(--text-muted); opacity: .6; display: inline-flex;
+  transition: opacity .2s ease, color .2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.footer-social a:hover, .footer-social a:focus-visible { opacity: 1; }
+.footer-social a.yt:hover { color: #FF0000; }
+.footer-social a.x:hover  { color: var(--text); }
