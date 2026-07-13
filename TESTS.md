@@ -1,5 +1,54 @@
 # ParrotTalk — Tests techniques
 
+## Micro-feedback post-score (2026-07-13) ✅
+
+Tag avant : `ui-session-2026-07-13-micro-feedback`. Branche
+`feat/micro-feedback-post-score`, repartie de `main`. Objectif business :
+capter du feedback des visiteurs organiques (68 users, 30 pays, zéro retour
+spontané) par un échange de valeur au moment du score.
+
+Le band global reste exact, gratuit et immédiat (démo produit, jamais touché) ;
+le rapport détaillé (critères, corrections, conseils, transcript) se débloque
+après 3 questions à un clic (échelles 5 niveaux type Typeform), avec une barre
+de progression et une révélation en douceur (pas de rechargement). Une note de
+beta 5 niveaux (Poor → Excellent) optionnelle clôt le rapport.
+
+Implémentation : nouveau module partagé `js/feedback-gate.js` (Writing +
+Speaking), styles `css/main.css` (`.fb-*`, mobile-first, boutons ≥ 60px), et
+endpoint Worker `POST /feedback` qui logge dans `RATE_KV` avec le **même
+mécanisme anonyme que les logs de calibration** (TTL 90 jours). `sanitizeFeedback`
+ne conserve que des valeurs d'énumération connues + band + type d'épreuve ; toute
+valeur libre/nominative ou hors bornes → `null` (aucun email, aucune donnée
+nominative, cohérent avec la privacy policy). Envoi `POST` fire-and-forget
+(jamais bloquant) + un event GA4 par réponse (sous consentement). `localStorage`
+empêche de reposer les questions et restaure le rapport débloqué au rechargement.
+
+**Testé avec :**
+- `node tests/e2e-feedback.js` (Playwright, Chrome système) : **31/31**. Band
+  visible / détail verrouillé / 3 questions à échelles 5 niveaux / révélation /
+  note 1-5 / POST `/feedback` intercepté avec la bonne charge / reload qui
+  restaure le détail sans reposer les questions / déblocage Writing valable pour
+  les 2 tâches.
+- `sanitizeFeedback` testé sur le **code réel du Worker** : **8/8** (nouvelles
+  échelles acceptées, anciennes valeurs et injections rejetées, `betaRating`
+  borné 1-5, band clampé, champs parasites ignorés).
+- Non-régression : `node tests/e2e-persistence.js` **50/50** (autosave, consentement
+  micro, cookies, FAQ, persistance Listening/Reading inchangés).
+- **Validation navigateur manuelle par Xavier** (serveur local, desktop +
+  mobile simulé) : flux complet score → 3 questions → rapport → note beta,
+  boutons et échelles, persistance, mobile. Validée avant tout merge.
+
+### Déploiement
+Worker déployé d'abord (`npx wrangler deploy`, version `20b6a2b4`) ; endpoint
+`/feedback` vérifié réellement par `curl` (HTTP 200 `{"ok":true}` sur payload
+valide et sur note beta, `/stats` intact). Puis site mergé sur `main` (merge
+commit `42be64e`) et poussé ; déploiement Vercel confirmé par `curl` sur
+`www.parrottalk.app` (include `feedback-gate.js` présent sur writing.html et
+speaking.html, `js/feedback-gate.js` servi en 200, styles `.fb-opt--selected`
+en ligne).
+
+---
+
 ## Autosave Writing anti-perte de copie (2026-07-13) ✅
 
 Branche `feat/writing-autosave`, repartie de `main`. Périmètre : `writing.html`
