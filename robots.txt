@@ -1,0 +1,38 @@
+# ParrotTalk — https://www.parrottalk.app
+# Le canal IA est notre premier trafic : crawlers IA et moteurs classiques
+# sont explicitement les bienvenus sur tout le site.
+
+# --- Assistants et crawlers IA ---
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# --- Moteurs de recherche classiques ---
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# --- Défaut : tous les autres agents peuvent tout crawler ---
+User-agent: *
+Allow: /
+
+Sitemap: https://www.parrottalk.app/sitemap.xml
