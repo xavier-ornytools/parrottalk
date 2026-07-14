@@ -1,5 +1,17 @@
 # ParrotTalk — Tests techniques
 
+## P1.4 — Speaking : écrans épurés + suppression Web Speech (2026-07-14) ✅
+
+Branche `feat/speaking-visual-cleanup`. Défauts examen blanc : corrections de grammaire absurdes affichées pendant que le candidat parle, et transcript live moche. Fonctionnel (enregistrement/évaluation/note) à préserver strictement.
+
+- **Tableau de grammaire retiré** (bloc statique en bas de page, toujours visible sous la zone d'enregistrement).
+- **Web Speech API entièrement supprimée** : moteur `initRecognition` + déclarations (`SpeechRecognition`, `recognition`, `hasSpeechAPI`, `liveTranscripts`) + div `transcript-live` + appels dans start/stopRecording. Le transcript live n'était jamais utile (jamais envoyé au serveur, jamais vu par Xavier) et violait la règle « MediaRecorder jamais Web Speech API ». Le transcript des résultats vient du Worker.
+- **Fonctionnel intact** : MediaRecorder, consentement micro, évaluation, notation, persistance, timer de préparation Part 2 — non touchés. Aucune référence Web Speech pendante.
+
+### Testé avec
+- Vérif ciblée (Playwright vrai Chrome, micro factice) : **7/7**. Page sans exception JS, plus de tableau de grammaire ni de transcript live, bouton micro présent, **enregistrement MediaRecorder produit un blob**, **évaluation rendue** (mock), zéro exception sur tout le flux.
+- Non-régression : e2e feedback **36/36** (flux Speaking).
+
 ## P1.2 — Remapping Listening questions/audio (2026-07-14) ✅
 
 Branche `feat/listening-audio-remap`. Les MP3 Test01/02 ont été transcrits via Gemini 2.5 Flash (8 fichiers, ~0,10 €) pour établir l'ordre réel de l'audio. Constat : Test01 avait fortement dérivé (questions ne correspondant plus à l'audio), Test02 était presque bon. Décision Xavier : réécrire les questions pour coller à l'audio.
