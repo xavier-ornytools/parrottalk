@@ -934,7 +934,7 @@ function showResults(total, band, isPartial=false, doneCount=4, maxPossible=40, 
   // Détail gaté par le micro-feedback (band déjà visible au-dessus).
   const detailHTML =
     `<p style="color:rgba(255,255,255,.7);font-size:1.0625rem;margin-bottom:16px">${subText}</p>` +
-    `<button class="btn btn-outline" onclick="showAnswers()" style="color:white;border-color:rgba(255,255,255,.3)">Show All Correct Answers</button>` +
+    `<button class="btn btn-outline--on-dark" onclick="showAnswers()">Show All Correct Answers</button>` +
     `<div class="sec-results-grid" style="margin-top:16px">${gridHTML}</div>`;
   const gateEl = document.getElementById('results-gate');
   if (window.FeedbackGate && gateEl) {
@@ -942,7 +942,8 @@ function showResults(total, band, isPartial=false, doneCount=4, maxPossible=40, 
   } else if (gateEl) { gateEl.innerHTML = detailHTML; }
   document.getElementById('submit-section').classList.add('hidden');
   // Continuité vers l'épreuve suivante (parcours complet / mode mock).
-  if (window.ExamFlow) window.ExamFlow.renderNextStep('listening', card);
+  // Placé APRÈS la carte sombre (sur fond clair de la page), pas dedans.
+  if (window.ExamFlow) window.ExamFlow.renderNextStep('listening', card.parentElement || card);
   card.scrollIntoView({ behavior: 'smooth', block: 'start' });
   const sc = getAllScores()[currentTest.id];
   const metaEl = document.getElementById('meta-'+currentTest.id);
