@@ -1,5 +1,15 @@
 # ParrotTalk — Tests techniques
 
+## P1.1 — Révélation progressive Listening (2026-07-14) ✅
+
+Branche `feat/listening-progressive-reveal`. Défaut examen blanc : les 4 sections étaient toutes accessibles d'emblée (pas de révélation progressive). Correctif (mode examen) : une section ne se déverrouille que lorsque l'audio de la précédente a été joué (`sectionsPlayed`) ou qu'elle a été validée (`sectionsDone`), comme le vrai IELTS. En mode practice, navigation libre inchangée. Vaut pour les 3 tests (indépendant du contenu audio, donc de P1.2).
+
+Implémentation (`listening.html`) : `sectionUnlocked(i)` + `refreshTabLocks()`, garde dans `switchSection`, rafraîchissement après `togglePlay` (audio joué) et `finishSection` (section validée). Onglet verrouillé : classe `.tab-btn.locked` (grisé, `disabled`, tooltip). Consigne mise à jour.
+
+### Testé avec
+- Vérif ciblée (Playwright, vrai Chrome) : **9/9**. Exam : S1 libre, S2/S4 verrouillées au départ, saut vers section verrouillée refusé, S2 déverrouillée après lecture de S1, S3 encore verrouillée, navigation OK une fois déverrouillée. Practice : tout libre, saut direct à S4 autorisé.
+- Non-régression : smoke P0 **16/16**.
+
 ## Résilience quota Gemini + micro-correctifs (2026-07-14) ✅
 
 Contexte : la clé Gemini était sur le palier gratuit (20 requêtes/jour), un candidat a pris un 429. Xavier a activé la facturation (projet `gen-lang-client-0553736701`, crédit prépayé 50 €, recharge auto désactivée). Appel de test réel sur le Worker : évaluation renvoyée en HTTP 200, plus de 429.
