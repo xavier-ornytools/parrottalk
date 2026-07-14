@@ -258,6 +258,7 @@
       <p style="color:#92400E;font-size:.875rem">⚠️ IELTS Reading tip: <strong>Not Given</strong> means the passage neither confirms nor contradicts the statement. Don't answer from general knowledge.</p>
     </div>
     <button class="btn btn-primary btn-lg" onclick="startTest()">▶ Start Test (60 min)</button>
+    <p class="text-sm text-muted" style="margin-top:8px">The 60-minute timer starts only when you click Start.</p>
   </div>
 
   <!-- TEST ZONE -->
@@ -1579,6 +1580,7 @@ let secondsLeft = 3600;
 let passagesDone = [false,false,false];
 let passageScoresLive = [0,0,0];
 let savedReadingAnswers = {};
+const READING_SESSION_KEY = 'ielts_reading_session';
 
 function currentPrefix() {
   return currentReadingTest === 3 ? 't3_' : currentReadingTest === 2 ? 't2_' : '';
@@ -1600,25 +1602,19 @@ function init() {
     }
   });
 
-  // Restauration automatique : si une progression existe (passage en cours
-  // interrompu par un rechargement), on y retourne directement — sinon un
-  // rechargement a l'air de tout effacer alors que les données sont là.
-  const resume = findInProgressReadingTest();
-  if (resume) {
-    currentReadingTest = resume.id === 'rdtest03' ? 3 : resume.id === 'rdtest02' ? 2 : 1;
+  // Reprise UNIQUEMENT après un rechargement dans le MEME onglet en cours de
+  // test (sessionStorage, vidé à la fermeture de l'onglet). Une arrivée fraîche
+  // (nouvel onglet, retour plus tard) reste sur l'écran d'accueil, sans chrono
+  // ni test_started. Jumeau du garde-fou Writing du 13/07 : plus d'auto-start
+  // depuis une progression localStorage persistante.
+  let sessionTest = 0;
+  try { sessionTest = parseInt(sessionStorage.getItem(READING_SESSION_KEY) || '0', 10); } catch (e) {}
+  if (sessionTest >= 1 && sessionTest <= 3) {
+    currentReadingTest = sessionTest;
     document.querySelectorAll('.test-sel-btn').forEach((b,i) =>
       b.classList.toggle('active', i === currentReadingTest - 1));
-    startTest();
+    startTest(true); // reprise: chrono relancé, pas de nouveau test_started
   }
-}
-
-function findInProgressReadingTest() {
-  let best = null;
-  ['rdtest01','rdtest02','rdtest03'].forEach(id => {
-    const p = loadProgress('reading', id);
-    if (p && (!best || p.updatedAt > best.updatedAt)) best = { id, ...p };
-  });
-  return best;
 }
 
 function getAllReadingScores() {
@@ -1638,6 +1634,7 @@ function saveReadingScore(testId, passageScores, total) {
 
 function selectTest(id) {
   if (timerInterval) clearInterval(timerInterval);
+  try { sessionStorage.removeItem(READING_SESSION_KEY); } catch (e) {}
   currentReadingTest = id === 'test03' ? 3 : id === 'test02' ? 2 : 1;
   document.querySelectorAll('.test-sel-btn').forEach((b,i) =>
     b.classList.toggle('active', i === currentReadingTest - 1));
@@ -1676,7 +1673,7 @@ function finishReadingPassage() {
   if (pi < 2) switchPassage(pi + 1);
 }
 
-function startTest() {
+function startTest(resume = false) {
   document.getElementById('instructions-card').classList.add('hidden');
   ['test-zone','test-zone-02','test-zone-03'].forEach(z =>
     document.getElementById(z).classList.add('hidden'));
@@ -1685,7 +1682,7 @@ function startTest() {
   submitted = false;
 
   const saved = loadProgress('reading', currentReadingTestId());
-  if (!saved) window.ptEvent && window.ptEvent('test_started', { section: 'reading', test_number: currentReadingTest });
+  if (!resume) window.ptEvent && window.ptEvent('test_started', { section: 'reading', test_number: currentReadingTest });
   if (saved) {
     passagesDone = saved.passagesDone || [false,false,false];
     passageScoresLive = saved.passageScores || [0,0,0];
@@ -1698,6 +1695,7 @@ function startTest() {
   }
 
   startTimer();
+  try { sessionStorage.setItem(READING_SESSION_KEY, String(currentReadingTest)); } catch (e) {}
   switchPassage(saved ? (saved.currentPassage || 0) : 0);
   toast(saved
     ? `Progress restored — resuming at Passage ${(saved.currentPassage||0)+1}.`
@@ -1777,6 +1775,7 @@ function submitTest() {
   if (submitted) return;
   submitted = true;
   clearInterval(timerInterval);
+  try { sessionStorage.removeItem(READING_SESSION_KEY); } catch (e) {}
 
   const prefix = currentReadingTest === 3 ? 't3_' : currentReadingTest === 2 ? 't2_' : '';
   const activeRanges = currentReadingTest === 3 ? PASSAGE_RANGES_03 : currentReadingTest === 2 ? PASSAGE_RANGES_02 : PASSAGE_RANGES;
