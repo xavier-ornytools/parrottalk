@@ -1,5 +1,22 @@
 # ParrotTalk — Tests techniques
 
+## Corrections post examen blanc — P0 (2026-07-14) ✅ (en cours, P1 à suivre)
+
+Branche `fix/exam-blanc-p0` (tag de départ `pre-exam-blanc-p0`). Trois points, un commit chacun :
+
+1. **P0.1 Continuité entre les 4 épreuves** (`7e769b5`). Nouveau module partagé `js/exam-flow.js` : ordre officiel Listening → Reading → Writing → Speaking, mode « examen blanc complet » (`pt_mock`), écran de fin « You've completed all four ». `renderNextStep` ajouté à la fin de chaque écran de résultats (plus de cul-de-sac). Entrée « Full Mock Exam » sur l'accueil et le dashboard. Styles `.exam-flow` / `.exam-done`.
+2. **P0.2 Questionnaire cohérent + garde réponse** (`19c9eac`). `feedback-gate.js` : déverrouillage scopé par épreuve (`ielts_feedback_unlocked_<type>`) au lieu d'une clé globale qui sautait le gate partout après une réponse. Deux régimes : mock = rapports libres pendant le parcours + un seul questionnaire final (`renderFinalQuestionnaire` déverrouille les 4 rétroactivement) ; épreuve isolée = un questionnaire par épreuve. Reading et Listening intègrent enfin le gate (band libre, détail gaté). Garde « au moins une réponse » ajouté à la soumission Listening (les 3 autres l'avaient).
+3. **P0.3 Bouton mort** (`094dd67`). Le bouton « Show All Correct Answers » était invisible (`.btn-outline` fond blanc + texte blanc inline) sur la carte de résultats sombre. Remplacé par `.btn-outline--on-dark` (lisible). Bloc de continuité déplacé sous la carte (fond clair).
+
+### Testé avec
+- Smoke test réel (Playwright, vrai Chrome) : **16/16**. Couvre : chargement des 6 pages sans exception JS, globals `ExamFlow`/`FeedbackGate` présents, boutons mock, garde « soumission sans réponse bloquée » (Listening), régime isolé (band libre + détail gaté par le questionnaire), régime mock (détail libre + lien de continuité).
+- Syntaxe JS validée (`node --check` sur `exam-flow.js` et `feedback-gate.js`, `new Function` sur les blocs inline des 6 pages).
+
+### Reste à faire (P1) puis vérif finale
+- P1.1 révélation progressive Listening, P1.2 ordre questions/audio (transcription Gemini), P1.3 Writing deux temps, P1.4 refonte visuelle Speaking + suppression Web Speech.
+- e2e parcours complet (mock, 1 seul questionnaire à la fin) + épreuve isolée + Speaking sans Web Speech.
+- Vérif prod par Xavier, mobile, marqueur `pt_internal`, avant clôture.
+
 ## Écran de remerciement + commentaire libre + accueil 100% anglais (2026-07-14) ✅
 
 Tag avant : `ui-session-2026-07-14-feedback-thankyou`. Branche `feat/feedback-thankyou-comment`, repartie de `main`. Trois chantiers :
