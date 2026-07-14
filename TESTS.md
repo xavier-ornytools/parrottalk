@@ -1,5 +1,20 @@
 # ParrotTalk — Tests techniques
 
+## Résilience quota Gemini + micro-correctifs (2026-07-14) ✅
+
+Contexte : la clé Gemini était sur le palier gratuit (20 requêtes/jour), un candidat a pris un 429. Xavier a activé la facturation (projet `gen-lang-client-0553736701`, crédit prépayé 50 €, recharge auto désactivée). Appel de test réel sur le Worker : évaluation renvoyée en HTTP 200, plus de 429.
+
+Branche `fix/quota-resilience` :
+1. **429 gracieux + relance auto** (`writing.html` `getAIFeedback`, `speaking.html` `checkAndSubmit`). Sur 429/503 : message « High demand right now, retrying in a moment » (au lieu de l'erreur Gemini brute), une relance automatique après 6 s, puis bouton « Try again » si l'échec persiste. Les copies/enregistrements ne sont jamais perdus.
+2. **beforeunload Writing désarmé après soumission** (`hasUnsavedWork` compare le texte au texte déjà soumis `submittedEssays`). Fini le « modifications non enregistrées » anxiogène quand la copie est déjà notée (ex. « Continue to Speaking »).
+
+### Testé avec
+- Vérif ciblée (Playwright, vrai Chrome) : **7/7**. Après soumission Writing, `hasUnsavedWork() === false` ; sur 429 injecté, message « High demand », aucune fuite du message Gemini brut, relance auto (2e appel), bouton « Try again » ensuite.
+- Non-régression : smoke P0 **16/16**, e2e feedback **36/36**.
+
+### Note alerte Telegram
+`logGeminiFailure` incrémente `errors:<jour>` sur toute réponse non-OK de Gemini, **429 compris** (l'alerte n'est pas aveugle). Seuil actuel ≥ 3 erreurs/jour. À suivre : suivi du solde prépayé (le crédit coupe à zéro sans recharge auto) et éventuel abaissement du seuil / alerte quota dédiée.
+
 ## Corrections post examen blanc — P0 (2026-07-14) ✅ (en cours, P1 à suivre)
 
 Branche `fix/exam-blanc-p0` (tag de départ `pre-exam-blanc-p0`). Trois points, un commit chacun :
