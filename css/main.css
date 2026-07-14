@@ -180,6 +180,37 @@ p  { color: var(--text-muted); }
 .btn-lg  { padding: 16px 32px; font-size: 1.0625rem; }
 .btn-xl  { padding: 18px 40px; font-size: 1.125rem; }
 .btn[disabled] { opacity: .45; cursor: not-allowed; transform: none !important; }
+/* Bouton discret (liens de fin d'épreuve, "Home", "Stop mock"). */
+.btn-ghost { background: transparent; color: var(--text-muted); border: 1.5px solid transparent; }
+.btn-ghost:hover { color: var(--primary); background: var(--primary-pale); }
+/* Bouton outline posé sur une carte SOMBRE (résultats) : fond transparent,
+   texte et bordure clairs. Corrige le bouton "Show All Correct Answers" qui
+   apparaissait vide (texte blanc sur fond blanc de .btn-outline). */
+.btn-outline--on-dark { background: transparent; color: var(--white); border: 1.5px solid rgba(255,255,255,.5); box-shadow: none; }
+.btn-outline--on-dark:hover { background: rgba(255,255,255,.14); color: var(--white); border-color: var(--white); }
+
+/* ── PARCOURS D'EXAMEN (fin d'épreuve + écran de fin de mock) ─────────────── */
+.exam-flow {
+  margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;
+}
+.exam-flow__label, .exam-flow__mock { font-size: .8rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--text-muted); }
+.exam-flow__mock { color: var(--primary); }
+.exam-flow__end { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 4px; }
+.exam-done {
+  position: fixed; inset: 0; z-index: 1000; overflow-y: auto;
+  background: rgba(15,23,42,.75); backdrop-filter: blur(4px);
+  display: flex; align-items: flex-start; justify-content: center; padding: 32px 16px;
+}
+.exam-done__card {
+  background: var(--white); border-radius: var(--r-xl); padding: 32px; max-width: 560px; width: 100%;
+  box-shadow: var(--sh-lg, 0 20px 50px rgba(0,0,0,.3)); text-align: center;
+}
+.exam-done__emoji { font-size: 3rem; }
+.exam-done__title { font-size: 1.5rem; font-weight: 800; margin: 8px 0; color: var(--text); }
+.exam-done__sub { color: var(--text-muted); font-size: .95rem; margin-bottom: 20px; }
+.exam-done__gate { margin-bottom: 20px; text-align: left; }
 
 /* ── CARDS ───────────────────────────────────────────────────────────────── */
 .card {

@@ -53,8 +53,10 @@ async function withFeedbackCapture(page) {
 
 async function clearFeedbackLS(page) {
   await page.evaluate(() => {
-    ['ielts_feedback_unlocked', 'ielts_feedback_answers', 'ielts_feedback_rated',
-     'ielts_speaking_feedback', 'ielts_writing_feedback'].forEach(k => localStorage.removeItem(k));
+    ['ielts_feedback_unlocked', 'ielts_feedback_unlocked_listening', 'ielts_feedback_unlocked_reading',
+     'ielts_feedback_unlocked_writing', 'ielts_feedback_unlocked_speaking',
+     'ielts_feedback_answers', 'ielts_feedback_rated',
+     'ielts_speaking_feedback', 'ielts_writing_feedback', 'pt_mock'].forEach(k => localStorage.removeItem(k));
   });
 }
 
@@ -106,7 +108,9 @@ async function testSpeakingGateFlow(browser) {
   check('Après le merci : détail révélé (.is-open)', (await page.locator('.feedback-detail.is-open').count()) >= 1);
   check('Carte de déblocage retirée', (await page.locator('.fb-gate').count()) === 0);
   check('Grille des critères visible dans le détail', await page.locator('.feedback-detail .score-mini-grid').isVisible());
-  check('unlock mémorisé en localStorage', (await page.evaluate(() => localStorage.getItem('ielts_feedback_unlocked'))) === '1');
+  // Déverrouillage scopé par épreuve (clé ielts_feedback_unlocked_<type>), plus
+  // de clé globale unique — voir feedback-gate.js (cadence à deux régimes P0.2).
+  check('unlock (scopé speaking) mémorisé en localStorage', (await page.evaluate(() => localStorage.getItem('ielts_feedback_unlocked_speaking'))) === '1');
 
   const answers = await page.evaluate(() => JSON.parse(localStorage.getItem('ielts_feedback_answers') || '{}'));
   check('Les 3 réponses mémorisées (nouvelles échelles)', answers.scoreVsExpected === 'about_right' && answers.examTiming === '3_6m' && answers.mostHelpful === 'detailed_corrections');

@@ -8,6 +8,8 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
   <script src="js/analytics.js" async></script>
   <script src="js/cookie-banner.js" defer></script>
+  <script src="js/exam-flow.js" defer></script>
+  <script src="js/feedback-gate.js" defer></script>
   <style>
     .section-block  { display: none; }
     .section-block.active { display: block; }
@@ -269,22 +271,15 @@
       <button class="btn btn-success btn-lg" onclick="submitTest()">✅ Submit & Get Score</button>
     </div>
 
-    <!-- RESULTS -->
+    <!-- RESULTS : band toujours visible ; le détail (message, réponses,
+         sections) est gaté par le micro-feedback en épreuve isolée, libre en mock. -->
     <div class="results-card" id="results-card">
-      <div style="display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center">
-        <div>
-          <div style="font-size:.8rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em">🎧 Listening — Final Score</div>
-          <div class="band-big" id="results-score">—</div>
-          <div style="font-size:1.5rem;font-weight:700;color:var(--white);margin-top:4px" id="results-band">Band —</div>
-        </div>
-        <div>
-          <p id="results-sub" style="color:rgba(255,255,255,.7);font-size:1.0625rem;margin-bottom:16px"></p>
-          <button class="btn btn-outline" onclick="showAnswers()" style="color:white;border-color:rgba(255,255,255,.3)">
-            Show All Correct Answers
-          </button>
-        </div>
+      <div>
+        <div style="font-size:.8rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em">🎧 Listening — Final Score</div>
+        <div class="band-big" id="results-score">—</div>
+        <div style="font-size:1.5rem;font-weight:700;color:var(--white);margin-top:4px" id="results-band">Band —</div>
       </div>
-      <div class="sec-results-grid" id="section-results"></div>
+      <div id="results-gate" style="margin-top:20px"></div>
     </div>
 
   </div>
@@ -836,6 +831,18 @@ function buildMatchingGroup(group) {
 // SCORING
 function submitTest() {
   if (submitted) return;
+  // Garde : refuser d'évaluer sans aucune réponse (cohérent avec les 3 autres
+  // épreuves). On compte les réponses non vides sur toutes les sections
+  // (saisies à l'écran ou sauvegardées lors d'un "I've finished this section").
+  let answeredCount = 0;
+  currentTest.sections.forEach(sec => getQuestions(sec).forEach(q => {
+    const v = getAnswerValue('q'+q.n) || savedAnswers['q'+q.n];
+    if (v && String(v).trim() !== '') answeredCount++;
+  }));
+  if (answeredCount === 0) {
+    toast('Answer at least one question before submitting.', 'error');
+    return;
+  }
   clearInterval(timerInterval);
   cancelTTS();
   audio.pause(); setPlayIcon(false);
@@ -909,27 +916,34 @@ function markQuestion(q, correct) {
 function showResults(total, band, isPartial=false, doneCount=4, maxPossible=40, scaledTotal=total) {
   const card = document.getElementById('results-card');
   card.classList.add('show');
+  let subText;
   if (isPartial) {
     document.getElementById('results-score').textContent = `${total}/${maxPossible}`;
     document.getElementById('results-band').textContent  = `~Band ${band}`;
-    document.getElementById('results-sub').textContent   =
-      `⚠️ Approximate — ${doneCount}/4 sections only. Do all 4 for an official score.`;
+    subText = `⚠️ Approximate — ${doneCount}/4 sections only. Do all 4 for an official score.`;
   } else {
     document.getElementById('results-score').textContent = `${total}/40`;
     document.getElementById('results-band').textContent  = `Band ${band}`;
     const gap = 35 - total;
-    document.getElementById('results-sub').textContent   =
-      total >= 35 ? '🎉 Band 7.0 target reached!' : `${gap} more correct to reach Band 7.0`;
+    subText = total >= 35 ? '🎉 Band 7.0 target reached!' : `${gap} more correct to reach Band 7.0`;
   }
-  document.getElementById('section-results').innerHTML =
-    currentTest.sections.map((s,i) => {
-      const isDone = document.getElementById(`tab-${i}`)?.classList.contains('done');
-      return `<div class="sec-res">
-        <div class="val">${isDone ? sectionScores[i]+'/10' : '—'}</div>
-        <div class="lbl">Section ${s.number}</div>
-      </div>`;
-    }).join('');
+  const gridHTML = currentTest.sections.map((s,i) => {
+    const isDone = document.getElementById(`tab-${i}`)?.classList.contains('done');
+    return `<div class="sec-res"><div class="val">${isDone ? sectionScores[i]+'/10' : '—'}</div><div class="lbl">Section ${s.number}</div></div>`;
+  }).join('');
+  // Détail gaté par le micro-feedback (band déjà visible au-dessus).
+  const detailHTML =
+    `<p style="color:rgba(255,255,255,.7);font-size:1.0625rem;margin-bottom:16px">${subText}</p>` +
+    `<button class="btn btn-outline--on-dark" onclick="showAnswers()">Show All Correct Answers</button>` +
+    `<div class="sec-results-grid" style="margin-top:16px">${gridHTML}</div>`;
+  const gateEl = document.getElementById('results-gate');
+  if (window.FeedbackGate && gateEl) {
+    window.FeedbackGate.render(gateEl, { type: 'listening', testId: currentTest.id, band: band, heroHTML: '', detailHTML });
+  } else if (gateEl) { gateEl.innerHTML = detailHTML; }
   document.getElementById('submit-section').classList.add('hidden');
+  // Continuité vers l'épreuve suivante (parcours complet / mode mock).
+  // Placé APRÈS la carte sombre (sur fond clair de la page), pas dedans.
+  if (window.ExamFlow) window.ExamFlow.renderNextStep('listening', card.parentElement || card);
   card.scrollIntoView({ behavior: 'smooth', block: 'start' });
   const sc = getAllScores()[currentTest.id];
   const metaEl = document.getElementById('meta-'+currentTest.id);

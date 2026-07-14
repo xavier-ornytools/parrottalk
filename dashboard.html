@@ -8,6 +8,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
   <script src="js/analytics.js" async></script>
   <script src="js/cookie-banner.js" defer></script>
+  <script src="js/exam-flow.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     .overall-band {
@@ -88,8 +89,9 @@
         </div>
         <h1>My Progress</h1>
         <p>Track your band evolution across all four IELTS skills</p>
-        <div style="display:flex;gap:16px;margin-top:16px">
-          <div style="font-size:.875rem;font-weight:600;color:var(--text-muted)">🎯 SPEAK ENGLISH · SCORE HIGHER · GO FURTHER</div>
+        <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap">
+          <button type="button" class="btn btn-primary" onclick="ExamFlow.startMock()">🎓 Start Full Mock Exam</button>
+          <a href="listening.html" class="btn btn-secondary">Practice one section</a>
         </div>
       </div>
       <div class="page-hero__mascot" style="width:420px">

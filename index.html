@@ -10,6 +10,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
   <script src="js/analytics.js" async></script>
   <script src="js/cookie-banner.js" defer></script>
+  <script src="js/exam-flow.js" defer></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -64,8 +65,9 @@
         </p>
         <div class="hero__actions">
           <a href="listening.html" class="btn btn-primary btn-xl">Start Free Practice</a>
-          <a href="dashboard.html" class="btn btn-secondary btn-xl">View My Progress</a>
+          <button type="button" class="btn btn-secondary btn-xl" onclick="ExamFlow.startMock()">🎓 Full Mock Exam</button>
         </div>
+        <p style="font-size:.8125rem;color:var(--text-muted);margin-top:10px">Full mock: the four sections in order, one sitting. Or <a href="dashboard.html" style="color:inherit;text-decoration:underline">view your progress</a>.</p>
         <div class="hero__stats">
           <div class="hero__stat">
             <strong>3+</strong><span>Tests per Skill</span>

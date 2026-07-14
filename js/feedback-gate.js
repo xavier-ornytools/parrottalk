@@ -20,7 +20,15 @@
 (function () {
   'use strict';
 
-  var LS_UNLOCKED = 'ielts_feedback_unlocked';
+  // Déverrouillage SCOPÉ PAR ÉPREUVE (ielts_feedback_unlocked_<type>), et non
+  // plus une clé globale unique : sans ça, répondre une fois sur une épreuve
+  // débloquait le rapport détaillé partout, sur toutes les épreuves et à chaque
+  // rechargement. Deux régimes (voir render/renderFinalQuestionnaire) :
+  //  - épreuve isolée : chaque épreuve gate son propre rapport ;
+  //  - mode mock (ExamFlow) : rapports libres pendant le parcours, un seul
+  //    questionnaire à la fin qui déverrouille les 4 rétroactivement.
+  var LS_UNLOCKED_PREFIX = 'ielts_feedback_unlocked_';
+  var ALL_TYPES = ['listening', 'reading', 'writing', 'speaking'];
   var LS_ANSWERS  = 'ielts_feedback_answers';
   var LS_RATED    = 'ielts_feedback_rated';
   var API_BASE    = 'https://parrottalk-api.foundry8.workers.dev';
@@ -59,7 +67,13 @@
 
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
-  function isUnlocked() { return lsGet(LS_UNLOCKED) === '1'; }
+  function unlockKey(type) { return LS_UNLOCKED_PREFIX + (type || 'x'); }
+  function isUnlocked(type) { return lsGet(unlockKey(type)) === '1'; }
+  function setUnlocked(type) { lsSet(unlockKey(type), '1'); }
+  function isMockActive() {
+    try { return !!(window.ExamFlow && window.ExamFlow.isMock && window.ExamFlow.isMock()); }
+    catch (e) { return false; }
+  }
   function isRated() { return lsGet(LS_RATED) === '1'; }
 
   function ga(event, params) {
@@ -81,12 +95,15 @@
   }
 
   function render(container, opts) {
+    // Ouvert d'emblée si : mode mock (le questionnaire est reporté à la fin du
+    // parcours), OU cette épreuve a déjà été déverrouillée (épreuve isolée).
+    var open = isMockActive() || isUnlocked(opts.type);
     container.innerHTML = opts.heroHTML +
-      '<div class="feedback-detail' + (isUnlocked() ? ' is-open' : '') + '"></div>';
+      '<div class="feedback-detail' + (open ? ' is-open' : '') + '"></div>';
     var detailEl = container.querySelector('.feedback-detail');
     detailEl.innerHTML = opts.detailHTML;
 
-    if (isUnlocked()) {
+    if (open) {
       maybeAppendRating(detailEl, opts);
       return;
     }
@@ -170,7 +187,7 @@
     // Envoi des 3 réponses (+ commentaire libre s'il existe) et déblocage logique.
     function submitFeedback(comment) {
       lsSet(LS_ANSWERS, JSON.stringify(answers));
-      lsSet(LS_UNLOCKED, '1');
+      setUnlocked(opts.type);
       var payload = {
         type: opts.type, testId: opts.testId, band: opts.band,
         scoreVsExpected: answers.scoreVsExpected,
@@ -246,5 +263,78 @@
     }
   }
 
-  window.FeedbackGate = { render: render };
+  // Questionnaire UNIQUE de fin de mock (écran "You've completed all four").
+  // Mêmes 3 questions + commentaire, mais à la fin il déverrouille les 4
+  // épreuves d'un coup (rétroactif) puis appelle onDone.
+  function renderFinalQuestionnaire(container, opts) {
+    opts = opts || {};
+    var gate = document.createElement('div');
+    gate.className = 'fb-gate';
+    container.appendChild(gate);
+    var step = 0, answers = {};
+
+    function renderStep() {
+      if (step >= QUESTIONS.length) { renderComment(); return; }
+      var q = QUESTIONS[step];
+      if (step === QUESTIONS.length - 1) { var preImg = new Image(); preImg.src = THANKS_IMG; }
+      var barPct = Math.round((step / QUESTIONS.length) * 100);
+      var optsHTML = q.options.map(function (o) {
+        return '<button type="button" class="fb-opt" data-val="' + o[0] + '">' + o[1] + '</button>';
+      }).join('');
+      gate.innerHTML =
+        '<div class="fb-gate__head">' +
+          '<h3 class="fb-gate__title">One quick question to unlock your full report</h3>' +
+          '<p class="fb-gate__sub">3 taps. Your answers make our AI more accurate.</p>' +
+        '</div>' +
+        '<div class="fb-progress"><div class="fb-progress__track"><div class="fb-progress__bar" style="width:' + barPct + '%"></div></div>' +
+          '<span class="fb-progress__label">' + (step + 1) + ' / 3</span></div>' +
+        '<div class="fb-q"><p class="fb-q__text">' + q.text + '</p><div class="fb-q__opts">' + optsHTML + '</div></div>';
+      var buttons = gate.querySelectorAll('.fb-opt');
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener('click', function (ev) {
+          var val = ev.currentTarget.getAttribute('data-val');
+          answers[q.id] = val;
+          ga('feedback_answer', { fb_question: q.id, fb_answer: val, fb_type: 'mock' });
+          step += 1; renderStep();
+        });
+      }
+    }
+
+    function renderComment() {
+      gate.innerHTML =
+        '<div class="fb-gate__head"><h3 class="fb-gate__title">Anything else you’d like to tell us?</h3>' +
+          '<p class="fb-gate__sub">Optional. Tapping Skip is perfectly fine.</p></div>' +
+        '<div class="fb-comment"><textarea class="fb-comment__box" maxlength="500" rows="3" placeholder="Optional, but appreciated"></textarea>' +
+          '<div class="fb-comment__actions">' +
+            '<button type="button" class="fb-opt fb-comment__skip">Skip</button>' +
+            '<button type="button" class="fb-opt fb-opt--selected fb-comment__send">Send</button>' +
+          '</div></div>';
+      var box = gate.querySelector('.fb-comment__box');
+      gate.querySelector('.fb-comment__skip').addEventListener('click', function () { finish(''); });
+      gate.querySelector('.fb-comment__send').addEventListener('click', function () { finish(box ? box.value : ''); });
+    }
+
+    function finish(comment) {
+      ALL_TYPES.forEach(setUnlocked); // déverrouillage rétroactif des 4 rapports
+      var payload = {
+        type: 'mock', band: opts.band != null ? opts.band : null,
+        scoreVsExpected: answers.scoreVsExpected, examTiming: answers.examTiming, mostHelpful: answers.mostHelpful,
+      };
+      var c = (comment || '').trim();
+      if (c) { payload.freeComment = c.slice(0, 500); ga('feedback_comment', { fb_type: 'mock' }); }
+      postFeedback(payload);
+      ga('feedback_unlocked', { fb_type: 'mock' });
+      ga('feedback_completed', { section: 'mock' });
+      gate.innerHTML =
+        '<div class="fb-thanks">' +
+          '<img class="fb-thanks__img" src="' + THANKS_IMG + '" alt="Thank you from ParrotTalk" width="200" height="200">' +
+          '<p class="fb-thanks__text">' + THANKS_TEXT + '</p>' +
+        '</div>';
+      if (typeof opts.onDone === 'function') opts.onDone();
+    }
+
+    renderStep();
+  }
+
+  window.FeedbackGate = { render: render, renderFinalQuestionnaire: renderFinalQuestionnaire };
 })();
