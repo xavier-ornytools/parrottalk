@@ -24,6 +24,8 @@
   var LS_ANSWERS  = 'ielts_feedback_answers';
   var LS_RATED    = 'ielts_feedback_rated';
   var API_BASE    = 'https://parrottalk-api.foundry8.workers.dev';
+  var THANKS_IMG  = 'img/parrot-thanks.webp';
+  var THANKS_TEXT = 'Your feedback means a lot to us. We read every response and ship improvements every couple of days to make ParrotTalk better for you.';
 
   var QUESTIONS = [
     {
@@ -100,8 +102,10 @@
     var answers = {};
 
     function renderStep() {
-      if (step >= QUESTIONS.length) { complete(); return; }
+      if (step >= QUESTIONS.length) { renderComment(); return; }
       var q = QUESTIONS[step];
+      // Préchargement discret de l'image de remerciement pendant la dernière question.
+      if (step === QUESTIONS.length - 1) { var preImg = new Image(); preImg.src = THANKS_IMG; }
       var barPct = Math.round((step / QUESTIONS.length) * 100);
       var optsHTML = q.options.map(function (o) {
         return '<button type="button" class="fb-opt" data-val="' + o[0] + '">' + o[1] + '</button>';
@@ -142,31 +146,68 @@
       }, 300);
     }
 
-    function complete() {
+    // Étape après la 3e question : commentaire libre optionnel (Skip possible).
+    function renderComment() {
+      gate.innerHTML =
+        '<div class="fb-gate__head">' +
+          '<h3 class="fb-gate__title">Anything else you’d like to tell us?</h3>' +
+          '<p class="fb-gate__sub">Optional. Tapping Skip is perfectly fine.</p>' +
+        '</div>' +
+        '<div class="fb-comment">' +
+          '<textarea class="fb-comment__box" maxlength="500" rows="3" placeholder="Optional, but appreciated"></textarea>' +
+          '<div class="fb-comment__actions">' +
+            '<button type="button" class="fb-opt fb-comment__skip">Skip</button>' +
+            '<button type="button" class="fb-opt fb-opt--selected fb-comment__send">Send</button>' +
+          '</div>' +
+        '</div>';
+      var box = gate.querySelector('.fb-comment__box');
+      gate.querySelector('.fb-comment__skip').addEventListener('click', function () { renderThankYou(''); });
+      gate.querySelector('.fb-comment__send').addEventListener('click', function () {
+        renderThankYou(box ? box.value : '');
+      });
+    }
+
+    // Envoi des 3 réponses (+ commentaire libre s'il existe) et déblocage logique.
+    function submitFeedback(comment) {
       lsSet(LS_ANSWERS, JSON.stringify(answers));
       lsSet(LS_UNLOCKED, '1');
-      postFeedback({
+      var payload = {
         type: opts.type, testId: opts.testId, band: opts.band,
         scoreVsExpected: answers.scoreVsExpected,
         examTiming: answers.examTiming,
         mostHelpful: answers.mostHelpful
-      });
+      };
+      var c = (comment || '').trim();
+      if (c) { payload.freeComment = c.slice(0, 500); ga('feedback_comment', { fb_type: opts.type }); }
+      postFeedback(payload);
       ga('feedback_unlocked', { fb_type: opts.type, fb_band: opts.band });
       ga('feedback_completed', { section: opts.type });
+    }
 
-      // Révèle tous les rapports détaillés de la page (ex. les 2 tâches Writing)
-      // et retire les éventuelles autres cartes de déblocage encore ouvertes.
+    // Écran de remerciement (image multilingue préchargée + texte), puis rapport.
+    function renderThankYou(comment) {
+      submitFeedback(comment);
+      gate.innerHTML =
+        '<div class="fb-thanks">' +
+          '<img class="fb-thanks__img" src="' + THANKS_IMG + '" alt="Thank you from ParrotTalk" width="240" height="240">' +
+          '<p class="fb-thanks__text">' + THANKS_TEXT + '</p>' +
+          '<button type="button" class="fb-opt fb-opt--selected fb-thanks__cta">See my detailed feedback</button>' +
+        '</div>';
+      gate.querySelector('.fb-thanks__cta').addEventListener('click', reveal);
+    }
+
+    // Révèle le rapport détaillé de toute la page et propose la note de beta.
+    function reveal() {
       var details = document.querySelectorAll('.feedback-detail');
       for (var i = 0; i < details.length; i++) details[i].classList.add('is-open');
       var otherGates = document.querySelectorAll('.fb-gate');
       for (var j = 0; j < otherGates.length; j++) {
         if (otherGates[j] !== gate) otherGates[j].remove();
       }
-
       maybeAppendRating(detailEl, opts);
-
       gate.classList.add('fb-gate--done');
       setTimeout(function () { gate.remove(); }, 350);
+      try { detailEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) {}
     }
 
     renderStep();
