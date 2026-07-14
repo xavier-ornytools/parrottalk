@@ -1,5 +1,15 @@
 # ParrotTalk — Tests techniques
 
+## P1.3 — Writing en deux temps (2026-07-14) ✅
+
+Branche `feat/writing-two-step-wip`. Défaut examen blanc : Task 1 et Task 2 s'affichaient ensemble (gros paquet). Correctif : Task 2 masquée au départ, un pont « Continue to Task 2 » l'ouvre au clic, et elle s'ouvre **automatiquement à 20 min** (`startTimer`, `totalSeconds === 2400`). Pages plus courtes, format conforme (T1 puis T2). Le chrono unique 60 min et la logique d'évaluation sont inchangés. Note : W1 de l'audit de conformité (qui jugeait « 2 tâches ensemble » CONFORME) est à réviser en conséquence.
+
+Implémentation (`writing.html`) : `hideTask2()`/`revealTask2()`, `hideTask2()` au démarrage, auto-ouverture à 2400s, et `resumeTest` rouvre Task 2 si elle a déjà été entamée ou évaluée (sinon elle resterait masquée après un rechargement).
+
+### Testé avec
+- Vérif ciblée (Playwright, vrai Chrome) : **9/9**. Frais : Task 2 masquée + pont visible ; clic → Task 2 ouverte, pont masqué ; auto-ouverture quand le chrono atteint 20 min ; reprise : Task 2 rouverte et contenu restauré.
+- Non-régression : e2e feedback **36/36** (flux Writing Task 2), smoke P0 **16/16**.
+
 ## P1.1 — Révélation progressive Listening (2026-07-14) ✅
 
 Branche `feat/listening-progressive-reveal`. Défaut examen blanc : les 4 sections étaient toutes accessibles d'emblée (pas de révélation progressive). Correctif (mode examen) : une section ne se déverrouille que lorsque l'audio de la précédente a été joué (`sectionsPlayed`) ou qu'elle a été validée (`sectionsDone`), comme le vrai IELTS. En mode practice, navigation libre inchangée. Vaut pour les 3 tests (indépendant du contenu audio, donc de P1.2).
