@@ -226,8 +226,14 @@
       </div>
     </div>
 
+    <!-- BRIDGE : révélation en deux temps (Task 1 puis Task 2), comme l'examen. -->
+    <div id="task2-bridge" style="text-align:center;padding:8px 0 24px">
+      <p style="color:var(--text-muted);font-size:.875rem;margin-bottom:10px">Spend about 20 minutes on Task 1. Task 2 opens when you tap below, and automatically after 20 minutes.</p>
+      <button class="btn btn-primary" onclick="revealTask2()">Continue to Task 2 →</button>
+    </div>
+
     <!-- TASK 2 -->
-    <div class="task-card">
+    <div class="task-card hidden" id="task2-card">
       <div class="task-header">
         <div class="flex items-center gap-3">
           <span class="task-tag t2">Task 2</span>
@@ -377,12 +383,32 @@ function startWritingTest(resume = false) {
   }
   updateWordCount('task1-answer','wc1',150);
   updateWordCount('task2-answer','wc2',250);
+  hideTask2(); // révélation en deux temps ; resumeTest rouvre Task 2 si déjà entamée
   totalSeconds = 3600;
   startTimer();
   testStarted = true;
   try { sessionStorage.setItem(SESSION_ACTIVE_KEY, String(currentWritingTest)); } catch (e) {}
   if (!resume) toast('Test 0' + currentWritingTest + ' started — 60 minutes. Begin with Task 1 (20 min).', 'info');
   if (!resume) window.ptEvent && window.ptEvent('test_started', { section: 'writing', test_number: currentWritingTest });
+}
+
+// P1.3 — Révélation en deux temps de l'énoncé Writing (Task 1 puis Task 2),
+// comme l'examen : pages plus courtes, format conforme. Task 2 s'ouvre au clic
+// sur le pont ou automatiquement à 20 min (voir startTimer).
+function hideTask2() {
+  const card = document.getElementById('task2-card');
+  const bridge = document.getElementById('task2-bridge');
+  if (card) card.classList.add('hidden');
+  if (bridge) bridge.classList.remove('hidden');
+}
+function revealTask2() {
+  const card = document.getElementById('task2-card');
+  const bridge = document.getElementById('task2-bridge');
+  if (bridge) bridge.classList.add('hidden');
+  if (card && card.classList.contains('hidden')) {
+    card.classList.remove('hidden');
+    try { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+  }
 }
 
 function startTimer() {
@@ -399,7 +425,7 @@ function startTimer() {
     if      (totalSeconds > 2400) hint.textContent = `📊 Task 1 — ${Math.ceil(totalSeconds/60 - 40)} min left`;
     else if (totalSeconds > 0)    hint.textContent = `📝 Task 2 — ${Math.ceil(totalSeconds/60)} min left`;
     else { clearInterval(globalInterval); toast('⏰ Time is up! Put your pen down.', 'error'); }
-    if (totalSeconds === 2400) toast('20 minutes elapsed — switch to Task 2 now!', 'info');
+    if (totalSeconds === 2400) { revealTask2(); toast('20 minutes elapsed — Task 2 is now open.', 'info'); }
     if (totalSeconds === 300)  toast('⚠️ 5 minutes remaining — finish your conclusion.', 'info');
   }, 1000);
 }
@@ -669,6 +695,11 @@ function resumeTest(n) {
     toast(`📝 Draft recovered${when ? ` (saved at ${when})` : ''}. You can keep writing.`, 'info');
   }
   restoreWritingFeedback();
+  // Reprise (P1.3) : rouvrir Task 2 si elle a déjà été entamée ou évaluée,
+  // sinon elle resterait masquée derrière le pont après un rechargement.
+  const t2Started = !!(document.getElementById('task2-answer').value || '').trim()
+    || !document.getElementById('ai-feedback-2').classList.contains('hidden');
+  if (t2Started) revealTask2();
 }
 
 window.addEventListener('DOMContentLoaded', () => {
