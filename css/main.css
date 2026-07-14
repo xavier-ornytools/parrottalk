@@ -804,6 +804,31 @@ select.form-control { appearance: none; cursor: pointer; }
   .fb-rating__scale .fb-opt { flex: 1 1 45%; }
 }
 
+/* Commentaire libre optionnel (après la 3e question). */
+.fb-comment { margin-top: 4px; }
+.fb-comment__box {
+  width: 100%; min-height: 88px; padding: 14px 16px; resize: vertical;
+  font-family: inherit; font-size: 1rem; color: var(--text);
+  background: var(--white); border: 2px solid var(--border); border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm); transition: border-color .15s ease;
+}
+.fb-comment__box:focus { outline: none; border-color: var(--primary); }
+.fb-comment__actions { display: flex; gap: 12px; margin-top: 14px; }
+.fb-comment__actions .fb-opt { flex: 1 1 0; min-height: 52px; font-size: 1rem; }
+.fb-comment__skip { color: var(--text-muted); }
+
+/* Écran de remerciement (image multilingue + texte). */
+.fb-thanks { text-align: center; animation: fbFadeIn .5s ease both; padding: 6px 0; }
+.fb-thanks__img {
+  width: 240px; max-width: 72%; height: auto; margin: 0 auto 10px;
+  display: block; border-radius: var(--r-lg);
+}
+.fb-thanks__text {
+  font-size: 1.0625rem; font-weight: 600; color: var(--text);
+  max-width: 40ch; margin: 0 auto 18px; line-height: 1.55;
+}
+.fb-thanks__cta { max-width: 320px; margin: 0 auto; }
+
 /* ── Liens sociaux du footer (lisibles sur fond sombre) ────────────────────── */
 .footer-social {
   margin-top: 18px !important;

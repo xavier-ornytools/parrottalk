@@ -1,5 +1,26 @@
 # ParrotTalk — Tests techniques
 
+## Écran de remerciement + commentaire libre + accueil 100% anglais (2026-07-14) ✅
+
+Tag avant : `ui-session-2026-07-14-feedback-thankyou`. Branche `feat/feedback-thankyou-comment`, repartie de `main`. Trois chantiers :
+
+1. **Écran de remerciement** après le micro-feedback : image multilingue du perroquet (`img/parrot-thanks.webp`, WebP 30 Ko, 480x480, préchargée pendant la 3e question) + texte fixe, bouton « See my detailed feedback » qui révèle le rapport. Styles `.fb-thanks` dans `css/main.css`.
+2. **Champ commentaire libre optionnel** après la 3e question, avant l'écran merci : textarea 500 caractères max, bouton Skip visible. Envoyé au Worker sous la clé `freeComment` (POST `/feedback`), nettoyé des caractères de contrôle et borné à 500 côté Worker (`sanitizeFeedback`), échappé à l'affichage. Le collecteur Foundry archive la clé et le rapport v3 remonte les verbatims (section E).
+3. **Accueil 100 % anglais** : suppression des sections françaises `#pre-beta` et `#beta-feedback`, de la fonction `handleBetaFeedback`, des PDF `beta/`. Aucun lien mort, sections HTML équilibrées (8/8), aucun français résiduel.
+
+### Ordre du flux
+Question 1, 2, 3, puis commentaire libre (Skip possible), puis écran merci (image + texte), puis rapport détaillé, puis note de beta.
+
+### Testé avec
+- `node tests/e2e-feedback.js` (Playwright, vrai Chrome) : **36/36**. Couvre le nouveau flux (écran commentaire, écran merci avec image, `freeComment` dans le POST, révélation après le merci), la persistance au reload, et les 2 tâches Writing.
+- Syntaxe JS validée (`node --check` sur `feedback-gate.js` et `worker/src/index.js`).
+- Rendu vérifié en captures (écran commentaire + écran merci).
+
+### Déploiement (au go de Xavier, après vérif navigateur)
+- Site : merge dans `main`, Vercel déploie.
+- Worker : `npx wrangler deploy` (indispensable pour que `freeComment` soit stocké).
+- Foundry : `report_v3.py` (verbatims section E) déjà sur master.
+
 ## Key events GA4 + exclusion du trafic interne (2026-07-13) ✅
 
 Tag avant : `measure-session-2026-07-13-ga4-events`. Branche `feat/ga4-key-events`,

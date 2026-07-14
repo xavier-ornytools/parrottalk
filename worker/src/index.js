@@ -128,6 +128,11 @@ function sanitizeFeedback(body) {
   const pick = (field) => (FEEDBACK_ENUMS[field].has(b[field]) ? b[field] : null);
   const bandNum = parseFloat(b.band);
   const type = b.type === 'writing' || b.type === 'speaking' ? b.type : null;
+  // Commentaire libre optionnel : seule donnée non énumérée. On retire les
+  // caractères de contrôle, on borne à 500 caractères. Aucune donnée nominative
+  // n'est demandée ; l'échappement HTML se fait à l'affichage (rapport Foundry).
+  const rawComment = typeof b.freeComment === 'string' ? b.freeComment : '';
+  const freeComment = rawComment.replace(/[\x00-\x1F\x7F]/g, ' ').trim().slice(0, 500) || null;
   return {
     type,
     band:    Number.isFinite(bandNum) ? Math.min(9, Math.max(0, bandNum)) : null,
@@ -136,6 +141,7 @@ function sanitizeFeedback(body) {
     examTiming:      pick('examTiming'),
     mostHelpful:     pick('mostHelpful'),
     betaRating: Number.isInteger(b.betaRating) && b.betaRating >= 1 && b.betaRating <= 5 ? b.betaRating : null,
+    freeComment,
   };
 }
 

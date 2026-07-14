@@ -87,9 +87,23 @@ async function testSpeakingGateFlow(browser) {
   check('Progression passe à 3 / 3', (await page.textContent('.fb-progress__label')).trim() === '3 / 3');
 
   await page.click('.fb-opt[data-val="detailed_corrections"]');
-  await page.waitForTimeout(1000); // laisse l'état sélectionné + l'animation retirer la carte
+  await page.waitForTimeout(900); // laisse apparaître l'écran commentaire
 
-  check('Après la 3e réponse : détail révélé (.is-open)', (await page.locator('.feedback-detail.is-open').count()) >= 1);
+  // Nouveau flux : commentaire libre optionnel après la 3e question
+  check('Écran commentaire affiché après la 3e question', await page.locator('.fb-comment__box').isVisible());
+  await page.fill('.fb-comment__box', 'The Speaking test felt very realistic, thanks!');
+  await page.click('.fb-comment__send');
+  await page.waitForTimeout(250);
+
+  // Écran de remerciement (image multilingue + texte exact)
+  check('Écran merci avec image multilingue', await page.locator('.fb-thanks__img').isVisible());
+  check('Texte de remerciement exact', (await page.textContent('.fb-thanks__text')).includes('Your feedback means a lot to us'));
+  check('POST /feedback contient le commentaire libre (freeComment)', captured.some(p => p && typeof p.freeComment === 'string' && p.freeComment.includes('realistic')));
+
+  await page.click('.fb-thanks__cta');
+  await page.waitForTimeout(900);
+
+  check('Après le merci : détail révélé (.is-open)', (await page.locator('.feedback-detail.is-open').count()) >= 1);
   check('Carte de déblocage retirée', (await page.locator('.fb-gate').count()) === 0);
   check('Grille des critères visible dans le détail', await page.locator('.feedback-detail .score-mini-grid').isVisible());
   check('unlock mémorisé en localStorage', (await page.evaluate(() => localStorage.getItem('ielts_feedback_unlocked'))) === '1');
@@ -124,6 +138,9 @@ async function testSpeakingReloadRestore(browser) {
   await page.click('.fb-opt[data-val="much_higher"]'); await page.waitForTimeout(600);
   await page.click('.fb-opt[data-val="within_1m"]'); await page.waitForTimeout(600);
   await page.click('.fb-opt[data-val="speaking_practice"]'); await page.waitForTimeout(900);
+  // Nouveau flux : Skip du commentaire déclenche l'unlock, puis on passe le merci
+  await page.click('.fb-comment__skip'); await page.waitForTimeout(250);
+  await page.click('.fb-thanks__cta'); await page.waitForTimeout(400);
 
   await page.reload();
   await page.waitForTimeout(400);
@@ -161,8 +178,12 @@ async function testWritingUnlockAppliesToBothTasks(browser) {
   // Répondre aux 3 questions
   await page.click('#ai-feedback-1 .fb-opt[data-val="much_lower"]'); await page.waitForTimeout(600);
   await page.click('#ai-feedback-1 .fb-opt[data-val="not_booked"]'); await page.waitForTimeout(600);
-  await page.click('#ai-feedback-1 .fb-opt[data-val="practice_tests"]'); await page.waitForTimeout(1000);
-  check('Task 1 : détail révélé après 3 réponses', (await page.locator('#ai-feedback-1 .feedback-detail.is-open').count()) === 1);
+  await page.click('#ai-feedback-1 .fb-opt[data-val="practice_tests"]'); await page.waitForTimeout(900);
+  // Nouveau flux : commentaire (Skip) puis merci
+  check('Task 1 : écran commentaire après la 3e question', await page.locator('#ai-feedback-1 .fb-comment__box').isVisible());
+  await page.click('#ai-feedback-1 .fb-comment__skip'); await page.waitForTimeout(250);
+  await page.click('#ai-feedback-1 .fb-thanks__cta'); await page.waitForTimeout(800);
+  check('Task 1 : détail révélé après le merci', (await page.locator('#ai-feedback-1 .feedback-detail.is-open').count()) === 1);
 
   // Rendu du feedback de la Task 2 APRÈS déblocage → détail direct, pas de carte
   await page.evaluate(m => {
