@@ -8,6 +8,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
   <script src="js/analytics.js" async></script>
   <script src="js/cookie-banner.js" defer></script>
+  <script src="js/exam-flow.js" defer></script>
   <style>
     .spk-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
 
@@ -1010,13 +1011,17 @@ function renderSpeakingFeedback(data, testId) {
       ${data.topTip?`<div style="padding:12px 14px;background:var(--warning-light);border-radius:var(--r);font-size:.875rem;color:#92400E"><strong>💡 Top tip:</strong> ${data.topTip}</div>`:''}
       ${buildTranscriptSection(data, testId)}
       <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <button class="btn" onclick="selectTest(${testId})">🔄 Redo Test 0${testId}</button>
-        <a href="dashboard.html" class="btn btn-primary">View Dashboard →</a>
+        <button class="btn btn-secondary" onclick="selectTest(${testId})">🔄 Redo Test 0${testId}</button>
       </div>
     </div>`;
 
-  FeedbackGate.render(document.getElementById('spk-results'),
+  const spkBox = document.getElementById('spk-results');
+  FeedbackGate.render(spkBox,
     { type: 'speaking', testId: testId, band: displayOverall, heroHTML: heroHTML, detailHTML: detailHTML });
+
+  // Continuité : dernière épreuve du parcours. En mode mock, propose l'écran
+  // de fin ("You've completed all four") ; sinon, retour dashboard/accueil.
+  if (window.ExamFlow) window.ExamFlow.renderNextStep('speaking', spkBox);
 
   saveSpeakingFeedback(data, testId);
 }

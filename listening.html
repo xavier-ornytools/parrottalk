@@ -8,6 +8,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
   <script src="js/analytics.js" async></script>
   <script src="js/cookie-banner.js" defer></script>
+  <script src="js/exam-flow.js" defer></script>
   <style>
     .section-block  { display: none; }
     .section-block.active { display: block; }
@@ -930,6 +931,8 @@ function showResults(total, band, isPartial=false, doneCount=4, maxPossible=40, 
       </div>`;
     }).join('');
   document.getElementById('submit-section').classList.add('hidden');
+  // Continuité vers l'épreuve suivante (parcours complet / mode mock).
+  if (window.ExamFlow) window.ExamFlow.renderNextStep('listening', card);
   card.scrollIntoView({ behavior: 'smooth', block: 'start' });
   const sc = getAllScores()[currentTest.id];
   const metaEl = document.getElementById('meta-'+currentTest.id);

@@ -8,6 +8,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
   <script src="js/analytics.js" async></script>
   <script src="js/cookie-banner.js" defer></script>
+  <script src="js/exam-flow.js" defer></script>
   <style>
     .passage-block { display: none; }
     .passage-block.active { display: block; }
@@ -1906,6 +1907,7 @@ function showResults(total, band, passageScores, ranges, answeredCount=40, scale
        <div class="val">${passageScores[i]}/${p.end - p.start + 1}</div>
        <div class="lbl">${p.label}</div>
      </div>`).join('');
+  if (window.ExamFlow) window.ExamFlow.renderNextStep('reading', card);
   card.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
