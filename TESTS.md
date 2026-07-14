@@ -1,5 +1,22 @@
 # ParrotTalk — Tests techniques
 
+## P1.2 — Remapping Listening questions/audio (2026-07-14) ✅
+
+Branche `feat/listening-audio-remap`. Les MP3 Test01/02 ont été transcrits via Gemini 2.5 Flash (8 fichiers, ~0,10 €) pour établir l'ordre réel de l'audio. Constat : Test01 avait fortement dérivé (questions ne correspondant plus à l'audio), Test02 était presque bon. Décision Xavier : réécrire les questions pour coller à l'audio.
+
+Corrections dans `js/data.js` :
+- **Test01 S1** (hôtel) : questions réordonnées dans l'ordre audio (surname, date, nights, room, special, rate, breakfast, payment, email, booking). Réponses inchangées, justes.
+- **Test01 S2** : map réordonnée (Education, Gift Shop, Temporary, Dinosaur, Restaurant) ; MC réécrit d'après l'audio (Q17 dernière visite 3:00 et non 3:30 ; audio guides gratuits ; East Wing fermé ; groupes 15+ entrée Meridian Road).
+- **Test01 S3** (urban farming) : entièrement réécrit — les noms de chercheurs de la donnée ne correspondaient pas à l'audio. Nouveaux : Patel, Mukamura, Ofor, Santos, Williams (matching) + 5 MC (énergie, suburbain, intégration, funding, engagement gouvernemental).
+- **Test02 S1** : email Q7 corrigé en `sitamel.com` (l'audio, deux mentions).
+- Test02 S4 : inversion Q33/Q34 envisagée mais NON appliquée (choix Xavier).
+
+Note : les réponses exactes des passages MP3 (distracteurs 89/98, 14th/4th, twin/double, domaine sitamel) restent à confirmer par Xavier à l'oreille en prod. Le mapping vérifié est documenté dans le vault Foundry (une note par test).
+
+### Testé avec
+- Rendu : les 4 sections des 2 tests rendent 40 questions sans erreur JS (Playwright vrai Chrome, 2/2).
+- Non-régression : smoke P0 **16/16**. Syntaxe `data.js` OK.
+
 ## P1.3 — Writing en deux temps (2026-07-14) ✅
 
 Branche `feat/writing-two-step-wip`. Défaut examen blanc : Task 1 et Task 2 s'affichaient ensemble (gros paquet). Correctif : Task 2 masquée au départ, un pont « Continue to Task 2 » l'ouvre au clic, et elle s'ouvre **automatiquement à 20 min** (`startTimer`, `totalSeconds === 2400`). Pages plus courtes, format conforme (T1 puis T2). Le chrono unique 60 min et la logique d'évaluation sont inchangés. Note : W1 de l'audit de conformité (qui jugeait « 2 tâches ensemble » CONFORME) est à réviser en conséquence.
