@@ -43,6 +43,15 @@
       background:var(--white); border-radius:var(--r-xl);
       border:1px solid var(--border); padding:32px; text-align:center;
     }
+    /* Etage : mascotte gauche, encadre question, mascotte droite */
+    .spk-stage { display:flex; align-items:center; justify-content:center; gap:22px; }
+    .spk-stage .voice-zone { flex:1 1 600px; max-width:600px; width:100%; }
+    .spk-mascot {
+      flex:0 0 auto; width:160px; height:auto; align-self:center;
+      filter:drop-shadow(0 12px 26px rgba(26,86,219,.20));
+      user-select:none; pointer-events:none;
+    }
+    @media(max-width:960px){ .spk-mascot { display:none; } }
     .part-progress { display:flex; gap:8px; justify-content:center; margin-bottom:24px; }
     .part-step {
       flex:1; max-width:140px; padding:8px 12px; border-radius:var(--r);
@@ -58,6 +67,9 @@
       line-height:1.55; margin-bottom:20px; padding:18px 22px;
       background:var(--primary-pale); border-radius:var(--r-lg);
       border-left:4px solid var(--primary); text-align:left;
+      /* Hauteur fixe : bouton et navigation toujours au meme endroit,
+         quelle que soit la longueur de la question (9 questions, tous formats). */
+      min-height:116px; display:flex; flex-direction:column; justify-content:center;
     }
     .tts-btn {
       background:none; border:1px solid var(--border); border-radius:var(--r-full);
@@ -566,6 +578,8 @@ function renderTestZone() {
   }).join('');
 
   el.innerHTML = `
+    <div class="spk-stage">
+    <img class="spk-mascot spk-mascot-left" src="img/mascot-speaking-left.webp" alt="" aria-hidden="true" loading="lazy">
     <div class="voice-zone">
       <div class="part-progress">${pills}</div>
       <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:14px">
@@ -583,7 +597,9 @@ function renderTestZone() {
       <div id="spk-rec-status" style="margin-top:8px">${statusHTML}</div>
       <div class="spk-nav" style="margin-top:24px">${navL}${navR}</div>
     </div>
-    <div class="card card-sm" style="margin-top:12px;padding:12px 16px">
+    <img class="spk-mascot spk-mascot-right" src="img/mascot-speaking-right.webp" alt="" aria-hidden="true" loading="lazy">
+    </div>
+    <div class="card card-sm" style="margin:12px auto 0;max-width:600px;padding:12px 16px">
       <div style="font-size:.8rem;font-weight:700;color:var(--text-muted);margin-bottom:8px">Overall progress</div>
       <div class="rec-progress">${dots}</div>
       <div style="font-size:.75rem;color:var(--text-muted);margin-top:8px">${doneCount}/9 responses recorded · <button onclick="checkAndSubmit()" style="background:none;border:none;color:var(--primary);cursor:pointer;font-size:.75rem;font-weight:600;padding:0">Submit for AI feedback →</button></div>
