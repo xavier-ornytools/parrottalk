@@ -1723,7 +1723,571 @@ const TEST03 = {
   ]
 };
 
-const TESTS = { test01: TEST01, test02: TEST02, test03: TEST03 };
+const TEST04 = {
+  id: "test04",
+  title: "Listening Test 04",
+  date: null,
+  sections: [
+    {
+      number: 1,
+      title: "Oakwood Student Lettings — Room Enquiry",
+      audio: "audio/test04/section1.mp3",
+      cues: [
+        {
+          t: 19.49,
+          reveal: [
+            1,
+            5
+          ],
+          phase: "reading"
+        },
+        {
+          t: 66.4,
+          activate: [
+            1,
+            5
+          ]
+        },
+        {
+          t: 122.67,
+          reveal: [
+            6,
+            10
+          ],
+          phase: "reading"
+        },
+        {
+          t: 152.19,
+          activate: [
+            6,
+            10
+          ]
+        },
+        {
+          t: 201.99,
+          end: true
+        }
+      ],
+      type: "form",
+      formTitle: "OAKWOOD STUDENT LETTINGS — ENQUIRY FORM · Q1–10",
+      instructions: "Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.",
+      questions: [
+        {
+          n: 1,
+          label: "Surname",
+          answer: "ASHWORTH",
+          alt: [
+            "ashworth"
+          ]
+        },
+        {
+          n: 2,
+          label: "Type of room chosen",
+          answer: "EN-SUITE",
+          alt: [
+            "ensuite",
+            "en suite"
+          ]
+        },
+        {
+          n: 3,
+          label: "Weekly rent (£)",
+          answer: "140",
+          alt: [
+            "£140",
+            "a hundred and forty",
+            "140 pounds"
+          ]
+        },
+        {
+          n: 4,
+          label: "Move-in date",
+          answer: "1 SEPTEMBER",
+          alt: [
+            "first of september",
+            "1 sept",
+            "sept 1"
+          ]
+        },
+        {
+          n: 5,
+          label: "Length of tenancy",
+          answer: "9 MONTHS",
+          alt: [
+            "nine months"
+          ]
+        },
+        {
+          n: 6,
+          label: "Deposit (£)",
+          answer: "200",
+          alt: [
+            "£200",
+            "two hundred",
+            "200 pounds"
+          ]
+        },
+        {
+          n: 7,
+          label: "Bill paid separately",
+          answer: "ELECTRICITY",
+          alt: [
+            "electric"
+          ]
+        },
+        {
+          n: 8,
+          label: "Distance to campus on foot",
+          answer: "15 MINUTES",
+          alt: [
+            "fifteen minutes"
+          ]
+        },
+        {
+          n: 9,
+          label: "Preferred way to make contact",
+          answer: "EMAIL",
+          alt: [
+            "by email",
+            "e-mail"
+          ]
+        },
+        {
+          n: 10,
+          label: "Enquiry reference",
+          answer: "OW3480",
+          alt: [
+            "ow 3480"
+          ]
+        }
+      ]
+    },
+    {
+      number: 2,
+      title: "Northgate Library — New Member Tour",
+      audio: "audio/test04/section2.mp3",
+      cues: [
+        {
+          t: 6.77,
+          reveal: [
+            11,
+            15
+          ],
+          phase: "reading"
+        },
+        {
+          t: 36.39,
+          activate: [
+            11,
+            15
+          ]
+        },
+        {
+          t: 84.07,
+          reveal: [
+            16,
+            20
+          ],
+          phase: "reading"
+        },
+        {
+          t: 113.91,
+          activate: [
+            16,
+            20
+          ]
+        },
+        {
+          t: 157.44,
+          end: true
+        }
+      ],
+      type: "mixed",
+      groups: [
+        {
+          type: "form",
+          formTitle: "NORTHGATE LIBRARY — PLAN · Q11–15",
+          instructions: "Label the plan below. Write the correct letter, A–H, next to each area.",
+          questions: [
+            {
+              n: 11,
+              label: "Returns desk",
+              answer: "C",
+              alt: [
+                "c"
+              ]
+            },
+            {
+              n: 12,
+              label: "Children's area",
+              answer: "F",
+              alt: [
+                "f"
+              ]
+            },
+            {
+              n: 13,
+              label: "Computers",
+              answer: "A",
+              alt: [
+                "a"
+              ]
+            },
+            {
+              n: 14,
+              label: "Quiet study room",
+              answer: "G",
+              alt: [
+                "g"
+              ]
+            },
+            {
+              n: 15,
+              label: "Café",
+              answer: "D",
+              alt: [
+                "d"
+              ]
+            }
+          ]
+        },
+        {
+          type: "mc",
+          instructions: "Choose the correct letter, A, B or C.",
+          questions: [
+            {
+              n: 16,
+              text: "On which day does the library open late?",
+              options: [
+                "Tuesday",
+                "Thursday",
+                "Saturday"
+              ],
+              answer: 1
+            },
+            {
+              n: 17,
+              text: "How many items can members borrow at once?",
+              options: [
+                "three",
+                "eight",
+                "twelve"
+              ],
+              answer: 2
+            }
+          ]
+        },
+        {
+          type: "form",
+          formTitle: "MEMBERSHIP NOTES · Q18–20",
+          instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
+          questions: [
+            {
+              n: 18,
+              label: "What new members must bring to join",
+              answer: "ID",
+              alt: [
+                "identification",
+                "some id"
+              ]
+            },
+            {
+              n: 19,
+              label: "Daily charge for an overdue book",
+              answer: "20P",
+              alt: [
+                "20 pence",
+                "twenty pence"
+              ]
+            },
+            {
+              n: 20,
+              label: "Free event on Saturday mornings",
+              answer: "STORYTIME",
+              alt: [
+                "story time",
+                "storytelling"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      number: 3,
+      title: "Tutorial — Campus Café Market Research",
+      audio: "audio/test04/section3.mp3",
+      cues: [
+        {
+          t: 9.31,
+          reveal: [
+            21,
+            25
+          ],
+          phase: "reading"
+        },
+        {
+          t: 39.9,
+          activate: [
+            21,
+            25
+          ]
+        },
+        {
+          t: 86.33,
+          reveal: [
+            26,
+            30
+          ],
+          phase: "reading"
+        },
+        {
+          t: 117.01,
+          activate: [
+            26,
+            30
+          ]
+        },
+        {
+          t: 153.03,
+          end: true
+        }
+      ],
+      type: "mixed",
+      groups: [
+        {
+          type: "mc",
+          instructions: "Choose the correct letter, A, B or C.",
+          questions: [
+            {
+              n: 21,
+              text: "What is the main aim of the project?",
+              options: [
+                "to raise prices",
+                "to attract more students",
+                "to cut costs"
+              ],
+              answer: 1
+            },
+            {
+              n: 22,
+              text: "What method will they use?",
+              options: [
+                "face-to-face interviews",
+                "an online survey",
+                "a focus group"
+              ],
+              answer: 1
+            },
+            {
+              n: 23,
+              text: "What sample size do they want?",
+              options: [
+                "fifty",
+                "one hundred",
+                "two hundred"
+              ],
+              answer: 2
+            }
+          ]
+        },
+        {
+          type: "matching",
+          instructions: "Who will carry out each task? Write A (Jack), B (Leila) or C (Dr Bennett).",
+          options: [
+            "A — Jack",
+            "B — Leila",
+            "C — Dr Bennett"
+          ],
+          questions: [
+            {
+              n: 24,
+              text: "Designing the questionnaire",
+              answer: "A",
+              alt: [
+                "a"
+              ]
+            },
+            {
+              n: 25,
+              text: "Analysing the results",
+              answer: "B",
+              alt: [
+                "b"
+              ]
+            },
+            {
+              n: 26,
+              text: "Promoting the survey",
+              answer: "A",
+              alt: [
+                "a"
+              ]
+            },
+            {
+              n: 27,
+              text: "Approving the questions",
+              answer: "C",
+              alt: [
+                "c"
+              ]
+            }
+          ]
+        },
+        {
+          type: "form",
+          formTitle: "PROJECT DETAILS · Q28–30",
+          instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
+          questions: [
+            {
+              n: 28,
+              label: "The survey stays open for",
+              answer: "TWO WEEKS",
+              alt: [
+                "2 weeks"
+              ]
+            },
+            {
+              n: 29,
+              label: "Length of the report",
+              answer: "1500 WORDS",
+              alt: [
+                "fifteen hundred words",
+                "1500"
+              ]
+            },
+            {
+              n: 30,
+              label: "Submission deadline",
+              answer: "20 MARCH",
+              alt: [
+                "twentieth of march",
+                "march 20"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      number: 4,
+      title: "Lecture — A Short History of the Bicycle",
+      audio: "audio/test04/section4.mp3",
+      cues: [
+        {
+          t: 5.18,
+          reveal: [
+            31,
+            40
+          ],
+          phase: "reading"
+        },
+        {
+          t: 35.02,
+          activate: [
+            31,
+            40
+          ]
+        },
+        {
+          t: 134.68,
+          end: true
+        }
+      ],
+      type: "form",
+      formTitle: "A SHORT HISTORY OF THE BICYCLE — LECTURE NOTES · Q31–40",
+      instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
+      questions: [
+        {
+          n: 31,
+          label: "The 1817 machine had no",
+          answer: "PEDALS",
+          alt: [
+            "pedal"
+          ]
+        },
+        {
+          n: 32,
+          label: "Rough early model was nicknamed the",
+          answer: "BONESHAKER",
+          alt: [
+            "bone shaker"
+          ]
+        },
+        {
+          n: 33,
+          label: "Model with one huge front wheel",
+          answer: "PENNY-FARTHING",
+          alt: [
+            "penny farthing"
+          ]
+        },
+        {
+          n: 34,
+          label: "The safety bicycle had two equal",
+          answer: "WHEELS",
+          alt: [
+            "wheel"
+          ]
+        },
+        {
+          n: 35,
+          label: "Comfort improved thanks to air-filled",
+          answer: "TYRES",
+          alt: [
+            "tyre",
+            "tires"
+          ]
+        },
+        {
+          n: 36,
+          label: "Bicycles gave women a sense of",
+          answer: "FREEDOM",
+          alt: [
+            "independence"
+          ]
+        },
+        {
+          n: 37,
+          label: "Decade of the cycling boom",
+          answer: "1890S",
+          alt: [
+            "1890",
+            "1890s"
+          ]
+        },
+        {
+          n: 38,
+          label: "Modern frames made lighter using",
+          answer: "ALUMINIUM",
+          alt: [
+            "aluminum"
+          ]
+        },
+        {
+          n: 39,
+          label: "Most cycle-friendly city today",
+          answer: "COPENHAGEN",
+          alt: [
+            "copenhagen"
+          ]
+        },
+        {
+          n: 40,
+          label: "Fastest-growing type of bike",
+          answer: "ELECTRIC",
+          alt: [
+            "electric bike",
+            "e-bike",
+            "e-bikes"
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+const TESTS = { test01: TEST01, test02: TEST02, test03: TEST03, test04: TEST04 };
 
 // ── SCORES (localStorage) ─────────────────────────────────────────────────────
 function saveScore(testId, sectionScores, total) {
