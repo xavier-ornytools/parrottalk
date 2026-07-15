@@ -34,7 +34,7 @@
   --sh:    0 4px 16px rgba(15,23,42,.08), 0 2px 6px rgba(15,23,42,.04);
   --sh-lg: 0 8px 32px rgba(15,23,42,.12), 0 4px 12px rgba(15,23,42,.06);
   --sh-xl: 0 20px 60px rgba(15,23,42,.16);
-  --nav-h: 64px;
+  --nav-h: 96px;
   --max-w: 1120px;
 }
 
@@ -140,6 +140,24 @@ p  { color: var(--text-muted); }
   transition: background .2s, transform .15s;
 }
 .nav__cta:hover { background: var(--primary-dark); transform: translateY(-1px); }
+/* Logo header agrandi (~2x). Logo natif 96x96, reste net. */
+.nav__logo img { height: 72px; width: 72px; object-fit: contain; border-radius: 12px; }
+.nav__logo { gap: 12px; font-size: 1.25rem; }
+/* Bloc droit du header : social + CTA */
+.nav__right { display: flex; align-items: center; gap: 14px; }
+/* Cluster social en haut du site : chips arrondies bordees, distinctes des
+   icones nues du footer sur fond sombre. */
+.nav__social { display: flex; align-items: center; gap: 6px; }
+.nav__social a {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: var(--r-full);
+  color: var(--text-muted); border: 1.5px solid var(--border);
+  transition: color .2s, border-color .2s, background .2s;
+}
+.nav__social a svg { width: 16px; height: 16px; }
+.nav__social a:hover, .nav__social a:focus-visible {
+  color: var(--primary); border-color: var(--primary); background: var(--primary-pale);
+}
 
 /* ── BUTTONS ─────────────────────────────────────────────────────────────── */
 .btn {
@@ -583,7 +601,7 @@ select.form-control { appearance: none; cursor: pointer; }
   background: var(--dark); color: rgba(255,255,255,.55);
   padding: 40px 0;
 }
-.footer__inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: gap; }
+.footer__inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
 .footer__logo { display: flex; align-items: center; gap: 10px; color: var(--white); font-weight: 800; font-size: 1rem; }
 .footer__links { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
 .footer__links a { font-size: .875rem; color: rgba(255,255,255,.45); transition: color .2s; }
@@ -623,13 +641,28 @@ select.form-control { appearance: none; cursor: pointer; }
   .criteria-grid  { grid-template-columns: 1fr; }
 }
 @media (max-width: 600px) {
+  /* Header mobile plus compact (repercute sur .hero et .page-hero via la variable) */
+  :root { --nav-h: 66px; }
+  .nav { box-shadow: none; }        /* pas de trait de separation, fond continu */
   .container { padding: 0 16px; }
   .section   { padding: 56px 0; }
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
   .score-grid { grid-template-columns: 1fr 1fr; }
   .nav__links  { display: none; }
+  .nav__social { display: none; }
+  .nav__logo img { height: 46px; width: 46px; }
+  .nav__logo { font-size: 1.125rem; }
   .matching-row { grid-template-columns: 1fr; }
   .strip-items  { gap: 20px; }
+  /* Hero mobile : plus de centrage plein ecran (blanc excessif), espacement equilibre */
+  .hero { min-height: auto; }
+  .hero__inner { padding: 30px 0; }
+  /* Footer mobile centre (logo perroquet inclus) */
+  .footer__inner { justify-content: center; text-align: center; }
+}
+/* Sections "2 colonnes" inline de l'accueil : repli en 1 colonne centree sur mobile/tablette */
+@media (max-width: 768px) {
+  .home-split { grid-template-columns: 1fr !important; gap: 32px !important; }
 }
 
 /* ── UTILITIES ───────────────────────────────────────────────────────────── */

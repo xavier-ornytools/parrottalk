@@ -1,5 +1,22 @@
 # ParrotTalk — Tests techniques
 
+## Lifting accueil + Speaking (2026-07-15) ✅
+
+Branche `feat/lifting-accueil-speaking`. Refonte look accueil (8 points) + uniformisation Speaking (1 point) + sweeps mandatés.
+
+**Accueil (`index.html`, `css/main.css`)** : logo header agrandi ~2x (`--nav-h` 64→96, logo 72/56px, harmonisé sur les 9 pages) ; cluster social distinct en haut (chips bordées, `.nav__social`) ; hero stats et 5 badges refondus (100% free, 4 tests/module, IA calibrée par un humain) ; promesses de gratuité permanente supprimées ; cartes modules retravaillées (4 tests, conformité + calibrage humain) avec le message **« 22 official IELTS compliance criteria and growing »** (chiffre exact du décompte de conformité du 12/07, sans afficher le total de 31) ; bloc free réécrit (sans « No Catch » ni promesses futures) ; FAQ sortie vers **`faq.html`** (nouvelle page, lien ajouté aux 10 footers, sitemap MAJ).
+
+**Speaking (`speaking.html`)** : `.question-text` passe en hauteur fixe (`min-height:116px` + centrage vertical) → bouton micro et navigation **toujours au même endroit** pour les 9 questions et les 3 formats. Étage flex mascotte gauche / encadré / mascotte droite (`.spk-mascot`, masqué ≤960px), mascottes `mascot-speaking-left/right.webp` détourées (fond magenta retiré via `min(R,B)−G`, WebP transparent 560px).
+
+**Sweeps site-wide** : band aspirationnels (`Band 7`) → « your target band » (résultats réels `Band ${band}` conservés) ; purge absolue des tirets longs/demi-longs (270 → 0) ; fix image cassée `parrot-listening.webp` → `mascot-listening.webp` ; fix `flex-wrap:gap` → `wrap` sur `.footer__inner`.
+
+### Testé avec
+- **Hauteur fixe Speaking (Playwright, vrai Chrome, 1200px)** : position du bouton micro identique Q1 (Part 1) vs Question 3 (Part 3) — **delta 0.0px**.
+- **Responsive 375px** : accueil et Speaking sans débordement horizontal (`scrollWidth == clientWidth`), mascottes et cluster social masqués, logo 56px.
+- **Détourage mascottes** : vérifié visuellement sur fond blanc + bleu pâle, aucune frange magenta.
+- **Récap sweeps (grep)** : 0 promesse permanente, 0 band aspirationnel, 0 tiret long, lien FAQ présent sur les 10 pages, badges « No ads / No sign-up » confirmés factuels (aucun réseau pub, aucun compte).
+- ⚠️ Validation navigateur finale de Xavier en attente avant merge/push.
+
 ## P1.4 — Speaking : écrans épurés + suppression Web Speech (2026-07-14) ✅
 
 Branche `feat/speaking-visual-cleanup`. Défauts examen blanc : corrections de grammaire absurdes affichées pendant que le candidat parle, et transcript live moche. Fonctionnel (enregistrement/évaluation/note) à préserver strictement.

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Listening Test — ParrotTalk</title>
+  <title>Listening Test, ParrotTalk</title>
   <link rel="stylesheet" href="css/main.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
   <script src="js/analytics.js" async></script>
@@ -167,7 +167,7 @@
 <nav class="nav">
   <div class="nav__inner">
     <a href="index.html" class="nav__logo">
-      <img src="img/logo-official.webp" alt="ParrotTalk" style="height:38px;width:38px;object-fit:contain;border-radius:8px">
+      <img src="img/logo-official.webp" alt="ParrotTalk">
       ParrotTalk
     </a>
     <div class="nav__links">
@@ -298,11 +298,11 @@
 
     <!-- READING-TIME OVERLAY (affiché pendant les silences de lecture gravés) -->
     <div id="reading-overlay" class="reading-overlay hidden">
-      <img id="listening-mascot" class="reading-mascot" src="img/parrot-listening.webp" alt=""
+      <img id="listening-mascot" class="reading-mascot" src="img/mascot-listening.webp" alt=""
            onerror="this.style.display='none'">
       <div class="reading-body">
         <div class="reading-title">📖 Reading time</div>
-        <div class="reading-sub">Look at questions <span id="reading-range">1–5</span> before the audio continues.</div>
+        <div class="reading-sub">Look at questions <span id="reading-range">1-5</span> before the audio continues.</div>
         <div class="reading-ring"><div id="reading-ring-fill" class="reading-ring-fill"></div></div>
       </div>
     </div>
@@ -312,12 +312,12 @@
 
     <!-- FINISH SECTION (saves progress + navigates) -->
     <div style="text-align:center;padding:16px 0">
-      <button class="btn btn-primary btn-lg" onclick="finishSection()" id="finish-section-btn">✅ I've finished this section — Continue</button>
+      <button class="btn btn-primary btn-lg" onclick="finishSection()" id="finish-section-btn">✅ I've finished this section, Continue</button>
     </div>
 
     <!-- SUBMIT -->
     <div id="submit-hint" style="text-align:center;padding:20px 0 4px;color:var(--text-muted);font-size:.875rem">
-      Listen to at least 1 section to submit — more sections = more accurate score
+      Listen to at least 1 section to submit, more sections = more accurate score
     </div>
     <div id="submit-section" class="hidden" style="text-align:center;padding:16px 0 32px">
       <p style="margin-bottom:16px;color:var(--text-muted)">Ready to get your score?</p>
@@ -328,7 +328,7 @@
     <div id="review-panel" class="hidden" style="text-align:center;padding:16px 0 32px">
       <div style="font-size:.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em">📝 Review time</div>
       <div id="review-timer" style="font-size:2.2rem;font-weight:800;color:var(--primary,#0b6e4f);margin:4px 0">2:00</div>
-      <p style="margin-bottom:14px;color:var(--text-muted);font-size:.85rem">Check your answers. The test submits automatically when the timer reaches zero — or submit now if you're ready.</p>
+      <p style="margin-bottom:14px;color:var(--text-muted);font-size:.85rem">Check your answers. The test submits automatically when the timer reaches zero, or submit now if you're ready.</p>
       <button class="btn btn-success btn-lg" onclick="submitTest()">✅ Submit now</button>
     </div>
 
@@ -336,9 +336,9 @@
          sections) est gaté par le micro-feedback en épreuve isolée, libre en mock. -->
     <div class="results-card" id="results-card">
       <div>
-        <div style="font-size:.8rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em">🎧 Listening — Final Score</div>
-        <div class="band-big" id="results-score">—</div>
-        <div style="font-size:1.5rem;font-weight:700;color:var(--white);margin-top:4px" id="results-band">Band —</div>
+        <div style="font-size:.8rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em">🎧 Listening, Final Score</div>
+        <div class="band-big" id="results-score">-</div>
+        <div style="font-size:1.5rem;font-weight:700;color:var(--white);margin-top:4px" id="results-band">Band -</div>
       </div>
       <div id="results-gate" style="margin-top:20px"></div>
     </div>
@@ -422,11 +422,11 @@ function init() {
   ['test01','test02','test03','test04'].forEach(id => {
     const s = scores[id];
     const el = document.getElementById('meta-'+id);
-    if (s && el) el.textContent = `Last: ${s.total}/40 — Band ${s.band} (${s.date})`;
+    if (s && el) el.textContent = `Last: ${s.total}/40, Band ${s.band} (${s.date})`;
   });
 
   // Restauration automatique : si une progression existe (test en cours
-  // interrompu par un rechargement), on y retourne directement — l'utilisateur
+  // interrompu par un rechargement), on y retourne directement, l'utilisateur
   // ne doit pas avoir à deviner qu'il faut recliquer "Start Test" pour la
   // récupérer, sinon un rechargement a l'air de tout effacer.
   const resume = findInProgressListeningTest();
@@ -524,8 +524,8 @@ function startTest() {
   updateSubmitVisibility();
   startTimer();
   toast(saved
-    ? `Progress restored — resuming at Section ${currentSection+1}.`
-    : 'Test started — Section 1 ready. Play the audio and answer the questions.', 'info');
+    ? `Progress restored, resuming at Section ${currentSection+1}.`
+    : 'Test started, Section 1 ready. Play the audio and answer the questions.', 'info');
 }
 
 function startTimer() {
@@ -573,7 +573,7 @@ function buildTabs() {
   refreshTabLocks();
 }
 
-// P1.1 — Révélation progressive (mode examen) : une section ne se déverrouille
+// P1.1, Révélation progressive (mode examen) : une section ne se déverrouille
 // que lorsque l'audio de la précédente a été joué (ou la précédente validée),
 // comme le vrai IELTS. On ne voit donc pas les blocs suivants d'emblée. En mode
 // practice, navigation libre (déverrouillage total).
@@ -685,7 +685,7 @@ function speakNext(total) {
 }
 
 // Découplé de la validation de section : la fin de l'audio n'affecte plus
-// jamais le score ni le statut "done" — seul le clic explicite sur
+// jamais le score ni le statut "done", seul le clic explicite sur
 // "I've finished this section" (finishSection()) valide une section.
 function handleSectionEnd(sectionIdx) {
   if (!sectionsDone[sectionIdx]) {
@@ -695,7 +695,7 @@ function handleSectionEnd(sectionIdx) {
 
 // ── Finish section : sauvegarde + navigation (une pierre deux coups) ─────────
 // Lecture/écriture uniformes qu'il s'agisse d'un champ texte, d'un select,
-// ou d'un groupe de boutons radio (MC — qui n'ont pas d'id, seulement un
+// ou d'un groupe de boutons radio (MC, qui n'ont pas d'id, seulement un
 // name). Sans ça, les réponses à choix multiples n'étaient ni capturées ni
 // restaurées (seuls les champs texte/select avaient un id="q{n}").
 function getAnswerValue(key) {
@@ -763,9 +763,9 @@ function updateFinishButton(i) {
   if (!btn) return;
   const isLast = i === currentTest.sections.length - 1;
   if (sectionsDone[i]) {
-    btn.textContent = isLast ? '✅ Section saved — Go to Submit' : '✅ Section saved — Next Section →';
+    btn.textContent = isLast ? '✅ Section saved, Go to Submit' : '✅ Section saved, Next Section →';
   } else {
-    btn.textContent = isLast ? "✅ I've finished this section" : "✅ I've finished this section — Continue";
+    btn.textContent = isLast ? "✅ I've finished this section" : "✅ I've finished this section, Continue";
   }
 }
 
@@ -908,7 +908,7 @@ function applyRevealGating(block, sec, i) {
     if (!hint) {
       hint = document.createElement('div');
       hint.className = 'await-hint';
-      hint.innerHTML = '🎧 Press play — the questions appear as you listen, just like the real exam.';
+      hint.innerHTML = '🎧 Press play, the questions appear as you listen, just like the real exam.';
       block.prepend(hint);
     }
     hint.style.display = '';
@@ -939,7 +939,7 @@ function revealQuestions(i, a, b, animate) {
 function showReadingOverlay(a, b, durationSec) {
   const ov = document.getElementById('reading-overlay');
   if (!ov) return;
-  document.getElementById('reading-range').textContent = a + '–' + b;
+  document.getElementById('reading-range').textContent = a + '-' + b;
   ov.classList.remove('hidden');
   const fill = document.getElementById('reading-ring-fill');
   if (fill) {
@@ -979,7 +979,7 @@ function fmt(s) {
 function renderSection(i) {
   const sec = currentTest.sections[i];
   const ttsTag = isTTS(sec) ? ' · 🤖 AI Voice' : '';
-  document.getElementById('section-name').textContent = `Section ${sec.number} — ${sec.title}${ttsTag}`;
+  document.getElementById('section-name').textContent = `Section ${sec.number}, ${sec.title}${ttsTag}`;
   document.querySelectorAll('.section-block').forEach(b => b.classList.remove('active'));
   let block = document.getElementById('sec-block-'+i);
   if (!block) {
@@ -1051,7 +1051,7 @@ function buildMCGroup(group) {
 
 function buildMatchingGroup(group) {
   // Options visibles en permanence (boutons radio), au lieu d'un <select>
-  // qui masque tout sauf l'option choisie — conforme au format IELTS
+  // qui masque tout sauf l'option choisie, conforme au format IELTS
   // (toutes les options doivent rester lisibles pendant la préparation).
   // Même pattern que buildMCGroup() : checkAnswer()/markQuestion() gèrent
   // déjà les radios génériquement, aucun changement de logique nécessaire.
@@ -1092,7 +1092,7 @@ function submitTest() {
   audio.pause(); setPlayIcon(false);
   submitted = true;
   // Les scores viennent de finishSection() (sectionScores/sectionsDone déjà
-  // à jour) — plus de recalcul depuis les classes CSS ni de dépendance à la
+  // à jour), plus de recalcul depuis les classes CSS ni de dépendance à la
   // fin de l'audio.
   let total = 0, maxPossible = 0;
   currentTest.sections.forEach((sec, si) => {
@@ -1128,7 +1128,7 @@ function checkAnswer(q) {
     return val === correct || (q.alt||[]).map(a=>a.toUpperCase()).includes(val);
   }
   // Question à choix multiples (buildMCGroup) : boutons radio name="q{n}",
-  // pas d'id partagé — q.answer y est l'index numérique de l'option correcte.
+  // pas d'id partagé, q.answer y est l'index numérique de l'option correcte.
   const checked = document.querySelector(`input[name="q${q.n}"]:checked`);
   return !!checked && checked.value === String(q.answer);
 }
@@ -1164,16 +1164,16 @@ function showResults(total, band, isPartial=false, doneCount=4, maxPossible=40, 
   if (isPartial) {
     document.getElementById('results-score').textContent = `${total}/${maxPossible}`;
     document.getElementById('results-band').textContent  = `~Band ${band}`;
-    subText = `⚠️ Approximate — ${doneCount}/4 sections only. Do all 4 for an official score.`;
+    subText = `⚠️ Approximate, ${doneCount}/4 sections only. Do all 4 for an official score.`;
   } else {
     document.getElementById('results-score').textContent = `${total}/40`;
     document.getElementById('results-band').textContent  = `Band ${band}`;
     const gap = 35 - total;
-    subText = total >= 35 ? '🎉 Band 7.0 target reached!' : `${gap} more correct to reach Band 7.0`;
+    subText = total >= 35 ? '🎉 Great score, keep it up!' : `${gap} more correct for a higher band`;
   }
   const gridHTML = currentTest.sections.map((s,i) => {
     const isDone = document.getElementById(`tab-${i}`)?.classList.contains('done');
-    return `<div class="sec-res"><div class="val">${isDone ? sectionScores[i]+'/10' : '—'}</div><div class="lbl">Section ${s.number}</div></div>`;
+    return `<div class="sec-res"><div class="val">${isDone ? sectionScores[i]+'/10' : '-'}</div><div class="lbl">Section ${s.number}</div></div>`;
   }).join('');
   // Détail gaté par le micro-feedback (band déjà visible au-dessus).
   const detailHTML =
@@ -1191,7 +1191,7 @@ function showResults(total, band, isPartial=false, doneCount=4, maxPossible=40, 
   card.scrollIntoView({ behavior: 'smooth', block: 'start' });
   const sc = getAllScores()[currentTest.id];
   const metaEl = document.getElementById('meta-'+currentTest.id);
-  if (metaEl && sc) metaEl.textContent = `Last: ${sc.total}/40 — Band ${sc.band} (${sc.date})`;
+  if (metaEl && sc) metaEl.textContent = `Last: ${sc.total}/40, Band ${sc.band} (${sc.date})`;
 }
 
 function showAnswers() {
@@ -1212,7 +1212,7 @@ init();
 </script>
 <footer style="text-align:center;padding:16px;font-size:.75rem;color:var(--text-muted);opacity:.7;border-top:1px solid var(--border);margin-top:32px">
   ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.
-  <p style="margin-top:8px"><a href="privacy.html" style="color:inherit;text-decoration:underline">Privacy Policy</a> · <a href="legal-notice.html" style="color:inherit;text-decoration:underline">Legal Notice</a> · <a href="terms.html" style="color:inherit;text-decoration:underline">Terms of Use</a></p>
+  <p style="margin-top:8px"><a href="faq.html" style="color:inherit;text-decoration:underline">FAQ</a> &middot; <a href="privacy.html" style="color:inherit;text-decoration:underline">Privacy Policy</a> · <a href="legal-notice.html" style="color:inherit;text-decoration:underline">Legal Notice</a> · <a href="terms.html" style="color:inherit;text-decoration:underline">Terms of Use</a></p>
   <p class="footer-social">
     <a class="yt" href="https://youtube.com/@ParrotTalkApp" target="_blank" rel="noopener noreferrer" aria-label="ParrotTalk on YouTube"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.2 3.6-6.2 3.6z"/></svg></a>
     <a class="x" href="https://x.com/ParrotTalkApp" target="_blank" rel="noopener noreferrer" aria-label="ParrotTalk on X"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.9 1.5h3.7l-8 9.1L24 22.5h-7.4l-5.8-7.6-6.6 7.6H.5l8.6-9.8L0 1.5h7.6l5.2 6.9 6.1-6.9zm-1.3 18.8h2L6.5 3.6h-2.2l13.3 16.7z"/></svg></a>
