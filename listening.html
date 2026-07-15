@@ -742,7 +742,11 @@ function finishSection() {
   } else {
     document.getElementById('submit-hint')?.scrollIntoView({ behavior: 'smooth' });
   }
-  // Toutes les sections terminées → démarre la review de 2 min (soumission auto à 0).
+  // UX : a la fin d'une section, remonter en haut de page (scroll fluide) pour que
+  // l'utilisateur retombe pres des commandes de la section suivante et ne clique
+  // plus par erreur sur les boutons du bas. Identique pour les 4 tests.
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Toutes les sections terminees -> demarre la review de 2 min (soumission auto a 0).
   maybeStartReview();
 }
 
