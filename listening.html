@@ -315,9 +315,16 @@
       Listen to at least 1 section to submit — more sections = more accurate score
     </div>
     <div id="submit-section" class="hidden" style="text-align:center;padding:16px 0 32px">
-      <p style="margin-bottom:6px;color:var(--text-muted)">Ready to get your score?</p>
-      <p style="margin-bottom:16px;color:var(--text-muted);font-size:.8rem">📝 Review your answers before submitting. In the real exam you'd get 10 minutes here to transfer them to an answer sheet — take a moment to check yours.</p>
+      <p style="margin-bottom:16px;color:var(--text-muted)">Ready to get your score?</p>
       <button class="btn btn-success btn-lg" onclick="submitTest()">✅ Submit &amp; Get Score</button>
+    </div>
+
+    <!-- REVIEW 2 min (fin d'examen, format ordinateur) -->
+    <div id="review-panel" class="hidden" style="text-align:center;padding:16px 0 32px">
+      <div style="font-size:.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em">📝 Review time</div>
+      <div id="review-timer" style="font-size:2.2rem;font-weight:800;color:var(--primary,#0b6e4f);margin:4px 0">2:00</div>
+      <p style="margin-bottom:14px;color:var(--text-muted);font-size:.85rem">Check your answers. The test submits automatically when the timer reaches zero — or submit now if you're ready.</p>
+      <button class="btn btn-success btn-lg" onclick="submitTest()">✅ Submit now</button>
     </div>
 
     <!-- RESULTS : band toujours visible ; le détail (message, réponses,
@@ -376,6 +383,34 @@ const TIMER_TEST_OVERRIDE = parseInt(new URLSearchParams(location.search).get('t
 const LISTENING_DURATION = (Number.isFinite(TIMER_TEST_OVERRIDE) && TIMER_TEST_OVERRIDE > 0)
   ? TIMER_TEST_OVERRIDE : 32 * 60;
 let secondsLeft = LISTENING_DURATION;
+
+// Review de fin (format IELTS ordinateur) : 2 min de vérification après avoir
+// terminé toutes les sections, compte à rebours visible, soumission anticipée
+// possible, sinon soumission automatique à 0. ?review=N (s) réservé au test.
+const REVIEW_TEST_OVERRIDE = parseInt(new URLSearchParams(location.search).get('review'), 10);
+const REVIEW_SECONDS = (Number.isFinite(REVIEW_TEST_OVERRIDE) && REVIEW_TEST_OVERRIDE > 0) ? REVIEW_TEST_OVERRIDE : 120;
+let reviewStarted = false, reviewInterval = null, reviewLeft = REVIEW_SECONDS;
+
+function maybeStartReview() {
+  if (reviewStarted || submitted) return;
+  if (!sectionsDone.every(Boolean)) return; // review seulement quand tout est fait
+  reviewStarted = true;
+  clearInterval(timerInterval); // les 2 min de review gouvernent désormais
+  const hint = document.getElementById('submit-hint'); if (hint) hint.style.display = 'none';
+  document.getElementById('submit-section')?.classList.add('hidden');
+  const panel = document.getElementById('review-panel');
+  panel.classList.remove('hidden');
+  reviewLeft = REVIEW_SECONDS; updateReviewTimer();
+  panel.scrollIntoView({ behavior: 'smooth' });
+  reviewInterval = setInterval(() => {
+    reviewLeft--; updateReviewTimer();
+    if (reviewLeft <= 0) { clearInterval(reviewInterval); submitTest(); }
+  }, 1000);
+}
+function updateReviewTimer() {
+  const el = document.getElementById('review-timer');
+  if (el) el.textContent = fmt(Math.max(0, reviewLeft));
+}
 
 function init() {
   const scores = getAllScores();
@@ -704,6 +739,8 @@ function finishSection() {
   } else {
     document.getElementById('submit-hint')?.scrollIntoView({ behavior: 'smooth' });
   }
+  // Toutes les sections terminées → démarre la review de 2 min (soumission auto à 0).
+  maybeStartReview();
 }
 
 function updateSubmitVisibility() {
@@ -1042,6 +1079,8 @@ function submitTest() {
     return;
   }
   clearInterval(timerInterval);
+  clearInterval(reviewInterval);
+  document.getElementById('review-panel')?.classList.add('hidden');
   cancelTTS();
   audio.pause(); setPlayIcon(false);
   submitted = true;
