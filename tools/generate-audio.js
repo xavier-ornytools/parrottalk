@@ -81,9 +81,12 @@ async function main() {
       return start;
     };
     const narr = t => say(t, narrator, 'en-GB', NARR_RATE);
+    // Débit du contenu : RATE par défaut, surchargé par sec.rate (levier difficulté
+    // « débit un peu plus rapide sur une section »). La narration reste à NARR_RATE.
+    const contentRate = sec.rate || RATE;
     const contentBlock = async (from, to) => {
       for (let i = from; i <= to; i++) {
-        await say(sec.script[i].text, spVoice(sec.script[i].who), spLang(sec.script[i].who), RATE);
+        await say(sec.script[i].text, spVoice(sec.script[i].who), spLang(sec.script[i].who), contentRate);
         if (i < to) gap(LINE_GAP);
       }
     };

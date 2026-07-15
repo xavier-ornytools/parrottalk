@@ -1,0 +1,40 @@
+{
+  "section": 1,
+  "duration": 201.96,
+  "cues": [
+    {
+      "t": 15.94,
+      "reveal": [
+        1,
+        5
+      ],
+      "phase": "reading"
+    },
+    {
+      "t": 61.99,
+      "activate": [
+        1,
+        5
+      ]
+    },
+    {
+      "t": 123.27,
+      "reveal": [
+        6,
+        10
+      ],
+      "phase": "reading"
+    },
+    {
+      "t": 152.79,
+      "activate": [
+        6,
+        10
+      ]
+    },
+    {
+      "t": 201.96,
+      "end": true
+    }
+  ]
+}
