@@ -30,7 +30,7 @@ const TEST01 = {
       audio: "audio/test01/section1.mp3",
       cues: [
         {
-          t: 16.25,
+          t: 19.73,
           reveal: [
             1,
             5
@@ -38,14 +38,14 @@ const TEST01 = {
           phase: "reading"
         },
         {
-          t: 63.55,
+          t: 67.03,
           activate: [
             1,
             5
           ]
         },
         {
-          t: 135.41,
+          t: 138.89,
           reveal: [
             6,
             10
@@ -53,14 +53,14 @@ const TEST01 = {
           phase: "reading"
         },
         {
-          t: 164.94,
+          t: 168.42,
           activate: [
             6,
             10
           ]
         },
         {
-          t: 236.37,
+          t: 239.85,
           end: true
         }
       ],
@@ -597,7 +597,7 @@ const TEST02 = {
       audio: "audio/test02/section1.mp3",
       cues: [
         {
-          t: 15.94,
+          t: 20.28,
           reveal: [
             1,
             5
@@ -605,14 +605,14 @@ const TEST02 = {
           phase: "reading"
         },
         {
-          t: 61.99,
+          t: 66.33,
           activate: [
             1,
             5
           ]
         },
         {
-          t: 123.27,
+          t: 127.61,
           reveal: [
             6,
             10
@@ -620,14 +620,14 @@ const TEST02 = {
           phase: "reading"
         },
         {
-          t: 152.79,
+          t: 157.14,
           activate: [
             6,
             10
           ]
         },
         {
-          t: 201.96,
+          t: 206.31,
           end: true
         }
       ],
@@ -1167,7 +1167,7 @@ const TEST03 = {
       audio: "audio/test03/section1.mp3",
       cues: [
         {
-          t: 17.62,
+          t: 19.7,
           reveal: [
             1,
             5
@@ -1175,14 +1175,14 @@ const TEST03 = {
           phase: "reading"
         },
         {
-          t: 66.5,
+          t: 68.59,
           activate: [
             1,
             5
           ]
         },
         {
-          t: 132.29,
+          t: 134.38,
           reveal: [
             6,
             10
@@ -1190,14 +1190,14 @@ const TEST03 = {
           phase: "reading"
         },
         {
-          t: 161.82,
+          t: 163.91,
           activate: [
             6,
             10
           ]
         },
         {
-          t: 221.52,
+          t: 223.61,
           end: true
         }
       ],

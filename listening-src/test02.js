@@ -16,6 +16,7 @@ const TEST02 = {
   title: 'Listening Test 02',
   accentPool: ['en-GB', 'en-AU', 'en-US'],
   narratorVoice: 'en-GB-Neural2-D',
+  intro: 'Welcome to the ParrotTalk listening test — true exam conditions, real exam difficulty. You will hear a number of different recordings, and you will hear each one only once.',
   sections: [
 
     // ── SECTION 1 — Dialogue transactionnel (form completion + épellation) ──────
