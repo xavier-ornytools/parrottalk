@@ -9,6 +9,7 @@ const TEST03 = {
   title: 'Listening Test 03',
   accentPool: ['en-GB', 'en-AU', 'en-US'],
   narratorVoice: 'en-GB-Neural2-D',
+  intro: 'Welcome to your ultimate listening challenge, the ParrotTalk test. You will hear a number of different recordings, and you will hear each one only once.',
   sections: [
 
     // ── SECTION 1 — Dialogue transactionnel (form completion + épellation) ──────

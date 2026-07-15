@@ -32,6 +32,19 @@ GEMINI_API_KEY=xxxx node tools/porte2-diarize.js listening-src/test02.js
 activée + facturation. C'est un produit distinct de la clé Gemini AI Studio du Worker.
 Coût attendu du Test 02 : ~0,25 € (négligeable).
 
+## CONVENTION — intros de marque (RÈGLE STRICTE : zéro mention de marque tierce dans l'audio)
+Le préambule de la Section 1 de chaque test est une **intro de marque ParrotTalk**,
+en rotation fixe (champ `intro` de la source d'authoring). Aucune occurrence du mot
+d'une marque tierce dans l'audio (question de fond chez l'avocat le 18/07).
+- **Test 01** : « Welcome to your ParrotTalk listening test, the most realistic exam simulation. You will hear a number of different recordings, and you will hear each one only once. »
+- **Test 02** : « Welcome to the ParrotTalk listening test — true exam conditions, real exam difficulty. You will hear a number of different recordings… »
+- **Test 03** : « Welcome to your ultimate listening challenge, the ParrotTalk test. You will hear a number of different recordings… »
+- **Test 04 (futur)** : « Welcome to the ParrotTalk listening test, the smartest way to train your ears. You will hear a number of different recordings… »
+
+Le reste du déroulé (annonces « Section X. You will hear… », silences de lecture,
+exemple Partie 1, coupures, clôtures) reste inchangé. Correctif d'intro = régénérer
+la Section 1 seule : `node tools/generate-audio.js listening-src/testXX.js --only=1`.
+
 ## Voix du Test 02 (toutes distinctes par section)
 - S1 dialogue : Receptionist `en-GB-Neural2-C` (F, GB) · Customer `en-AU-Neural2-B` (M, AU)
 - S2 monologue : Coordinator `en-US-Neural2-F` (F, US)

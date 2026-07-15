@@ -51,6 +51,12 @@ async function main() {
   try { execFileSync('node', [path.join(__dirname, 'porte1-validate.js'), src], { stdio: 'inherit' }); }
   catch { console.error('⛔ Porte 1 en échec — génération annulée.'); process.exit(1); }
 
+  // Filtre optionnel : --only=1,3 pour ne (re)générer que certaines sections
+  // (ex. correctif d'intro qui ne touche que la Section 1). Les autres MP3/cues
+  // existants restent intacts.
+  const onlyArg = (process.argv.find(a => a.startsWith('--only=')) || '').split('=')[1];
+  const onlySet = onlyArg ? new Set(onlyArg.split(',').map(n => parseInt(n, 10))) : null;
+
   const test = require(path.resolve(src));
   const narrator = test.narratorVoice;
   const outDir = path.resolve('audio', test.id);
@@ -58,6 +64,7 @@ async function main() {
   TMP = path.join(outDir, '.tmp'); fs.mkdirSync(TMP, { recursive: true }); SIL = {};
 
   for (const sec of test.sections) {
+    if (onlySet && !onlySet.has(sec.number)) continue; // section non ciblée : inchangée
     console.log(`\n▶ Section ${sec.number} — ${sec.title}`);
     const blocks = sectionBlocks(sec);
     const disc = discourseWord(sec);
@@ -81,15 +88,22 @@ async function main() {
       return start;
     };
     const narr = t => say(t, narrator, 'en-GB', NARR_RATE);
+    // Débit du contenu : RATE par défaut, surchargé par sec.rate (levier difficulté
+    // « débit un peu plus rapide sur une section »). La narration reste à NARR_RATE.
+    const contentRate = sec.rate || RATE;
     const contentBlock = async (from, to) => {
       for (let i = from; i <= to; i++) {
-        await say(sec.script[i].text, spVoice(sec.script[i].who), spLang(sec.script[i].who), RATE);
+        await say(sec.script[i].text, spVoice(sec.script[i].who), spLang(sec.script[i].who), contentRate);
         if (i < to) gap(LINE_GAP);
       }
     };
 
-    // Préambule (Partie 1)
-    if (isFirst) { await narr('This is the I E L T S Listening test. You will hear four sections, and you will hear each section once only.'); gap(NARR_GAP); }
+    // Préambule (Partie 1) = intro de MARQUE par test. AUCUNE mention de marque
+    // tierce dans l'audio (règle stricte). Rotation fixe définie par test.intro.
+    if (isFirst) {
+      const intro = test.intro || 'Welcome to the ParrotTalk listening test. You will hear a number of different recordings, and you will hear each one only once.';
+      await narr(intro); gap(NARR_GAP);
+    }
     // Annonce + contexte
     await narr(`Section ${sec.number}. You will hear ${sec.context}.`); gap(NARR_GAP);
 

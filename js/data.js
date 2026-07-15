@@ -30,7 +30,7 @@ const TEST01 = {
       audio: "audio/test01/section1.mp3",
       cues: [
         {
-          t: 16.25,
+          t: 19.73,
           reveal: [
             1,
             5
@@ -38,14 +38,14 @@ const TEST01 = {
           phase: "reading"
         },
         {
-          t: 63.55,
+          t: 67.03,
           activate: [
             1,
             5
           ]
         },
         {
-          t: 135.41,
+          t: 138.89,
           reveal: [
             6,
             10
@@ -53,14 +53,14 @@ const TEST01 = {
           phase: "reading"
         },
         {
-          t: 164.94,
+          t: 168.42,
           activate: [
             6,
             10
           ]
         },
         {
-          t: 236.37,
+          t: 239.85,
           end: true
         }
       ],
@@ -593,15 +593,51 @@ const TEST02 = {
   sections: [
     {
       number: 1,
-      title: "Harbourview Leisure Centre — Membership Enquiry",
+      title: "Harbourview Leisure Centre — Membership",
       audio: "audio/test02/section1.mp3",
+      cues: [
+        {
+          t: 20.28,
+          reveal: [
+            1,
+            5
+          ],
+          phase: "reading"
+        },
+        {
+          t: 66.33,
+          activate: [
+            1,
+            5
+          ]
+        },
+        {
+          t: 127.61,
+          reveal: [
+            6,
+            10
+          ],
+          phase: "reading"
+        },
+        {
+          t: 157.14,
+          activate: [
+            6,
+            10
+          ]
+        },
+        {
+          t: 206.31,
+          end: true
+        }
+      ],
       type: "form",
       formTitle: "HARBOURVIEW LEISURE CENTRE — MEMBERSHIP FORM · Q1–10",
       instructions: "Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.",
       questions: [
         {
           n: 1,
-          label: "Surname",
+          label: "Family name",
           answer: "PELLETIER",
           alt: [
             "pelletier"
@@ -609,7 +645,7 @@ const TEST02 = {
         },
         {
           n: 2,
-          label: "Membership type",
+          label: "Type of membership chosen",
           answer: "OFF-PEAK",
           alt: [
             "off peak",
@@ -618,43 +654,44 @@ const TEST02 = {
         },
         {
           n: 3,
-          label: "Start date",
+          label: "Membership begins on",
           answer: "3 MARCH",
           alt: [
             "third of march",
             "3rd march",
-            "march 3",
-            "3/3"
+            "march 3"
           ]
         },
         {
           n: 4,
-          label: "Contact number",
-          answer: "0491 552 019",
+          label: "Amount paid each month (£)",
+          answer: "29",
           alt: [
-            "0491552019"
+            "twenty-nine",
+            "£29",
+            "29 pounds"
           ]
         },
         {
           n: 5,
-          label: "Street",
-          answer: "WATTLE AVENUE",
+          label: "Main activity of interest",
+          answer: "SWIMMING",
           alt: [
-            "24 wattle avenue",
-            "wattle ave"
+            "swim"
           ]
         },
         {
           n: 6,
-          label: "Suburb",
-          answer: "NEWPORT",
+          label: "When he plans to attend",
+          answer: "EVENINGS",
           alt: [
-            "newport"
+            "evening",
+            "after work"
           ]
         },
         {
           n: 7,
-          label: "How they heard of us",
+          label: "Referral source",
           answer: "NEIGHBOUR",
           alt: [
             "a neighbour",
@@ -663,27 +700,28 @@ const TEST02 = {
         },
         {
           n: 8,
-          label: "Activity of interest",
-          answer: "SWIMMING",
+          label: "Refundable locker deposit (£)",
+          answer: "5",
           alt: [
-            "swim"
+            "five",
+            "£5",
+            "five pounds"
           ]
         },
         {
           n: 9,
-          label: "Preferred time",
-          answer: "EVENINGS",
+          label: "Emergency contact surname",
+          answer: "WALSH",
           alt: [
-            "evening",
-            "in the evening"
+            "walsh"
           ]
         },
         {
           n: 10,
-          label: "Membership number",
-          answer: "HV4712",
+          label: "Membership ID",
+          answer: "HV5163",
           alt: [
-            "hv 4712"
+            "hv 5163"
           ]
         }
       ]
@@ -692,11 +730,47 @@ const TEST02 = {
       number: 2,
       title: "Riverside Community Garden — Volunteer Induction",
       audio: "audio/test02/section2.mp3",
+      cues: [
+        {
+          t: 6.94,
+          reveal: [
+            11,
+            15
+          ],
+          phase: "reading"
+        },
+        {
+          t: 36.56,
+          activate: [
+            11,
+            15
+          ]
+        },
+        {
+          t: 83.66,
+          reveal: [
+            16,
+            20
+          ],
+          phase: "reading"
+        },
+        {
+          t: 113.5,
+          activate: [
+            16,
+            20
+          ]
+        },
+        {
+          t: 156,
+          end: true
+        }
+      ],
       type: "mixed",
       groups: [
         {
           type: "form",
-          formTitle: "RIVERSIDE COMMUNITY GARDEN — SITE MAP · Q11–15",
+          formTitle: "RIVERSIDE COMMUNITY GARDEN — MAP · Q11–15",
           instructions: "Label the map below. Write the correct letter, A–H, next to each feature.",
           questions: [
             {
@@ -709,7 +783,7 @@ const TEST02 = {
             },
             {
               n: 12,
-              label: "Herb spiral",
+              label: "Tool shed",
               answer: "B",
               alt: [
                 "b"
@@ -717,7 +791,7 @@ const TEST02 = {
             },
             {
               n: 13,
-              label: "Children's plot",
+              label: "Pond",
               answer: "D",
               alt: [
                 "d"
@@ -733,7 +807,7 @@ const TEST02 = {
             },
             {
               n: 15,
-              label: "Pond",
+              label: "Herb beds",
               answer: "A",
               alt: [
                 "a"
@@ -747,53 +821,56 @@ const TEST02 = {
           questions: [
             {
               n: 16,
-              text: "What must volunteers always bring themselves?",
+              text: "When do most volunteers attend?",
               options: [
-                "Tools",
-                "Gloves",
-                "A water bottle"
+                "Wednesday evenings",
+                "Saturday mornings",
+                "Both days equally"
               ],
               answer: 1
             },
             {
               n: 17,
-              text: "How often do volunteer sessions take place?",
+              text: "What must volunteers bring themselves?",
               options: [
-                "Every weekday",
-                "Every Saturday",
-                "Every weekend"
+                "Tools",
+                "Gloves",
+                "Seeds"
               ],
               answer: 1
-            },
+            }
+          ]
+        },
+        {
+          type: "form",
+          formTitle: "VOLUNTEER NOTES · Q18–20",
+          instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
+          questions: [
             {
               n: 18,
-              text: "What is NOT allowed in the growing beds?",
-              options: [
-                "Food",
-                "Pets",
-                "Bicycles"
-              ],
-              answer: 1
+              label: "Source of water for the plants",
+              answer: "RAINWATER TANK",
+              alt: [
+                "rainwater",
+                "the tank"
+              ]
             },
             {
               n: 19,
-              text: "Where should watering water be taken from?",
-              options: [
-                "The tap by the shed",
-                "The rainwater tank",
-                "The pond"
-              ],
-              answer: 1
+              label: "Best way to report an absence",
+              answer: "TEXT",
+              alt: [
+                "a text",
+                "text message"
+              ]
             },
             {
               n: 20,
-              text: "How should volunteers report an absence?",
-              options: [
-                "By email",
-                "By phone",
-                "By text"
-              ],
-              answer: 2
+              label: "Recommended footwear",
+              answer: "BOOTS",
+              alt: [
+                "boots"
+              ]
             }
           ]
         }
@@ -801,8 +878,44 @@ const TEST02 = {
     },
     {
       number: 3,
-      title: "Tutorial — Urban Noise Field Study",
+      title: "Tutorial — Urban Noise Project",
       audio: "audio/test02/section3.mp3",
+      cues: [
+        {
+          t: 7.94,
+          reveal: [
+            21,
+            25
+          ],
+          phase: "reading"
+        },
+        {
+          t: 38.53,
+          activate: [
+            21,
+            25
+          ]
+        },
+        {
+          t: 79.68,
+          reveal: [
+            26,
+            30
+          ],
+          phase: "reading"
+        },
+        {
+          t: 110.36,
+          activate: [
+            26,
+            30
+          ]
+        },
+        {
+          t: 144.17,
+          end: true
+        }
+      ],
       type: "mixed",
       groups: [
         {
@@ -811,51 +924,31 @@ const TEST02 = {
           questions: [
             {
               n: 21,
-              text: "The students will focus on noise near",
+              text: "Where have the students decided to focus?",
               options: [
-                "hospitals",
-                "schools",
-                "offices"
+                "the ring road",
+                "near the schools",
+                "the town centre"
               ],
               answer: 1
             },
             {
               n: 22,
-              text: "How will they measure the noise?",
+              text: "Over what period will they collect readings?",
               options: [
-                "with a phone app",
-                "with a sound level meter",
-                "with a video camera"
+                "two weeks",
+                "one month",
+                "two months"
               ],
-              answer: 1
+              answer: 0
             },
             {
               n: 23,
-              text: "Over what period will they collect data?",
+              text: "What concerns them most about the fieldwork?",
               options: [
-                "two days",
-                "two weeks",
-                "two months"
-              ],
-              answer: 1
-            },
-            {
-              n: 24,
-              text: "What do they expect to be their main difficulty?",
-              options: [
-                "rain",
-                "wind",
-                "traffic"
-              ],
-              answer: 1
-            },
-            {
-              n: 25,
-              text: "How often will they log a reading?",
-              options: [
-                "every five minutes",
-                "every fifteen minutes",
-                "every thirty minutes"
+                "the traffic",
+                "the wind",
+                "the rain"
               ],
               answer: 1
             }
@@ -863,7 +956,7 @@ const TEST02 = {
         },
         {
           type: "matching",
-          instructions: "Who is responsible for each task? Write A (Tom), B (Maya) or C (Dr Hollis).",
+          instructions: "Who will carry out each task? Write A (Tom), B (Maya) or C (Dr Hollis).",
           options: [
             "A — Tom",
             "B — Maya",
@@ -871,8 +964,24 @@ const TEST02 = {
           ],
           questions: [
             {
+              n: 24,
+              text: "Recording the noise levels",
+              answer: "A",
+              alt: [
+                "a"
+              ]
+            },
+            {
+              n: 25,
+              text: "Interviewing residents",
+              answer: "B",
+              alt: [
+                "b"
+              ]
+            },
+            {
               n: 26,
-              text: "Plotting the readings onto a site map",
+              text: "Drawing the site map",
               answer: "A",
               alt: [
                 "a"
@@ -880,15 +989,7 @@ const TEST02 = {
             },
             {
               n: 27,
-              text: "Interviewing teachers and pupils",
-              answer: "B",
-              alt: [
-                "b"
-              ]
-            },
-            {
-              n: 28,
-              text: "Recommending background reading",
+              text: "Providing the sound meter",
               answer: "C",
               alt: [
                 "c"
@@ -898,12 +999,20 @@ const TEST02 = {
         },
         {
           type: "form",
-          formTitle: "PROJECT DETAILS · Q29–30",
+          formTitle: "PROJECT DETAILS · Q28–30",
           instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
           questions: [
             {
+              n: 28,
+              label: "A reading is logged every",
+              answer: "15 MINUTES",
+              alt: [
+                "fifteen minutes"
+              ]
+            },
+            {
               n: 29,
-              label: "Required length of the report",
+              label: "Length of the write-up",
               answer: "2000 WORDS",
               alt: [
                 "two thousand words",
@@ -916,8 +1025,7 @@ const TEST02 = {
               answer: "12 MAY",
               alt: [
                 "twelfth of may",
-                "may 12",
-                "12th may"
+                "may 12"
               ]
             }
           ]
@@ -928,13 +1036,34 @@ const TEST02 = {
       number: 4,
       title: "Lecture — The Rise of Urban Beekeeping",
       audio: "audio/test02/section4.mp3",
+      cues: [
+        {
+          t: 5.4,
+          reveal: [
+            31,
+            40
+          ],
+          phase: "reading"
+        },
+        {
+          t: 35.24,
+          activate: [
+            31,
+            40
+          ]
+        },
+        {
+          t: 120.21,
+          end: true
+        }
+      ],
       type: "form",
       formTitle: "THE RISE OF URBAN BEEKEEPING — LECTURE NOTES · Q31–40",
       instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
       questions: [
         {
           n: 31,
-          label: "Trend took off in",
+          label: "City where the trend began",
           answer: "PARIS",
           alt: [
             "paris"
@@ -942,7 +1071,7 @@ const TEST02 = {
         },
         {
           n: 32,
-          label: "Bees forage up to",
+          label: "How far bees travel to feed",
           answer: "5 KILOMETRES",
           alt: [
             "five kilometres",
@@ -952,7 +1081,7 @@ const TEST02 = {
         },
         {
           n: 33,
-          label: "Cities warmer: heat ___ effect",
+          label: "Cities warmer due to the ___ effect",
           answer: "ISLAND",
           alt: [
             "heat island"
@@ -960,7 +1089,7 @@ const TEST02 = {
         },
         {
           n: 34,
-          label: "Urban honey praised for its",
+          label: "Quality city honey is praised for",
           answer: "FLAVOUR",
           alt: [
             "flavor",
@@ -969,7 +1098,7 @@ const TEST02 = {
         },
         {
           n: 35,
-          label: "Main threat to city bees",
+          label: "Biggest danger to city bees",
           answer: "PESTICIDES",
           alt: [
             "pesticide"
@@ -977,17 +1106,16 @@ const TEST02 = {
         },
         {
           n: 36,
-          label: "A hive can hold up to",
-          answer: "50000 BEES",
+          label: "Maximum bees in one hive",
+          answer: "50000",
           alt: [
             "fifty thousand",
-            "50,000",
-            "50000"
+            "50,000"
           ]
         },
         {
           n: 37,
-          label: "Register hives with the local",
+          label: "Must register hives with the local",
           answer: "COUNCIL",
           alt: [
             "local council"
@@ -995,7 +1123,7 @@ const TEST02 = {
         },
         {
           n: 38,
-          label: "Place hives facing",
+          label: "Direction to face the hives",
           answer: "SOUTH-EAST",
           alt: [
             "southeast",
@@ -1004,7 +1132,7 @@ const TEST02 = {
         },
         {
           n: 39,
-          label: "Swarming most common in",
+          label: "Season when colonies split",
           answer: "SPRING",
           alt: [
             "in spring"
@@ -1012,7 +1140,7 @@ const TEST02 = {
         },
         {
           n: 40,
-          label: "Future idea: bee-friendly",
+          label: "Planned bee-friendly ___",
           answer: "CORRIDORS",
           alt: [
             "corridor"
@@ -1039,7 +1167,7 @@ const TEST03 = {
       audio: "audio/test03/section1.mp3",
       cues: [
         {
-          t: 17.62,
+          t: 19.7,
           reveal: [
             1,
             5
@@ -1047,14 +1175,14 @@ const TEST03 = {
           phase: "reading"
         },
         {
-          t: 66.5,
+          t: 68.59,
           activate: [
             1,
             5
           ]
         },
         {
-          t: 132.29,
+          t: 134.38,
           reveal: [
             6,
             10
@@ -1062,14 +1190,14 @@ const TEST03 = {
           phase: "reading"
         },
         {
-          t: 161.82,
+          t: 163.91,
           activate: [
             6,
             10
           ]
         },
         {
-          t: 221.52,
+          t: 223.61,
           end: true
         }
       ],

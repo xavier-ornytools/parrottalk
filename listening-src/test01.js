@@ -16,6 +16,9 @@ const TEST01 = {
   // Voix narrateur (annonces d'examen) — neutre, jamais personnage d'un dialogue,
   // distincte de toutes les voix de locuteurs (vérifié par la Porte 1).
   narratorVoice: 'en-GB-Neural2-D',
+  // Intro de marque (Section 1) — remplace toute mention IELTS dans l'audio.
+  // Rotation fixe par test (voir conventions dans listening-src/PIPELINE.md).
+  intro: 'Welcome to your ParrotTalk listening test, the most realistic exam simulation. You will hear a number of different recordings, and you will hear each one only once.',
   sections: [
 
     // ── SECTION 1 — Dialogue transactionnel (form completion + épellation) ──────
