@@ -141,126 +141,437 @@ const TEST01 = {
 
 // ── TEST 02 DATA ──────────────────────────────────────────────────────────────
 const TEST02 = {
-  id: 'test02',
-  title: 'Listening Test 02',
+  id: "test02",
+  title: "Listening Test 02",
   date: null,
   sections: [
     {
       number: 1,
-      title: 'Fitness Centre Registration — Form Completion',
-      audio: 'audio/test02/section1.mp3',
-      type: 'form',
-      formTitle: 'WESTSIDE FITNESS CENTRE — NEW MEMBER FORM',
-      instructions: 'Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.',
+      title: "Harbourview Leisure Centre — Membership Enquiry",
+      audio: "audio/test02/section1.mp3",
+      type: "form",
+      formTitle: "HARBOURVIEW LEISURE CENTRE — MEMBERSHIP FORM · Q1–10",
+      instructions: "Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.",
       questions: [
-        { n:1,  label:'Surname',                 answer:'GRIFFITHS',                  alt:['griffiths'] },
-        { n:2,  label:'Date of birth',           answer:'23RD MARCH',                 alt:['23rd march','march 23','23 march'] },
-        { n:3,  label:'Type of membership',      answer:'MONTHLY',                    alt:['monthly'] },
-        { n:4,  label:'Start date',              answer:'7TH JULY',                   alt:['7th july','july 7','7 july'] },
-        { n:5,  label:'Swimming lesson day',     answer:'THURSDAY',                   alt:['thursday'] },
-        { n:6,  label:'Lesson start time',       answer:'7AM',                        alt:['7am','7 am','7:00','seven'] },
-        { n:7,  label:'Email address',           answer:'D.GRIFFITHS@SITAMEL.COM',   alt:['d.griffiths@sitamel.com'] },
-        { n:8,  label:'Emergency contact name',  answer:'PATRICIA',                   alt:['patricia'] },
-        { n:9,  label:'Emergency contact number',answer:'07734 892116',               alt:['07734892116','07734 892 116'] },
-        { n:10, label:'Locker reference',        answer:'247',                        alt:['247'] },
+        {
+          n: 1,
+          label: "Surname",
+          answer: "PELLETIER",
+          alt: [
+            "pelletier"
+          ]
+        },
+        {
+          n: 2,
+          label: "Membership type",
+          answer: "OFF-PEAK",
+          alt: [
+            "off peak",
+            "offpeak"
+          ]
+        },
+        {
+          n: 3,
+          label: "Start date",
+          answer: "3 MARCH",
+          alt: [
+            "third of march",
+            "3rd march",
+            "march 3",
+            "3/3"
+          ]
+        },
+        {
+          n: 4,
+          label: "Contact number",
+          answer: "0491 552 019",
+          alt: [
+            "0491552019"
+          ]
+        },
+        {
+          n: 5,
+          label: "Street",
+          answer: "WATTLE AVENUE",
+          alt: [
+            "24 wattle avenue",
+            "wattle ave"
+          ]
+        },
+        {
+          n: 6,
+          label: "Suburb",
+          answer: "NEWPORT",
+          alt: [
+            "newport"
+          ]
+        },
+        {
+          n: 7,
+          label: "How they heard of us",
+          answer: "NEIGHBOUR",
+          alt: [
+            "a neighbour",
+            "neighbor"
+          ]
+        },
+        {
+          n: 8,
+          label: "Activity of interest",
+          answer: "SWIMMING",
+          alt: [
+            "swim"
+          ]
+        },
+        {
+          n: 9,
+          label: "Preferred time",
+          answer: "EVENINGS",
+          alt: [
+            "evening",
+            "in the evening"
+          ]
+        },
+        {
+          n: 10,
+          label: "Membership number",
+          answer: "HV4712",
+          alt: [
+            "hv 4712"
+          ]
+        }
       ]
     },
     {
       number: 2,
-      title: 'Science Museum — Map + Multiple Choice',
-      audio: 'audio/test02/section2.mp3',
-      type: 'mixed',
+      title: "Riverside Community Garden — Volunteer Induction",
+      audio: "audio/test02/section2.mp3",
+      type: "mixed",
       groups: [
         {
-          type: 'form',
-          formTitle: 'RIVERSIDE SCIENCE MUSEUM — GROUND FLOOR',
-          instructions: 'Write the letter (A–F) shown on the map next to each room.',
+          type: "form",
+          formTitle: "RIVERSIDE COMMUNITY GARDEN — SITE MAP · Q11–15",
+          instructions: "Label the map below. Write the correct letter, A–H, next to each feature.",
           questions: [
-            { n:11, label:'Ocean Life',           answer:'B', alt:['b'] },
-            { n:12, label:'Space Technology',     answer:'C', alt:['c'] },
-            { n:13, label:'Café',                 answer:'D', alt:['d'] },
-            { n:14, label:'Temporary Exhibition', answer:'E', alt:['e'] },
-            { n:15, label:'Human Biology',        answer:'F', alt:['f'] },
+            {
+              n: 11,
+              label: "Compost area",
+              answer: "F",
+              alt: [
+                "f"
+              ]
+            },
+            {
+              n: 12,
+              label: "Herb spiral",
+              answer: "B",
+              alt: [
+                "b"
+              ]
+            },
+            {
+              n: 13,
+              label: "Children's plot",
+              answer: "D",
+              alt: [
+                "d"
+              ]
+            },
+            {
+              n: 14,
+              label: "Greenhouse",
+              answer: "G",
+              alt: [
+                "g"
+              ]
+            },
+            {
+              n: 15,
+              label: "Pond",
+              answer: "A",
+              alt: [
+                "a"
+              ]
+            }
           ]
         },
         {
-          type: 'mc',
-          instructions: 'Choose the correct letter, A, B or C.',
+          type: "mc",
+          instructions: "Choose the correct letter, A, B or C.",
           questions: [
-            { n:16, text:'What is the theme of the current temporary exhibition?',
-              options:['Ancient Egypt','Robotics and Artificial Intelligence','Deep sea exploration'], answer:1 },
-            { n:17, text:'What is included in the standard entry ticket?',
-              options:['Audio guide','Planetarium show','Guided tour'], answer:0 },
-            { n:18, text:"When does the children's science workshop take place?",
-              options:['Weekday afternoons','Saturday afternoons','Sunday mornings'], answer:1 },
-            { n:19, text:"What is the main purpose of the museum's new app?",
-              options:['To book tickets online','To navigate the building','To access additional information about exhibits'], answer:2 },
-            { n:20, text:'What does the museum offer specifically for school groups?',
-              options:['Free entry for all pupils','A dedicated education officer','Early access before opening'], answer:1 },
+            {
+              n: 16,
+              text: "What must volunteers always bring themselves?",
+              options: [
+                "Tools",
+                "Gloves",
+                "A water bottle"
+              ],
+              answer: 1
+            },
+            {
+              n: 17,
+              text: "How often do volunteer sessions take place?",
+              options: [
+                "Every weekday",
+                "Every Saturday",
+                "Every weekend"
+              ],
+              answer: 1
+            },
+            {
+              n: 18,
+              text: "What is NOT allowed in the growing beds?",
+              options: [
+                "Food",
+                "Pets",
+                "Bicycles"
+              ],
+              answer: 1
+            },
+            {
+              n: 19,
+              text: "Where should watering water be taken from?",
+              options: [
+                "The tap by the shed",
+                "The rainwater tank",
+                "The pond"
+              ],
+              answer: 1
+            },
+            {
+              n: 20,
+              text: "How should volunteers report an absence?",
+              options: [
+                "By email",
+                "By phone",
+                "By text"
+              ],
+              answer: 2
+            }
           ]
         }
       ]
     },
     {
       number: 3,
-      title: 'Climate Policy Tutorial — Matching + MC',
-      audio: 'audio/test02/section3.mp3',
-      type: 'mixed',
+      title: "Tutorial — Urban Noise Field Study",
+      audio: "audio/test02/section3.mp3",
+      type: "mixed",
       groups: [
         {
-          type: 'matching',
-          instructions: 'What position does each researcher hold? Write A, B, C, D, or E.',
-          options: [
-            'A — Carbon taxation as primary tool',
-            'B — Behavioural change over regulation',
-            'C — Technology investment priority',
-            'D — International cooperation',
-            'E — Adaptation over mitigation'
-          ],
+          type: "mc",
+          instructions: "Choose the correct letter, A, B or C.",
           questions: [
-            { n:21, text:'Torres',    answer:'A', alt:['a'] },
-            { n:22, text:'Nakamura', answer:'C', alt:['c'] },
-            { n:23, text:'Fischer',  answer:'B', alt:['b'] },
-            { n:24, text:'Osei',     answer:'D', alt:['d'] },
-            { n:25, text:'Lindqvist',answer:'E', alt:['e'] },
+            {
+              n: 21,
+              text: "The students will focus on noise near",
+              options: [
+                "hospitals",
+                "schools",
+                "offices"
+              ],
+              answer: 1
+            },
+            {
+              n: 22,
+              text: "How will they measure the noise?",
+              options: [
+                "with a phone app",
+                "with a sound level meter",
+                "with a video camera"
+              ],
+              answer: 1
+            },
+            {
+              n: 23,
+              text: "Over what period will they collect data?",
+              options: [
+                "two days",
+                "two weeks",
+                "two months"
+              ],
+              answer: 1
+            },
+            {
+              n: 24,
+              text: "What do they expect to be their main difficulty?",
+              options: [
+                "rain",
+                "wind",
+                "traffic"
+              ],
+              answer: 1
+            },
+            {
+              n: 25,
+              text: "How often will they log a reading?",
+              options: [
+                "every five minutes",
+                "every fifteen minutes",
+                "every thirty minutes"
+              ],
+              answer: 1
+            }
           ]
         },
         {
-          type: 'mc',
-          instructions: 'Choose the correct letter, A, B or C.',
+          type: "matching",
+          instructions: "Who is responsible for each task? Write A (Tom), B (Maya) or C (Dr Hollis).",
+          options: [
+            "A — Tom",
+            "B — Maya",
+            "C — Dr Hollis"
+          ],
           questions: [
-            { n:26, text:"What does Dr. Marsh say the students should prioritise?",
-              options:['The literature review','The methodology section','The case study selection'], answer:0 },
-            { n:27, text:"Alex thinks Fischer's behavioural approach is",
-              options:['too idealistic','well-supported by evidence','difficult to measure empirically'], answer:2 },
-            { n:28, text:'What concern does Fatima raise about carbon taxation?',
-              options:['It is regressive without compensatory measures','It is difficult to enforce','It has not succeeded in any country'], answer:0 },
-            { n:29, text:'What is the main weakness of international cooperation frameworks according to Dr. Marsh?',
-              options:['They are implemented too slowly','They lack enforcement mechanisms','They favour wealthier nations'], answer:1 },
-            { n:30, text:'What do Alex and Fatima agree on regarding their project?',
-              options:['The scope needs to be narrowed','They need more primary data','The deadline is too tight'], answer:0 },
+            {
+              n: 26,
+              text: "Plotting the readings onto a site map",
+              answer: "A",
+              alt: [
+                "a"
+              ]
+            },
+            {
+              n: 27,
+              text: "Interviewing teachers and pupils",
+              answer: "B",
+              alt: [
+                "b"
+              ]
+            },
+            {
+              n: 28,
+              text: "Recommending background reading",
+              answer: "C",
+              alt: [
+                "c"
+              ]
+            }
+          ]
+        },
+        {
+          type: "form",
+          formTitle: "PROJECT DETAILS · Q29–30",
+          instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
+          questions: [
+            {
+              n: 29,
+              label: "Required length of the report",
+              answer: "2000 WORDS",
+              alt: [
+                "two thousand words",
+                "2000"
+              ]
+            },
+            {
+              n: 30,
+              label: "Submission deadline",
+              answer: "12 MAY",
+              alt: [
+                "twelfth of may",
+                "may 12",
+                "12th may"
+              ]
+            }
           ]
         }
       ]
     },
     {
       number: 4,
-      title: 'Behavioural Economics — Notes Completion',
-      audio: 'audio/test02/section4.mp3',
-      type: 'form',
-      formTitle: 'BEHAVIOURAL ECONOMICS — LECTURE NOTES',
-      instructions: 'Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.',
+      title: "Lecture — The Rise of Urban Beekeeping",
+      audio: "audio/test02/section4.mp3",
+      type: "form",
+      formTitle: "THE RISE OF URBAN BEEKEEPING — LECTURE NOTES · Q31–40",
+      instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
       questions: [
-        { n:31, label:'Combines economics with',                  answer:'PSYCHOLOGY',           alt:['psychology'] },
-        { n:32, label:'Classical assumption: humans are',         answer:'RATIONAL',             alt:['rational','perfectly rational'] },
-        { n:33, label:'Overvalue losses relative to gains',       answer:'LOSS AVERSION',        alt:['loss aversion'] },
-        { n:34, label:'Kahneman & Tversky key model',             answer:'PROSPECT THEORY',      alt:['prospect theory'] },
-        { n:35, label:'Relying on first information encountered', answer:'ANCHORING',            alt:['anchoring'] },
-        { n:36, label:'Preference for current state of affairs',  answer:'STATUS QUO BIAS',      alt:['status quo bias'] },
-        { n:37, label:'Alter behaviour through choice design',    answer:'NUDGE',                alt:['nudge'] },
-        { n:38, label:'How options are presented = ',             answer:'CHOICE ARCHITECTURE',  alt:['choice architecture'] },
-        { n:39, label:'Limited ability to process information',   answer:'BOUNDED RATIONALITY',  alt:['bounded rationality'] },
-        { n:40, label:"Year 'Nudge' published",                   answer:'2008',                 alt:['2008'] },
+        {
+          n: 31,
+          label: "Trend took off in",
+          answer: "PARIS",
+          alt: [
+            "paris"
+          ]
+        },
+        {
+          n: 32,
+          label: "Bees forage up to",
+          answer: "5 KILOMETRES",
+          alt: [
+            "five kilometres",
+            "5 km",
+            "5km"
+          ]
+        },
+        {
+          n: 33,
+          label: "Cities warmer: heat ___ effect",
+          answer: "ISLAND",
+          alt: [
+            "heat island"
+          ]
+        },
+        {
+          n: 34,
+          label: "Urban honey praised for its",
+          answer: "FLAVOUR",
+          alt: [
+            "flavor",
+            "taste"
+          ]
+        },
+        {
+          n: 35,
+          label: "Main threat to city bees",
+          answer: "PESTICIDES",
+          alt: [
+            "pesticide"
+          ]
+        },
+        {
+          n: 36,
+          label: "A hive can hold up to",
+          answer: "50000 BEES",
+          alt: [
+            "fifty thousand",
+            "50,000",
+            "50000"
+          ]
+        },
+        {
+          n: 37,
+          label: "Register hives with the local",
+          answer: "COUNCIL",
+          alt: [
+            "local council"
+          ]
+        },
+        {
+          n: 38,
+          label: "Place hives facing",
+          answer: "SOUTH-EAST",
+          alt: [
+            "southeast",
+            "south east"
+          ]
+        },
+        {
+          n: 39,
+          label: "Swarming most common in",
+          answer: "SPRING",
+          alt: [
+            "in spring"
+          ]
+        },
+        {
+          n: 40,
+          label: "Future idea: bee-friendly",
+          answer: "CORRIDORS",
+          alt: [
+            "corridor"
+          ]
+        }
       ]
     }
   ]
