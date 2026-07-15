@@ -1,0 +1,372 @@
+{
+  "id": "test02",
+  "title": "Listening Test 02",
+  "sections": [
+    {
+      "number": 1,
+      "title": "Harbourview Leisure Centre — Membership Enquiry",
+      "type": "form",
+      "audio": "audio/test02/section1.mp3",
+      "instructions": "Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.",
+      "questions": [
+        {
+          "n": 1,
+          "label": "Surname",
+          "answer": "PELLETIER",
+          "alt": [
+            "pelletier"
+          ]
+        },
+        {
+          "n": 2,
+          "label": "Membership type",
+          "answer": "OFF-PEAK",
+          "alt": [
+            "off peak",
+            "offpeak"
+          ]
+        },
+        {
+          "n": 3,
+          "label": "Start date",
+          "answer": "3 MARCH",
+          "alt": [
+            "third of march",
+            "3rd march",
+            "march 3",
+            "3/3"
+          ]
+        },
+        {
+          "n": 4,
+          "label": "Contact number",
+          "answer": "0491 552 019",
+          "alt": [
+            "0491552019"
+          ]
+        },
+        {
+          "n": 5,
+          "label": "Street",
+          "answer": "WATTLE AVENUE",
+          "alt": [
+            "24 wattle avenue",
+            "wattle ave"
+          ]
+        },
+        {
+          "n": 6,
+          "label": "Suburb",
+          "answer": "NEWPORT",
+          "alt": [
+            "newport"
+          ]
+        },
+        {
+          "n": 7,
+          "label": "How they heard of us",
+          "answer": "NEIGHBOUR",
+          "alt": [
+            "a neighbour",
+            "neighbor"
+          ]
+        },
+        {
+          "n": 8,
+          "label": "Activity of interest",
+          "answer": "SWIMMING",
+          "alt": [
+            "swim"
+          ]
+        },
+        {
+          "n": 9,
+          "label": "Preferred time",
+          "answer": "EVENINGS",
+          "alt": [
+            "evening",
+            "in the evening"
+          ]
+        },
+        {
+          "n": 10,
+          "label": "Membership number",
+          "answer": "HV4712",
+          "alt": [
+            "hv 4712"
+          ]
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "title": "Riverside Community Garden — Volunteer Induction",
+      "type": "mixed",
+      "audio": "audio/test02/section2.mp3",
+      "instructions": "Q11–15: label the map A–H. Q16–20: write NO MORE THAN TWO WORDS.",
+      "questions": [
+        {
+          "n": 11,
+          "label": "Compost area",
+          "answer": "F",
+          "alt": []
+        },
+        {
+          "n": 12,
+          "label": "Herb spiral",
+          "answer": "B",
+          "alt": []
+        },
+        {
+          "n": 13,
+          "label": "Children's plot",
+          "answer": "D",
+          "alt": []
+        },
+        {
+          "n": 14,
+          "label": "Greenhouse",
+          "answer": "G",
+          "alt": []
+        },
+        {
+          "n": 15,
+          "label": "Pond",
+          "answer": "A",
+          "alt": []
+        },
+        {
+          "n": 16,
+          "label": "Volunteers must bring their own",
+          "answer": "GLOVES",
+          "alt": [
+            "gloves"
+          ]
+        },
+        {
+          "n": 17,
+          "label": "Sessions run every",
+          "answer": "SATURDAY",
+          "alt": [
+            "saturday morning",
+            "saturdays"
+          ]
+        },
+        {
+          "n": 18,
+          "label": "Not allowed in the beds",
+          "answer": "PETS",
+          "alt": [
+            "no pets",
+            "animals"
+          ]
+        },
+        {
+          "n": 19,
+          "label": "Take water from the",
+          "answer": "RAINWATER TANK",
+          "alt": [
+            "rainwater",
+            "rain water tank"
+          ]
+        },
+        {
+          "n": 20,
+          "label": "Contact the coordinator by",
+          "answer": "TEXT",
+          "alt": [
+            "by text",
+            "text message"
+          ]
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "title": "Tutorial — Urban Noise Field Study",
+      "type": "discussion",
+      "audio": "audio/test02/section3.mp3",
+      "instructions": "Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.",
+      "questions": [
+        {
+          "n": 21,
+          "label": "Focus of the study: noise near",
+          "answer": "SCHOOLS",
+          "alt": [
+            "schools"
+          ]
+        },
+        {
+          "n": 22,
+          "label": "Main instrument used",
+          "answer": "SOUND LEVEL METER",
+          "alt": [
+            "sound meter",
+            "decibel meter"
+          ]
+        },
+        {
+          "n": 23,
+          "label": "Data collected over",
+          "answer": "TWO WEEKS",
+          "alt": [
+            "2 weeks"
+          ]
+        },
+        {
+          "n": 24,
+          "label": "Biggest challenge",
+          "answer": "WIND",
+          "alt": [
+            "the wind"
+          ]
+        },
+        {
+          "n": 25,
+          "label": "A reading logged every",
+          "answer": "15 MINUTES",
+          "alt": [
+            "fifteen minutes"
+          ]
+        },
+        {
+          "n": 26,
+          "label": "Tom is responsible for",
+          "answer": "MAPPING",
+          "alt": [
+            "the mapping",
+            "maps"
+          ]
+        },
+        {
+          "n": 27,
+          "label": "Maya is responsible for",
+          "answer": "INTERVIEWS",
+          "alt": [
+            "the interviews"
+          ]
+        },
+        {
+          "n": 28,
+          "label": "Tutor suggests reading about",
+          "answer": "REGULATIONS",
+          "alt": [
+            "noise regulations"
+          ]
+        },
+        {
+          "n": 29,
+          "label": "Report length",
+          "answer": "2000 WORDS",
+          "alt": [
+            "two thousand words"
+          ]
+        },
+        {
+          "n": 30,
+          "label": "Deadline",
+          "answer": "12 MAY",
+          "alt": [
+            "twelfth of may",
+            "may 12"
+          ]
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "title": "Lecture — The Rise of Urban Beekeeping",
+      "type": "lecture",
+      "audio": "audio/test02/section4.mp3",
+      "instructions": "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
+      "questions": [
+        {
+          "n": 31,
+          "label": "Trend took off in",
+          "answer": "PARIS",
+          "alt": [
+            "paris"
+          ]
+        },
+        {
+          "n": 32,
+          "label": "Bees forage up to",
+          "answer": "5 KILOMETRES",
+          "alt": [
+            "five kilometres",
+            "5 km",
+            "5km"
+          ]
+        },
+        {
+          "n": 33,
+          "label": "Cities warmer: heat ___ effect",
+          "answer": "ISLAND",
+          "alt": [
+            "heat island"
+          ]
+        },
+        {
+          "n": 34,
+          "label": "Urban honey praised for its",
+          "answer": "FLAVOUR",
+          "alt": [
+            "flavor",
+            "taste"
+          ]
+        },
+        {
+          "n": 35,
+          "label": "Main threat to city bees",
+          "answer": "PESTICIDES",
+          "alt": [
+            "pesticide"
+          ]
+        },
+        {
+          "n": 36,
+          "label": "A hive can hold up to",
+          "answer": "50000 BEES",
+          "alt": [
+            "fifty thousand",
+            "50,000",
+            "50000"
+          ]
+        },
+        {
+          "n": 37,
+          "label": "Register hives with the local",
+          "answer": "COUNCIL",
+          "alt": [
+            "local council"
+          ]
+        },
+        {
+          "n": 38,
+          "label": "Place hives facing",
+          "answer": "SOUTH-EAST",
+          "alt": [
+            "southeast",
+            "south east"
+          ]
+        },
+        {
+          "n": 39,
+          "label": "Swarming most common in",
+          "answer": "SPRING",
+          "alt": [
+            "in spring"
+          ]
+        },
+        {
+          "n": 40,
+          "label": "Future idea: bee-friendly",
+          "answer": "CORRIDORS",
+          "alt": [
+            "corridor"
+          ]
+        }
+      ]
+    }
+  ]
+}
