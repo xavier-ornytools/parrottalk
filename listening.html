@@ -208,21 +208,26 @@
 <div class="container" style="padding-top:32px;padding-bottom:80px">
 
   <!-- TEST SELECTOR -->
-  <div class="grid-3" style="gap:12px;margin-bottom:24px">
-    <button class="test-sel-btn active" onclick="selectTest('test01')">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:24px">
+    <button class="test-sel-btn active" data-id="test01" onclick="selectTest('test01')">
       <div class="t-num">Test 01</div>
-      <div class="t-name">Hotel · Museum · Urban Farming · Cognitive Load</div>
+      <div class="t-name">Coach booking · Country park · Renewable energy · Chocolate</div>
       <div class="t-meta" id="meta-test01">Not attempted yet</div>
     </button>
-    <button class="test-sel-btn" onclick="selectTest('test02')">
+    <button class="test-sel-btn" data-id="test02" onclick="selectTest('test02')">
       <div class="t-num">Test 02</div>
-      <div class="t-name">Fitness Centre · Science Museum · Climate · Behavioural Economics</div>
+      <div class="t-name">Leisure centre · Community garden · Urban noise · Beekeeping</div>
       <div class="t-meta" id="meta-test02">Not attempted yet</div>
     </button>
-    <button class="test-sel-btn" onclick="selectTest('test03')">
+    <button class="test-sel-btn" data-id="test03" onclick="selectTest('test03')">
       <div class="t-num">Test 03</div>
-      <div class="t-name">Cycle Hire · Library · Environment · Sleep Science</div>
-      <div class="t-meta" id="meta-test03">Not attempted yet · 🤖 AI Voice</div>
+      <div class="t-name">Community hall · Aquarium · Field trip · Tea</div>
+      <div class="t-meta" id="meta-test03">Not attempted yet</div>
+    </button>
+    <button class="test-sel-btn" data-id="test04" onclick="selectTest('test04')">
+      <div class="t-num">Test 04</div>
+      <div class="t-name">Student lettings · Library · Café research · The bicycle</div>
+      <div class="t-meta" id="meta-test04">Not attempted yet</div>
     </button>
   </div>
 
@@ -414,7 +419,7 @@ function updateReviewTimer() {
 
 function init() {
   const scores = getAllScores();
-  ['test01','test02','test03'].forEach(id => {
+  ['test01','test02','test03','test04'].forEach(id => {
     const s = scores[id];
     const el = document.getElementById('meta-'+id);
     if (s && el) el.textContent = `Last: ${s.total}/40 — Band ${s.band} (${s.date})`;
@@ -427,15 +432,14 @@ function init() {
   const resume = findInProgressListeningTest();
   if (resume) {
     currentTest = TESTS[resume.id];
-    document.querySelectorAll('.test-sel-btn').forEach((b,i) =>
-      b.classList.toggle('active', (i===0&&resume.id==='test01')||(i===1&&resume.id==='test02')||(i===2&&resume.id==='test03')));
+    document.querySelectorAll('.test-sel-btn').forEach(b => b.classList.toggle('active', b.dataset.id === resume.id));
     startTest();
   }
 }
 
 function findInProgressListeningTest() {
   let best = null;
-  ['test01','test02','test03'].forEach(id => {
+  ['test01','test02','test03','test04'].forEach(id => {
     const p = loadProgress('listening', id);
     if (p && (!best || p.updatedAt > best.updatedAt)) best = { id, ...p };
   });
@@ -447,8 +451,7 @@ function selectTest(id) {
   cancelTTS();
   audio.pause(); setPlayIcon(false);
   currentTest = TESTS[id];
-  document.querySelectorAll('.test-sel-btn').forEach((b,i) =>
-    b.classList.toggle('active', (i===0&&id==='test01')||(i===1&&id==='test02')||(i===2&&id==='test03')));
+  document.querySelectorAll('.test-sel-btn').forEach(b => b.classList.toggle('active', b.dataset.id === id));
   document.getElementById('instructions-card').classList.remove('hidden');
   document.getElementById('test-zone').classList.add('hidden');
   submitted = false;
