@@ -654,6 +654,11 @@ select.form-control { appearance: none; cursor: pointer; }
   .nav__logo { font-size: 1.125rem; }
   .matching-row { grid-template-columns: 1fr; }
   .strip-items  { gap: 20px; }
+  /* Hero mobile : plus de centrage plein ecran (blanc excessif), espacement equilibre */
+  .hero { min-height: auto; }
+  .hero__inner { padding: 30px 0; }
+  /* Footer mobile centre (logo perroquet inclus) */
+  .footer__inner { justify-content: center; text-align: center; }
 }
 /* Sections "2 colonnes" inline de l'accueil : repli en 1 colonne centree sur mobile/tablette */
 @media (max-width: 768px) {
