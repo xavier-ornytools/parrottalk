@@ -20,120 +20,437 @@ function getBand(raw) {
 
 // ── TEST 01 DATA ──────────────────────────────────────────────────────────────
 const TEST01 = {
-  id: 'test01',
-  title: 'Listening Test 01',
-  date: '29 juin 2026',
+  id: "test01",
+  title: "Listening Test 01",
+  date: null,
   sections: [
     {
       number: 1,
-      title: 'Hotel Booking — Form Completion',
-      audio: 'audio/test01/section1.mp3',
-      type: 'form',
-      formTitle: 'THE GRAND MERIDIAN HOTEL — RESERVATION FORM',
-      instructions: 'Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.',
+      title: "Greenline Coach Travel — Ticket Booking",
+      audio: "audio/test01/section1.mp3",
+      type: "form",
+      formTitle: "GREENLINE COACH TRAVEL — BOOKING FORM · Q1–10",
+      instructions: "Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.",
       questions: [
-        { n:1,  label:'Guest surname',        answer:'HENDERSON',                    alt:['henderson'] },
-        { n:2,  label:'Arrival date',         answer:'14TH',                         alt:['14th','fourteenth','14'] },
-        { n:3,  label:'Number of nights',     answer:'3',                            alt:['three'] },
-        { n:4,  label:'Room type',            answer:'TWIN',                         alt:['twin room'] },
-        { n:5,  label:'Special requirement',  answer:'GROUND',                       alt:['ground floor'] },
-        { n:6,  label:'Nightly rate (£)',     answer:'89',                           alt:['£89','89 pounds'] },
-        { n:7,  label:'Breakfast',            answer:'INCLUDED',                     alt:['included'] },
-        { n:8,  label:'Payment method',       answer:'CREDIT',                       alt:['credit card'] },
-        { n:9,  label:'Email address',        answer:'david.henderson@techcorp.com', alt:['david.henderson@techcorp.com'] },
-        { n:10, label:'Booking reference',    answer:'BKG2749',                      alt:['bkg2749','bkg 2749'] },
+        {
+          n: 1,
+          label: "Surname",
+          answer: "DONNELLY",
+          alt: [
+            "donnelly"
+          ]
+        },
+        {
+          n: 2,
+          label: "Destination",
+          answer: "EDINBURGH",
+          alt: [
+            "edinburgh"
+          ]
+        },
+        {
+          n: 3,
+          label: "Travel date",
+          answer: "12 SEPTEMBER",
+          alt: [
+            "twelfth of september",
+            "12 sept",
+            "sept 12",
+            "12/9"
+          ]
+        },
+        {
+          n: 4,
+          label: "Number of passengers",
+          answer: "3",
+          alt: [
+            "three"
+          ]
+        },
+        {
+          n: 5,
+          label: "Seat preference",
+          answer: "WINDOW",
+          alt: [
+            "window seat",
+            "a window seat"
+          ]
+        },
+        {
+          n: 6,
+          label: "Departure time",
+          answer: "11 AM",
+          alt: [
+            "eleven",
+            "eleven am",
+            "11am",
+            "11:00"
+          ]
+        },
+        {
+          n: 7,
+          label: "Discounted fare (£)",
+          answer: "34",
+          alt: [
+            "£34",
+            "thirty-four",
+            "34 pounds"
+          ]
+        },
+        {
+          n: 8,
+          label: "Discount card",
+          answer: "STUDENT",
+          alt: [
+            "student card"
+          ]
+        },
+        {
+          n: 9,
+          label: "Payment method",
+          answer: "DEBIT CARD",
+          alt: [
+            "debit",
+            "by debit card"
+          ]
+        },
+        {
+          n: 10,
+          label: "Booking reference",
+          answer: "GL7208",
+          alt: [
+            "gl 7208"
+          ]
+        }
       ]
     },
     {
       number: 2,
-      title: 'Museum Tour — Map + Multiple Choice',
-      audio: 'audio/test01/section2.mp3',
-      type: 'mixed',
+      title: "Oakmoor Country Park — Visitor Orientation",
+      audio: "audio/test01/section2.mp3",
+      type: "mixed",
       groups: [
         {
-          type: 'form',
-          formTitle: 'MUSEUM MAP — Q11–15',
-          instructions: 'Write the letter (A–H) shown on the map next to each location.',
+          type: "form",
+          formTitle: "OAKMOOR COUNTRY PARK — MAP · Q11–15",
+          instructions: "Label the map below. Write the correct letter, A–H, next to each place.",
           questions: [
-            { n:11, label:'Education Centre',      answer:'A', alt:['a'] },
-            { n:12, label:'Gift Shop',             answer:'B', alt:['b'] },
-            { n:13, label:'Temporary Exhibitions', answer:'C', alt:['c'] },
-            { n:14, label:'Dinosaur Gallery',      answer:'D', alt:['d'] },
-            { n:15, label:'Restaurant',            answer:'F', alt:['f'] },
+            {
+              n: 11,
+              label: "Visitor Centre",
+              answer: "C",
+              alt: [
+                "c"
+              ]
+            },
+            {
+              n: 12,
+              label: "Bird hide",
+              answer: "F",
+              alt: [
+                "f"
+              ]
+            },
+            {
+              n: 13,
+              label: "Picnic area",
+              answer: "A",
+              alt: [
+                "a"
+              ]
+            },
+            {
+              n: 14,
+              label: "Boat hire",
+              answer: "H",
+              alt: [
+                "h"
+              ]
+            },
+            {
+              n: 15,
+              label: "Adventure playground",
+              answer: "D",
+              alt: [
+                "d"
+              ]
+            }
           ]
         },
         {
-          type: 'mc',
-          instructions: 'Choose the correct letter, A, B or C.',
+          type: "mc",
+          instructions: "Choose the correct letter, A, B or C.",
           questions: [
-            { n:16, text:'Which new exhibition will open at the museum next month?',
-              options:['Rare Gemstones','Deep Ocean Creatures','Antarctic Wildlife'], answer:1 },
-            { n:17, text:"What time does the last guided tour of the day now start?",
-              options:['2:30 pm','3:00 pm','3:30 pm'], answer:1 },
-            { n:18, text:'How much do the audio guides now cost?',
-              options:['Nothing, they are free','£2','£5'], answer:0 },
-            { n:19, text:'Which part of the museum is currently closed?',
-              options:['The Dinosaur Gallery','The East Wing','The Members\' Lounge'], answer:1 },
-            { n:20, text:'What are groups of 15 or more asked to do?',
-              options:['Book in advance','Use the side entrance on Meridian Road','Pay a group fee'], answer:1 },
+            {
+              n: 16,
+              text: "When is the park at its busiest?",
+              options: [
+                "On weekday mornings",
+                "On Sundays",
+                "On public holidays"
+              ],
+              answer: 1
+            },
+            {
+              n: 17,
+              text: "What are visitors asked to do with their dogs?",
+              options: [
+                "Leave them at home",
+                "Keep them on a lead",
+                "Let them run free"
+              ],
+              answer: 1
+            },
+            {
+              n: 18,
+              text: "The main café is currently",
+              options: [
+                "open every day",
+                "open at weekends only",
+                "closed completely"
+              ],
+              answer: 1
+            },
+            {
+              n: 19,
+              text: "To join a guided walk, visitors must",
+              options: [
+                "just turn up",
+                "book at the information desk",
+                "pay a fee online"
+              ],
+              answer: 1
+            },
+            {
+              n: 20,
+              text: "The main safety warning concerns",
+              options: [
+                "slippery paths",
+                "deep water",
+                "falling branches"
+              ],
+              answer: 1
+            }
           ]
         }
       ]
     },
     {
       number: 3,
-      title: 'Urban Farming Discussion — Matching + MC',
-      audio: 'audio/test01/section3.mp3',
-      type: 'mixed',
+      title: "Tutorial — Renewable Energy Presentation",
+      audio: "audio/test01/section3.mp3",
+      type: "mixed",
       groups: [
         {
-          type: 'matching',
-          instructions: 'Which researcher does each statement apply to? Write A (Patel), B (Mukamura), C (Ofor), D (Santos), or E (Williams).',
-          options: ['A — Patel','B — Mukamura','C — Ofor','D — Santos','E — Williams'],
+          type: "mc",
+          instructions: "Choose the correct letter, A, B or C.",
           questions: [
-            { n:21, text:"Studies how rooftop vegetation lowers a building's energy use", answer:'A', alt:['a'] },
-            { n:22, text:'Found vertical farms use far less water than traditional agriculture', answer:'B', alt:['b'] },
-            { n:23, text:'Researches the biodiversity benefits of community gardens', answer:'C', alt:['c'] },
-            { n:24, text:'Emphasises the social value of urban food production', answer:'D', alt:['d'] },
-            { n:25, text:'Documents large increases in crop yield', answer:'E', alt:['e'] },
+            {
+              n: 21,
+              text: "Which type of energy did the students finally choose?",
+              options: [
+                "tidal power",
+                "wind energy",
+                "solar power"
+              ],
+              answer: 1
+            },
+            {
+              n: 22,
+              text: "What was their main source of evidence?",
+              options: [
+                "government reports",
+                "a survey they ran",
+                "published interviews"
+              ],
+              answer: 1
+            },
+            {
+              n: 23,
+              text: "What surprised them most?",
+              options: [
+                "the high cost",
+                "the level of public support",
+                "the technical problems"
+              ],
+              answer: 1
+            },
+            {
+              n: 24,
+              text: "What is the main weakness of their draft?",
+              options: [
+                "it is too short",
+                "it has no visuals",
+                "it is off the topic"
+              ],
+              answer: 1
+            },
+            {
+              n: 25,
+              text: "How long must the presentation be?",
+              options: [
+                "ten minutes",
+                "fifteen minutes",
+                "twenty minutes"
+              ],
+              answer: 1
+            }
           ]
         },
         {
-          type: 'mc',
-          instructions: 'Choose the correct letter, A, B or C.',
+          type: "matching",
+          instructions: "Who will do each task? Write A (Ben), B (Priya) or C (Dr Reyes).",
+          options: [
+            "A — Ben",
+            "B — Priya",
+            "C — Dr Reyes"
+          ],
           questions: [
-            { n:26, text:'What do James and Maya see as the main weakness of vertical farming?',
-              options:['The energy cost of lighting and climate control','The amount of water it uses','Its low crop yield'], answer:0 },
-            { n:27, text:'Where do they agree vertical and community farming work best?',
-              options:['In city centres','In suburban areas','In rural areas'], answer:1 },
-            { n:28, text:'What is their final recommendation for their project?',
-              options:['Focus only on vertical farming','Focus only on community gardens','Integrate different methods for different contexts'], answer:2 },
-            { n:29, text:'What do they identify as the main barrier to adoption?',
-              options:['Public opposition','Technical limitations','Funding and political will'], answer:2 },
-            { n:30, text:'According to the Netherlands and Singapore examples, the key enabler was',
-              options:['Private investment','Government commitment','High consumer demand'], answer:1 },
+            {
+              n: 26,
+              text: "Designing the slides",
+              answer: "A",
+              alt: [
+                "a"
+              ]
+            },
+            {
+              n: 27,
+              text: "Writing the script",
+              answer: "B",
+              alt: [
+                "b"
+              ]
+            },
+            {
+              n: 28,
+              text: "Checking the references",
+              answer: "C",
+              alt: [
+                "c"
+              ]
+            }
+          ]
+        },
+        {
+          type: "form",
+          formTitle: "PRESENTATION DETAILS · Q29–30",
+          instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
+          questions: [
+            {
+              n: 29,
+              label: "Slides must be submitted by",
+              answer: "FRIDAY",
+              alt: [
+                "on friday"
+              ]
+            },
+            {
+              n: 30,
+              label: "Presentation room",
+              answer: "ROOM 12",
+              alt: [
+                "room twelve",
+                "12"
+              ]
+            }
           ]
         }
       ]
     },
     {
       number: 4,
-      title: 'Cognitive Load Theory — Notes Completion',
-      audio: 'audio/test01/section4.mp3',
-      type: 'form',
-      formTitle: 'COGNITIVE LOAD THEORY — LECTURE NOTES',
-      instructions: 'Write NO MORE THAN THREE WORDS for each answer.',
+      title: "Lecture — A Short History of Chocolate",
+      audio: "audio/test01/section4.mp3",
+      type: "form",
+      formTitle: "A SHORT HISTORY OF CHOCOLATE — LECTURE NOTES · Q31–40",
+      instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
       questions: [
-        { n:31, label:'Theory founder',                           answer:'SWELLER',              alt:['sweller','john sweller'] },
-        { n:32, label:'Decade of development',                    answer:'1980S',                alt:['1980s','1980'] },
-        { n:33, label:'Working memory is',                        answer:'LIMITED',              alt:['limited capacity','strictly limited'] },
-        { n:34, label:'Long-term memory stores',                  answer:'MATERIAL',             alt:['material','information'] },
-        { n:35, label:'Main application field',                   answer:'INSTRUCTIONAL DESIGN', alt:['instructional design'] },
-        { n:36, label:'Organised knowledge structures',           answer:'SCHEMAS',              alt:['schemas','schema'] },
-        { n:37, label:'Most effective format for complex topics', answer:'TEXT AND DIAGRAMS',    alt:['text and diagrams','diagrams and text'] },
-        { n:38, label:'Introduce complexity',                     answer:'EARLY',                alt:['early'] },
-        { n:39, label:'Avoid presenting same info twice',         answer:'REDUNDANT',            alt:['redundant effect','redundant'] },
-        { n:40, label:'Growing area of application',              answer:'E-LEARNING',           alt:['e-learning','elearning','online learning'] },
+        {
+          n: 31,
+          label: "Aztecs used cacao beans as a form of",
+          answer: "MONEY",
+          alt: [
+            "currency"
+          ]
+        },
+        {
+          n: 32,
+          label: "Original drink flavoured with",
+          answer: "CHILLI",
+          alt: [
+            "chili",
+            "chillies",
+            "chilli and spices"
+          ]
+        },
+        {
+          n: 33,
+          label: "Chocolate first reached Europe via",
+          answer: "SPAIN",
+          alt: [
+            "spain"
+          ]
+        },
+        {
+          n: 34,
+          label: "In Europe, added to sweeten it",
+          answer: "SUGAR",
+          alt: [
+            "sugar"
+          ]
+        },
+        {
+          n: 35,
+          label: "At first only affordable to the",
+          answer: "WEALTHY",
+          alt: [
+            "rich",
+            "the wealthy"
+          ]
+        },
+        {
+          n: 36,
+          label: "In 1828 a Dutch chemist invented a",
+          answer: "PRESS",
+          alt: [
+            "a press",
+            "cocoa press"
+          ]
+        },
+        {
+          n: 37,
+          label: "First solid eating bar made in (year)",
+          answer: "1847",
+          alt: [
+            "1847"
+          ]
+        },
+        {
+          n: 38,
+          label: "Milk chocolate created by adding",
+          answer: "MILK",
+          alt: [
+            "milk"
+          ]
+        },
+        {
+          n: 39,
+          label: "Today's largest cacao producer",
+          answer: "IVORY COAST",
+          alt: [
+            "the ivory coast",
+            "cote divoire"
+          ]
+        },
+        {
+          n: 40,
+          label: "Main current concern for the industry",
+          answer: "SUSTAINABILITY",
+          alt: [
+            "sustainable"
+          ]
+        }
       ]
     }
   ]

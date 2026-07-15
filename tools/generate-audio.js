@@ -79,19 +79,10 @@ async function main() {
 
   fs.rmSync(tmp, { recursive: true, force: true });
 
-  // Émet le bloc questions runtime (à injecter dans js/data.js à l'intégration)
-  const runtime = {
-    id: test.id, title: test.title,
-    sections: test.sections.map(s => ({
-      number: s.number, title: s.title, type: s.type,
-      audio: `audio/${test.id}/section${s.number}.mp3`,
-      instructions: s.instructions,
-      questions: s.questions.map(({ at, ...q }) => q),
-    })),
-  };
-  fs.writeFileSync(path.join(outDir, 'runtime-questions.json'), JSON.stringify(runtime, null, 2));
-  console.log(`\n📦 Bloc runtime écrit → ${path.relative(process.cwd(), path.join(outDir, 'runtime-questions.json'))}`);
-  console.log('→ Étape suivante : Porte 2 (tools/porte2-diarize.js) puis écoute Android par Xavier avant intégration.');
+  console.log('\n📦 Audio généré. Étapes suivantes :');
+  console.log('   • bloc runtime  : node tools/emit-runtime.js ' + src);
+  console.log('   • Porte 2       : GEMINI_API_KEY=… node tools/porte2-diarize.js ' + src);
+  console.log('   • puis intégration data.js + écoute/validation avant merge.');
 }
 
 main().catch(e => { console.error('\n⛔', e.message); process.exit(1); });

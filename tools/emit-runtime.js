@@ -29,7 +29,7 @@ const runtime = {
   }),
 };
 
-const js = 'const TEST02 = ' + JSON.stringify(runtime, null, 2)
+const js = 'const ' + test.id.toUpperCase() + ' = ' + JSON.stringify(runtime, null, 2)
   .replace(/"([a-zA-Z_][a-zA-Z0-9_]*)":/g, '$1:') // clés sans guillemets, style data.js
   + ';';
 process.stdout.write(js + '\n');
