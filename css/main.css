@@ -641,15 +641,23 @@ select.form-control { appearance: none; cursor: pointer; }
   .criteria-grid  { grid-template-columns: 1fr; }
 }
 @media (max-width: 600px) {
+  /* Header mobile plus compact (repercute sur .hero et .page-hero via la variable) */
+  :root { --nav-h: 66px; }
+  .nav { box-shadow: none; }        /* pas de trait de separation, fond continu */
   .container { padding: 0 16px; }
   .section   { padding: 56px 0; }
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
   .score-grid { grid-template-columns: 1fr 1fr; }
   .nav__links  { display: none; }
   .nav__social { display: none; }
-  .nav__logo img { height: 56px; width: 56px; }
+  .nav__logo img { height: 46px; width: 46px; }
+  .nav__logo { font-size: 1.125rem; }
   .matching-row { grid-template-columns: 1fr; }
   .strip-items  { gap: 20px; }
+}
+/* Sections "2 colonnes" inline de l'accueil : repli en 1 colonne centree sur mobile/tablette */
+@media (max-width: 768px) {
+  .home-split { grid-template-columns: 1fr !important; gap: 32px !important; }
 }
 
 /* ── UTILITIES ───────────────────────────────────────────────────────────── */
