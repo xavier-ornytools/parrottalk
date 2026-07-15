@@ -13,6 +13,9 @@ const TEST01 = {
   id: 'test01',
   title: 'Listening Test 01',
   accentPool: ['en-GB', 'en-AU', 'en-US'],
+  // Voix narrateur (annonces d'examen) — neutre, jamais personnage d'un dialogue,
+  // distincte de toutes les voix de locuteurs (vérifié par la Porte 1).
+  narratorVoice: 'en-GB-Neural2-D',
   sections: [
 
     // ── SECTION 1 — Dialogue transactionnel (form completion + épellation) ──────
@@ -21,6 +24,17 @@ const TEST01 = {
       title: 'Greenline Coach Travel — Ticket Booking',
       type: 'form',
       runtimeType: 'form', requiredTypes: ['completion'], wordLimit: 3,
+      // Narration d'examen : contexte annoncé, point de coupure milieu (avant la
+      // ligne de script d'index splitAt), et exemple travaillé (Partie 1 uniquement).
+      context: 'a telephone conversation between a man booking a coach ticket and a booking clerk',
+      splitAt: 12,
+      example: {
+        lines: [
+          { who: 'clerk',  text: "Greenline Coach Travel, how can I help?" },
+          { who: 'caller', text: "Hello, I'd like to book a coach ticket to travel next month, please." },
+        ],
+        answer: "The caller wants to travel by coach, so 'coach' has been written in the space. Now we shall begin.",
+      },
       formTitle: 'GREENLINE COACH TRAVEL — BOOKING FORM · Q1–10',
       instructions: 'Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.',
       speakers: {
@@ -73,6 +87,8 @@ const TEST01 = {
       title: 'Oakmoor Country Park — Visitor Orientation',
       type: 'mixed',
       runtimeType: 'mixed', requiredTypes: ['maplabel', 'mc'],
+      context: 'a talk by a park ranger giving visitors an orientation to a country park',
+      splitAt: 7,
       speakers: {
         ranger: { voice: 'en-US-Neural2-F', gender: 'F', accent: 'en-US', label: 'Park ranger' },
       },
@@ -129,6 +145,8 @@ const TEST01 = {
       title: 'Tutorial — Renewable Energy Presentation',
       type: 'discussion',
       runtimeType: 'mixed', requiredTypes: ['mc', 'matching', 'completion'],
+      context: 'a discussion between a tutor and two students about a presentation on renewable energy',
+      splitAt: 10,
       speakers: {
         tutor: { voice: 'en-GB-Neural2-B', gender: 'M', accent: 'en-GB', label: 'Dr Reyes (tutor)' },
         priya: { voice: 'en-US-Neural2-E', gender: 'F', accent: 'en-US', label: 'Priya (student)' },
@@ -202,6 +220,10 @@ const TEST01 = {
       title: 'Lecture — A Short History of Chocolate',
       type: 'lecture',
       runtimeType: 'form', requiredTypes: ['completion'], wordLimit: 2,
+      // Partie 4 : jouée d'un trait, sans coupure milieu (splitAt: null) — conforme
+      // au vrai examen (temps de lecture donné une fois pour les 10 questions).
+      context: 'a lecture about the history of chocolate',
+      splitAt: null,
       formTitle: 'A SHORT HISTORY OF CHOCOLATE — LECTURE NOTES · Q31–40',
       instructions: 'Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.',
       speakers: {

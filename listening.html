@@ -124,6 +124,41 @@
     .audio-player .timer-badge.warning { background: var(--warning); color: var(--dark); }
     /* P1.1 : onglet de section verrouillé tant que l'audio précédent n'est pas joué. */
     .tab-btn.locked { opacity: .4; cursor: not-allowed; }
+
+    /* ── v2 Simulateur : révélation progressive des questions ─────────────── */
+    .q-hidden { display: none !important; }
+    @keyframes qReveal {
+      from { opacity: 0; transform: translateY(14px) scale(.98); }
+      to   { opacity: 1; transform: translateY(0)    scale(1); }
+    }
+    .q-reveal { animation: qReveal .5s cubic-bezier(.22,.61,.36,1) both; }
+    .await-hint {
+      text-align: center; padding: 28px 16px; color: var(--text-muted);
+      font-size: .95rem; border: 1px dashed rgba(0,0,0,.12); border-radius: 12px;
+      background: rgba(0,0,0,.02);
+    }
+    /* Bandeau "Reading time" pendant les silences de lecture gravés */
+    .reading-overlay {
+      display: flex; align-items: center; gap: 14px;
+      background: linear-gradient(135deg, #e7f5ee, #f4f9f6);
+      border: 1px solid #bfe3d1; border-left: 5px solid var(--primary, #0b6e4f);
+      border-radius: 14px; padding: 14px 18px; margin-bottom: 16px;
+      box-shadow: 0 4px 18px rgba(11,110,79,.10);
+      animation: qReveal .4s ease both;
+    }
+    .reading-overlay.hidden { display: none; }
+    .reading-mascot { width: 76px; height: 76px; object-fit: contain; flex-shrink: 0;
+      animation: mascotBob 2.4s ease-in-out infinite; }
+    @keyframes mascotBob { 0%,100% { transform: translateY(0) rotate(-2deg);} 50% { transform: translateY(-6px) rotate(2deg);} }
+    .reading-body { flex: 1; }
+    .reading-title { font-weight: 800; color: #084a35; font-size: 1.05rem; }
+    .reading-sub { color: #33685a; font-size: .9rem; margin: 2px 0 8px; }
+    .reading-ring { height: 6px; background: rgba(11,110,79,.15); border-radius: 999px; overflow: hidden; }
+    .reading-ring-fill { height: 100%; width: 100%; background: var(--primary, #0b6e4f); border-radius: 999px; }
+    @media (prefers-reduced-motion: reduce) {
+      .q-reveal, .reading-overlay { animation: none !important; }
+      .reading-mascot { animation: none !important; }
+    }
 </style>
 </head>
 <body>
@@ -256,6 +291,17 @@
       </div>
     </div>
 
+    <!-- READING-TIME OVERLAY (affiché pendant les silences de lecture gravés) -->
+    <div id="reading-overlay" class="reading-overlay hidden">
+      <img id="listening-mascot" class="reading-mascot" src="img/parrot-listening.webp" alt=""
+           onerror="this.style.display='none'">
+      <div class="reading-body">
+        <div class="reading-title">📖 Reading time</div>
+        <div class="reading-sub">Look at questions <span id="reading-range">1–5</span> before the audio continues.</div>
+        <div class="reading-ring"><div id="reading-ring-fill" class="reading-ring-fill"></div></div>
+      </div>
+    </div>
+
     <!-- QUESTIONS -->
     <div id="questions-container"></div>
 
@@ -269,8 +315,9 @@
       Listen to at least 1 section to submit — more sections = more accurate score
     </div>
     <div id="submit-section" class="hidden" style="text-align:center;padding:16px 0 32px">
-      <p style="margin-bottom:16px;color:var(--text-muted)">Ready to get your score?</p>
-      <button class="btn btn-success btn-lg" onclick="submitTest()">✅ Submit & Get Score</button>
+      <p style="margin-bottom:6px;color:var(--text-muted)">Ready to get your score?</p>
+      <p style="margin-bottom:16px;color:var(--text-muted);font-size:.8rem">📝 Review your answers before submitting. In the real exam you'd get 10 minutes here to transfer them to an answer sheet — take a moment to check yours.</p>
+      <button class="btn btn-success btn-lg" onclick="submitTest()">✅ Submit &amp; Get Score</button>
     </div>
 
     <!-- RESULTS : band toujours visible ; le détail (message, réponses,
@@ -310,6 +357,18 @@ let timerInterval = null;
 // pour la durée de la tentative (voir setupModeToggle/startTest).
 let examMode = true;
 let sectionsPlayed = [false,false,false,false];
+// Révélation progressive pilotée par l'audio (cue sheet gravée avec le MP3).
+// revealedUpTo[i] = plus haut numéro de question révélé pour la section i.
+// firedCues = index des cues déjà déclenchés pour la section en cours de lecture.
+let revealedUpTo = [0,0,0,0];
+let firedCues = new Set();
+// Une section est "gatée" (affichage progressif) si on est en examen ET que sa
+// cue sheet existe. Sinon (mode practice, ou test sans cues), tout s'affiche.
+function isGated(sec) { return examMode && Array.isArray(sec.cues) && sec.cues.length > 0; }
+function sectionMaxQ(sec) {
+  const qs = sec.type === 'form' ? sec.questions : sec.groups.flatMap(g => g.questions);
+  return Math.max(...qs.map(q => q.n));
+}
 // 32 min = 30 min d'épreuve + 2 min de vérification (comme le vrai IELTS
 // Listening version ordinateur). ?timer=N (secondes) réservé au test, pour
 // vérifier l'expiration sans attendre 32 minutes ; ignoré si absent/invalide.
@@ -714,6 +773,7 @@ function togglePlay() {
       const expected = sec.audio;
       if (!audio.src.endsWith(expected)) { audio.src = expected; }
       playingSection = currentSection;
+      firedCues = new Set(); // nouvelle lecture → cues rejouables depuis le début
       audio.play(); setPlayIcon(true);
     }
     sectionsPlayed[currentSection] = true;
@@ -745,10 +805,116 @@ audio.addEventListener('timeupdate', () => {
   const pct = (audio.currentTime / audio.duration) * 100;
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('time-display').textContent = fmt(audio.currentTime) + ' / ' + fmt(audio.duration);
+
+  // Révélation progressive : déclenche chaque cue une fois que l'audio l'atteint.
+  const sec = currentTest.sections[playingSection];
+  if (isGated(sec)) {
+    sec.cues.forEach((c, idx) => {
+      if (c.t <= audio.currentTime && !firedCues.has(idx)) { firedCues.add(idx); fireCue(sec, playingSection, c); }
+    });
+  }
 });
+
+// ── Révélation progressive pilotée par les cues ────────────────────────────────
+// Doit correspondre à READING_GAP du générateur (tools/generate-audio.js) : durée
+// du silence de lecture gravé. Le bandeau ne dure que ce silence (en S1 il précède
+// l'exemple, donc on ne le laisse pas courir jusqu'au début du contenu).
+const READING_SECONDS = 20;
+let readingHideTimer = null;
+function fireCue(sec, i, cue) {
+  if (cue.reveal) {
+    const [a, b] = cue.reveal;
+    revealedUpTo[i] = Math.max(revealedUpTo[i], b);
+    revealQuestions(i, a, b, true);
+    if (cue.phase === 'reading') {
+      showReadingOverlay(a, b, READING_SECONDS);
+      clearTimeout(readingHideTimer);
+      readingHideTimer = setTimeout(hideReadingOverlay, READING_SECONDS * 1000 + 300);
+    }
+  }
+  if (cue.activate || cue.end) hideReadingOverlay();
+}
+
+// Étiquette chaque ligne de question avec son numéro (data-qn), pour pouvoir la
+// masquer/révéler sans toucher aux builders.
+function tagQuestionRows(block) {
+  block.querySelectorAll('.form-line, .mc-question').forEach(row => {
+    const input = row.querySelector('input[id^="q"], input[name^="q"]');
+    if (!input) return;
+    const raw = input.id || input.name; // "q7"
+    const n = parseInt(raw.slice(1), 10);
+    if (Number.isFinite(n)) row.dataset.qn = n;
+  });
+}
+
+// Applique l'état de révélation courant à une section fraîchement rendue.
+function applyRevealGating(block, sec, i) {
+  tagQuestionRows(block);
+  const gated = isGated(sec);
+  // Section déjà jouée (reprise, ou re-navigation) → tout révélé, sans animation.
+  if (!gated || sectionsPlayed[i] || sectionsDone[i]) revealedUpTo[i] = sectionMaxQ(sec);
+  const upTo = revealedUpTo[i];
+  block.querySelectorAll('[data-qn]').forEach(row => {
+    const n = parseInt(row.dataset.qn, 10);
+    row.classList.toggle('q-hidden', gated && n > upTo);
+  });
+  // Indice d'attente tant qu'aucune question n'est révélée.
+  let hint = block.querySelector('.await-hint');
+  if (gated && upTo === 0) {
+    if (!hint) {
+      hint = document.createElement('div');
+      hint.className = 'await-hint';
+      hint.innerHTML = '🎧 Press play — the questions appear as you listen, just like the real exam.';
+      block.prepend(hint);
+    }
+    hint.style.display = '';
+  } else if (hint) { hint.style.display = 'none'; }
+}
+
+const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function revealQuestions(i, a, b, animate) {
+  const block = document.getElementById('sec-block-'+i);
+  if (!block) return;
+  const hint = block.querySelector('.await-hint');
+  if (hint) hint.style.display = 'none';
+  let k = 0;
+  block.querySelectorAll('[data-qn]').forEach(row => {
+    const n = parseInt(row.dataset.qn, 10);
+    if (n < a || n > b) return;
+    if (!row.classList.contains('q-hidden')) return; // déjà visible
+    row.classList.remove('q-hidden');
+    if (animate && !prefersReducedMotion) {
+      row.style.animationDelay = (k++ * 0.07) + 's';
+      row.classList.add('q-reveal');
+      row.addEventListener('animationend', () => { row.classList.remove('q-reveal'); row.style.animationDelay = ''; }, { once: true });
+    }
+  });
+}
+
+function showReadingOverlay(a, b, durationSec) {
+  const ov = document.getElementById('reading-overlay');
+  if (!ov) return;
+  document.getElementById('reading-range').textContent = a + '–' + b;
+  ov.classList.remove('hidden');
+  const fill = document.getElementById('reading-ring-fill');
+  if (fill) {
+    fill.style.transition = 'none'; fill.style.width = '100%';
+    // reflow puis lance la décroissance sur la durée du silence
+    void fill.offsetWidth;
+    fill.style.transition = 'width ' + durationSec + 's linear';
+    fill.style.width = '0%';
+  }
+}
+function hideReadingOverlay() {
+  clearTimeout(readingHideTimer);
+  const ov = document.getElementById('reading-overlay');
+  if (ov) ov.classList.add('hidden');
+}
 
 audio.addEventListener('ended', () => {
   setPlayIcon(false);
+  hideReadingOverlay();
   handleSectionEnd(playingSection);
 });
 
@@ -782,6 +948,7 @@ function renderSection(i) {
   } else {
     block.classList.add('active');
   }
+  applyRevealGating(block, sec, i); // affichage progressif (survit à la mise en cache du bloc)
   updateFinishButton(i);
   updatePlayButtonState();
 }

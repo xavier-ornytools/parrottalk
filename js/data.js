@@ -28,6 +28,42 @@ const TEST01 = {
       number: 1,
       title: "Greenline Coach Travel — Ticket Booking",
       audio: "audio/test01/section1.mp3",
+      cues: [
+        {
+          t: 16.25,
+          reveal: [
+            1,
+            5
+          ],
+          phase: "reading"
+        },
+        {
+          t: 63.55,
+          activate: [
+            1,
+            5
+          ]
+        },
+        {
+          t: 135.41,
+          reveal: [
+            6,
+            10
+          ],
+          phase: "reading"
+        },
+        {
+          t: 164.94,
+          activate: [
+            6,
+            10
+          ]
+        },
+        {
+          t: 236.37,
+          end: true
+        }
+      ],
       type: "form",
       formTitle: "GREENLINE COACH TRAVEL — BOOKING FORM · Q1–10",
       instructions: "Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.",
@@ -128,6 +164,42 @@ const TEST01 = {
       number: 2,
       title: "Oakmoor Country Park — Visitor Orientation",
       audio: "audio/test01/section2.mp3",
+      cues: [
+        {
+          t: 8.02,
+          reveal: [
+            11,
+            15
+          ],
+          phase: "reading"
+        },
+        {
+          t: 37.64,
+          activate: [
+            11,
+            15
+          ]
+        },
+        {
+          t: 102.4,
+          reveal: [
+            16,
+            20
+          ],
+          phase: "reading"
+        },
+        {
+          t: 132.24,
+          activate: [
+            16,
+            20
+          ]
+        },
+        {
+          t: 195.5,
+          end: true
+        }
+      ],
       type: "mixed",
       groups: [
         {
@@ -239,6 +311,42 @@ const TEST01 = {
       number: 3,
       title: "Tutorial — Renewable Energy Presentation",
       audio: "audio/test01/section3.mp3",
+      cues: [
+        {
+          t: 8.52,
+          reveal: [
+            21,
+            25
+          ],
+          phase: "reading"
+        },
+        {
+          t: 39.1,
+          activate: [
+            21,
+            25
+          ]
+        },
+        {
+          t: 118.85,
+          reveal: [
+            26,
+            30
+          ],
+          phase: "reading"
+        },
+        {
+          t: 149.53,
+          activate: [
+            26,
+            30
+          ]
+        },
+        {
+          t: 199.47,
+          end: true
+        }
+      ],
       type: "mixed",
       groups: [
         {
@@ -362,6 +470,27 @@ const TEST01 = {
       number: 4,
       title: "Lecture — A Short History of Chocolate",
       audio: "audio/test01/section4.mp3",
+      cues: [
+        {
+          t: 5.06,
+          reveal: [
+            31,
+            40
+          ],
+          phase: "reading"
+        },
+        {
+          t: 34.9,
+          activate: [
+            31,
+            40
+          ]
+        },
+        {
+          t: 170.77,
+          end: true
+        }
+      ],
       type: "form",
       formTitle: "A SHORT HISTORY OF CHOCOLATE — LECTURE NOTES · Q31–40",
       instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
