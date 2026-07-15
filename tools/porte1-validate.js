@@ -1,111 +1,126 @@
 #!/usr/bin/env node
-// ParrotTalk — PORTE 1 : contrôle du script AVANT toute génération audio.
-// Rien ne part au TTS tant que ce script ne sort pas en PASS.
+// ParrotTalk — PORTE 1 : contrôle du script + questions AVANT génération / mise en prod.
+// Rien ne part tant que ce script ne sort pas en PASS.
 //
 // Contrôles :
-//   [VOIX]   Verrou de distinction — dans une section, deux locuteurs DISTINCTS
-//            ne peuvent JAMAIS partager le même id de voix. Un dialogue (≥2
-//            locuteurs) doit exposer ≥2 voix distinctes. => bloquant.
-//   [ORDRE]  ordre questions = ordre audio : les index `at` sont strictement
-//            croissants dans chaque section, et croissants d'une section à l'autre.
-//   [ANCRE]  la réponse de chaque question est réellement prononcée à la ligne
-//            `at` indiquée (sinon l'ancrage question↔audio est faux).
-//   [FORME]  10 questions/section, n contigus 1..40, consignes présentes,
-//            accents dans le pool déclaré, `who` connus.
+//   [VOIX]     Verrou de distinction — deux locuteurs DISTINCTS d'une section ne
+//              peuvent JAMAIS partager le même id de voix. Dialogue => ≥2 voix. Bloquant.
+//   [ORDRE]    ordre questions = ordre audio : `at` strictement croissant dans chaque
+//              section et croissant d'une section à l'autre. Toute inversion bloque.
+//   [ANCRE]    la réponse (mc/matching/completion) ou l'étiquette de carte est bien
+//              prononcée à la ligne `at` indiquée. Sinon l'ancrage question↔audio est faux.
+//   [TYPES]    conformité IELTS : chaque section contient exactement les types requis
+//              (S1 completion ; S2 map labelling + MCQ ; S3 MCQ + matching + completion ;
+//              S4 completion). Type non prévu ou type requis manquant => bloquant.
+//   [MOTS]     limite de mots par réponse de complétion respectée (nombres exclus du décompte).
+//   [FORME]    10 questions/section, n contigus 1..40.
 //
 // Usage : node tools/porte1-validate.js listening-src/test02.js
-//         (sans argument : self-test négatif inclus, prouve que le verrou bloque)
+//         (sans argument : + self-test négatif prouvant que le verrou voix bloque)
 
 const path = require('path');
 
-function norm(s)     { return String(s).toLowerCase(); }
-function compact(s)  { return norm(s).replace(/[^a-z0-9]/g, ''); }
+const norm = s => String(s).toLowerCase();
+const compact = s => norm(s).replace(/[^a-z0-9]/g, '');
+const wordCount = ans => String(ans).split(/\s+/).filter(t => /[a-z]/i.test(t)).length; // nombres non comptés
 
-// La réponse est-elle réellement prononcée dans `text` ?
-// Gère l'épellation (« P. E. L. L. E. T. I. E. R. » ≈ « PELLETIER ») via compaction,
-// et le cas des étiquettes de carte à une lettre (A–H) via « point X ».
-function answerSpokenIn(text, q) {
-  const candidates = [q.answer, ...(q.alt || [])];
-  const hay = norm(text);
-  const hayC = compact(text);
-  if (/^[A-H]$/.test(q.answer)) {
-    return new RegExp(`point\\s+${q.answer}`, 'i').test(text);
+// Aplatis les questions d'une section en préservant l'ordre, avec leur type et groupe.
+function flatten(sec) {
+  if (sec.groups) {
+    return sec.groups.flatMap(g => g.questions.map(q => ({
+      q, g,
+      qtype: g.type === 'form' ? (g.kind || 'completion') : g.type, // mc | matching | maplabel | completion
+    })));
   }
-  return candidates.some(c => {
-    const n = norm(c), nc = compact(c);
-    return (n && hay.includes(n)) || (nc && hayC.includes(nc));
-  });
+  return sec.questions.map(q => ({ q, g: sec, qtype: 'completion' }));
+}
+
+function spokenAt(text, needles) {
+  const hay = norm(text), hayC = compact(text);
+  return needles.some(c => { const n = norm(c), nc = compact(c); return (n && hay.includes(n)) || (nc && hayC.includes(nc)); });
 }
 
 function validate(test) {
-  const errors = [];
-  const warns = [];
+  const errors = [], warns = [];
   const pool = new Set(test.accentPool || []);
-  let lastGlobalAt = -1;
-  let totalQuestions = 0;
-  let expectedN = 1;
+  let lastGlobalAt = -1, expectedN = 1, total = 0;
 
   test.sections.forEach((sec, si) => {
     const tag = `Section ${sec.number}`;
 
-    // [VOIX] verrou de distinction
+    // [VOIX]
     const used = [...new Set(sec.script.map(l => l.who))];
+    used.forEach(w => { if (!sec.speakers[w]) errors.push(`[${tag}] locuteur "${w}" absent du casting speakers`); });
+    const seen = {};
     used.forEach(w => {
-      if (!sec.speakers[w]) errors.push(`[${tag}] locuteur "${w}" utilisé dans le script mais absent du casting speakers`);
+      const v = sec.speakers[w] && sec.speakers[w].voice;
+      if (!v) return;
+      if (seen[v]) errors.push(`[${tag}] ⛔ VERROU VOIX : "${w}" et "${seen[v]}" partagent la voix ${v} — INTERDIT dans un dialogue`);
+      else seen[v] = w;
     });
-    const voiceBySpeaker = {};
-    used.forEach(w => { if (sec.speakers[w]) voiceBySpeaker[w] = sec.speakers[w].voice; });
-    const voices = Object.values(voiceBySpeaker);
-    const distinctVoices = new Set(voices);
-    if (voices.length !== distinctVoices.size) {
-      // Trouver la collision précise
-      const seen = {};
-      Object.entries(voiceBySpeaker).forEach(([w, v]) => {
-        if (seen[v]) errors.push(`[${tag}] ⛔ VERROU VOIX : "${w}" et "${seen[v]}" partagent la voix ${v} — INTERDIT dans un même dialogue`);
-        else seen[v] = w;
-      });
-    }
-    if (used.length >= 2 && distinctVoices.size < 2) {
-      errors.push(`[${tag}] ⛔ dialogue à ${used.length} locuteurs mais ${distinctVoices.size} voix distincte(s)`);
-    }
-    // accents dans le pool + genres renseignés
+    if (used.length >= 2 && new Set(used.map(w => sec.speakers[w].voice)).size < 2)
+      errors.push(`[${tag}] ⛔ dialogue à ${used.length} locuteurs mais <2 voix distinctes`);
     Object.entries(sec.speakers).forEach(([w, s]) => {
-      if (pool.size && !pool.has(s.accent)) errors.push(`[${tag}] accent "${s.accent}" du locuteur "${w}" hors pool ${[...pool].join('/')}`);
-      if (!['M', 'F'].includes(s.gender)) warns.push(`[${tag}] genre manquant/inconnu pour "${w}"`);
+      if (pool.size && !pool.has(s.accent)) errors.push(`[${tag}] accent "${s.accent}" (${w}) hors pool ${[...pool].join('/')}`);
+      if (!['M', 'F'].includes(s.gender)) warns.push(`[${tag}] genre manquant pour "${w}"`);
     });
 
-    // [FORME] consignes
-    if (!sec.instructions) warns.push(`[${tag}] consignes (instructions) absentes`);
+    const flat = flatten(sec);
 
-    // Questions : forme, ordre, ancrage
-    if (sec.questions.length !== 10) errors.push(`[${tag}] ${sec.questions.length} questions au lieu de 10`);
+    // [TYPES] conformité
+    const present = new Set(flat.map(f => f.qtype));
+    const required = new Set(sec.requiredTypes || []);
+    required.forEach(t => { if (!present.has(t)) errors.push(`[${tag}] type requis manquant : ${t} (présents : ${[...present].join(', ')})`); });
+    present.forEach(t => { if (required.size && !required.has(t)) errors.push(`[${tag}] type inattendu : ${t} (attendus : ${[...required].join(', ')})`); });
+
+    if (flat.length !== 10) errors.push(`[${tag}] ${flat.length} questions au lieu de 10`);
     let lastAt = -1;
-    sec.questions.forEach(q => {
-      totalQuestions++;
+
+    flat.forEach(({ q, g, qtype }) => {
+      total++;
       if (q.n !== expectedN) errors.push(`[${tag}] numérotation : q.n=${q.n} attendu ${expectedN}`);
       expectedN++;
 
-      // [ORDRE] intra-section
+      // [ORDRE]
       if (typeof q.at !== 'number' || q.at < 0 || q.at >= sec.script.length) {
-        errors.push(`[${tag}] Q${q.n} : index at=${q.at} hors du script (0..${sec.script.length - 1})`);
-        return;
+        errors.push(`[${tag}] Q${q.n} : at=${q.at} hors script (0..${sec.script.length - 1})`); return;
       }
-      if (q.at <= lastAt) errors.push(`[${tag}] Q${q.n} : ordre rompu, at=${q.at} ≤ précédent ${lastAt} (ordre questions ≠ ordre audio)`);
+      if (q.at <= lastAt) errors.push(`[${tag}] Q${q.n} : ordre rompu, at=${q.at} ≤ précédent ${lastAt}`);
       lastAt = q.at;
-
-      // [ORDRE] inter-section (position absolue)
       const globalAt = si * 1000 + q.at;
       if (globalAt <= lastGlobalAt) errors.push(`[${tag}] Q${q.n} : ordre global rompu`);
       lastGlobalAt = globalAt;
 
-      // [ANCRE] réponse réellement dite à la ligne at
-      if (!answerSpokenIn(sec.script[q.at].text, q)) {
-        errors.push(`[${tag}] Q${q.n} : réponse "${q.answer}" introuvable à la ligne at=${q.at} → « ${sec.script[q.at].text.slice(0, 60)}… »`);
+      const line = sec.script[q.at].text;
+
+      // [ANCRE] + validité par type
+      if (qtype === 'maplabel') {
+        if (!/^[A-H]$/.test(q.answer)) errors.push(`[${tag}] Q${q.n} map : réponse "${q.answer}" n'est pas une lettre A–H`);
+        else if (!new RegExp(`point\\s+${q.answer}`, 'i').test(line))
+          errors.push(`[${tag}] Q${q.n} map : « point ${q.answer} » absent de la ligne at=${q.at}`);
+      } else if (qtype === 'mc') {
+        if (!Array.isArray(q.options) || q.options.length !== 3) errors.push(`[${tag}] Q${q.n} MCQ : il faut 3 options (A/B/C)`);
+        if (!(Number.isInteger(q.answer) && q.answer >= 0 && q.answer < (q.options || []).length)) errors.push(`[${tag}] Q${q.n} MCQ : index réponse invalide`);
+        const needles = q.anchor || [];
+        if (!needles.length) errors.push(`[${tag}] Q${q.n} MCQ : champ anchor requis`);
+        else if (!spokenAt(line, needles)) errors.push(`[${tag}] Q${q.n} MCQ : réponse non prononcée à at=${q.at} → « ${line.slice(0, 55)}… »`);
+      } else if (qtype === 'matching') {
+        if (!Array.isArray(g.options) || g.options.length < 3) errors.push(`[${tag}] Q${q.n} matching : groupe sans liste d'options suffisante`);
+        if (!/^[A-Z]$/.test(q.answer)) errors.push(`[${tag}] Q${q.n} matching : réponse "${q.answer}" doit être une lettre`);
+        const needles = q.anchor || [];
+        if (!needles.length) errors.push(`[${tag}] Q${q.n} matching : champ anchor requis`);
+        else if (!spokenAt(line, needles)) errors.push(`[${tag}] Q${q.n} matching : tâche non prononcée à at=${q.at}`);
+      } else { // completion
+        const needles = [q.answer, ...(q.alt || []), ...(q.anchor || [])];
+        if (!spokenAt(line, needles)) errors.push(`[${tag}] Q${q.n} : réponse "${q.answer}" introuvable à at=${q.at} → « ${line.slice(0, 55)}… »`);
+        // [MOTS]
+        const limit = g.wordLimit || sec.wordLimit;
+        if (limit && wordCount(q.answer) > limit) errors.push(`[${tag}] Q${q.n} : réponse "${q.answer}" = ${wordCount(q.answer)} mots > limite ${limit}`);
       }
     });
   });
 
-  if (totalQuestions !== 40) errors.push(`Total questions = ${totalQuestions} au lieu de 40`);
+  if (total !== 40) errors.push(`Total questions = ${total} au lieu de 40`);
   return { errors, warns };
 }
 
@@ -113,32 +128,22 @@ function report(label, test) {
   const { errors, warns } = validate(test);
   console.log(`\n── PORTE 1 · ${label} ──`);
   warns.forEach(w => console.log(`  ⚠︎  ${w}`));
-  if (errors.length === 0) {
-    console.log(`  ✅ PASS — verrou voix OK, ordre questions=audio OK, ancrages OK, forme OK`);
-    return true;
-  }
+  if (!errors.length) { console.log('  ✅ PASS — voix distinctes · ordre=audio · ancrages · types IELTS · limites de mots · forme'); return true; }
   errors.forEach(e => console.log(`  ❌ ${e}`));
-  console.log(`  ⛔ FAIL — ${errors.length} erreur(s), génération audio BLOQUÉE`);
+  console.log(`  ⛔ FAIL — ${errors.length} erreur(s), livraison BLOQUÉE`);
   return false;
 }
 
-// ── Exécution ────────────────────────────────────────────────────────────────
 const arg = process.argv[2];
 if (arg) {
-  const test = require(path.resolve(arg));
-  const ok = report(path.basename(arg), test);
-  process.exit(ok ? 0 : 1);
+  process.exit(report(path.basename(arg), require(path.resolve(arg))) ? 0 : 1);
 } else {
-  // Self-test négatif : prouve que le verrou bloque un dialogue à voix identique.
   const test = require(path.resolve(__dirname, '..', 'listening-src', 'test02.js'));
   const okReal = report('test02.js (réel)', test);
-
   const broken = JSON.parse(JSON.stringify(test));
-  broken.sections[0].speakers.customer.voice = broken.sections[0].speakers.agent.voice; // même voix !
+  broken.sections[0].speakers.customer.voice = broken.sections[0].speakers.agent.voice;
   const okBroken = report('test02.js (SABOTÉ : 2 voix identiques S1)', broken);
-
-  console.log(`\n── Résultat self-test ──`);
-  console.log(`  réel doit PASSER : ${okReal ? 'OK ✅' : 'KO ❌'}`);
-  console.log(`  saboté doit ÉCHOUER : ${!okBroken ? 'OK ✅ (verrou a bloqué)' : 'KO ❌ (verrou n\'a pas bloqué !)'}`);
+  console.log('\n── Self-test ──');
+  console.log(`  réel PASS : ${okReal ? 'OK ✅' : 'KO ❌'} | saboté FAIL : ${!okBroken ? 'OK ✅ (verrou a bloqué)' : 'KO ❌'}`);
   process.exit(okReal && !okBroken ? 0 : 1);
 }
