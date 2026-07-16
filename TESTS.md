@@ -17,8 +17,11 @@ Branche `feat/reading-data-driven`. Aucun push, aucun merge. Refonte : les donne
 ### Livrable
 - Rapport PDF sur le Bureau : `2026-07-16_Reading_LOT2_renvois-data-driven.pdf` (verification/regression, review examen ordinateur, echantillon de controle de 10 renvois par test avec paragraphe cite recopie, lien localhost cliquable).
 
+### Correctif placement renvoi (16/07, retour navigateur Xavier)
+Sur le Test 01 seul, le renvoi s'affichait trop bas, colle a la suite. Cause : type de question, pas test. Le Test 01 est le seul avec une Summary Completion (Q27-33), 7 `<input>` en ligne dans un `<p>` partage ; `markQ` inserait la note dans le `<span>` du trou (inline). Les Tests 02/03 ont une Sentence Completion (une question par `.fill-row`), placement deja correct. Fix cible (`reading.html`) : pour un summary, la note est ancree apres le `<p>` ; `appendRef` empile les notes-bloc et deduplique par question (`dataset.q`). Verifie : 3 trous fautifs = 3 notes-bloc empilees sous le resume, plus aucune inline ; autres types et 02/03 inchanges ; 0 erreur JS ; scoring intact. Rapport : `2026-07-16_Reading_LOT2_fix-renvoi-summary.pdf` (Bureau).
+
 ### Reste a valider (navigateur, avant merge)
-- Rendu visuel des renvois sous les reponses fausses, sur les 3 tests, en score complet et partiel.
+- Rendu visuel des renvois sous les reponses fausses, sur les 3 tests, en score complet et partiel (correctif summary Test 01 a re-verifier a l'oeil).
 - Coherence pedagogique fine des ancres choisies (l'echantillon de 30 est dans le rapport).
 
 ## Chantier « 4 tests par module », LOT 1 : calibrage transverse (2026-07-16)
