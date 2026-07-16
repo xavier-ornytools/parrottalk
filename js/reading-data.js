@@ -1006,49 +1006,49 @@ const READING_TEST03 = {
               "n": 1,
               "text": "The earliest glass objects made by humans were intended primarily for practical use.",
               "answer": "FALSE",
-              "ref": "",
+              "ref": "Paragraph 1: 'Early glass was primarily used for decorative purposes'",
               "explanation": ""
             },
             {
               "n": 2,
               "text": "Glassblowing was invented by craftsmen working in Venice during the medieval period.",
               "answer": "FALSE",
-              "ref": "",
+              "ref": "Paragraph 1: 'most likely in the region of ancient Syria'",
               "explanation": ""
             },
             {
               "n": 3,
               "text": "One reason the Venetian Republic moved glassmakers to Murano was to maintain control over their trade secrets.",
               "answer": "TRUE",
-              "ref": "",
+              "ref": "Paragraph 2: 'to allow the government to monitor the trade more closely'",
               "explanation": ""
             },
             {
               "n": 4,
               "text": "George Ravenscroft's lead crystal glass was harder to cut than traditional Venetian glass.",
               "answer": "FALSE",
-              "ref": "",
+              "ref": "Paragraph 3: 'easier to cut and engrave'",
               "explanation": ""
             },
             {
               "n": 5,
               "text": "Several glass manufacturers had unsuccessfully attempted the float glass process before Pilkington.",
               "answer": "NOT GIVEN",
-              "ref": "",
+              "ref": "Not stated in the passage",
               "explanation": ""
             },
             {
               "n": 6,
               "text": "The Industrial Revolution made window glass accessible to ordinary people for the first time.",
               "answer": "TRUE",
-              "ref": "",
+              "ref": "Paragraph 4: 'became affordable to the general population'",
               "explanation": ""
             },
             {
               "n": 7,
               "text": "According to the passage, modern glass fibres are primarily used in the manufacture of scientific instruments.",
               "answer": "FALSE",
-              "ref": "",
+              "ref": "Paragraph 6: 'glass fibres carry the vast majority of the world's internet'",
               "explanation": ""
             }
           ]
@@ -1068,7 +1068,7 @@ const READING_TEST03 = {
                 "To allow them to work alongside other skilled artisans"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 2: 'to reduce the fire risk to the city'",
               "explanation": ""
             },
             {
@@ -1081,7 +1081,7 @@ const READING_TEST03 = {
                 "Officially licensed"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 2: 'Venetian glassmakers were so highly prized'",
               "explanation": ""
             },
             {
@@ -1094,7 +1094,7 @@ const READING_TEST03 = {
                 "It required significantly less energy than previous glassmaking methods"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 5: 'made it possible to produce large sheets of flawless glass'",
               "explanation": ""
             },
             {
