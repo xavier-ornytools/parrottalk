@@ -20,6 +20,9 @@ Branche `feat/writing-test-04`, **non mergee** (en attente de la verification na
 ### Livrable
 - Rapport PDF de fin de lot sur le Bureau (voir nom ci-dessous), avec captures desktop/mobile, commits, points exacts a verifier, lien localhost cliquable.
 
+### Avenant (16/07) : style du tableau Task 1 du Test 03
+Le tableau (possession smartphone, Test 03) avait des bordures `#e2e8f0` quasi invisibles et un rendu sale sur mobile. Corrige STYLE UNIQUEMENT (contenu identique, autres tests non touches) : markup passe en classes `.wtable-wrap` + `.wtable` (styles inline retires), CSS ajoute dans le bloc `<style>` de `writing.html`. Bordures fines nettes `#CBD5E1` sur toutes les cellules, en-tetes distincts (fond `--primary-pale`, texte `--primary-dark`, bord bas 2px `--primary-light`), zebrage `--surface`, encadre `.card`-like (bord `--border`, rayon `--r`, ombre `--sh-sm`), `overflow-x:auto` + `width:100%` (les 4 colonnes tiennent sur mobile, media query 600px resserre padding/police). Verifie en vrai Chrome (desktop + 390px) : encadre present, 24 cellules, valeurs preservees (South Korea 73/88/95 ... Nigeria 11/25/38), en-tete `#EFF6FF` bord bas 2px, bordures `#CBD5E1`, `0` erreur JS ; non-regression `e2e-writing-lifecycle.js` `30/30`. Captures desktop/mobile sur le Bureau. Commit atomique separe.
+
 ### Hors perimetre (non traite, signale)
 - `dashboard.html` (l.462, 482-483) enumere `test01/02/03` pour l'affichage detaille par test. NON traite (perimetre verrouille sur `writing.html`). Le scoring Writing s'agrege via `localStorage ielts_writing_scores`, donc non bloquant. A decider avec Xavier si le Test 04 doit apparaitre dans le suivi detaille du dashboard.
 
