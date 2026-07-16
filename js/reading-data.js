@@ -378,19 +378,19 @@ const READING_TEST01 = {
             {
               "n": 31,
               "answer": "IDEAS",
-              "ref": "",
+              "ref": "Paragraph 4: 'Luther's ideas spread rapidly because they could be printed'",
               "explanation": ""
             },
             {
               "n": 32,
               "answer": "COPERNICUS",
-              "ref": "",
+              "ref": "Paragraph 5: 'Nicolaus Copernicus published his revolutionary theory'",
               "explanation": ""
             },
             {
               "n": 33,
               "answer": "MISINFORMATION",
-              "ref": "",
+              "ref": "Paragraph 6: 'the printing press also enabled the spread of misinformation'",
               "explanation": ""
             }
           ]
@@ -410,7 +410,7 @@ const READING_TEST01 = {
                 "Berlin"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 2: 'a goldsmith from Mainz in present-day Germany'",
               "explanation": ""
             },
             {
@@ -423,7 +423,7 @@ const READING_TEST01 = {
                 "It required no ink to function"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 2: 'these letters could be rearranged and reused'",
               "explanation": ""
             },
             {
@@ -436,7 +436,7 @@ const READING_TEST01 = {
                 "Fifty million"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 3: 'more than twenty million books had been produced'",
               "explanation": ""
             },
             {
@@ -449,7 +449,7 @@ const READING_TEST01 = {
                 "It helped him establish a new church"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 4: 'distributed in large quantities, reaching audiences far beyond'",
               "explanation": ""
             },
             {
@@ -462,7 +462,7 @@ const READING_TEST01 = {
                 "Religious diversity was suppressed"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 6: 'produced cheaply and distributed widely'",
               "explanation": ""
             },
             {
@@ -475,7 +475,7 @@ const READING_TEST01 = {
                 "Both were dominated by religious publishing"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 6: 'the proliferation of false ideas is one that societies continue'",
               "explanation": ""
             },
             {
@@ -488,7 +488,7 @@ const READING_TEST01 = {
                 "Promote investment in historical printing technology"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 1: 'one of the most transformative inventions in human history'",
               "explanation": ""
             }
           ]
