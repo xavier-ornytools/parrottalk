@@ -47,6 +47,7 @@
   <script src="js/exam-flow.js" defer></script>
   <style>
     .spk-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .spk-grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
 
     .test-sel-btn {
       background:var(--white); border:2px solid var(--border);
@@ -229,6 +230,7 @@
 
     @media(max-width:600px){
       .spk-grid-3 { grid-template-columns:1fr; }
+      .spk-grid-4 { grid-template-columns:1fr; }
       .question-text { font-size:1rem; }
       .record-btn-main { width:64px; height:64px; font-size:1.625rem; }
       .score-mini-grid { grid-template-columns:repeat(2,1fr); }
@@ -300,7 +302,7 @@
 <div class="container" style="padding-top:32px;padding-bottom:80px">
 
   <!-- TEST SELECTOR -->
-  <div class="spk-grid-3" style="margin-bottom:24px">
+  <div class="spk-grid-4" style="margin-bottom:24px">
     <button class="test-sel-btn active" onclick="selectTest(1)" id="spk-btn-1">
       <div class="t-num">Test 01</div>
       <div class="t-name">Personal Life &amp; Future Plans</div>
@@ -314,6 +316,11 @@
     <button class="test-sel-btn" onclick="selectTest(3)" id="spk-btn-3">
       <div class="t-num">Test 03</div>
       <div class="t-name">Technology &amp; Society</div>
+      <div class="t-meta">🎤 Voice · AI Feedback</div>
+    </button>
+    <button class="test-sel-btn" onclick="selectTest(4)" id="spk-btn-4">
+      <div class="t-num">Test 04</div>
+      <div class="t-name">Food &amp; Culture</div>
       <div class="t-meta">🎤 Voice · AI Feedback</div>
     </button>
   </div>
@@ -406,6 +413,30 @@ const SPEAKING_TESTS = {
       'Some believe technology is making people less creative, to what extent do you agree?',
       'What responsibilities do technology companies have towards their users and towards society?'
     ]}
+  },
+  4: {
+    topic: 'Food & Culture',
+    part1: { questions: [
+      'What kinds of food do you enjoy eating the most?',
+      'Do you prefer eating at home or eating out at restaurants? Why?',
+      'Did you learn how to cook when you were growing up?',
+      'Are there any dishes that are especially popular in your country?'
+    ]},
+    part2: { cue: {
+      instruction: 'Describe a meal or dish that is special to you or your family.',
+      bullets: [
+        'What the dish is',
+        'Who usually prepares it',
+        'When you normally eat it',
+        'And explain why this meal is special to you'
+      ]
+    }, maxSpeak: 120 },
+    part3: { questions: [
+      'How have eating habits in your country changed over the last few generations?',
+      'Do you think traditional cooking is being lost as people rely more on fast food and ready meals?',
+      'In what ways does food help to express a country\'s culture and identity?',
+      'Should governments do more to encourage people to eat healthily? Why or why not?'
+    ]}
   }
 };
 
@@ -440,7 +471,7 @@ function selectTest(n) {
   currentQIdx = 0;
   recordings = new Array(9).fill(null);
   prepActive = false; prepSecondsLeft = 60;
-  [1,2,3].forEach(i => document.getElementById('spk-btn-'+i).classList.toggle('active', i===n));
+  [1,2,3,4].forEach(i => document.getElementById('spk-btn-'+i).classList.toggle('active', i===n));
   document.getElementById('spk-test-zone').classList.add('hidden');
   document.getElementById('spk-results').classList.add('hidden');
   renderPretest(n);
