@@ -132,22 +132,17 @@
     .test-sel-btn .t-num { font-size: 1.125rem; font-weight: 800; color: var(--primary); }
     .test-sel-btn .t-name { font-size: .875rem; color: var(--text); font-weight: 500; margin-top: 2px; }
     .test-sel-btn .t-meta { font-size: .8rem; color: var(--text-muted); margin-top: 4px; }
-    .results-card {
-      background: linear-gradient(135deg, var(--dark), var(--dark-mid));
-      border-radius: var(--r-xl); padding: 32px; color: var(--white);
-      margin-top: 24px; display: none;
-    }
+    .results-card { margin-top: 24px; display: none; }
     .results-card.show { display: block; }
-    .band-big { font-size: 5rem; font-weight: 900; color: var(--primary); line-height: 1; }
     .sec-results-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 20px;
     }
     .sec-res {
-      background: rgba(255,255,255,.1); border-radius: var(--r);
-      padding: 14px; text-align: center;
+      background: var(--primary-pale); border: 1px solid var(--primary-light);
+      border-radius: var(--r); padding: 14px; text-align: center;
     }
     .sec-res .val { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
-    .sec-res .lbl { font-size: .7rem; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .04em; margin-top: 2px; }
+    .sec-res .lbl { font-size: .7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; margin-top: 2px; }
     .timer-badge {
       background: var(--dark); color: var(--white);
       padding: 12px 24px; border-radius: var(--r); font-weight: 700; font-size: 1.0625rem;
@@ -371,12 +366,7 @@
     <!-- RESULTS : band toujours visible ; le détail (message, réponses,
          sections) est gaté par le micro-feedback en épreuve isolée, libre en mock. -->
     <div class="results-card" id="results-card">
-      <div>
-        <div style="font-size:.8rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em">🎧 Listening, Final Score</div>
-        <div class="band-big" id="results-score">-</div>
-        <div style="font-size:1.5rem;font-weight:700;color:var(--white);margin-top:4px" id="results-band">Band -</div>
-      </div>
-      <div id="results-gate" style="margin-top:20px"></div>
+      <div id="results-gate"></div>
     </div>
 
   </div>
@@ -458,7 +448,7 @@ function init() {
   ['test01','test02','test03','test04'].forEach(id => {
     const s = scores[id];
     const el = document.getElementById('meta-'+id);
-    if (s && el) el.textContent = `Last: ${s.total}/40, Band ${s.band} (${s.date})`;
+    if (s && el) el.textContent = `Last: ${s.total}/40, Band ${fmtBand(s.band)} (${s.date})`;
   });
 
   // Restauration automatique : si une progression existe (test en cours
@@ -1196,30 +1186,35 @@ function markQuestion(q, correct) {
 function showResults(total, band, isPartial=false, doneCount=4, maxPossible=40, scaledTotal=total) {
   const card = document.getElementById('results-card');
   card.classList.add('show');
-  let subText;
+  let subText, heroNote;
   if (isPartial) {
-    document.getElementById('results-score').textContent = `${total}/${maxPossible}`;
-    document.getElementById('results-band').textContent  = `~Band ${band}`;
     subText = `⚠️ Approximate, ${doneCount}/4 sections only. Do all 4 for an official score.`;
+    heroNote = `Approximate, ${doneCount} of 4 sections. Do all 4 for an official band.`;
   } else {
-    document.getElementById('results-score').textContent = `${total}/40`;
-    document.getElementById('results-band').textContent  = `Band ${band}`;
     const gap = 35 - total;
     subText = total >= 35 ? '🎉 Great score, keep it up!' : `${gap} more correct for a higher band`;
+    heroNote = `${total} of 40 correct, your free instant score.`;
   }
+  // Carte de resultat au gabarit fb-hero (coherence stricte avec Writing/Speaking) :
+  // le band reste toujours visible ; le detail passe derriere le micro-feedback.
+  const heroHTML =
+    `<div class="card card-sm fb-hero">` +
+      `<div class="fb-hero__label">🎧 ${currentTest.title}, Band</div>` +
+      `<div class="fb-hero__band">${fmtBand(band)}</div>` +
+      `<div class="fb-hero__note">${heroNote}</div>` +
+    `</div>`;
   const gridHTML = currentTest.sections.map((s,i) => {
     const isDone = document.getElementById(`tab-${i}`)?.classList.contains('done');
     return `<div class="sec-res"><div class="val">${isDone ? sectionScores[i]+'/10' : '-'}</div><div class="lbl">Section ${s.number}</div></div>`;
   }).join('');
-  // Détail gaté par le micro-feedback (band déjà visible au-dessus).
   const detailHTML =
-    `<p style="color:rgba(255,255,255,.7);font-size:1.0625rem;margin-bottom:16px">${subText}</p>` +
-    `<button class="btn btn-outline--on-dark" onclick="showAnswers()">Show All Correct Answers</button>` +
+    `<p style="color:var(--text-muted);font-size:1.0625rem;margin:16px 0">${subText}</p>` +
+    `<button class="btn btn-outline" onclick="showAnswers()">Show All Correct Answers</button>` +
     `<div class="sec-results-grid" style="margin-top:16px">${gridHTML}</div>`;
   const gateEl = document.getElementById('results-gate');
   if (window.FeedbackGate && gateEl) {
-    window.FeedbackGate.render(gateEl, { type: 'listening', testId: currentTest.id, band: band, heroHTML: '', detailHTML });
-  } else if (gateEl) { gateEl.innerHTML = detailHTML; }
+    window.FeedbackGate.render(gateEl, { type: 'listening', testId: currentTest.id, band: band, heroHTML, detailHTML });
+  } else if (gateEl) { gateEl.innerHTML = heroHTML + detailHTML; }
   document.getElementById('submit-section').classList.add('hidden');
   // Continuité vers l'épreuve suivante (parcours complet / mode mock).
   // Placé APRÈS la carte sombre (sur fond clair de la page), pas dedans.
@@ -1227,7 +1222,7 @@ function showResults(total, band, isPartial=false, doneCount=4, maxPossible=40, 
   card.scrollIntoView({ behavior: 'smooth', block: 'start' });
   const sc = getAllScores()[currentTest.id];
   const metaEl = document.getElementById('meta-'+currentTest.id);
-  if (metaEl && sc) metaEl.textContent = `Last: ${sc.total}/40, Band ${sc.band} (${sc.date})`;
+  if (metaEl && sc) metaEl.textContent = `Last: ${sc.total}/40, Band ${fmtBand(sc.band)} (${sc.date})`;
 }
 
 function showAnswers() {

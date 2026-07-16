@@ -588,7 +588,7 @@ function renderAIFeedback(box, data, task, promptText) {
       : '';
     return `
     <div class="criteria-item">
-      <div class="criteria-band">${critBand ?? '-'}</div>
+      <div class="criteria-band">${fmtBand(critBand)}</div>
       <div class="criteria-name">${criteriaNames[i]}</div>
       <div class="criteria-text">${esc(data[k]?.comment)}</div>
       ${capNoteHTML}
@@ -604,7 +604,7 @@ function renderAIFeedback(box, data, task, promptText) {
   const heroHTML = `
     <div class="card card-sm fb-hero">
       <div class="fb-hero__label">✍️ Writing Task ${task}, Estimated Band</div>
-      <div class="fb-hero__band">${displayBand ?? '-'}</div>
+      <div class="fb-hero__band">${fmtBand(displayBand)}</div>
       <div class="fb-hero__note">AI estimate, your free instant result.</div>
     </div>`;
 

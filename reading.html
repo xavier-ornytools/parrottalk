@@ -171,22 +171,17 @@
     .test-sel-btn .t-name { font-size: .875rem; color: var(--text); font-weight: 500; margin-top: 2px; }
     .test-sel-btn .t-meta { font-size: .8rem; color: var(--text-muted); margin-top: 4px; }
     /* Results */
-    .results-card {
-      background: linear-gradient(135deg, var(--dark), #0C3A6B);
-      border-radius: var(--r-xl); padding: 32px; color: var(--white);
-      margin-top: 24px; display: none;
-    }
+    .results-card { margin-top: 24px; display: none; }
     .results-card.show { display: block; }
-    .band-big { font-size: 5rem; font-weight: 900; color: var(--primary); line-height: 1; }
     .sec-results-grid {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px;
     }
     .sec-res {
-      background: rgba(255,255,255,.1); border-radius: var(--r);
-      padding: 14px; text-align: center;
+      background: var(--primary-pale); border: 1px solid var(--primary-light);
+      border-radius: var(--r); padding: 14px; text-align: center;
     }
     .sec-res .val { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
-    .sec-res .lbl { font-size: .7rem; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .04em; margin-top: 2px; }
+    .sec-res .lbl { font-size: .7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; margin-top: 2px; }
     /* Passage tabs */
     .passage-nav {
       display: flex; gap: 8px; margin-bottom: 20px;
@@ -1492,12 +1487,7 @@
 
   <!-- SHARED RESULTS CARD -->
   <div class="results-card" id="results-card">
-    <div>
-      <div style="font-size:.8rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em">📖 Reading, Final Score</div>
-      <div class="band-big" id="results-score">-</div>
-      <div style="font-size:1.5rem;font-weight:700;color:var(--white);margin-top:4px" id="results-band">Band -</div>
-    </div>
-    <div id="results-gate" style="margin-top:20px"></div>
+    <div id="results-gate"></div>
   </div>
 
 </div>
@@ -1629,7 +1619,7 @@ function init() {
     if (scores[key]) {
       const s = scores[key];
       const el = document.getElementById('meta-' + key);
-      if (el) el.textContent = `Last: ${s.total}/40, Band ${s.band} (${s.date})`;
+      if (el) el.textContent = `Last: ${s.total}/40, Band ${fmtBand(s.band)} (${s.date})`;
     }
   });
 
@@ -1656,7 +1646,7 @@ function saveReadingScore(testId, passageScores, total) {
   const scores = getAllReadingScores();
   scores[testId] = {
     total,
-    band: getBand(total),
+    band: getBand(total, 'reading'),
     passageScores,
     date: new Date().toLocaleDateString('fr-FR')
   };
@@ -1837,14 +1827,14 @@ function submitTest() {
 
   const isPartial = answeredCount < 40;
   const scaledTotal = isPartial ? Math.round((total / answeredCount) * 40) : total;
-  const band = getBand(isPartial ? scaledTotal : total);
+  const band = getBand(isPartial ? scaledTotal : total, 'reading');
   saveReadingScore(testId, passageScores, total);
   clearProgress('reading', testId);
   showResults(total, band, passageScores, activeRanges, answeredCount, scaledTotal);
 
   document.getElementById(metaId).textContent = isPartial
-    ? `Last: ${total}/${answeredCount}, ~Band ${band}`
-    : `Last: ${total}/40, Band ${band}`;
+    ? `Last: ${total}/${answeredCount}, ~Band ${fmtBand(band)}`
+    : `Last: ${total}/40, Band ${fmtBand(band)}`;
 }
 
 function isAnswered(n, prefix='') {
@@ -1925,24 +1915,30 @@ function showResults(total, band, passageScores, ranges, answeredCount=40, scale
   const card = document.getElementById('results-card');
   card.classList.add('show');
   const isPartial = answeredCount < 40;
-  document.getElementById('results-score').textContent =
-    isPartial ? `${total}/${answeredCount}` : `${total}/40`;
-  document.getElementById('results-band').textContent =
-    isPartial ? `~Band ${band}` : `Band ${band}`;
+  // Carte de resultat au gabarit fb-hero (coherence stricte avec Writing/Speaking) :
+  // le band reste toujours visible ; le detail passe derriere le micro-feedback.
+  const heroNote = isPartial
+    ? `Approximate, ${total} of ${answeredCount} answered. Finish all 3 passages for an official band.`
+    : `${total} of 40 correct, your free instant score.`;
+  const heroHTML =
+    `<div class="card card-sm fb-hero">` +
+      `<div class="fb-hero__label">📖 Reading Test 0${currentReadingTest}, Band</div>` +
+      `<div class="fb-hero__band">${fmtBand(band)}</div>` +
+      `<div class="fb-hero__note">${heroNote}</div>` +
+    `</div>`;
   const subText = isPartial
     ? `⚠️ Approximate, ${answeredCount}/40 questions answered. Complete all 3 passages for an official score.`
     : (total >= 35 ? '🎉 Great score, keep it up!' : `${35-total} more correct for a higher band`);
   const gridHTML = ranges.map((p,i) =>
     `<div class="sec-res"><div class="val">${passageScores[i]}/${p.end - p.start + 1}</div><div class="lbl">${p.label}</div></div>`).join('');
-  // Détail gaté par le micro-feedback (band déjà visible au-dessus).
   const detailHTML =
-    `<p style="color:rgba(255,255,255,.7);font-size:1.0625rem;margin-bottom:16px">${subText}</p>` +
-    `<button class="btn btn-outline--on-dark" onclick="showAnswers()">Show All Correct Answers</button>` +
+    `<p style="color:var(--text-muted);font-size:1.0625rem;margin:16px 0">${subText}</p>` +
+    `<button class="btn btn-outline" onclick="showAnswers()">Show All Correct Answers</button>` +
     `<div class="sec-results-grid" style="margin-top:16px">${gridHTML}</div>`;
   const gateEl = document.getElementById('results-gate');
   if (window.FeedbackGate && gateEl) {
-    window.FeedbackGate.render(gateEl, { type: 'reading', testId: currentReadingTest, band: band, heroHTML: '', detailHTML });
-  } else if (gateEl) { gateEl.innerHTML = detailHTML; }
+    window.FeedbackGate.render(gateEl, { type: 'reading', testId: currentReadingTest, band: band, heroHTML, detailHTML });
+  } else if (gateEl) { gateEl.innerHTML = heroHTML + detailHTML; }
   // Placé après la carte sombre (fond clair de la page), pas dedans.
   if (window.ExamFlow) window.ExamFlow.renderNextStep('reading', card.parentElement || card);
   card.scrollIntoView({ behavior: 'smooth', block: 'start' });
