@@ -127,7 +127,7 @@ const READING_TEST01 = {
                 "Sleeping at irregular hours"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 4: 'avoiding screens for at least one hour before bedtime'",
               "explanation": ""
             },
             {
@@ -140,7 +140,7 @@ const READING_TEST01 = {
                 "Resistance to changes in the sleep schedule"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 5: 'sleep inertia, a temporary feeling of grogginess'",
               "explanation": ""
             },
             {
@@ -153,7 +153,7 @@ const READING_TEST01 = {
                 "Vigorous exercise always reduces sleep quality"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 7: 'vigorous exercise performed too close to bedtime may have the opposite effect'",
               "explanation": ""
             }
           ]
@@ -187,42 +187,42 @@ const READING_TEST01 = {
               "n": 14,
               "text": "Paragraph A",
               "answer": "F",
-              "ref": "",
+              "ref": "Paragraph A: 'experiencing a remarkable renaissance worldwide'",
               "explanation": ""
             },
             {
               "n": 15,
               "text": "Paragraph B",
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph B: 'the modern urban farming movement differs in both scale and'",
               "explanation": ""
             },
             {
               "n": 16,
               "text": "Paragraph C",
               "answer": "E",
-              "ref": "",
+              "ref": "Paragraph C: 'one of the most technologically advanced forms of urban agriculture'",
               "explanation": ""
             },
             {
               "n": 17,
               "text": "Paragraph D",
               "answer": "A",
-              "ref": "",
+              "ref": "Paragraph D: 'limiting accessibility for lower-income communities'",
               "explanation": ""
             },
             {
               "n": 18,
               "text": "Paragraph E",
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph E: 'numerous psychological benefits associated with community gardening'",
               "explanation": ""
             },
             {
               "n": 19,
               "text": "Paragraph F",
               "answer": "D",
-              "ref": "",
+              "ref": "Paragraph F: 'Singapore, often cited as a model for urban agricultural policy'",
               "explanation": ""
             }
           ]
@@ -242,7 +242,7 @@ const READING_TEST01 = {
                 "Wartime gardens were larger in scale"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph B: 'differs in both scale and sophistication'",
               "explanation": ""
             },
             {
