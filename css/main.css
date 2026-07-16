@@ -260,6 +260,12 @@ p  { color: var(--text-muted); }
 .badge-danger  { background: var(--danger-light); color: var(--danger); }
 .badge-dark    { background: var(--dark); color: var(--white); }
 .badge-free    { background: linear-gradient(135deg, #22C55E, #16A34A); color: var(--white); }
+/* Badges disciplines : teinte de la couleur du module (miroir de .module-icon.*) */
+.badge-listening { background: rgba(37,99,235,.1);  color: var(--c-listening); }
+.badge-reading   { background: rgba(22,163,74,.1);  color: var(--c-reading); }
+.badge-writing   { background: rgba(234,88,12,.1);  color: var(--c-writing); }
+.badge-speaking  { background: rgba(220,38,38,.1);  color: var(--c-speaking); }
+.badge-ai        { background: linear-gradient(135deg, #6366F1, #8B5CF6); color: var(--white); }
 
 /* ── FORMS ───────────────────────────────────────────────────────────────── */
 .form-group { margin-bottom: 16px; }
