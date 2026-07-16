@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; }
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #1A56DB 0%, #0F3A8F 100%);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .glow {
+    position: absolute; border-radius: 50%;
+    background: radial-gradient(circle, rgba(219,234,254,.28) 0%, rgba(219,234,254,0) 70%);
+  }
+  .g1 { width: 700px; height: 700px; top: -220px; right: -180px; }
+  .g2 { width: 520px; height: 520px; bottom: -240px; left: -140px; }
+  .wrap {
+    position: relative; z-index: 2;
+    height: 100%; padding: 72px 80px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .top { display: flex; align-items: center; gap: 20px; }
+  .parrot { font-size: 82px; line-height: 1; }
+  .brand { font-size: 52px; font-weight: 800; letter-spacing: -0.5px; }
+  .mid { max-width: 1000px; }
+  .headline {
+    font-size: 78px; font-weight: 800; line-height: 1.06; letter-spacing: -1.5px;
+    margin-bottom: 22px;
+  }
+  .headline .hl { color: #BFDBFE; }
+  .sub {
+    font-size: 30px; font-weight: 500; color: #DBEAFE; line-height: 1.4;
+  }
+  .bottom { display: flex; align-items: center; justify-content: space-between; }
+  .pills { display: flex; gap: 12px; }
+  .pill {
+    font-size: 22px; font-weight: 700; padding: 10px 20px;
+    background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.28);
+    border-radius: 999px;
+  }
+  .domain { font-size: 26px; font-weight: 700; color: #EFF6FF; opacity: .95; }
+</style>
+</head>
+<body>
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+  <div class="wrap">
+    <div class="top">
+      <div class="parrot">🦜</div>
+      <div class="brand">ParrotTalk</div>
+    </div>
+    <div class="mid">
+      <div class="headline">Free <span class="hl">AI-powered</span><br>IELTS practice</div>
+      <div class="sub">Full mock tests with instant feedback and an estimated band score. No account, no subscription.</div>
+    </div>
+    <div class="bottom">
+      <div class="pills">
+        <div class="pill">Listening</div>
+        <div class="pill">Reading</div>
+        <div class="pill">Writing</div>
+        <div class="pill">Speaking</div>
+      </div>
+      <div class="domain">www.parrottalk.app</div>
+    </div>
+  </div>
+</body>
+</html>
