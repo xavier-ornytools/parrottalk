@@ -1,5 +1,31 @@
 # ParrotTalk — Tests techniques
 
+## Chantier « 4 tests par module », Writing 04 : Test 04 UK household spending + Environment (2026-07-16)
+
+Branche `feat/writing-test-04`, **non mergee** (en attente de la verification navigateur de Xavier). Un seul fichier de code modifie : `writing.html`.
+
+**Test 04.** 4e test Writing (objet `WRITING_DATA[4]`). Task 1 : un **camembert (pie chart) Chart.js live**, type de visuel absent des 3 tests existants (line graph et bar chart en images `.webp`, table HTML). Theme : depenses mensuelles d'un menage britannique en 2023, 6 parts sommant a 100 (Housing 33, Food and groceries 20, Transport 15, Utilities and bills 13, Leisure and entertainment 11, Other 8). L'enonce ne donne AUCUNE valeur en texte : le candidat doit lire le graphe. Task 2 : essai « discuss both views + opinion » sur la responsabilite environnementale (gouvernements/entreprises vs individus), theme distinct des 3 Task 2 existants.
+
+**Camembert (esthetique).** Chart.js 4.4.0 (meme CDN + SRI que `dashboard.html`) + plugin `chartjs-plugin-datalabels@2.2.0` (charge depuis jsdelivr, SRI sha384 calcule depuis le fichier servi : `y49Zu59jZHJL/PLKgZPv3k2WI9c0Yp3pWB76V8OBVCb0QBKS8l4Ff3YslzHVX76Y`). Pourcentages affiches directement sur chaque part (blanc gras, lisere fonce), separateurs blancs 2px, legende en bas (Inter 12px 600), conteneur `.card`, `responsive` + hauteur fixe (net sur mobile). Couleurs = tokens de la charte, palette validee par le validateur dataviz (separation CVD OK avec encodage secondaire). Nouveau canvas `#task1-chart-wrap` a cote de l'`<img>` existant ; `startWritingTest` bascule image/camembert selon le test via `renderTask1Chart` (instance detruite/recreee a chaque changement de test).
+
+**Integration (7 points, tous dans `writing.html`).** Scripts Chart.js + datalabels dans le `<head>` ; canvas ajoute ; cle `4:` dans `WRITING_DATA` ; branche de rendu dans `startWritingTest` + fonction `renderTask1Chart` + variable `writingChart` ; `highlightTest [1,2,3] -> [1,2,3,4]` ; 4e carte de test + bouton `wbtn-4`, grille `grid-3 -> grid-4` ; borne de reprise `sessionTest <= 3 -> <= 4` (sinon l'autosave/reprise du Test 04 apres rechargement etait cassee). Moteur (chrono 3600s, mots 150/250, autosave `draftKey(4)`, appel IA) generique, indexe par `currentWritingTest`, non modifie.
+
+### Testé avec
+- Parcours e2e Test 04 en vrai Chrome (playwright-core) : `37/37` assertions vertes. Selection Test 04, camembert rendu (type `pie`, donnees `[33,20,15,13,11,8]`, somme `100`, 6 categories, couleurs charte, plugin datalabels charge et applique, canvas dimensions > 0), enonce sans aucun pourcentage, boucle IA bout en bout (mock `/evaluate/writing`, prompt = enonce Test 04, feedback rendu), passage Task 2 (environnement), autosave + reprise du Test 04 apres reload, non-regression Tests 01/02/03 (images 01/02 affichees, table 03 presente, camembert masque, instance detruite au changement de test).
+- Non-regression : `tests/e2e-writing-lifecycle.js` (3 tests existants) `30/30` verts.
+- Captures desktop et mobile du camembert (legende complete, pourcentages sur les parts, rendu propre mobile).
+- Regle « aucun tiret cadratin/demi-cadratin » respectee ; `0` erreur JS console.
+- Note : `tests/check.js` a 12 echecs PREEXISTANTS et hors perimetre (fichiers `api/*` absents, `cancelTTS` Speaking, items FAQ de `index.html`), aucun ne concerne `writing.html` ni le Test 04.
+
+### Livrable
+- Rapport PDF de fin de lot sur le Bureau (voir nom ci-dessous), avec captures desktop/mobile, commits, points exacts a verifier, lien localhost cliquable.
+
+### Avenant (16/07) : style du tableau Task 1 du Test 03
+Le tableau (possession smartphone, Test 03) avait des bordures `#e2e8f0` quasi invisibles et un rendu sale sur mobile. Corrige STYLE UNIQUEMENT (contenu identique, autres tests non touches) : markup passe en classes `.wtable-wrap` + `.wtable` (styles inline retires), CSS ajoute dans le bloc `<style>` de `writing.html`. Bordures fines nettes `#CBD5E1` sur toutes les cellules, en-tetes distincts (fond `--primary-pale`, texte `--primary-dark`, bord bas 2px `--primary-light`), zebrage `--surface`, encadre `.card`-like (bord `--border`, rayon `--r`, ombre `--sh-sm`), `overflow-x:auto` + `width:100%` (les 4 colonnes tiennent sur mobile, media query 600px resserre padding/police). Verifie en vrai Chrome (desktop + 390px) : encadre present, 24 cellules, valeurs preservees (South Korea 73/88/95 ... Nigeria 11/25/38), en-tete `#EFF6FF` bord bas 2px, bordures `#CBD5E1`, `0` erreur JS ; non-regression `e2e-writing-lifecycle.js` `30/30`. Captures desktop/mobile sur le Bureau. Commit atomique separe.
+
+### Hors perimetre (non traite, signale)
+- `dashboard.html` (l.462, 482-483) enumere `test01/02/03` pour l'affichage detaille par test. NON traite (perimetre verrouille sur `writing.html`). Le scoring Writing s'agrege via `localStorage ielts_writing_scores`, donc non bloquant. A decider avec Xavier si le Test 04 doit apparaitre dans le suivi detaille du dashboard.
+
 ## Chantier « 4 tests par module », Speaking 04 : Test 04 Food & Culture (2026-07-16)
 
 Branche `feat/speaking-test-04`, **mergee dans `main` et deployee en prod le 16/07** (voir « Merge et deploiement prod » ci-dessous). Trois livrables dans ce lot, tous sur le moteur Speaking commun (`speaking.html`) :
