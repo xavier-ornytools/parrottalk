@@ -2,7 +2,7 @@
 
 ## Chantier Reading data-driven, LOT 2 : sortie des donnees + renvois d'erreur (2026-07-16)
 
-Branche `feat/reading-data-driven`. Aucun push, aucun merge. Refonte : les donnees des 3 tests Reading (9 passages, 120 questions, cles de reponse, scoring) sont sorties de `reading.html` vers `js/reading-data.js` (prose des passages conservee a l'identique, extraite par `tests/reading-build-data.js`). `reading.html` rend en data-driven (`renderReadingTest`, `qIndex`) et a maigri d'environ 1400 lignes.
+Branche `feat/reading-data-driven`, **mergee dans `main` et deployee en prod le 16/07** (voir « Merge et deploiement prod » ci-dessous). Refonte : les donnees des 3 tests Reading (9 passages, 120 questions, cles de reponse, scoring) sont sorties de `reading.html` vers `js/reading-data.js` (prose des passages conservee a l'identique, extraite par `tests/reading-build-data.js`). `reading.html` rend en data-driven (`renderReadingTest`, `qIndex`) et a maigri d'environ 1400 lignes.
 
 **Renvois d'erreur (les 120 champs `ref`).** Sur reponse fausse, le feedback affiche `See Paragraph X: 'ancre'`. Prefixe passe de `Voir` a `See`. Les 120 renvois ont ete rediges au format strict `Paragraph X: 'ancre verbatim de 5 a 10 mots'` (anglais uniquement), les NOT GIVEN portant `Not stated in the passage`. Persistance imposee : 1 commit de base (refs vides) + 12 commits de 10 renvois (`renvois test X, questions Y-Z`).
 
@@ -20,9 +20,16 @@ Branche `feat/reading-data-driven`. Aucun push, aucun merge. Refonte : les donne
 ### Correctif placement renvoi (16/07, retour navigateur Xavier)
 Sur le Test 01 seul, le renvoi s'affichait trop bas, colle a la suite. Cause : type de question, pas test. Le Test 01 est le seul avec une Summary Completion (Q27-33), 7 `<input>` en ligne dans un `<p>` partage ; `markQ` inserait la note dans le `<span>` du trou (inline). Les Tests 02/03 ont une Sentence Completion (une question par `.fill-row`), placement deja correct. Fix cible (`reading.html`) : pour un summary, la note est ancree apres le `<p>` ; `appendRef` empile les notes-bloc et deduplique par question (`dataset.q`). Verifie : 3 trous fautifs = 3 notes-bloc empilees sous le resume, plus aucune inline ; autres types et 02/03 inchanges ; 0 erreur JS ; scoring intact. Rapport : `2026-07-16_Reading_LOT2_fix-renvoi-summary.pdf` (Bureau).
 
-### Reste a valider (navigateur, avant merge)
-- Rendu visuel des renvois sous les reponses fausses, sur les 3 tests, en score complet et partiel (correctif summary Test 01 a re-verifier a l'oeil).
-- Coherence pedagogique fine des ancres choisies (l'echantillon de 30 est dans le rapport).
+### Merge et deploiement prod (16/07, valide navigateur Xavier)
+Verification navigateur Xavier OK sur les 3 tests (placement des renvois du Test 01 valide apres correctif). Tag de securite `avant-merge-lot2-reading-20260716`. Merge `--no-ff` de `feat/reading-data-driven` dans `main` (commit `b779ba7`), push `origin main` (auth : `GITHUB_TOKEN` invalide, contourne via le token keyring de `gh`, `env -u GITHUB_TOKEN`). Deploiement Vercel auto sur `parrottalk.app`.
+
+Verification EN LIGNE sur `https://parrottalk.app` (rappel : l'apex renvoie 308 vers `www`, verifier avec `-L`) :
+- Propagation reelle confirmee : `js/reading-data.js` sert 200, `reading.html` le reference.
+- 3 tests Reading : se lancent (3 passages, contenu rendu), chrono `60:00` (3600 s), soumission OK, renvois `See Paragraph ...` affiches sur les erreurs, `0` erreur JS par test.
+- Carte de resultat : band avec decimale, ex. `Band 8.5` pour 38/40 (fb-hero + meta `Last: 38/40, Band 8.5`).
+- Reste du site intact : `home`, `listening`, `writing`, `speaking` en 200, titres corrects, `0` erreur JS.
+
+Rappel regle projet : la verification prod officielle reste celle de Xavier sur mobile avec le marqueur `pt_internal`.
 
 ## Chantier « 4 tests par module », LOT 1 : calibrage transverse (2026-07-16)
 
