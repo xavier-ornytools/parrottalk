@@ -161,14 +161,22 @@
     .cue-card-voice ul { display:flex; flex-direction:column; gap:5px; }
     .cue-card-voice li { font-size:.875rem; color:#92400E; }
 
-    /* Prep timer */
-    .prep-zone {
-      padding:16px; background:var(--surface); border-radius:var(--r); margin-bottom:16px;
+    /* Prep timer, encart de preparation Part 2 */
+    .prep-panel {
+      background:var(--primary-pale); border:1.5px solid var(--primary-light);
+      border-radius:var(--r-lg); box-shadow:0 6px 18px rgba(26,86,219,.12);
+      padding:22px 24px; margin-bottom:20px; text-align:center;
     }
-    .prep-countdown {
-      font-size:2.25rem; font-weight:900; color:var(--warning);
-      font-variant-numeric:tabular-nums; margin:8px 0;
+    .prep-panel__label {
+      font-size:.75rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+      color:var(--primary); margin-bottom:8px;
     }
+    .prep-panel__hint { font-size:.9375rem; color:var(--text-muted); margin-bottom:16px; }
+    .prep-panel__count {
+      font-size:3.75rem; line-height:1; font-weight:900; color:var(--primary);
+      font-variant-numeric:tabular-nums; margin:4px 0 16px;
+    }
+    .prep-panel .btn { margin:0 auto; }
 
     /* Progress dots */
     .rec-progress { display:flex; gap:5px; flex-wrap:wrap; justify-content:center; }
@@ -231,6 +239,8 @@
     @media(max-width:600px){
       .spk-grid-3 { grid-template-columns:1fr; }
       .spk-grid-4 { grid-template-columns:1fr; }
+      .prep-panel { padding:18px 16px; }
+      .prep-panel__count { font-size:2.875rem; }
       .question-text { font-size:1rem; }
       .record-btn-main { width:64px; height:64px; font-size:1.625rem; }
       .score-mini-grid { grid-template-columns:repeat(2,1fr); }
@@ -616,15 +626,16 @@ function renderTestZone() {
   let prepHTML = '';
   if (isPart2 && !isRecording) {
     if (!prepActive) {
-      prepHTML = `<div class="prep-zone" style="margin-bottom:20px">
-        <div style="font-size:.875rem;color:var(--text-muted);margin-bottom:10px">Take 1 minute to organise your ideas before recording.</div>
-        <button class="btn" onclick="startPrepTimer()" style="font-size:.875rem">⏱ Start 1-min Preparation Timer</button>
+      prepHTML = `<div class="prep-panel">
+        <div class="prep-panel__label">⏱ Preparation</div>
+        <div class="prep-panel__hint">Take 1 minute to organise your ideas before you record your answer.</div>
+        <button class="btn btn-primary" onclick="startPrepTimer()">⏱ Start 1-min Preparation Timer</button>
       </div>`;
     } else {
-      prepHTML = `<div class="prep-zone" style="margin-bottom:20px">
-        <div style="font-size:.8rem;color:var(--text-muted)">Preparation time remaining</div>
-        <div class="prep-countdown" id="spk-prep-display">${formatTime(prepSecondsLeft)}</div>
-        <button class="rerecord-btn" onclick="skipPrep()">Skip → Start Recording Now</button>
+      prepHTML = `<div class="prep-panel">
+        <div class="prep-panel__label">Preparation time remaining</div>
+        <div class="prep-panel__count" id="spk-prep-display">${formatTime(prepSecondsLeft)}</div>
+        <button class="btn btn-secondary" onclick="skipPrep()">Skip and start recording now →</button>
       </div>`;
     }
   }
