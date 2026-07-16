@@ -1,5 +1,30 @@
 # ParrotTalk — Tests techniques
 
+## Chantier « 4 tests par module », Speaking 04 : Test 04 Food & Culture (2026-07-16)
+
+Branche `feat/speaking-test-04`, **mergee dans `main` et deployee en prod le 16/07** (voir « Merge et deploiement prod » ci-dessous). Trois livrables dans ce lot, tous sur le moteur Speaking commun (`speaking.html`) :
+
+**Test 04 Food & Culture.** 4e test Speaking, format IELTS identique aux tests 01 a 03 (objet `SPEAKING_TESTS[4]` : `topic`, `part1` 4 questions, `part2.cue` instruction + 4 bullets + `maxSpeak 120`, `part3` 4 questions). Contrainte dure 4/1/4 conservee. Theme nouveau, distinct de Personal Life, Travel, Technology. Integration : bouton Test 04, liste des boutons actifs `[1,2,3,4]`, grille `spk-grid-4` (4 colonnes desktop, 1 colonne mobile). MediaRecorder uniquement, contenu en anglais.
+
+**Verrou du bouton Suivant (les 9 reponses).** Suivant (et la soumission finale sur la derniere question) desactive tant qu'une prise est en cours OU qu'aucune prise d'au moins 1 seconde n'existe pour la question courante ; actif seulement apres une prise >= 1s stoppee. Texte d'aide anglais sous le bouton grise. Un clic sur Suivant ne peut plus couper une prise (garde aussi ajoutee dans `checkAndSubmit`). Bouton Precedent inchange. Auto-stop du monologue a 120 s intact.
+
+**Encart de preparation Part 2 (placement + design).** Le minuteur de preparation etait rendu sous la ligne de flottaison et disparaissait des qu'une prise Part 2 existait (condition `!rec`). Corrige : remonte en haut de la Part 2, et TOUJOURS visible tant qu'aucune prise n'est en cours (condition `!rec` retiree de l'affichage ET du cablage `startPrepCountdown`). Redesign visuel a la charte : carte `.prep-panel` (fond primary-pale, bord primary-light, rayon `--r-lg`, ombre), vrai bouton primaire, decompte en gros chiffres (3.75rem / 2.875rem mobile). Verrou Suivant non touche par le redesign.
+
+### Testé avec
+- Harnais Node (DOM stub) sur les 4 tests x 9 positions x 4 scenarios : `336/336` assertions vertes (verrou Suivant, placement/cablage du minuteur).
+- Reproduction et preuve en vrai Chrome (playwright-core, fake mic) : `tests/proof-prep.js` (minuteur TOUJOURS visible en Part 2 meme avec une prise existante, 4 tests, `top ~207px`) et `tests/proof-visual.js` (encart `.prep-panel` + bouton primaire presents sur les 4 tests ; 2 captures avant clic / decompte 0:57).
+- Auto-stop monologue 120 s intact ; regle « aucun tiret cadratin/demi-cadratin » respectee ; `0` erreur JS.
+
+### Livrable
+- Rapport PDF de fin de lot sur le Bureau (voir nom ci-dessous), plus les captures et recaps intermediaires (.md) produits pendant le lot.
+
+### Merge et deploiement prod (16/07, feu vert navigateur Xavier)
+Verification navigateur Xavier OK (Test 04, verrou Suivant, encart de preparation redessine valide). Merge `--no-ff` de `feat/speaking-test-04` dans `main` (commit `e92d80b`), push `origin main` (auth : `GITHUB_TOKEN` invalide, contourne via le token keyring de `gh`, `env -u GITHUB_TOKEN`). Deploiement Vercel auto.
+
+Verification EN LIGNE (rappel : l'apex renvoie 308 vers `www`, verifier avec `-L`) sur `https://www.parrottalk.app/speaking.html` :
+- HTTP `200`, `4` boutons de test dans le HTML servi, `SPEAKING_TESTS[4]` defini, `prep-panel` present.
+- Vrai navigateur (Playwright) : 4 boutons rendus (`Personal Life & Future Plans`, `Travel & Environment`, `Technology & Society`, `Food & Culture`), `0` erreur JS console.
+
 ## Chantier Reading data-driven, LOT 2 : sortie des donnees + renvois d'erreur (2026-07-16)
 
 Branche `feat/reading-data-driven`, **mergee dans `main` et deployee en prod le 16/07** (voir « Merge et deploiement prod » ci-dessous). Refonte : les donnees des 3 tests Reading (9 passages, 120 questions, cles de reponse, scoring) sont sorties de `reading.html` vers `js/reading-data.js` (prose des passages conservee a l'identique, extraite par `tests/reading-build-data.js`). `reading.html` rend en data-driven (`renderReadingTest`, `qIndex`) et a maigri d'environ 1400 lignes.
