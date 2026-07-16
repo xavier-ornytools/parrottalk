@@ -608,9 +608,13 @@ function renderTestZone() {
     </div>`;
   }
 
-  // Prep zone (Part 2 only, when no recording yet and not currently recording)
+  // Prep zone (Part 2 uniquement) : TOUJOURS visible en haut tant qu'aucune
+  // prise du monologue n'est en cours. Volontairement independant de `rec` :
+  // meme si une prise Part 2 existe deja, le minuteur reste affiche pour que le
+  // candidat puisse re-preparer et refaire sa prise. Aucun etat ne le masque
+  // (hors enregistrement en cours).
   let prepHTML = '';
-  if (isPart2 && !rec && !isRecording) {
+  if (isPart2 && !isRecording) {
     if (!prepActive) {
       prepHTML = `<div class="prep-zone" style="margin-bottom:20px">
         <div style="font-size:.875rem;color:var(--text-muted);margin-bottom:10px">Take 1 minute to organise your ideas before recording.</div>
@@ -687,7 +691,7 @@ function renderTestZone() {
     </div>`;
 
   if (isRecording) startRecordingTimerDisplay();
-  if (isPart2 && prepActive && !rec && !isRecording) startPrepCountdown();
+  if (isPart2 && prepActive && !isRecording) startPrepCountdown();
 }
 
 // Echappement HTML applique a TOUT texte injecte via innerHTML, en particulier
