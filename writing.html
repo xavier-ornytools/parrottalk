@@ -45,6 +45,9 @@
   <script src="js/analytics.js" async></script>
   <script src="js/cookie-banner.js" defer></script>
   <script src="js/exam-flow.js" defer></script>
+  <!-- Chart.js (meme version/CDN que dashboard.html) + plugin datalabels pour le camembert Task 1 (Test 04). SRI calcule depuis le fichier jsdelivr @2.2.0. -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" integrity="sha384-e6nUZLBkQ86NJ6TVVKAeSaK8jWa3NhkYWZFomE39AvDbQWeie9PlQqM3pmYW5d1g" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js" integrity="sha384-y49Zu59jZHJL/PLKgZPv3k2WI9c0Yp3pWB76V8OBVCb0QBKS8l4Ff3YslzHVX76Y" crossorigin="anonymous"></script>
   <style>
     .task-card { background: var(--white); border-radius: var(--r-lg); border: 1px solid var(--border); padding: 28px; margin-bottom: 20px; }
     .task-header {
@@ -165,7 +168,7 @@
 <div class="container" style="padding-top:32px;padding-bottom:80px">
 
   <!-- TEST SELECTOR -->
-  <div class="grid-3" style="gap:12px;margin-bottom:24px">
+  <div class="grid-4" style="gap:12px;margin-bottom:24px">
     <button class="test-sel-btn active" onclick="selectWritingTest(1)" id="wbtn-1">
       <div class="t-num">Test 01</div>
       <div class="t-t1">📈 Task 1, Line graph: renewable energy %</div>
@@ -180,6 +183,11 @@
       <div class="t-num">Test 03</div>
       <div class="t-t1">📋 Task 1, Table: smartphone ownership %</div>
       <div class="t-t2">📝 Task 2, Social media and society</div>
+    </button>
+    <button class="test-sel-btn" onclick="selectWritingTest(4)" id="wbtn-4">
+      <div class="t-num">Test 04</div>
+      <div class="t-t1">🥧 Task 1, Pie chart: UK household spending</div>
+      <div class="t-t2">📝 Task 2, Protecting the environment</div>
     </button>
   </div>
 
@@ -237,6 +245,14 @@
 
       <div style="text-align:center;margin:20px 0">
         <img id="task1-graph" src="" alt="Task 1 Graph" style="max-width:100%;border-radius:var(--r);box-shadow:var(--sh)">
+      </div>
+
+      <!-- Camembert Chart.js live (Test 04). Affiche seulement si le test porte un task1_chart. -->
+      <div id="task1-chart-wrap" class="card" style="display:none;max-width:560px;margin:20px auto;text-align:center">
+        <div id="task1-chart-title" style="font-size:.875rem;font-weight:700;color:var(--text);margin-bottom:12px"></div>
+        <div style="position:relative;height:340px">
+          <canvas id="task1-chart" role="img" aria-label="Task 1 pie chart"></canvas>
+        </div>
       </div>
 
       <textarea class="answer-area" id="task1-answer"
@@ -365,6 +381,19 @@ const WRITING_DATA = {
     task1_sample: `The table illustrates the proportion of adults owning smartphones in five countries across three years: 2014, 2018 and 2022.<br><br>Overall, smartphone ownership increased in all five countries over the period, with South Korea consistently recording the highest rates and Nigeria the lowest. The gap between the most and least connected nations narrowed slightly but remained substantial throughout.<br><br>South Korea led in all three years, rising from 73% in 2014 to a near-universal 95% in 2022. The United States followed a similar trajectory, climbing from 58% to 85% over the same period. Both countries had already achieved majority smartphone ownership by the start of the period.<br><br>The most dramatic growth was seen in India and Nigeria, albeit from much lower starting points. India's rate more than tripled from 17% to 54%, while Nigeria's grew from 11% to 38%. Despite this rapid expansion, both countries remained well below 60% penetration by 2022. Brazil fell between these two groups, rising steadily from 41% to 72%.<br><br>In summary, while South Korea and the United States approached saturation point, emerging economies showed the most dynamic growth, suggesting that global smartphone adoption is becoming increasingly widespread.`,
     task2_instruction: `Many people believe that social media has had a largely negative impact on society. To what extent do you agree or disagree?`,
     task2_sample: `The rise of social media platforms over the past two decades has fundamentally altered the way people communicate, consume information, and engage with public life. While critics point to a range of harmful effects, from the spread of misinformation to mental health deterioration, I believe that social media's overall impact depends heavily on how it is used, and that a balanced assessment reveals both significant benefits and genuine risks.<br><br>Those who view social media as harmful often highlight its role in amplifying extreme or false information. Algorithms designed to maximise engagement tend to promote content that is emotionally provocative rather than accurate, creating what researchers describe as "filter bubbles" in which users are exposed only to views that reinforce their existing beliefs. Additionally, studies have linked heavy social media use, particularly among adolescents, to increased rates of anxiety, depression, and poor self-image, partly driven by constant social comparison.<br><br>Nevertheless, the picture is not entirely negative. Social media has democratised the flow of information, enabling grassroots movements, political activism, and the rapid coordination of humanitarian responses to crises. Small businesses, artists and educators have used these platforms to reach audiences that would previously have been inaccessible. Furthermore, social media has helped maintain personal connections across vast distances, which has been particularly valuable during periods of social isolation such as the COVID-19 pandemic.<br><br>In my view, the negative consequences of social media are real but not inevitable. With appropriate digital literacy education, platform regulation, and individual mindfulness about usage, many of the harms can be mitigated. The technology itself is neutral; what matters is the cultural and regulatory frameworks within which it operates.<br><br>In conclusion, while social media carries genuine risks to both individual wellbeing and democratic discourse, dismissing it as purely harmful overlooks its considerable positive contributions. A nuanced, context-sensitive approach offers a more accurate and useful perspective.`
+  },
+  4: {
+    task1_instruction: `The pie chart below shows how an average household in the United Kingdom spent its monthly income in 2023.<br><br>Summarise the information by selecting and reporting the main features, and make comparisons where relevant.`,
+    task1_graph: '',
+    task1_chart: {
+      title: 'Average UK household monthly spending, 2023',
+      labels: ['Housing', 'Food and groceries', 'Transport', 'Utilities and bills', 'Leisure and entertainment', 'Other'],
+      data: [33, 20, 15, 13, 11, 8],
+      colors: ['#1A56DB', '#EA580C', '#0EA5E9', '#8B5CF6', '#16A34A', '#64748B']
+    },
+    task1_sample: `The pie chart illustrates how a typical British household divided its monthly income across six categories of spending in 2023.<br><br>Overall, housing was by far the largest expense, absorbing roughly a third of all spending, while the remaining income was spread fairly evenly across everyday costs, with a small residual falling under other items.<br><br>Housing alone accounted for 33 per cent of the monthly budget, more than any other category and considerably higher than the second largest, food and groceries, which took up 20 per cent. Together, these two essentials consumed over half of household income.<br><br>The middle of the distribution was occupied by transport and utilities, at 15 and 13 per cent respectively, figures that were very close to one another. Leisure and entertainment received a slightly smaller share at 11 per cent.<br><br>Finally, the remaining 8 per cent was classified as other spending, making it the smallest segment of the chart. In short, essential living costs clearly dominated, leaving only a modest proportion for discretionary and miscellaneous expenses.`,
+    task2_instruction: `Some people believe that protecting the environment is the responsibility of governments and large companies. Others argue that individuals also have an important role to play.<br><br>Discuss both views and give your own opinion.`,
+    task2_sample: `Environmental degradation is one of the defining challenges of our time, and there is ongoing debate about where the primary responsibility for tackling it should lie. While some maintain that only governments and large corporations have the power to make a real difference, others insist that individual behaviour also matters. In my view, meaningful progress requires both levels acting together.<br><br>Those who emphasise institutional responsibility argue, with justification, that the scale of the problem is beyond individual control. Governments alone can legislate emissions limits, tax pollution and fund clean infrastructure, while large companies determine how billions of products are manufactured and transported. A single factory or a national energy policy can outweigh the combined efforts of millions of households, so without action at this level personal choices have limited impact.<br><br>On the other hand, individuals are far from powerless. Consumer demand shapes what businesses produce, and everyday decisions such as reducing waste, using public transport and cutting energy consumption collectively influence markets and voting patterns. Moreover, widespread public concern is often what pressures governments and corporations to act in the first place.<br><br>In my opinion, framing this as a choice between the two is misleading. Structural change driven by policy and industry is indispensable, but it is sustained and legitimised by an engaged population that adjusts its own habits and holds decision-makers accountable. The two reinforce each other.<br><br>In conclusion, while governments and companies bear the greater share of responsibility because of their scale, individuals play an essential complementary role. Lasting environmental protection depends on both working in the same direction rather than on either acting alone.`
   }
 };
 
@@ -373,13 +402,14 @@ let pendingTest = 1;          // test choisi sur l'écran d'accueil, pas encore 
 let testStarted = false;      // un test est-il en cours (zone de test affichée) ?
 let globalInterval = null;
 let totalSeconds = 3600;
+let writingChart = null;      // instance Chart.js du camembert Task 1 (Test 04), detruite/recreee a chaque test
 // sessionStorage (pas localStorage) : survit au rechargement du MÊME onglet, pas
 // à une arrivée fraîche. Sépare "reload en cours de test" de "ouverture de page".
 const SESSION_ACTIVE_KEY = 'ielts_writing_session';
 function draftKey(n) { return 'ielts_writing_draft_test' + n; }
 
 function highlightTest(n) {
-  [1,2,3].forEach(i => { const b = document.getElementById('wbtn-' + i); if (b) b.classList.toggle('active', i === n); });
+  [1,2,3,4].forEach(i => { const b = document.getElementById('wbtn-' + i); if (b) b.classList.toggle('active', i === n); });
   const startBtn = document.getElementById('start-writing-btn');
   if (startBtn) startBtn.textContent = '▶ Start Test 0' + n + ' (60 min)';
 }
@@ -408,6 +438,7 @@ function startWritingTest(resume = false) {
   const graphEl = document.getElementById('task1-graph');
   graphEl.src = d.task1_graph || '';
   graphEl.style.display = d.task1_graph ? 'block' : 'none';
+  renderTask1Chart(d.task1_chart);
   document.getElementById('sample1-text').innerHTML = d.task1_sample;
   document.getElementById('task2-instruction').innerHTML = d.task2_instruction;
   document.getElementById('sample2-text').innerHTML = d.task2_sample;
@@ -428,6 +459,54 @@ function startWritingTest(resume = false) {
   try { sessionStorage.setItem(SESSION_ACTIVE_KEY, String(currentWritingTest)); } catch (e) {}
   if (!resume) toast('Test 0' + currentWritingTest + ' started, 60 minutes. Begin with Task 1 (20 min).', 'info');
   if (!resume) window.ptEvent && window.ptEvent('test_started', { section: 'writing', test_number: currentWritingTest });
+}
+
+// Camembert Task 1 (Test 04) : rendu Chart.js live, pourcentages affiches directement
+// sur chaque part (plugin datalabels). Si le test courant n'a pas de task1_chart, on
+// masque le canvas et on detruit une eventuelle instance precedente (changement de test).
+function renderTask1Chart(cfg) {
+  const wrap = document.getElementById('task1-chart-wrap');
+  if (writingChart) { writingChart.destroy(); writingChart = null; }
+  if (!cfg || typeof Chart === 'undefined' || !wrap) { if (wrap) wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  document.getElementById('task1-chart-title').textContent = cfg.title || '';
+  const ctx = document.getElementById('task1-chart').getContext('2d');
+  writingChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: cfg.labels,
+      datasets: [{
+        data: cfg.data,
+        backgroundColor: cfg.colors,
+        borderColor: '#ffffff',
+        borderWidth: 2,
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: 4 },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { boxWidth: 12, boxHeight: 12, padding: 14, color: '#1E293B', font: { family: "'Inter', sans-serif", size: 12, weight: '600' } }
+        },
+        tooltip: {
+          callbacks: { label: (c) => ' ' + c.label + ': ' + c.parsed + '%' }
+        },
+        datalabels: {
+          color: '#ffffff',
+          textAlign: 'center',
+          font: { family: "'Inter', sans-serif", size: 13, weight: '700' },
+          textStrokeColor: 'rgba(15,23,42,.55)',
+          textStrokeWidth: 3,
+          formatter: (v) => v + '%'
+        }
+      }
+    },
+    plugins: (typeof ChartDataLabels !== 'undefined') ? [ChartDataLabels] : []
+  });
 }
 
 // P1.3, Révélation en deux temps de l'énoncé Writing (Task 1 puis Task 2),
@@ -758,7 +837,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // fraîche (nouvel onglet, retour plus tard) → écran d'accueil, aucun chrono.
   let sessionTest = 0;
   try { sessionTest = parseInt(sessionStorage.getItem(SESSION_ACTIVE_KEY) || '0', 10); } catch (e) {}
-  if (sessionTest >= 1 && sessionTest <= 3) {
+  if (sessionTest >= 1 && sessionTest <= 4) {
     resumeTest(sessionTest);
   }
 });
