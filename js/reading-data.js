@@ -620,7 +620,7 @@ const READING_TEST02 = {
                 "Excessive land use of solar farms"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 5: 'Mining these materials can cause environmental damage'",
               "explanation": ""
             },
             {
@@ -633,7 +633,7 @@ const READING_TEST02 = {
                 "It is currently more expensive than construction"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 5: 'the fibreglass composite blades, presents a growing waste management challenge'",
               "explanation": ""
             },
             {
@@ -646,7 +646,7 @@ const READING_TEST02 = {
                 "It is economically unviable without government subsidies"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 6: 'while imperfect, is essential for limiting global temperature rise'",
               "explanation": ""
             }
           ]
@@ -671,7 +671,7 @@ const READING_TEST02 = {
               "sentence": "More than 55% of the global population currently lives in <strong>______</strong> areas.",
               "spanStyle": "font-size:.9rem",
               "answer": "URBAN",
-              "ref": "",
+              "ref": "Paragraph 1: 'population currently lives in urban areas'",
               "explanation": ""
             },
             {
@@ -679,7 +679,7 @@ const READING_TEST02 = {
               "sentence": "The agricultural sector accounts for approximately 70% of all freshwater <strong>______</strong>.",
               "spanStyle": "font-size:.9rem",
               "answer": "WITHDRAWALS",
-              "ref": "",
+              "ref": "Paragraph 3: 'approximately 70% of all water withdrawals'",
               "explanation": ""
             },
             {
@@ -687,7 +687,7 @@ const READING_TEST02 = {
               "sentence": "Urban expansion onto farmland requires the remaining agricultural land to be <strong>______</strong> more intensively.",
               "spanStyle": "font-size:.9rem",
               "answer": "IRRIGATED",
-              "ref": "",
+              "ref": "Paragraph 3: 'the remaining land to be irrigated more intensively'",
               "explanation": ""
             },
             {
@@ -695,7 +695,7 @@ const READING_TEST02 = {
               "sentence": "Aquifer depletion occurs when groundwater is extracted faster than it can be replenished, potentially leaving underground <strong>______</strong> permanently depleted.",
               "spanStyle": "font-size:.9rem",
               "answer": "AQUIFERS",
-              "ref": "",
+              "ref": "Paragraph 4: 'some aquifers may take thousands of years to recover'",
               "explanation": ""
             },
             {
@@ -703,7 +703,7 @@ const READING_TEST02 = {
               "sentence": "Rainwater <strong>______</strong> systems reduce demand on municipal water supplies by collecting precipitation for later use.",
               "spanStyle": "font-size:.9rem",
               "answer": "HARVESTING",
-              "ref": "",
+              "ref": "Paragraph 5: 'Rainwater harvesting systems collect and store precipitation'",
               "explanation": ""
             },
             {
@@ -711,7 +711,7 @@ const READING_TEST02 = {
               "sentence": "Singapore's water recycling programme now meets approximately 40% of the city-state's water <strong>______</strong>.",
               "spanStyle": "font-size:.9rem",
               "answer": "NEEDS",
-              "ref": "",
+              "ref": "Paragraph 5: 'approximately 40% of the city-state's water needs'",
               "explanation": ""
             },
             {
@@ -719,7 +719,7 @@ const READING_TEST02 = {
               "sentence": "The process of removing salt from seawater to produce fresh water is known as <strong>______</strong>.",
               "spanStyle": "font-size:.9rem",
               "answer": "DESALINATION",
-              "ref": "",
+              "ref": "Paragraph 6: 'Desalination, the process of removing salt from seawater'",
               "explanation": ""
             }
           ]
