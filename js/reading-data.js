@@ -739,7 +739,7 @@ const READING_TEST02 = {
                 "75%"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 1: 'projected to rise to 68% by 2050'",
               "explanation": ""
             },
             {
@@ -752,7 +752,7 @@ const READING_TEST02 = {
                 "Excessive water use by industrial companies"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 2: 'ageing infrastructure, population growth, and the effects of climate change'",
               "explanation": ""
             },
             {
@@ -765,7 +765,7 @@ const READING_TEST02 = {
                 "Water demand for agriculture falls"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 3: 'requiring the remaining land to be irrigated more intensively'",
               "explanation": ""
             },
             {
@@ -778,7 +778,7 @@ const READING_TEST02 = {
                 "It is less serious than surface water depletion"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 4: 'some aquifers may take thousands of years to recover'",
               "explanation": ""
             },
             {
@@ -791,7 +791,7 @@ const READING_TEST02 = {
                 "It is energy-intensive and costly"
               ],
               "answer": "D",
-              "ref": "",
+              "ref": "Paragraph 6: 'it is energy-intensive and has historically been costly'",
               "explanation": ""
             },
             {
@@ -804,7 +804,7 @@ const READING_TEST02 = {
                 "A pioneer in rainwater harvesting technology"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 5: 'has developed a world-leading water recycling programme'",
               "explanation": ""
             }
           ]
@@ -829,7 +829,7 @@ const READING_TEST02 = {
               "sentence": "Memory consolidation transforms newly acquired information from a fragile state into a <strong>______</strong>, long-term memory.",
               "spanStyle": "font-size:.9rem",
               "answer": "STABLE",
-              "ref": "",
+              "ref": "Paragraph 2: 'temporary state into a stable, long-term memory'",
               "explanation": ""
             },
             {
@@ -837,7 +837,7 @@ const READING_TEST02 = {
               "sentence": "During learning, neurons create temporary connections known as <strong>______</strong> pathways.",
               "spanStyle": "font-size:.9rem",
               "answer": "SYNAPTIC",
-              "ref": "",
+              "ref": "Paragraph 2: 'temporary connections known as synaptic pathways'",
               "explanation": ""
             },
             {
@@ -845,7 +845,7 @@ const READING_TEST02 = {
               "sentence": "Stabilising synaptic pathways requires the synthesis of new <strong>______</strong> within the neuron.",
               "spanStyle": "font-size:.9rem",
               "answer": "PROTEINS",
-              "ref": "",
+              "ref": "Paragraph 2: 'the synthesis of new proteins within the neuron'",
               "explanation": ""
             },
             {
@@ -853,7 +853,7 @@ const READING_TEST02 = {
               "sentence": "The hippocampus plays a central role in the initial formation of <strong>______</strong> memories, which involve facts and events.",
               "spanStyle": "font-size:.9rem",
               "answer": "DECLARATIVE",
-              "ref": "",
+              "ref": "Paragraph 3: 'the initial formation of declarative memories'",
               "explanation": ""
             },
             {
