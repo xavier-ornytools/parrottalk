@@ -633,9 +633,21 @@ function renderTestZone() {
     ? `<button class="spk-nav-prev" onclick="backToPretest()">← Back</button>`
     : `<button class="spk-nav-prev" onclick="prevQuestion()">← Previous</button>`;
 
-  let navR = isLastQ
-    ? `<button class="btn btn-primary" onclick="checkAndSubmit()" style="font-size:.9375rem;padding:10px 22px">🤖 Get AI Feedback</button>`
-    : `<button class="btn btn-primary" onclick="nextQuestion()" style="font-size:.9375rem;padding:10px 22px">Next →</button>`;
+  // Verrou du bouton Suivant / soumission finale : actif uniquement quand un
+  // enregistrement d'au moins 1 seconde existe pour la question courante ET
+  // qu'aucune prise n'est en cours. Desactive pendant l'enregistrement, ce qui
+  // garantit qu'un clic sur Suivant ne peut jamais couper une prise. Le bouton
+  // Precedent, lui, reste toujours actif.
+  const hasValidRec = !!(rec && rec.duration >= 1);
+  const nextDisabled = isRecording || !hasValidRec;
+  const nextLabel = isLastQ ? '🤖 Get AI Feedback' : 'Next →';
+  const nextAction = isLastQ ? 'checkAndSubmit()' : 'nextQuestion()';
+  let navR = nextDisabled
+    ? `<button class="btn btn-primary" style="font-size:.9375rem;padding:10px 22px;opacity:.45;cursor:not-allowed" disabled>${nextLabel}</button>`
+    : `<button class="btn btn-primary" onclick="${nextAction}" style="font-size:.9375rem;padding:10px 22px">${nextLabel}</button>`;
+  const navHelp = nextDisabled
+    ? `<div class="spk-nav-help" style="text-align:center;font-size:.8rem;color:var(--text-muted);margin-top:8px">${isRecording ? 'Stop the recording to continue.' : 'Record your answer, then stop the recording to continue.'}</div>`
+    : '';
 
   // Progress dots
   const dots = Array.from({length:9},(_,i)=>{
@@ -650,6 +662,7 @@ function renderTestZone() {
     <img class="spk-mascot spk-mascot-left" src="img/mascot-speaking-left.webp" alt="" aria-hidden="true" loading="lazy">
     <div class="voice-zone">
       <div class="part-progress">${pills}</div>
+      ${prepHTML}
       <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:14px">
         <span class="part-tag ${partClass}">${partLabel}</span>
         <span class="question-label">${qLabel}</span>
@@ -657,13 +670,13 @@ function renderTestZone() {
       <div class="question-text">${esc(qText)}</div>
       <button class="tts-btn" onclick="readQuestion(${JSON.stringify(qText)})">🔊 Hear question</button>
       ${cueHTML}
-      ${prepHTML}
       <div id="spk-mic-error" class="mic-error hidden">
         🚫 Microphone access denied. Please allow microphone access in your browser settings and reload the page.
       </div>
       <button class="${btnCls}" id="spk-rec-btn" onclick="toggleRecording()"><span>${btnIcon}</span></button>
       <div id="spk-rec-status" style="margin-top:8px">${statusHTML}</div>
       <div class="spk-nav" style="margin-top:24px">${navL}${navR}</div>
+      ${navHelp}
     </div>
     <img class="spk-mascot spk-mascot-right" src="img/mascot-speaking-right.webp" alt="" aria-hidden="true" loading="lazy">
     </div>
@@ -873,6 +886,13 @@ function readQuestion(text) {
 const API_BASE = 'https://parrottalk-api.foundry8.workers.dev';
 
 async function checkAndSubmit(isRetry = false) {
+  // Ne jamais soumettre pendant qu'une prise tourne : on stoppe d'abord la prise
+  // pour ne pas la perdre (le bouton Suivant est deja verrouille, mais le lien
+  // "Submit" global reste accessible).
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    toast('Please stop your recording before submitting.', 'info');
+    return;
+  }
   const t = SPEAKING_TESTS[currentSpeakingTest];
   const allQs = getAllQuestions(currentSpeakingTest);
   const hasAnyRecording = recordings.some(r => r !== null);
