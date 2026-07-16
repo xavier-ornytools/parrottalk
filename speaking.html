@@ -47,6 +47,7 @@
   <script src="js/exam-flow.js" defer></script>
   <style>
     .spk-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .spk-grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
 
     .test-sel-btn {
       background:var(--white); border:2px solid var(--border);
@@ -160,14 +161,22 @@
     .cue-card-voice ul { display:flex; flex-direction:column; gap:5px; }
     .cue-card-voice li { font-size:.875rem; color:#92400E; }
 
-    /* Prep timer */
-    .prep-zone {
-      padding:16px; background:var(--surface); border-radius:var(--r); margin-bottom:16px;
+    /* Prep timer, encart de preparation Part 2 */
+    .prep-panel {
+      background:var(--primary-pale); border:1.5px solid var(--primary-light);
+      border-radius:var(--r-lg); box-shadow:0 6px 18px rgba(26,86,219,.12);
+      padding:22px 24px; margin-bottom:20px; text-align:center;
     }
-    .prep-countdown {
-      font-size:2.25rem; font-weight:900; color:var(--warning);
-      font-variant-numeric:tabular-nums; margin:8px 0;
+    .prep-panel__label {
+      font-size:.75rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+      color:var(--primary); margin-bottom:8px;
     }
+    .prep-panel__hint { font-size:.9375rem; color:var(--text-muted); margin-bottom:16px; }
+    .prep-panel__count {
+      font-size:3.75rem; line-height:1; font-weight:900; color:var(--primary);
+      font-variant-numeric:tabular-nums; margin:4px 0 16px;
+    }
+    .prep-panel .btn { margin:0 auto; }
 
     /* Progress dots */
     .rec-progress { display:flex; gap:5px; flex-wrap:wrap; justify-content:center; }
@@ -229,6 +238,9 @@
 
     @media(max-width:600px){
       .spk-grid-3 { grid-template-columns:1fr; }
+      .spk-grid-4 { grid-template-columns:1fr; }
+      .prep-panel { padding:18px 16px; }
+      .prep-panel__count { font-size:2.875rem; }
       .question-text { font-size:1rem; }
       .record-btn-main { width:64px; height:64px; font-size:1.625rem; }
       .score-mini-grid { grid-template-columns:repeat(2,1fr); }
@@ -300,7 +312,7 @@
 <div class="container" style="padding-top:32px;padding-bottom:80px">
 
   <!-- TEST SELECTOR -->
-  <div class="spk-grid-3" style="margin-bottom:24px">
+  <div class="spk-grid-4" style="margin-bottom:24px">
     <button class="test-sel-btn active" onclick="selectTest(1)" id="spk-btn-1">
       <div class="t-num">Test 01</div>
       <div class="t-name">Personal Life &amp; Future Plans</div>
@@ -314,6 +326,11 @@
     <button class="test-sel-btn" onclick="selectTest(3)" id="spk-btn-3">
       <div class="t-num">Test 03</div>
       <div class="t-name">Technology &amp; Society</div>
+      <div class="t-meta">🎤 Voice · AI Feedback</div>
+    </button>
+    <button class="test-sel-btn" onclick="selectTest(4)" id="spk-btn-4">
+      <div class="t-num">Test 04</div>
+      <div class="t-name">Food &amp; Culture</div>
       <div class="t-meta">🎤 Voice · AI Feedback</div>
     </button>
   </div>
@@ -406,6 +423,30 @@ const SPEAKING_TESTS = {
       'Some believe technology is making people less creative, to what extent do you agree?',
       'What responsibilities do technology companies have towards their users and towards society?'
     ]}
+  },
+  4: {
+    topic: 'Food & Culture',
+    part1: { questions: [
+      'What kinds of food do you enjoy eating the most?',
+      'Do you prefer eating at home or eating out at restaurants? Why?',
+      'Did you learn how to cook when you were growing up?',
+      'Are there any dishes that are especially popular in your country?'
+    ]},
+    part2: { cue: {
+      instruction: 'Describe a meal or dish that is special to you or your family.',
+      bullets: [
+        'What the dish is',
+        'Who usually prepares it',
+        'When you normally eat it',
+        'And explain why this meal is special to you'
+      ]
+    }, maxSpeak: 120 },
+    part3: { questions: [
+      'How have eating habits in your country changed over the last few generations?',
+      'Do you think traditional cooking is being lost as people rely more on fast food and ready meals?',
+      'In what ways does food help to express a country\'s culture and identity?',
+      'Should governments do more to encourage people to eat healthily? Why or why not?'
+    ]}
   }
 };
 
@@ -440,7 +481,7 @@ function selectTest(n) {
   currentQIdx = 0;
   recordings = new Array(9).fill(null);
   prepActive = false; prepSecondsLeft = 60;
-  [1,2,3].forEach(i => document.getElementById('spk-btn-'+i).classList.toggle('active', i===n));
+  [1,2,3,4].forEach(i => document.getElementById('spk-btn-'+i).classList.toggle('active', i===n));
   document.getElementById('spk-test-zone').classList.add('hidden');
   document.getElementById('spk-results').classList.add('hidden');
   renderPretest(n);
@@ -577,19 +618,24 @@ function renderTestZone() {
     </div>`;
   }
 
-  // Prep zone (Part 2 only, when no recording yet and not currently recording)
+  // Prep zone (Part 2 uniquement) : TOUJOURS visible en haut tant qu'aucune
+  // prise du monologue n'est en cours. Volontairement independant de `rec` :
+  // meme si une prise Part 2 existe deja, le minuteur reste affiche pour que le
+  // candidat puisse re-preparer et refaire sa prise. Aucun etat ne le masque
+  // (hors enregistrement en cours).
   let prepHTML = '';
-  if (isPart2 && !rec && !isRecording) {
+  if (isPart2 && !isRecording) {
     if (!prepActive) {
-      prepHTML = `<div class="prep-zone" style="margin-bottom:20px">
-        <div style="font-size:.875rem;color:var(--text-muted);margin-bottom:10px">Take 1 minute to organise your ideas before recording.</div>
-        <button class="btn" onclick="startPrepTimer()" style="font-size:.875rem">⏱ Start 1-min Preparation Timer</button>
+      prepHTML = `<div class="prep-panel">
+        <div class="prep-panel__label">⏱ Preparation</div>
+        <div class="prep-panel__hint">Take 1 minute to organise your ideas before you record your answer.</div>
+        <button class="btn btn-primary" onclick="startPrepTimer()">⏱ Start 1-min Preparation Timer</button>
       </div>`;
     } else {
-      prepHTML = `<div class="prep-zone" style="margin-bottom:20px">
-        <div style="font-size:.8rem;color:var(--text-muted)">Preparation time remaining</div>
-        <div class="prep-countdown" id="spk-prep-display">${formatTime(prepSecondsLeft)}</div>
-        <button class="rerecord-btn" onclick="skipPrep()">Skip → Start Recording Now</button>
+      prepHTML = `<div class="prep-panel">
+        <div class="prep-panel__label">Preparation time remaining</div>
+        <div class="prep-panel__count" id="spk-prep-display">${formatTime(prepSecondsLeft)}</div>
+        <button class="btn btn-secondary" onclick="skipPrep()">Skip and start recording now →</button>
       </div>`;
     }
   }
@@ -602,9 +648,21 @@ function renderTestZone() {
     ? `<button class="spk-nav-prev" onclick="backToPretest()">← Back</button>`
     : `<button class="spk-nav-prev" onclick="prevQuestion()">← Previous</button>`;
 
-  let navR = isLastQ
-    ? `<button class="btn btn-primary" onclick="checkAndSubmit()" style="font-size:.9375rem;padding:10px 22px">🤖 Get AI Feedback</button>`
-    : `<button class="btn btn-primary" onclick="nextQuestion()" style="font-size:.9375rem;padding:10px 22px">Next →</button>`;
+  // Verrou du bouton Suivant / soumission finale : actif uniquement quand un
+  // enregistrement d'au moins 1 seconde existe pour la question courante ET
+  // qu'aucune prise n'est en cours. Desactive pendant l'enregistrement, ce qui
+  // garantit qu'un clic sur Suivant ne peut jamais couper une prise. Le bouton
+  // Precedent, lui, reste toujours actif.
+  const hasValidRec = !!(rec && rec.duration >= 1);
+  const nextDisabled = isRecording || !hasValidRec;
+  const nextLabel = isLastQ ? '🤖 Get AI Feedback' : 'Next →';
+  const nextAction = isLastQ ? 'checkAndSubmit()' : 'nextQuestion()';
+  let navR = nextDisabled
+    ? `<button class="btn btn-primary" style="font-size:.9375rem;padding:10px 22px;opacity:.45;cursor:not-allowed" disabled>${nextLabel}</button>`
+    : `<button class="btn btn-primary" onclick="${nextAction}" style="font-size:.9375rem;padding:10px 22px">${nextLabel}</button>`;
+  const navHelp = nextDisabled
+    ? `<div class="spk-nav-help" style="text-align:center;font-size:.8rem;color:var(--text-muted);margin-top:8px">${isRecording ? 'Stop the recording to continue.' : 'Record your answer, then stop the recording to continue.'}</div>`
+    : '';
 
   // Progress dots
   const dots = Array.from({length:9},(_,i)=>{
@@ -619,6 +677,7 @@ function renderTestZone() {
     <img class="spk-mascot spk-mascot-left" src="img/mascot-speaking-left.webp" alt="" aria-hidden="true" loading="lazy">
     <div class="voice-zone">
       <div class="part-progress">${pills}</div>
+      ${prepHTML}
       <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:14px">
         <span class="part-tag ${partClass}">${partLabel}</span>
         <span class="question-label">${qLabel}</span>
@@ -626,13 +685,13 @@ function renderTestZone() {
       <div class="question-text">${esc(qText)}</div>
       <button class="tts-btn" onclick="readQuestion(${JSON.stringify(qText)})">🔊 Hear question</button>
       ${cueHTML}
-      ${prepHTML}
       <div id="spk-mic-error" class="mic-error hidden">
         🚫 Microphone access denied. Please allow microphone access in your browser settings and reload the page.
       </div>
       <button class="${btnCls}" id="spk-rec-btn" onclick="toggleRecording()"><span>${btnIcon}</span></button>
       <div id="spk-rec-status" style="margin-top:8px">${statusHTML}</div>
       <div class="spk-nav" style="margin-top:24px">${navL}${navR}</div>
+      ${navHelp}
     </div>
     <img class="spk-mascot spk-mascot-right" src="img/mascot-speaking-right.webp" alt="" aria-hidden="true" loading="lazy">
     </div>
@@ -643,7 +702,7 @@ function renderTestZone() {
     </div>`;
 
   if (isRecording) startRecordingTimerDisplay();
-  if (isPart2 && prepActive && !rec && !isRecording) startPrepCountdown();
+  if (isPart2 && prepActive && !isRecording) startPrepCountdown();
 }
 
 // Echappement HTML applique a TOUT texte injecte via innerHTML, en particulier
@@ -842,6 +901,13 @@ function readQuestion(text) {
 const API_BASE = 'https://parrottalk-api.foundry8.workers.dev';
 
 async function checkAndSubmit(isRetry = false) {
+  // Ne jamais soumettre pendant qu'une prise tourne : on stoppe d'abord la prise
+  // pour ne pas la perdre (le bouton Suivant est deja verrouille, mais le lien
+  // "Submit" global reste accessible).
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    toast('Please stop your recording before submitting.', 'info');
+    return;
+  }
   const t = SPEAKING_TESTS[currentSpeakingTest];
   const allQs = getAllQuestions(currentSpeakingTest);
   const hasAnyRecording = recordings.some(r => r !== null);
