@@ -255,7 +255,7 @@ const READING_TEST01 = {
                 "100% compared to conventional farming"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph C: 'reduce water consumption, sometimes by up to 95%'",
               "explanation": ""
             },
             {
@@ -268,7 +268,7 @@ const READING_TEST01 = {
                 "Their produce is unsafe for consumption"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph D: 'the carbon footprint of such operations may exceed that'",
               "explanation": ""
             },
             {
@@ -281,7 +281,7 @@ const READING_TEST01 = {
                 "Community gardens are more common in Asian cities"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph E: 'they prioritise social inclusion and collective participation over commercial efficiency'",
               "explanation": ""
             },
             {
@@ -294,7 +294,7 @@ const READING_TEST01 = {
                 "Stronger political participation"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph E: 'including reduced stress, improved mood'",
               "explanation": ""
             },
             {
@@ -307,7 +307,7 @@ const READING_TEST01 = {
                 "Established the world's largest vertical farm"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph F: 'new residential and commercial developments include green spaces dedicated to'",
               "explanation": ""
             },
             {
@@ -320,7 +320,7 @@ const READING_TEST01 = {
                 "Its growth is limited to Asian cities"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph F: 'The integration of urban farming into city planning is gaining'",
               "explanation": ""
             }
           ]
@@ -354,25 +354,25 @@ const READING_TEST01 = {
             {
               "n": 27,
               "answer": "MONKS",
-              "ref": "",
+              "ref": "Paragraph 1: 'copied by hand, primarily by monks in monastic scriptoria'",
               "explanation": ""
             },
             {
               "n": 28,
               "answer": "MONTHS",
-              "ref": "",
+              "ref": "Paragraph 1: 'a single volume could take months or even years'",
               "explanation": ""
             },
             {
               "n": 29,
               "answer": "LETTERS",
-              "ref": "",
+              "ref": "Paragraph 2: 'His system used individual metal letters, known as type'",
               "explanation": ""
             },
             {
               "n": 30,
               "answer": "1500",
-              "ref": "",
+              "ref": "Paragraph 3: 'by 1500, it is estimated that more than twenty million'",
               "explanation": ""
             },
             {
