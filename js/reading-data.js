@@ -519,49 +519,49 @@ const READING_TEST02 = {
               "n": 1,
               "text": "Solar photovoltaic panels became more than 89% cheaper between 2010 and 2020.",
               "answer": "TRUE",
-              "ref": "",
+              "ref": "Paragraph 1: 'fell by more than 89% between 2010 and 2020'",
               "explanation": ""
             },
             {
               "n": 2,
               "text": "Wind energy is currently the world's fastest-growing source of electricity.",
               "answer": "NOT GIVEN",
-              "ref": "",
+              "ref": "Not stated in the passage",
               "explanation": ""
             },
             {
               "n": 3,
               "text": "Renewable energy sources are unable to generate electricity continuously.",
               "answer": "TRUE",
-              "ref": "",
+              "ref": "Paragraph 3: 'solar panels generate no electricity at night'",
               "explanation": ""
             },
             {
               "n": 4,
               "text": "Lithium-ion battery technology was developed specifically for grid-scale energy storage.",
               "answer": "FALSE",
-              "ref": "",
+              "ref": "Paragraph 3: 'the same technology used in electric vehicles'",
               "explanation": ""
             },
             {
               "n": 5,
               "text": "Norway has announced that it will ban new diesel vehicle sales by 2030.",
               "answer": "NOT GIVEN",
-              "ref": "",
+              "ref": "Not stated in the passage",
               "explanation": ""
             },
             {
               "n": 6,
               "text": "The Paris Agreement sets a target of limiting warming to 1.5°C above pre-industrial levels.",
               "answer": "TRUE",
-              "ref": "",
+              "ref": "Paragraph 6: 'temperature rise to 1.5°C above pre-industrial levels'",
               "explanation": ""
             },
             {
               "n": 7,
               "text": "Critics argue that the environmental costs of renewable energy manufacture outweigh its benefits.",
               "answer": "NOT GIVEN",
-              "ref": "",
+              "ref": "Not stated in the passage",
               "explanation": ""
             }
           ]
@@ -581,7 +581,7 @@ const READING_TEST02 = {
                 "Insufficient government support"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 3: 'primary challenges associated with renewable energy is its intermittency'",
               "explanation": ""
             },
             {
@@ -594,7 +594,7 @@ const READING_TEST02 = {
                 "Norway"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 2: 'Countries such as Denmark, which generates more than 50%'",
               "explanation": ""
             },
             {
@@ -607,7 +607,7 @@ const READING_TEST02 = {
                 "It is still in the experimental phase"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 3: 'have emerged as the dominant form of grid-scale storage'",
               "explanation": ""
             },
             {
