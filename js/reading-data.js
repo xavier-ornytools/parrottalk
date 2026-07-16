@@ -1107,7 +1107,7 @@ const READING_TEST03 = {
                 "More visually attractive and easier to work with"
               ],
               "answer": "D",
-              "ref": "",
+              "ref": "Paragraph 3: 'more brilliant, easier to cut and engrave, and highly desirable'",
               "explanation": ""
             },
             {
@@ -1120,7 +1120,7 @@ const READING_TEST03 = {
                 "The introduction of glassblowing techniques from Syria"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 6: 'development of optical glass in the seventeenth century'",
               "explanation": ""
             },
             {
@@ -1133,7 +1133,7 @@ const READING_TEST03 = {
                 "Describe the environmental challenges associated with glass fibre production"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 6: 'remains central to modern technological infrastructure'",
               "explanation": ""
             }
           ]
@@ -1158,7 +1158,7 @@ const READING_TEST03 = {
               "sentence": "The ________ of larger plastic items by sunlight and mechanical forces is one source of microplastics.",
               "spanStyle": "",
               "answer": "DEGRADATION",
-              "ref": "",
+              "ref": "Paragraph 1: 'the degradation of larger plastic items exposed to sunlight'",
               "explanation": ""
             },
             {
@@ -1166,7 +1166,7 @@ const READING_TEST03 = {
               "sentence": "When synthetic garments are washed, they release ________ into the water system.",
               "spanStyle": "",
               "answer": "FIBRES",
-              "ref": "",
+              "ref": "Paragraph 1: 'the release of synthetic fibres during the washing of clothes'",
               "explanation": ""
             },
             {
@@ -1174,7 +1174,7 @@ const READING_TEST03 = {
               "sentence": "Consuming microplastics may cause zooplankton to experience ________, making them feel full when they are not.",
               "spanStyle": "",
               "answer": "SATIATION",
-              "ref": "",
+              "ref": "Paragraph 2: 'they may experience satiation, a false sense of fullness'",
               "explanation": ""
             },
             {
@@ -1182,7 +1182,7 @@ const READING_TEST03 = {
               "sentence": "The process by which microplastic concentrations increase at higher levels of the food chain is called ________.",
               "spanStyle": "",
               "answer": "BIOMAGNIFICATION",
-              "ref": "",
+              "ref": "Paragraph 3: 'in a process known as biomagnification'",
               "explanation": ""
             },
             {
@@ -1190,7 +1190,7 @@ const READING_TEST03 = {
               "sentence": "Scientists have detected microplastic particles in human ________, lung tissue, and placental tissue.",
               "spanStyle": "",
               "answer": "BLOOD",
-              "ref": "",
+              "ref": "Paragraph 4: 'found in human blood, lung tissue, and placental tissue'",
               "explanation": ""
             },
             {
@@ -1198,7 +1198,7 @@ const READING_TEST03 = {
               "sentence": "In addition to eating and drinking, microplastics can also enter the body through ________.",
               "spanStyle": "",
               "answer": "INHALATION",
-              "ref": "",
+              "ref": "Paragraph 4: 'with additional exposure occurring through inhalation'",
               "explanation": ""
             },
             {
@@ -1206,7 +1206,7 @@ const READING_TEST03 = {
               "sentence": "The WHO's 2019 assessment concluded that risks from microplastics in drinking water are currently ________.",
               "spanStyle": "",
               "answer": "LOW",
-              "ref": "",
+              "ref": "Paragraph 5: 'risks from microplastics in drinking water are currently low'",
               "explanation": ""
             }
           ]
