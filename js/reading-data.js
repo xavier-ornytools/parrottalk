@@ -861,7 +861,7 @@ const READING_TEST02 = {
               "sentence": "During slow-wave sleep, the hippocampus repeatedly <strong>______</strong> recently formed memories and transfers them to the cortex.",
               "spanStyle": "font-size:.9rem",
               "answer": "REACTIVATES",
-              "ref": "",
+              "ref": "Paragraph 4: 'the hippocampus repeatedly reactivates recently formed memories'",
               "explanation": ""
             },
             {
@@ -869,7 +869,7 @@ const READING_TEST02 = {
               "sentence": "Research shows that learning shortly before <strong>______</strong> leads to better long-term recall than learning followed by a waking period.",
               "spanStyle": "font-size:.9rem",
               "answer": "SLEEPING",
-              "ref": "",
+              "ref": "Paragraph 5: 'learning shortly before sleeping produces markedly better long-term recall'",
               "explanation": ""
             },
             {
@@ -877,7 +877,7 @@ const READING_TEST02 = {
               "sentence": "The discovery that memories become temporarily fragile each time they are retrieved is known as <strong>______</strong>.",
               "spanStyle": "font-size:.9rem",
               "answer": "RECONSOLIDATION",
-              "ref": "",
+              "ref": "Paragraph 6: 'The phenomenon of reconsolidation, the discovery that memories'",
               "explanation": ""
             }
           ]
@@ -897,7 +897,7 @@ const READING_TEST02 = {
                 "To erase redundant memories"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 2: 'stabilised through a molecular process involving the synthesis'",
               "explanation": ""
             },
             {
@@ -910,7 +910,7 @@ const READING_TEST02 = {
                 "In specific synaptic pathways"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 3: 'gradually transferred and distributed across the cortex'",
               "explanation": ""
             },
             {
@@ -923,7 +923,7 @@ const READING_TEST02 = {
                 "It enhances the production of cortisol"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 4: 'transfers information to the cortex for long-term storage'",
               "explanation": ""
             },
             {
@@ -936,7 +936,7 @@ const READING_TEST02 = {
                 "The relationship between REM sleep and emotional memory"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 5: 'learning shortly before sleeping produces markedly better long-term recall'",
               "explanation": ""
             },
             {
@@ -949,7 +949,7 @@ const READING_TEST02 = {
                 "It is duplicated across multiple brain regions"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 6: 'memories become temporarily fragile each time they are retrieved'",
               "explanation": ""
             },
             {
@@ -962,7 +962,7 @@ const READING_TEST02 = {
                 "Applying slow-wave sleep therapy to consolidate positive memories"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 6: 'weakened by intervening during the reconsolidation window'",
               "explanation": ""
             },
             {
@@ -975,7 +975,7 @@ const READING_TEST02 = {
                 "The hippocampus alone is responsible for all memory storage"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 6: 'has transformed understanding of memory's dynamic nature'",
               "explanation": ""
             }
           ]
