@@ -4,6 +4,42 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Speaking Test, ParrotTalk</title>
+  <meta name="description" content="Practice IELTS Speaking for free with AI feedback: record your answers and get an estimated band on the four official criteria. No signup.">
+  <link rel="canonical" href="https://www.parrottalk.app/speaking.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ParrotTalk">
+  <meta property="og:title" content="Free IELTS Speaking Practice with AI Feedback">
+  <meta property="og:description" content="Practice IELTS Speaking for free with AI feedback: record your answers and get an estimated band on the four official criteria. No signup.">
+  <meta property="og:url" content="https://www.parrottalk.app/speaking.html">
+  <meta property="og:image" content="https://www.parrottalk.app/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ParrotTalkApp">
+  <meta name="twitter:title" content="Free IELTS Speaking Practice with AI Feedback">
+  <meta name="twitter:description" content="Practice IELTS Speaking for free with AI feedback: record your answers and get an estimated band on the four official criteria. No signup.">
+  <meta name="twitter:image" content="https://www.parrottalk.app/img/og-image.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "ParrotTalk IELTS Speaking Practice",
+    "url": "https://www.parrottalk.app/speaking.html",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "ParrotTalk",
+      "url": "https://www.parrottalk.app/"
+    },
+    "description": "Practice IELTS Speaking for free with AI feedback: record your answers and get an estimated band on the four official criteria. No signup."
+  }
+  </script>
   <link rel="stylesheet" href="css/main.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
   <script src="js/analytics.js" async></script>
@@ -586,7 +622,7 @@ function renderTestZone() {
         <span class="part-tag ${partClass}">${partLabel}</span>
         <span class="question-label">${qLabel}</span>
       </div>
-      <div class="question-text">${escQ(qText)}</div>
+      <div class="question-text">${esc(qText)}</div>
       <button class="tts-btn" onclick="readQuestion(${JSON.stringify(qText)})">🔊 Hear question</button>
       ${cueHTML}
       ${prepHTML}
@@ -609,8 +645,12 @@ function renderTestZone() {
   if (isPart2 && prepActive && !rec && !isRecording) startPrepCountdown();
 }
 
-function escQ(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+// Echappement HTML applique a TOUT texte injecte via innerHTML, en particulier
+// les champs renvoyes par le modele (defense XSS, PT-01). Null-safe : accepte
+// undefined, null ou un nombre sans lever d'erreur.
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
 // ── Navigation ──────────────────────────────────────────────────────────────
@@ -907,20 +947,20 @@ function buildTranscriptSection(data, testId) {
   const skipped = Array.isArray(data.skippedQuestions) ? data.skippedQuestions : [];
   const skippedSet = new Set(skipped);
   const skippedNoteHTML = skipped.length
-    ? `<p style="font-size:.8125rem;color:var(--danger);margin-bottom:8px"><strong>Questions skipped:</strong> ${skipped.join(', ')}. The band above takes these missing responses into account.</p>`
+    ? `<p style="font-size:.8125rem;color:var(--danger);margin-bottom:8px"><strong>Questions skipped:</strong> ${skipped.map(esc).join(', ')}. The band above takes these missing responses into account.</p>`
     : '';
 
   const hasStructured = Array.isArray(data.transcripts) && data.transcripts.length > 0;
   if (!hasStructured) {
     const fallback = data.transcript
-      ? `<details style="margin-top:12px"><summary style="font-size:.8125rem;color:var(--text-muted);cursor:pointer">What the AI heard (transcript)</summary><p style="font-size:.8125rem;color:var(--text);margin-top:8px;padding:10px;background:var(--bg-alt);border-radius:var(--r);line-height:1.6">${data.transcript}</p></details>`
+      ? `<details style="margin-top:12px"><summary style="font-size:.8125rem;color:var(--text-muted);cursor:pointer">What the AI heard (transcript)</summary><p style="font-size:.8125rem;color:var(--text);margin-top:8px;padding:10px;background:var(--bg-alt);border-radius:var(--r);line-height:1.6">${esc(data.transcript)}</p></details>`
       : '';
     return skippedNoteHTML + fallback;
   }
 
   const allQs = getAllQuestions(testId);
   const byQ = {};
-  data.transcripts.forEach(t => { byQ[t.q] = t.text; });
+  data.transcripts.forEach(t => { byQ[t.q] = esc(t.text); });
 
   const rowsHTML = allQs.map((q, i) => {
     const qNum = i + 1;
@@ -931,7 +971,7 @@ function buildTranscriptSection(data, testId) {
     return `
       <div style="padding:8px 0;border-bottom:1px solid var(--border-light)">
         <div style="font-size:.75rem;font-weight:700;color:var(--text-muted);margin-bottom:2px">Question ${qNum}</div>
-        <div style="font-size:.8125rem;color:var(--text);margin-bottom:4px">${escQ(q.question)}</div>
+        <div style="font-size:.8125rem;color:var(--text);margin-bottom:4px">${esc(q.question)}</div>
         <div style="font-size:.8125rem;color:var(--text)">${text}</div>
       </div>`;
   }).join('');
@@ -958,9 +998,9 @@ function renderSpeakingFeedback(data, testId) {
   }).join('');
 
   const strengthsHTML = (data.strengths||[]).map(s =>
-    `<li style="font-size:.875rem;padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">${s}</li>`).join('');
+    `<li style="font-size:.875rem;padding:6px 12px;background:var(--success-light);border-radius:var(--r-sm);border-left:3px solid var(--success)">${esc(s)}</li>`).join('');
   const fixHTML = (data.toFix||[]).map(f =>
-    `<li style="font-size:.875rem;padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">${f}</li>`).join('');
+    `<li style="font-size:.875rem;padding:6px 12px;background:var(--danger-light);border-radius:var(--r-sm);border-left:3px solid var(--danger)">${esc(f)}</li>`).join('');
 
   // Le band global (hero) reste toujours visible et exact : c'est la démo
   // produit. Le détail par critère, les points forts/à corriger, le conseil et
@@ -979,7 +1019,7 @@ function renderSpeakingFeedback(data, testId) {
         <span class="badge badge-primary">Band ${displayOverall ?? '-'}</span>
       </div>
       <div class="score-mini-grid">${criteriaHTML}</div>
-      ${data.summary?`<p style="font-size:.9375rem;color:var(--text);margin-bottom:16px">${data.summary}</p>`:''}
+      ${data.summary?`<p style="font-size:.9375rem;color:var(--text);margin-bottom:16px">${esc(data.summary)}</p>`:''}
       <div class="grid-2" style="margin-bottom:16px">
         <div>
           <div style="font-size:.8125rem;font-weight:700;color:var(--success-dark);margin-bottom:8px">✅ Strengths</div>
@@ -990,7 +1030,7 @@ function renderSpeakingFeedback(data, testId) {
           <ul style="display:flex;flex-direction:column;gap:6px">${fixHTML}</ul>
         </div>
       </div>
-      ${data.topTip?`<div style="padding:12px 14px;background:var(--warning-light);border-radius:var(--r);font-size:.875rem;color:#92400E"><strong>💡 Top tip:</strong> ${data.topTip}</div>`:''}
+      ${data.topTip?`<div style="padding:12px 14px;background:var(--warning-light);border-radius:var(--r);font-size:.875rem;color:#92400E"><strong>💡 Top tip:</strong> ${esc(data.topTip)}</div>`:''}
       ${buildTranscriptSection(data, testId)}
       <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
         <button class="btn btn-secondary" onclick="selectTest(${testId})">🔄 Redo Test 0${testId}</button>

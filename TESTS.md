@@ -1,5 +1,30 @@
 # ParrotTalk — Tests techniques
 
+## Correctifs securite audit Pixel (2026-07-16) ✅
+
+Branche `fix/security-pt01-quickwins-20260716`. Correctifs issus de l'audit de code Pixel (welcometothepixel.com) du 14/07, confronte au code reel. Un commit par lot, aucun push prod : Xavier valide dans son navigateur avant merge.
+
+**LOT 1, PT-01 XSS (critique).** Fonction `esc()` unique et null-safe (generalise l'ancienne `escQ`), ajoutee dans `writing.html` et `speaking.html`, appliquee a TOUS les champs renvoyes par le modele avant insertion `innerHTML` : `summary`, `comment`, `topTip`, `transcript`, `transcripts[].text`, `strengths`, `toFix`, `skippedQuestions`. Le band affiche et le gating ne changent pas.
+
+**LOT 2, quick wins.** `vercel.json` : ajout `Strict-Transport-Security` (2 ans, includeSubDomains, preload) et `Permissions-Policy` (microphone=(self), camera=(), geolocation=()). `dashboard.html` : Chart.js 4.4.0 avec `integrity` SRI sha384 + `crossorigin`. Nouveau `/.well-known/security.txt`. `writing.html` : libelle « Sujet evalue » traduit en « Prompt evaluated » (supprime aussi le residu FR de PT-05).
+
+**LOT 3, documente seulement.** Turnstile (PT-02) et CSP complete (PT-03) demandent 3h+ chacun : plan d'implementation dans le vault FOUNDRY (`projects/parrottalk/2026-07-16_parrottalk_todo-securite-turnstile-csp.md`). PT-06b (reponses cote client) laisse en risque accepte.
+
+**LOT 4, PT-04 meta sociales.** Sur index + les 6 pages (listening, reading, writing, speaking, dashboard, faq) : meta description (pages produit), `link canonical`, Open Graph complet, `twitter:card summary_large_image`, JSON-LD (`WebApplication` sur les pages produit, `FAQPage` sur faq avec les 11 Q/R). Image de partage `img/og-image.png` (1200x630, couleurs ParrotTalk), source `tools/og-card.html`.
+
+### Testé avec
+- Nouveau `node tests/e2e-xss.js` (Playwright, vrai Chrome) : **12/12**. Injecte une charge `onerror` + `<script>` dans tous les champs IA de `renderSpeakingFeedback` et `renderAIFeedback`, verifie zero execution, zero noeud injecte, charge presente uniquement sous forme de texte echappe.
+- Non-regression : `node tests/e2e-feedback.js` **36/36**, `node tests/e2e-writing-lifecycle.js` **30/30** (rendu du feedback et gating intacts apres echappement).
+- `esc()` verifie en isolation (charge XSS neutralisee, null et nombre geres). JSON-LD des 7 pages valides (`json.loads`). Chart.js se charge sans erreur d'integrite (Chart global present). `security.txt` servi en 200.
+- Syntaxe JS des blocs inline de `writing.html` et `speaking.html` validee (`node --check`).
+- **Connu, preexistant** : `node tests/e2e-ga4-events.js` echoue sur l'etape `feedback_completed` (speaking), a l'identique sur le commit de base `deaea87` (donc SANS aucun de ces changements). Non lie a cette session, a investiguer separement.
+
+### A verifier / deployer (au go de Xavier, apres verif navigateur)
+- Visuel : un Writing complet et un Speaking complet affichent le feedback IA normalement (l'echappement ne casse rien).
+- `curl -I` sur le preview Vercel : presence de `Strict-Transport-Security` et `Permissions-Policy`.
+- Apercu de partage (OpenGraph/Twitter) et rendu de `img/og-image.png` sur un debugger social.
+- Pas de merge sur `main` ni de push prod sans validation Xavier.
+
 ## Lifting accueil + Speaking (2026-07-15) ✅
 
 Branche `feat/lifting-accueil-speaking`. Refonte look accueil (8 points) + uniformisation Speaking (1 point) + sweeps mandatés.
