@@ -296,1194 +296,19 @@
   </div>
 
   <!-- TEST ZONE -->
-  <div id="test-zone" class="hidden">
+  <!-- ZONE DE TEST UNIQUE (data-driven, remplie par renderReadingTest depuis READING_TESTS) -->
+  <div id="test-zone" class="hidden"></div>
 
-    <!-- PASSAGE TABS + TIMER -->
-    <div class="passage-nav" id="passage-nav">
-      <button class="passage-tab active" id="ptab-0" onclick="switchPassage(0)">📄 Passage 1</button>
-      <button class="passage-tab" id="ptab-1" onclick="switchPassage(1)">📄 Passage 2</button>
-      <button class="passage-tab" id="ptab-2" onclick="switchPassage(2)">📄 Passage 3</button>
-      <div class="timer-badge" id="timer-display">⏱ 60:00</div>
-    </div>
+  <!-- PANNEAU REVIEW : fidelite examen ordinateur, aucun temps bonus. Il apparait si
+       les 3 passages sont finis avant la fin des 60 min et consomme le temps restant ;
+       l'auto-submit se produit a la fin du chrono principal. -->
+  <div id="review-panel" class="card card-lg hidden" style="text-align:center;margin-top:16px">
+    <div style="font-size:1.125rem;font-weight:700;margin-bottom:8px">Review your answers</div>
+    <p style="color:var(--text-muted);margin-bottom:12px">You have finished all three passages. Use the time you have left to check your answers, or submit now. The test is submitted automatically when the timer reaches zero.</p>
+    <div id="review-timer" style="font-size:1.5rem;font-weight:800;color:var(--primary);margin-bottom:12px">60:00</div>
+    <button class="btn btn-success btn-lg" onclick="submitTest()">Submit now</button>
+  </div>
 
-    <!-- PASSAGE 1: The Psychology of Sleep (Q1-13) -->
-    <div class="passage-block active" id="passage-0">
-
-      <div class="passage-text">
-        <div class="passage-label">Passage 1, Questions 1-13</div>
-        <h3>The Psychology of Sleep</h3>
-        <p>Sleep is one of the most fundamental biological processes, yet it remains poorly understood by the general public. Researchers now know that sleep is far from a passive state, it is a period of intense neurological activity during which the brain consolidates memories, processes emotions, and clears metabolic waste products.</p>
-        <p>Adults typically require between seven and nine hours of sleep per night, though this varies with age, lifestyle, and individual biology. Chronic sleep deprivation, consistently getting less than the recommended amount, has been linked to a range of serious health consequences, including weakened immune function, increased risk of cardiovascular disease, impaired glucose metabolism, and greater susceptibility to mental health disorders such as depression and anxiety.</p>
-        <p>Sleep is divided into distinct stages, including light sleep, deep sleep, and Rapid Eye Movement (REM) sleep. Each stage plays a specific role: deep sleep is critical for physical restoration, cell repair, and the strengthening of the immune system, while REM sleep, which occurs multiple times during the night, is associated with dreaming and emotional regulation. Interrupting these cycles, as often occurs with shift work or travel across time zones, can have profound effects on both physical and psychological wellbeing.</p>
-        <p>One increasingly recognised factor affecting sleep quality is the exposure to blue light emitted by smartphones, tablets, and computer screens. Blue light suppresses the production of melatonin, the hormone responsible for signalling to the body that it is time to sleep. Many sleep scientists recommend avoiding screens for at least one hour before bedtime as a simple but effective strategy to improve sleep onset.</p>
-        <p>Research also suggests that brief daytime naps, typically between 10 and 20 minutes, can restore alertness and improve performance without significantly affecting nighttime sleep in most adults. Longer naps, however, can lead to sleep inertia, a temporary feeling of grogginess that may actually reduce performance in the short term.</p>
-        <p>The concept of 'sleep debt' describes the cumulative deficit that builds when a person consistently sleeps less than their body requires. While many people believe they can 'catch up' on missed sleep during weekends, research indicates that this strategy only partially restores cognitive function and does not reverse all the physiological effects of sleep loss.</p>
-        <p>Regular physical activity has consistently been shown to improve sleep quality, reducing the time it takes to fall asleep and increasing the proportion of deep sleep experienced. However, vigorous exercise performed too close to bedtime may have the opposite effect in some individuals, as it temporarily elevates heart rate and core body temperature.</p>
-      </div>
-
-      <!-- Q1-7: True / False / Not Given -->
-      <div class="question-group">
-        <div class="group-title">Questions 1-7, True / False / Not Given</div>
-        <div class="group-instructions">Do the following statements agree with the information given in the passage? Write TRUE, FALSE or NOT GIVEN.</div>
-
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">1</div><span>Sleep is now understood to involve significant brain activity.</span></div>
-          <div class="tfng-options" id="tfng-1">
-            <label class="tfng-label"><input type="radio" name="q1" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="q1" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="q1" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">2</div><span>Adults require exactly eight hours of sleep per night.</span></div>
-          <div class="tfng-options" id="tfng-2">
-            <label class="tfng-label"><input type="radio" name="q2" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="q2" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="q2" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">3</div><span>REM sleep occurs only once during a typical night's sleep.</span></div>
-          <div class="tfng-options" id="tfng-3">
-            <label class="tfng-label"><input type="radio" name="q3" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="q3" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="q3" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">4</div><span>Sleep deprivation has been linked to increased risk of cardiovascular disease.</span></div>
-          <div class="tfng-options" id="tfng-4">
-            <label class="tfng-label"><input type="radio" name="q4" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="q4" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="q4" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">5</div><span>Scientists have reached agreement on the exact biological purpose of dreaming.</span></div>
-          <div class="tfng-options" id="tfng-5">
-            <label class="tfng-label"><input type="radio" name="q5" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="q5" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="q5" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">6</div><span>Exposure to screen light before bedtime can delay the body's production of melatonin.</span></div>
-          <div class="tfng-options" id="tfng-6">
-            <label class="tfng-label"><input type="radio" name="q6" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="q6" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="q6" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">7</div><span>All individuals who take long naps will experience reduced performance afterwards.</span></div>
-          <div class="tfng-options" id="tfng-7">
-            <label class="tfng-label"><input type="radio" name="q7" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="q7" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="q7" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Q8-13: Multiple Choice -->
-      <div class="question-group">
-        <div class="group-title">Questions 8-13, Multiple Choice</div>
-        <div class="group-instructions">Choose the correct letter, A, B, C or D.</div>
-
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">8</div><span>According to the passage, what is the primary function of deep sleep?</span></div>
-          <label class="mc-option" id="mc-8-0"><input type="radio" name="q8" value="A"> A. Processing emotional experiences</label>
-          <label class="mc-option" id="mc-8-1"><input type="radio" name="q8" value="B"> B. Physical restoration and immune strengthening</label>
-          <label class="mc-option" id="mc-8-2"><input type="radio" name="q8" value="C"> C. Consolidating short-term memories</label>
-          <label class="mc-option" id="mc-8-3"><input type="radio" name="q8" value="D"> D. Generating vivid dreams</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">9</div><span>The term 'sleep debt' is used to describe:</span></div>
-          <label class="mc-option" id="mc-9-0"><input type="radio" name="q9" value="A"> A. The extra sleep needed after illness</label>
-          <label class="mc-option" id="mc-9-1"><input type="radio" name="q9" value="B"> B. The cumulative effect of regularly sleeping too little</label>
-          <label class="mc-option" id="mc-9-2"><input type="radio" name="q9" value="C"> C. The difference between weekday and weekend sleep patterns</label>
-          <label class="mc-option" id="mc-9-3"><input type="radio" name="q9" value="D"> D. A clinically recognised sleep disorder</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">10</div><span>What does the passage say about catching up on sleep at weekends?</span></div>
-          <label class="mc-option" id="mc-10-0"><input type="radio" name="q10" value="A"> A. It fully restores all lost sleep</label>
-          <label class="mc-option" id="mc-10-1"><input type="radio" name="q10" value="B"> B. It has no benefit whatsoever</label>
-          <label class="mc-option" id="mc-10-2"><input type="radio" name="q10" value="C"> C. It can only partially restore cognitive function</label>
-          <label class="mc-option" id="mc-10-3"><input type="radio" name="q10" value="D"> D. It is the most effective way to manage sleep loss</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">11</div><span>Which of the following is described as a simple strategy to improve sleep onset?</span></div>
-          <label class="mc-option" id="mc-11-0"><input type="radio" name="q11" value="A"> A. Taking longer naps during the day</label>
-          <label class="mc-option" id="mc-11-1"><input type="radio" name="q11" value="B"> B. Avoiding screens before bedtime</label>
-          <label class="mc-option" id="mc-11-2"><input type="radio" name="q11" value="C"> C. Avoiding all forms of exercise</label>
-          <label class="mc-option" id="mc-11-3"><input type="radio" name="q11" value="D"> D. Sleeping at irregular hours</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">12</div><span>What is 'sleep inertia', as described in the passage?</span></div>
-          <label class="mc-option" id="mc-12-0"><input type="radio" name="q12" value="A"> A. The inability to fall asleep</label>
-          <label class="mc-option" id="mc-12-1"><input type="radio" name="q12" value="B"> B. A chronic condition caused by shift work</label>
-          <label class="mc-option" id="mc-12-2"><input type="radio" name="q12" value="C"> C. A temporary feeling of grogginess after a long nap</label>
-          <label class="mc-option" id="mc-12-3"><input type="radio" name="q12" value="D"> D. Resistance to changes in the sleep schedule</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">13</div><span>What does the passage suggest about exercise and sleep quality?</span></div>
-          <label class="mc-option" id="mc-13-0"><input type="radio" name="q13" value="A"> A. All exercise improves sleep equally</label>
-          <label class="mc-option" id="mc-13-1"><input type="radio" name="q13" value="B"> B. Regular activity generally improves sleep, but timing matters</label>
-          <label class="mc-option" id="mc-13-2"><input type="radio" name="q13" value="C"> C. Exercise should be avoided by people with sleep problems</label>
-          <label class="mc-option" id="mc-13-3"><input type="radio" name="q13" value="D"> D. Vigorous exercise always reduces sleep quality</label>
-        </div>
-      </div>
-
-      <div class="flex justify-end" style="margin-top:16px">
-        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage, Continue</button>
-      </div>
-    </div><!-- /passage-0 -->
-
-    <!-- PASSAGE 2: The Rise of Urban Farming (Q14-26) -->
-    <div class="passage-block" id="passage-1">
-
-      <div class="passage-text">
-        <div class="passage-label">Passage 2, Questions 14-26</div>
-        <h3>The Rise of Urban Farming</h3>
-        <p><strong>A.</strong> Urban farming, the practice of cultivating food within or around cities, is experiencing a remarkable renaissance worldwide. Once dismissed as a fringe pursuit, it is now recognised as a viable strategy for addressing food security, reducing carbon footprints, and strengthening community bonds in increasingly dense metropolitan areas.</p>
-        <p><strong>B.</strong> The concept is not new. Wartime 'victory gardens' encouraged urban residents in Britain and the United States to grow their own vegetables during the 1940s, dramatically increasing domestic food production at a time when supply chains were disrupted. However, the modern urban farming movement differs in both scale and sophistication, encompassing everything from small rooftop gardens to large commercial vertical farms occupying multiple floors of repurposed industrial buildings.</p>
-        <p><strong>C.</strong> Vertical farming, one of the most technologically advanced forms of urban agriculture, involves growing crops in stacked layers under carefully controlled conditions. LED lighting systems are calibrated to provide plants with the precise spectrum of light they require, while nutrient solutions replace soil entirely. These controlled environments eliminate the need for pesticides, significantly reduce water consumption, sometimes by up to 95% compared to conventional farming, and allow year-round production regardless of weather conditions.</p>
-        <p><strong>D.</strong> Critics, however, raise valid concerns. The energy demands of vertical farms are substantial, particularly for lighting, and unless powered by renewable sources, the carbon footprint of such operations may exceed that of conventional agriculture. The high cost of establishing vertical farms also means that the produce they generate often commands premium prices, limiting accessibility for lower-income communities, the very populations that urban food initiatives are frequently intended to help.</p>
-        <p><strong>E.</strong> Community gardens represent a contrasting approach. Located in parks, school grounds, and vacant lots, they prioritise social inclusion and collective participation over commercial efficiency. Research has documented numerous psychological benefits associated with community gardening, including reduced stress, improved mood, and a greater sense of social connection among participants.</p>
-        <p><strong>F.</strong> The integration of urban farming into city planning is gaining momentum. Singapore, often cited as a model for urban agricultural policy, has mandated that new residential and commercial developments include green spaces dedicated to food production. Several European cities are following suit, with Amsterdam and Copenhagen incorporating urban farms into their sustainability strategies.</p>
-      </div>
-
-      <!-- Q14-19: Matching Headings -->
-      <div class="question-group">
-        <div class="group-title">Questions 14-19, Matching Headings</div>
-        <div class="group-instructions">Match each paragraph (A-F) with the correct heading from the list below. Choose from: A. A solution with limitations &nbsp;·&nbsp; B. Historical context and modern differences &nbsp;·&nbsp; C. Psychological and social advantages &nbsp;·&nbsp; D. Learning from international examples &nbsp;·&nbsp; E. The technological approach &nbsp;·&nbsp; F. A growing global trend &nbsp;·&nbsp; G. The environmental cost &nbsp;·&nbsp; H. Community-based alternatives</div>
-        <div>
-          <!-- Options visibles en permanence (boutons radio) au lieu d'un
-               <select> qui masque tout sauf le choix courant, conforme au
-               format IELTS (toutes les options lisibles pendant la prépa).
-               Même pattern que les blocs "Multiple Choice" (.mc-option) déjà
-               présents dans ce fichier ; checkQ()/markQ() gèrent déjà les
-               radios génériquement, aucun changement de logique nécessaire. -->
-          <div class="mc-question">
-            <div class="mc-text"><div class="q-num" style="flex-shrink:0">14</div><span>Paragraph A</span></div>
-            <div>
-              <label class="mc-option"><input type="radio" name="q14" value="A"> A. A solution with limitations</label>
-              <label class="mc-option"><input type="radio" name="q14" value="B"> B. Historical context and modern differences</label>
-              <label class="mc-option"><input type="radio" name="q14" value="C"> C. Psychological and social advantages</label>
-              <label class="mc-option"><input type="radio" name="q14" value="D"> D. Learning from international examples</label>
-              <label class="mc-option"><input type="radio" name="q14" value="E"> E. The technological approach</label>
-              <label class="mc-option"><input type="radio" name="q14" value="F"> F. A growing global trend</label>
-              <label class="mc-option"><input type="radio" name="q14" value="G"> G. The environmental cost</label>
-              <label class="mc-option"><input type="radio" name="q14" value="H"> H. Community-based alternatives</label>
-            </div>
-          </div>
-          <div class="mc-question">
-            <div class="mc-text"><div class="q-num" style="flex-shrink:0">15</div><span>Paragraph B</span></div>
-            <div>
-              <label class="mc-option"><input type="radio" name="q15" value="A"> A. A solution with limitations</label>
-              <label class="mc-option"><input type="radio" name="q15" value="B"> B. Historical context and modern differences</label>
-              <label class="mc-option"><input type="radio" name="q15" value="C"> C. Psychological and social advantages</label>
-              <label class="mc-option"><input type="radio" name="q15" value="D"> D. Learning from international examples</label>
-              <label class="mc-option"><input type="radio" name="q15" value="E"> E. The technological approach</label>
-              <label class="mc-option"><input type="radio" name="q15" value="F"> F. A growing global trend</label>
-              <label class="mc-option"><input type="radio" name="q15" value="G"> G. The environmental cost</label>
-              <label class="mc-option"><input type="radio" name="q15" value="H"> H. Community-based alternatives</label>
-            </div>
-          </div>
-          <div class="mc-question">
-            <div class="mc-text"><div class="q-num" style="flex-shrink:0">16</div><span>Paragraph C</span></div>
-            <div>
-              <label class="mc-option"><input type="radio" name="q16" value="A"> A. A solution with limitations</label>
-              <label class="mc-option"><input type="radio" name="q16" value="B"> B. Historical context and modern differences</label>
-              <label class="mc-option"><input type="radio" name="q16" value="C"> C. Psychological and social advantages</label>
-              <label class="mc-option"><input type="radio" name="q16" value="D"> D. Learning from international examples</label>
-              <label class="mc-option"><input type="radio" name="q16" value="E"> E. The technological approach</label>
-              <label class="mc-option"><input type="radio" name="q16" value="F"> F. A growing global trend</label>
-              <label class="mc-option"><input type="radio" name="q16" value="G"> G. The environmental cost</label>
-              <label class="mc-option"><input type="radio" name="q16" value="H"> H. Community-based alternatives</label>
-            </div>
-          </div>
-          <div class="mc-question">
-            <div class="mc-text"><div class="q-num" style="flex-shrink:0">17</div><span>Paragraph D</span></div>
-            <div>
-              <label class="mc-option"><input type="radio" name="q17" value="A"> A. A solution with limitations</label>
-              <label class="mc-option"><input type="radio" name="q17" value="B"> B. Historical context and modern differences</label>
-              <label class="mc-option"><input type="radio" name="q17" value="C"> C. Psychological and social advantages</label>
-              <label class="mc-option"><input type="radio" name="q17" value="D"> D. Learning from international examples</label>
-              <label class="mc-option"><input type="radio" name="q17" value="E"> E. The technological approach</label>
-              <label class="mc-option"><input type="radio" name="q17" value="F"> F. A growing global trend</label>
-              <label class="mc-option"><input type="radio" name="q17" value="G"> G. The environmental cost</label>
-              <label class="mc-option"><input type="radio" name="q17" value="H"> H. Community-based alternatives</label>
-            </div>
-          </div>
-          <div class="mc-question">
-            <div class="mc-text"><div class="q-num" style="flex-shrink:0">18</div><span>Paragraph E</span></div>
-            <div>
-              <label class="mc-option"><input type="radio" name="q18" value="A"> A. A solution with limitations</label>
-              <label class="mc-option"><input type="radio" name="q18" value="B"> B. Historical context and modern differences</label>
-              <label class="mc-option"><input type="radio" name="q18" value="C"> C. Psychological and social advantages</label>
-              <label class="mc-option"><input type="radio" name="q18" value="D"> D. Learning from international examples</label>
-              <label class="mc-option"><input type="radio" name="q18" value="E"> E. The technological approach</label>
-              <label class="mc-option"><input type="radio" name="q18" value="F"> F. A growing global trend</label>
-              <label class="mc-option"><input type="radio" name="q18" value="G"> G. The environmental cost</label>
-              <label class="mc-option"><input type="radio" name="q18" value="H"> H. Community-based alternatives</label>
-            </div>
-          </div>
-          <div class="mc-question">
-            <div class="mc-text"><div class="q-num" style="flex-shrink:0">19</div><span>Paragraph F</span></div>
-            <div>
-              <label class="mc-option"><input type="radio" name="q19" value="A"> A. A solution with limitations</label>
-              <label class="mc-option"><input type="radio" name="q19" value="B"> B. Historical context and modern differences</label>
-              <label class="mc-option"><input type="radio" name="q19" value="C"> C. Psychological and social advantages</label>
-              <label class="mc-option"><input type="radio" name="q19" value="D"> D. Learning from international examples</label>
-              <label class="mc-option"><input type="radio" name="q19" value="E"> E. The technological approach</label>
-              <label class="mc-option"><input type="radio" name="q19" value="F"> F. A growing global trend</label>
-              <label class="mc-option"><input type="radio" name="q19" value="G"> G. The environmental cost</label>
-              <label class="mc-option"><input type="radio" name="q19" value="H"> H. Community-based alternatives</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Q20-26: Multiple Choice -->
-      <div class="question-group">
-        <div class="group-title">Questions 20-26, Multiple Choice</div>
-        <div class="group-instructions">Choose the correct letter, A, B, C or D.</div>
-
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">20</div><span>What is described as a key difference between wartime urban gardening and modern urban farming?</span></div>
-          <label class="mc-option" id="mc-20-0"><input type="radio" name="q20" value="A"> A. Modern farms are located exclusively on rooftops</label>
-          <label class="mc-option" id="mc-20-1"><input type="radio" name="q20" value="B"> B. The scale and level of technological sophistication</label>
-          <label class="mc-option" id="mc-20-2"><input type="radio" name="q20" value="C"> C. Modern farms are all operated by communities</label>
-          <label class="mc-option" id="mc-20-3"><input type="radio" name="q20" value="D"> D. Wartime gardens were larger in scale</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">21</div><span>According to the passage, vertical farms can reduce water usage by:</span></div>
-          <label class="mc-option" id="mc-21-0"><input type="radio" name="q21" value="A"> A. Up to 50% compared to conventional farming</label>
-          <label class="mc-option" id="mc-21-1"><input type="radio" name="q21" value="B"> B. Up to 75% compared to conventional farming</label>
-          <label class="mc-option" id="mc-21-2"><input type="radio" name="q21" value="C"> C. Up to 95% compared to conventional farming</label>
-          <label class="mc-option" id="mc-21-3"><input type="radio" name="q21" value="D"> D. 100% compared to conventional farming</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">22</div><span>What concern do critics raise about vertical farms?</span></div>
-          <label class="mc-option" id="mc-22-0"><input type="radio" name="q22" value="A"> A. They cannot produce enough food to be viable</label>
-          <label class="mc-option" id="mc-22-1"><input type="radio" name="q22" value="B"> B. Their high energy demands may generate significant carbon emissions</label>
-          <label class="mc-option" id="mc-22-2"><input type="radio" name="q22" value="C"> C. They require too much space in urban areas</label>
-          <label class="mc-option" id="mc-22-3"><input type="radio" name="q22" value="D"> D. Their produce is unsafe for consumption</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">23</div><span>What distinguishes community gardens from vertical farms, according to the passage?</span></div>
-          <label class="mc-option" id="mc-23-0"><input type="radio" name="q23" value="A"> A. Community gardens use more advanced technology</label>
-          <label class="mc-option" id="mc-23-1"><input type="radio" name="q23" value="B"> B. Community gardens generate higher revenues</label>
-          <label class="mc-option" id="mc-23-2"><input type="radio" name="q23" value="C"> C. Community gardens prioritise inclusion over commercial efficiency</label>
-          <label class="mc-option" id="mc-23-3"><input type="radio" name="q23" value="D"> D. Community gardens are more common in Asian cities</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">24</div><span>Which of the following is mentioned as a psychological benefit of community gardening?</span></div>
-          <label class="mc-option" id="mc-24-0"><input type="radio" name="q24" value="A"> A. Improved physical fitness</label>
-          <label class="mc-option" id="mc-24-1"><input type="radio" name="q24" value="B"> B. Reduced stress</label>
-          <label class="mc-option" id="mc-24-2"><input type="radio" name="q24" value="C"> C. Better financial outcomes</label>
-          <label class="mc-option" id="mc-24-3"><input type="radio" name="q24" value="D"> D. Stronger political participation</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">25</div><span>What has Singapore done regarding urban farming?</span></div>
-          <label class="mc-option" id="mc-25-0"><input type="radio" name="q25" value="A"> A. Banned vertical farming within city limits</label>
-          <label class="mc-option" id="mc-25-1"><input type="radio" name="q25" value="B"> B. Required new buildings to include food-growing spaces</label>
-          <label class="mc-option" id="mc-25-2"><input type="radio" name="q25" value="C"> C. Subsidised community gardens in all districts</label>
-          <label class="mc-option" id="mc-25-3"><input type="radio" name="q25" value="D"> D. Established the world's largest vertical farm</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">26</div><span>What does the passage suggest about the future of urban farming in cities?</span></div>
-          <label class="mc-option" id="mc-26-0"><input type="radio" name="q26" value="A"> A. It will remain a niche activity</label>
-          <label class="mc-option" id="mc-26-1"><input type="radio" name="q26" value="B"> B. It is being integrated into mainstream city planning</label>
-          <label class="mc-option" id="mc-26-2"><input type="radio" name="q26" value="C"> C. It will replace conventional agriculture entirely</label>
-          <label class="mc-option" id="mc-26-3"><input type="radio" name="q26" value="D"> D. Its growth is limited to Asian cities</label>
-        </div>
-      </div>
-
-      <div class="flex justify-end" style="margin-top:16px">
-        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage, Continue</button>
-      </div>
-    </div><!-- /passage-1 -->
-
-    <!-- PASSAGE 3: The History of the Printing Press (Q27-40) -->
-    <div class="passage-block" id="passage-2">
-
-      <div class="passage-text">
-        <div class="passage-label">Passage 3, Questions 27-40</div>
-        <h3>The History of the Printing Press</h3>
-        <p>The development of the printing press is widely regarded as one of the most transformative inventions in human history. Before its emergence in Europe in the mid-fifteenth century, the production of books was an extraordinarily labour-intensive process. Manuscripts were copied by hand, primarily by monks in monastic scriptoria, and a single volume could take months or even years to complete. As a result, books were rare, expensive, and accessible only to the wealthy and the clergy.</p>
-        <p>Johannes Gutenberg, a goldsmith from Mainz in present-day Germany, is credited with developing the first movable-type printing press in Europe around 1440. His system used individual metal letters, known as type, which could be arranged to form words, inked, and pressed against paper or vellum to create printed pages. Crucially, these letters could be rearranged and reused, making the mass production of identical texts possible for the first time.</p>
-        <p>The impact of Gutenberg's invention was immediate and far-reaching. Within decades, printing presses had spread across Europe, and by 1500, it is estimated that more than twenty million books had been produced, a number that would have been inconceivable in the era of manuscript reproduction. The cost of books fell dramatically, making them accessible to a growing literate population.</p>
-        <p>The printing press played a central role in the Protestant Reformation, which began in 1517 when Martin Luther published his Ninety-Five Theses challenging the authority of the Catholic Church. Luther's ideas spread rapidly because they could be printed and distributed in large quantities, reaching audiences far beyond what manuscript circulation could have achieved. Some historians argue that without the printing press, the Reformation might never have gained the momentum it did.</p>
-        <p>The influence of print extended to science as well. Nicolaus Copernicus published his revolutionary theory that the Earth revolves around the Sun in 1543, and the printed book allowed this idea to circulate among scholars across Europe within a relatively short time. Similarly, the publication of Isaac Newton's Principia Mathematica in 1687 established the laws of classical mechanics in a form accessible to educated readers throughout the Western world.</p>
-        <p>Despite its revolutionary impact, the printing press also enabled the spread of misinformation. Pamphlets containing fabricated stories, sensational claims, and political propaganda could be produced cheaply and distributed widely, long before any mechanism existed for verifying their content. This tension between the democratisation of information and the proliferation of false ideas is one that societies continue to navigate in the digital age.</p>
-        <div class="passage-glossary">
-          <div class="glossary-title">Glossary</div>
-          <p><strong>vellum</strong>: a fine writing material made from prepared animal skin</p>
-        </div>
-      </div>
-
-      <!-- Q27-33: Fill in the blanks -->
-      <div class="question-group">
-        <div class="group-title">Questions 27-33, Complete the Summary</div>
-        <div class="group-instructions">Complete the summary using words from the passage. Write ONE WORD ONLY for each answer.</div>
-        <p style="font-size:.9375rem;line-height:1.9;margin-bottom:16px">
-          Before Gutenberg's invention, books were produced by
-          <span style="display:inline-block;background:var(--surface);border-radius:var(--r-sm);border:1.5px solid var(--border);padding:2px 4px">
-            <input class="q-input" type="text" id="q27" placeholder="27" style="width:120px;padding:4px 8px;text-transform:uppercase">
-          </span>
-          in monastic environments, a process so slow that a single volume might take
-          <span style="display:inline-block;background:var(--surface);border-radius:var(--r-sm);border:1.5px solid var(--border);padding:2px 4px">
-            <input class="q-input" type="text" id="q28" placeholder="28" style="width:120px;padding:4px 8px;text-transform:uppercase">
-          </span>
-          or even years to complete. Gutenberg's press used individual metal
-          <span style="display:inline-block;background:var(--surface);border-radius:var(--r-sm);border:1.5px solid var(--border);padding:2px 4px">
-            <input class="q-input" type="text" id="q29" placeholder="29" style="width:120px;padding:4px 8px;text-transform:uppercase">
-          </span>
-          that could be rearranged and reused. By the year
-          <span style="display:inline-block;background:var(--surface);border-radius:var(--r-sm);border:1.5px solid var(--border);padding:2px 4px">
-            <input class="q-input" type="text" id="q30" placeholder="30" style="width:100px;padding:4px 8px;text-transform:uppercase">
-          </span>,
-          over twenty million books had been printed. The press helped spread Martin Luther's
-          <span style="display:inline-block;background:var(--surface);border-radius:var(--r-sm);border:1.5px solid var(--border);padding:2px 4px">
-            <input class="q-input" type="text" id="q31" placeholder="31" style="width:100px;padding:4px 8px;text-transform:uppercase">
-          </span>
-          rapidly across Europe. The astronomer
-          <span style="display:inline-block;background:var(--surface);border-radius:var(--r-sm);border:1.5px solid var(--border);padding:2px 4px">
-            <input class="q-input" type="text" id="q32" placeholder="32" style="width:140px;padding:4px 8px;text-transform:uppercase">
-          </span>
-          used the printed medium to share his revolutionary theory. However, print also enabled the spread of
-          <span style="display:inline-block;background:var(--surface);border-radius:var(--r-sm);border:1.5px solid var(--border);padding:2px 4px">
-            <input class="q-input" type="text" id="q33" placeholder="33" style="width:160px;padding:4px 8px;text-transform:uppercase">
-          </span>,
-          a problem that continues in the digital age.
-        </p>
-      </div>
-
-      <!-- Q34-40: Multiple Choice -->
-      <div class="question-group">
-        <div class="group-title">Questions 34-40, Multiple Choice</div>
-        <div class="group-instructions">Choose the correct letter, A, B, C or D.</div>
-
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">34</div><span>Where was Johannes Gutenberg originally from?</span></div>
-          <label class="mc-option" id="mc-34-0"><input type="radio" name="q34" value="A"> A. Amsterdam</label>
-          <label class="mc-option" id="mc-34-1"><input type="radio" name="q34" value="B"> B. Frankfurt</label>
-          <label class="mc-option" id="mc-34-2"><input type="radio" name="q34" value="C"> C. Mainz</label>
-          <label class="mc-option" id="mc-34-3"><input type="radio" name="q34" value="D"> D. Berlin</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">35</div><span>What was significant about Gutenberg's movable type?</span></div>
-          <label class="mc-option" id="mc-35-0"><input type="radio" name="q35" value="A"> A. It could print in multiple colours simultaneously</label>
-          <label class="mc-option" id="mc-35-1"><input type="radio" name="q35" value="B"> B. Individual pieces could be rearranged and reused for different texts</label>
-          <label class="mc-option" id="mc-35-2"><input type="radio" name="q35" value="C"> C. It could reproduce images as well as text</label>
-          <label class="mc-option" id="mc-35-3"><input type="radio" name="q35" value="D"> D. It required no ink to function</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">36</div><span>Approximately how many books had been produced in Europe by 1500?</span></div>
-          <label class="mc-option" id="mc-36-0"><input type="radio" name="q36" value="A"> A. Two million</label>
-          <label class="mc-option" id="mc-36-1"><input type="radio" name="q36" value="B"> B. Ten million</label>
-          <label class="mc-option" id="mc-36-2"><input type="radio" name="q36" value="C"> C. Twenty million</label>
-          <label class="mc-option" id="mc-36-3"><input type="radio" name="q36" value="D"> D. Fifty million</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">37</div><span>How did the printing press assist Martin Luther's Reformation?</span></div>
-          <label class="mc-option" id="mc-37-0"><input type="radio" name="q37" value="A"> A. It allowed him to communicate directly with the Pope</label>
-          <label class="mc-option" id="mc-37-1"><input type="radio" name="q37" value="B"> B. It enabled his ideas to reach large audiences quickly</label>
-          <label class="mc-option" id="mc-37-2"><input type="radio" name="q37" value="C"> C. It allowed him to write more books personally</label>
-          <label class="mc-option" id="mc-37-3"><input type="radio" name="q37" value="D"> D. It helped him establish a new church</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">38</div><span>Which of the following is described as a negative consequence of the printing press?</span></div>
-          <label class="mc-option" id="mc-38-0"><input type="radio" name="q38" value="A"> A. Books became too expensive for ordinary people</label>
-          <label class="mc-option" id="mc-38-1"><input type="radio" name="q38" value="B"> B. Scientific progress was slowed</label>
-          <label class="mc-option" id="mc-38-2"><input type="radio" name="q38" value="C"> C. False information could spread widely and cheaply</label>
-          <label class="mc-option" id="mc-38-3"><input type="radio" name="q38" value="D"> D. Religious diversity was suppressed</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">39</div><span>What does the passage suggest the modern digital age has in common with the early printing era?</span></div>
-          <label class="mc-option" id="mc-39-0"><input type="radio" name="q39" value="A"> A. Both periods saw rapid improvements in literacy</label>
-          <label class="mc-option" id="mc-39-1"><input type="radio" name="q39" value="B"> B. Both involved the same types of published content</label>
-          <label class="mc-option" id="mc-39-2"><input type="radio" name="q39" value="C"> C. Both periods faced challenges with the spread of false information</label>
-          <label class="mc-option" id="mc-39-3"><input type="radio" name="q39" value="D"> D. Both were dominated by religious publishing</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">40</div><span>The passage's main purpose is to:</span></div>
-          <label class="mc-option" id="mc-40-0"><input type="radio" name="q40" value="A"> A. Argue that the printing press was harmful to society</label>
-          <label class="mc-option" id="mc-40-1"><input type="radio" name="q40" value="B"> B. Compare European and Asian printing traditions</label>
-          <label class="mc-option" id="mc-40-2"><input type="radio" name="q40" value="C"> C. Describe the historical development and impact of the printing press</label>
-          <label class="mc-option" id="mc-40-3"><input type="radio" name="q40" value="D"> D. Promote investment in historical printing technology</label>
-        </div>
-      </div>
-
-      <div class="flex justify-end" style="margin-top:16px">
-        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage</button>
-      </div>
-    </div><!-- /passage-2 -->
-
-    <!-- SUBMIT -->
-    <div style="text-align:center;padding:32px 0">
-      <p style="margin-bottom:16px;color:var(--text-muted)">Done with some or all passages? Submit to see your score.</p>
-      <button class="btn btn-success btn-lg" onclick="submitTest()">✅ Submit & Get Score</button>
-    </div>
-
-  </div><!-- /test-zone -->
-
-  <!-- TEST ZONE 02 -->
-  <div id="test-zone-02" class="hidden">
-
-    <div class="passage-nav">
-      <button class="passage-tab active" id="t2_ptab-0" onclick="switchPassage(0)">📄 Passage 1</button>
-      <button class="passage-tab" id="t2_ptab-1" onclick="switchPassage(1)">📄 Passage 2</button>
-      <button class="passage-tab" id="t2_ptab-2" onclick="switchPassage(2)">📄 Passage 3</button>
-      <div class="timer-badge" id="t2_timer-display">⏱ 60:00</div>
-    </div>
-
-    <!-- PASSAGE 1: Renewable Energy (Q1-13) -->
-    <div class="passage-block active" id="t2_passage-0">
-      <div class="passage-text">
-        <div class="passage-label">Passage 1, Questions 1-13</div>
-        <h3>The Evolution of Renewable Energy</h3>
-        <p>The transition from fossil fuels to renewable energy sources is widely regarded as one of the most significant challenges facing human civilisation in the 21st century. Wind and solar power, once considered marginal technologies confined to experimental projects, have undergone dramatic cost reductions over the past two decades. The price of solar photovoltaic panels, for example, fell by more than 89% between 2010 and 2020, making solar energy cost-competitive with coal in many regions of the world.</p>
-        <p>Wind energy has followed a similar trajectory. Offshore wind farms, which generate electricity by harnessing winds at sea where they are stronger and more consistent than on land, have become a major component of national energy strategies, particularly in northern Europe. Countries such as Denmark, which generates more than 50% of its electricity from wind, have demonstrated that high levels of renewable penetration are operationally feasible.</p>
-        <p>One of the primary challenges associated with renewable energy is its intermittency, the fact that solar panels generate no electricity at night and wind turbines produce nothing when the air is still. Energy storage, particularly in the form of large-scale battery systems, is seen as a critical solution to this problem. Lithium-ion batteries, the same technology used in electric vehicles, have emerged as the dominant form of grid-scale storage, though alternatives including pumped hydro, compressed air, and hydrogen are also under active development.</p>
-        <p>The electrification of transport represents one of the most promising opportunities for integrating renewable energy into daily life. Electric vehicles charged with renewable electricity can significantly reduce the carbon emissions associated with personal transportation. Several major economies, including the United Kingdom, France and Norway, have announced targets to phase out new petrol and diesel vehicles entirely by 2035 or sooner.</p>
-        <p>Despite these developments, critics of rapid renewable expansion point to several concerns. The manufacture of solar panels and wind turbines requires significant quantities of raw materials, including silicon, copper, lithium, cobalt and rare earth elements. Mining these materials can cause environmental damage if not carefully managed. Additionally, the decommissioning of wind turbines, particularly the fibreglass composite blades, presents a growing waste management challenge.</p>
-        <p>Nevertheless, the scientific consensus is clear that the transition to renewable energy, while imperfect, is essential for limiting global temperature rise to 1.5°C above pre-industrial levels, as outlined in the Paris Agreement. The speed and scale of this transition will determine whether humanity can avoid the most severe consequences of climate change.</p>
-        <div class="passage-glossary">
-          <div class="glossary-title">Glossary</div>
-          <p><strong>photovoltaic</strong>: relating to the direct conversion of light into electricity</p>
-          <p><strong>decommissioning</strong>: permanently taking a piece of equipment or infrastructure out of service</p>
-        </div>
-      </div>
-
-      <!-- Q1-7: T/F/NG -->
-      <div class="question-group">
-        <div class="group-title">Questions 1-7, True / False / Not Given</div>
-        <div class="group-instructions">Do the following statements agree with the information given in the passage? Write TRUE, FALSE or NOT GIVEN.</div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">1</div><span>Solar photovoltaic panels became more than 89% cheaper between 2010 and 2020.</span></div>
-          <div class="tfng-options" id="t2_tfng-1">
-            <label class="tfng-label"><input type="radio" name="t2_q1" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="t2_q1" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="t2_q1" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">2</div><span>Wind energy is currently the world's fastest-growing source of electricity.</span></div>
-          <div class="tfng-options" id="t2_tfng-2">
-            <label class="tfng-label"><input type="radio" name="t2_q2" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="t2_q2" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="t2_q2" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">3</div><span>Renewable energy sources are unable to generate electricity continuously.</span></div>
-          <div class="tfng-options" id="t2_tfng-3">
-            <label class="tfng-label"><input type="radio" name="t2_q3" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="t2_q3" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="t2_q3" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">4</div><span>Lithium-ion battery technology was developed specifically for grid-scale energy storage.</span></div>
-          <div class="tfng-options" id="t2_tfng-4">
-            <label class="tfng-label"><input type="radio" name="t2_q4" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="t2_q4" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="t2_q4" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">5</div><span>Norway has announced that it will ban new diesel vehicle sales by 2030.</span></div>
-          <div class="tfng-options" id="t2_tfng-5">
-            <label class="tfng-label"><input type="radio" name="t2_q5" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="t2_q5" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="t2_q5" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">6</div><span>The Paris Agreement sets a target of limiting warming to 1.5°C above pre-industrial levels.</span></div>
-          <div class="tfng-options" id="t2_tfng-6">
-            <label class="tfng-label"><input type="radio" name="t2_q6" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="t2_q6" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="t2_q6" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">7</div><span>Critics argue that the environmental costs of renewable energy manufacture outweigh its benefits.</span></div>
-          <div class="tfng-options" id="t2_tfng-7">
-            <label class="tfng-label"><input type="radio" name="t2_q7" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="t2_q7" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="t2_q7" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Q8-13: MC -->
-      <div class="question-group">
-        <div class="group-title">Questions 8-13, Multiple Choice</div>
-        <div class="group-instructions">Choose the correct letter A, B, C or D.</div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">8</div><span>According to the passage, what is described as the primary challenge of renewable energy?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q8" value="A"> A. High manufacturing costs</label>
-          <label class="mc-option"><input type="radio" name="t2_q8" value="B"> B. Intermittency of supply</label>
-          <label class="mc-option"><input type="radio" name="t2_q8" value="C"> C. Lack of consumer demand</label>
-          <label class="mc-option"><input type="radio" name="t2_q8" value="D"> D. Insufficient government support</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">9</div><span>Which country is mentioned as an example of successful large-scale wind energy integration?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q9" value="A"> A. Germany</label>
-          <label class="mc-option"><input type="radio" name="t2_q9" value="B"> B. France</label>
-          <label class="mc-option"><input type="radio" name="t2_q9" value="C"> C. Denmark</label>
-          <label class="mc-option"><input type="radio" name="t2_q9" value="D"> D. Norway</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">10</div><span>What does the passage suggest about large-scale battery storage?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q10" value="A"> A. It is the only viable solution to energy intermittency</label>
-          <label class="mc-option"><input type="radio" name="t2_q10" value="B"> B. It has replaced pumped hydro in most countries</label>
-          <label class="mc-option"><input type="radio" name="t2_q10" value="C"> C. It is dominated by lithium-ion technology</label>
-          <label class="mc-option"><input type="radio" name="t2_q10" value="D"> D. It is still in the experimental phase</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">11</div><span>Which of the following is a concern raised by critics of rapid renewable expansion?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q11" value="A"> A. The instability of renewable energy prices</label>
-          <label class="mc-option"><input type="radio" name="t2_q11" value="B"> B. The environmental impact of raw material extraction</label>
-          <label class="mc-option"><input type="radio" name="t2_q11" value="C"> C. The lack of qualified engineers in the sector</label>
-          <label class="mc-option"><input type="radio" name="t2_q11" value="D"> D. Excessive land use of solar farms</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">12</div><span>What does the passage say about decommissioning wind turbines?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q12" value="A"> A. It produces large quantities of recyclable metal</label>
-          <label class="mc-option"><input type="radio" name="t2_q12" value="B"> B. It is regulated by international agreements</label>
-          <label class="mc-option"><input type="radio" name="t2_q12" value="C"> C. The composite blades present a growing disposal challenge</label>
-          <label class="mc-option"><input type="radio" name="t2_q12" value="D"> D. It is currently more expensive than construction</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">13</div><span>What is the passage's overall position on the transition to renewable energy?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q13" value="A"> A. It is scientifically unnecessary given current temperature levels</label>
-          <label class="mc-option"><input type="radio" name="t2_q13" value="B"> B. It is essential despite its imperfections</label>
-          <label class="mc-option"><input type="radio" name="t2_q13" value="C"> C. It should be slowed to allow further technological development</label>
-          <label class="mc-option"><input type="radio" name="t2_q13" value="D"> D. It is economically unviable without government subsidies</label>
-        </div>
-      </div>
-
-      <div class="flex justify-end" style="margin-top:16px">
-        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage, Continue</button>
-      </div>
-    </div><!-- /t2_passage-0 -->
-
-    <!-- PASSAGE 2: Water Scarcity (Q14-26) -->
-    <div class="passage-block" id="t2_passage-1">
-      <div class="passage-text">
-        <div class="passage-label">Passage 2, Questions 14-26</div>
-        <h3>Urbanisation and Water Scarcity</h3>
-        <p>Urbanisation, the movement of populations from rural areas to cities, is one of the defining demographic trends of the 21st century. According to the United Nations, more than 55% of the world's population currently lives in urban areas, a figure projected to rise to 68% by 2050. As cities expand rapidly, particularly in developing nations across Sub-Saharan Africa and South and Southeast Asia, the strain on municipal water supplies has become increasingly critical.</p>
-        <p>Water scarcity, defined as an insufficient supply of clean water relative to demand, affects more than 2 billion people globally. In many rapidly growing cities, ageing infrastructure, population growth, and the effects of climate change are converging to create what experts describe as a "perfect storm" for water security. Cities such as Cape Town in South Africa, Chennai in India, and Lima in Peru have all experienced severe water crises in recent years, forcing emergency rationing measures and prompting long-term investments in water management.</p>
-        <p>The agricultural sector remains by far the largest consumer of freshwater globally, accounting for approximately 70% of all water withdrawals. Urban growth compounds this challenge in two ways: as cities expand onto fertile agricultural land, farmland is lost, requiring the remaining land to be irrigated more intensively. Simultaneously, rising urban populations demand greater quantities of food, increasing the agricultural water footprint.</p>
-        <p>Groundwater, water stored in underground aquifers, is an increasingly critical source of freshwater for urban populations worldwide. However, groundwater is being extracted faster than it can be replenished by rainfall in many regions, a process known as aquifer depletion. Once depleted, some aquifers may take thousands of years to recover, making groundwater loss effectively irreversible in human timescales.</p>
-        <p>Several innovative approaches are being explored to address urban water scarcity. Rainwater harvesting systems collect and store precipitation for later use in irrigation or toilet flushing, reducing demand on municipal supplies. Wastewater recycling, treating sewage and industrial effluent to a standard suitable for reuse, is gaining acceptance in water-stressed regions. Singapore, which has almost no natural freshwater sources, has developed a world-leading water recycling programme that now supplies approximately 40% of the city-state's water needs.</p>
-        <p>Desalination, the process of removing salt from seawater to produce fresh water, offers another potential solution, though it is energy-intensive and has historically been costly. Advances in membrane technology have reduced desalination costs significantly in recent years, making it more viable as a component of diversified water supply strategies.</p>
-        <div class="passage-glossary">
-          <div class="glossary-title">Glossary</div>
-          <p><strong>aquifer</strong>: an underground layer of rock or sediment that holds and transmits groundwater</p>
-        </div>
-      </div>
-
-      <!-- Q14-20: Fill in blanks -->
-      <div class="question-group">
-        <div class="group-title">Questions 14-20, Sentence Completion</div>
-        <div class="group-instructions">Complete the sentences below. Use NO MORE THAN TWO WORDS from the passage for each answer.</div>
-        <div class="fill-row">
-          <div class="q-num">14</div>
-          <span style="font-size:.9rem">More than 55% of the global population currently lives in <strong>______</strong> areas.</span>
-          <input type="text" id="t2_q14" class="q-input" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">15</div>
-          <span style="font-size:.9rem">The agricultural sector accounts for approximately 70% of all freshwater <strong>______</strong>.</span>
-          <input type="text" id="t2_q15" class="q-input" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">16</div>
-          <span style="font-size:.9rem">Urban expansion onto farmland requires the remaining agricultural land to be <strong>______</strong> more intensively.</span>
-          <input type="text" id="t2_q16" class="q-input" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">17</div>
-          <span style="font-size:.9rem">Aquifer depletion occurs when groundwater is extracted faster than it can be replenished, potentially leaving underground <strong>______</strong> permanently depleted.</span>
-          <input type="text" id="t2_q17" class="q-input" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">18</div>
-          <span style="font-size:.9rem">Rainwater <strong>______</strong> systems reduce demand on municipal water supplies by collecting precipitation for later use.</span>
-          <input type="text" id="t2_q18" class="q-input" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">19</div>
-          <span style="font-size:.9rem">Singapore's water recycling programme now meets approximately 40% of the city-state's water <strong>______</strong>.</span>
-          <input type="text" id="t2_q19" class="q-input" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">20</div>
-          <span style="font-size:.9rem">The process of removing salt from seawater to produce fresh water is known as <strong>______</strong>.</span>
-          <input type="text" id="t2_q20" class="q-input" placeholder="your answer">
-        </div>
-      </div>
-
-      <!-- Q21-26: MC -->
-      <div class="question-group">
-        <div class="group-title">Questions 21-26, Multiple Choice</div>
-        <div class="group-instructions">Choose the correct letter A, B, C or D.</div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">21</div><span>What percentage of the world's population is projected to live in urban areas by 2050?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q21" value="A"> A. 55%</label>
-          <label class="mc-option"><input type="radio" name="t2_q21" value="B"> B. 60%</label>
-          <label class="mc-option"><input type="radio" name="t2_q21" value="C"> C. 68%</label>
-          <label class="mc-option"><input type="radio" name="t2_q21" value="D"> D. 75%</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">22</div><span>What does the passage identify as contributing to urban water crises?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q22" value="A"> A. Declining investment in water infrastructure alone</label>
-          <label class="mc-option"><input type="radio" name="t2_q22" value="B"> B. A convergence of ageing infrastructure, population growth and climate change</label>
-          <label class="mc-option"><input type="radio" name="t2_q22" value="C"> C. Mismanagement by municipal authorities</label>
-          <label class="mc-option"><input type="radio" name="t2_q22" value="D"> D. Excessive water use by industrial companies</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">23</div><span>According to the passage, what happens when cities expand onto agricultural land?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q23" value="A"> A. Crop yields immediately decline</label>
-          <label class="mc-option"><input type="radio" name="t2_q23" value="B"> B. New farmland is created elsewhere</label>
-          <label class="mc-option"><input type="radio" name="t2_q23" value="C"> C. Remaining farmland requires more intensive irrigation</label>
-          <label class="mc-option"><input type="radio" name="t2_q23" value="D"> D. Water demand for agriculture falls</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">24</div><span>What does the passage say about aquifer depletion?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q24" value="A"> A. It can be quickly reversed through conservation measures</label>
-          <label class="mc-option"><input type="radio" name="t2_q24" value="B"> B. It primarily affects developing countries</label>
-          <label class="mc-option"><input type="radio" name="t2_q24" value="C"> C. Some aquifers may take thousands of years to recover</label>
-          <label class="mc-option"><input type="radio" name="t2_q24" value="D"> D. It is less serious than surface water depletion</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">25</div><span>What is described as one reason desalination has not been widely adopted historically?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q25" value="A"> A. It produces water of insufficient quality</label>
-          <label class="mc-option"><input type="radio" name="t2_q25" value="B"> B. It requires specialist technical knowledge</label>
-          <label class="mc-option"><input type="radio" name="t2_q25" value="C"> C. It is harmful to marine ecosystems</label>
-          <label class="mc-option"><input type="radio" name="t2_q25" value="D"> D. It is energy-intensive and costly</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">26</div><span>Singapore is presented in the passage as an example of:</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q26" value="A"> A. A country that relies entirely on imported water</label>
-          <label class="mc-option"><input type="radio" name="t2_q26" value="B"> B. A city that has implemented successful water recycling at scale</label>
-          <label class="mc-option"><input type="radio" name="t2_q26" value="C"> C. A nation that has banned the use of groundwater</label>
-          <label class="mc-option"><input type="radio" name="t2_q26" value="D"> D. A pioneer in rainwater harvesting technology</label>
-        </div>
-      </div>
-
-      <div class="flex justify-between" style="margin-top:16px">
-        <button class="btn btn-secondary" onclick="switchPassage(0)">← Passage 1</button>
-        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage, Continue</button>
-      </div>
-    </div><!-- /t2_passage-1 -->
-
-    <!-- PASSAGE 3: Memory (Q27-40) -->
-    <div class="passage-block" id="t2_passage-2">
-      <div class="passage-text">
-        <div class="passage-label">Passage 3, Questions 27-40</div>
-        <h3>The Science of Memory Consolidation</h3>
-        <p>Memory is one of the most fundamental cognitive capacities, enabling humans to learn from experience, plan for the future, and construct a sense of personal identity. Yet the processes by which memories are formed, stored, and retrieved remain the subject of intensive scientific investigation. The past three decades have produced remarkable insights into the neuroscience of memory, driven in large part by advances in brain imaging technologies and molecular biology.</p>
-        <p>Memory consolidation refers to the process by which newly acquired information is transformed from a fragile, temporary state into a stable, long-term memory. This process occurs in stages. During learning, electrical signals between neurons create temporary connections known as synaptic pathways. These pathways must then be stabilised through a molecular process involving the synthesis of new proteins within the neuron. Without this protein synthesis, memories remain vulnerable to disruption and are likely to be lost.</p>
-        <p>The hippocampus, a curved structure located in the medial temporal lobe of the brain, plays a central role in the initial formation of declarative memories, those involving facts and events. However, the hippocampus does not serve as the permanent storage site for long-term memories. Over time, memories are gradually transferred and distributed across the cortex through a process called systems consolidation, which is strongly facilitated by sleep.</p>
-        <p>Research has demonstrated that sleep serves a critical function in memory consolidation. During slow-wave sleep, the deepest stage of non-REM sleep, the hippocampus repeatedly reactivates recently formed memories and transfers information to the cortex for long-term storage. This reactivation process is thought to strengthen the neural connections associated with the memory and integrate new information with existing knowledge.</p>
-        <p>One well-established finding is that the interval between learning and sleep has a significant effect on memory retention. Studies have shown that learning shortly before sleeping produces markedly better long-term recall than learning followed by a waking period of equal duration. This effect, sometimes described as "sleep-dependent memory consolidation," has practical implications for educational strategies.</p>
-        <p>The phenomenon of reconsolidation, the discovery that memories become temporarily fragile each time they are retrieved, has transformed understanding of memory's dynamic nature. When a stored memory is recalled, it re-enters a labile state in which it can be modified, strengthened, or even destabilised by new information or emotional experience. This finding has significant implications for the treatment of conditions such as post-traumatic stress disorder (PTSD), where traumatic memories can potentially be weakened by intervening during the reconsolidation window.</p>
-        <div class="passage-glossary">
-          <div class="glossary-title">Glossary</div>
-          <p><strong>hippocampus</strong>: a part of the brain involved in forming new memories</p>
-          <p><strong>labile</strong>: likely to change or be altered easily</p>
-        </div>
-      </div>
-
-      <!-- Q27-33: Fill in blanks -->
-      <div class="question-group">
-        <div class="group-title">Questions 27-33, Sentence Completion</div>
-        <div class="group-instructions">Complete the sentences below. Use NO MORE THAN TWO WORDS from the passage for each answer.</div>
-        <div class="fill-row">
-          <div class="q-num">27</div>
-          <span style="font-size:.9rem">Memory consolidation transforms newly acquired information from a fragile state into a <strong>______</strong>, long-term memory.</span>
-          <input type="text" id="t2_q27" class="q-input" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">28</div>
-          <span style="font-size:.9rem">During learning, neurons create temporary connections known as <strong>______</strong> pathways.</span>
-          <input type="text" id="t2_q28" class="q-input" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">29</div>
-          <span style="font-size:.9rem">Stabilising synaptic pathways requires the synthesis of new <strong>______</strong> within the neuron.</span>
-          <input type="text" id="t2_q29" class="q-input" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">30</div>
-          <span style="font-size:.9rem">The hippocampus plays a central role in the initial formation of <strong>______</strong> memories, which involve facts and events.</span>
-          <input type="text" id="t2_q30" class="q-input" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">31</div>
-          <span style="font-size:.9rem">During slow-wave sleep, the hippocampus repeatedly <strong>______</strong> recently formed memories and transfers them to the cortex.</span>
-          <input type="text" id="t2_q31" class="q-input" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">32</div>
-          <span style="font-size:.9rem">Research shows that learning shortly before <strong>______</strong> leads to better long-term recall than learning followed by a waking period.</span>
-          <input type="text" id="t2_q32" class="q-input" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">33</div>
-          <span style="font-size:.9rem">The discovery that memories become temporarily fragile each time they are retrieved is known as <strong>______</strong>.</span>
-          <input type="text" id="t2_q33" class="q-input" placeholder="your answer">
-        </div>
-      </div>
-
-      <!-- Q34-40: MC -->
-      <div class="question-group">
-        <div class="group-title">Questions 34-40, Multiple Choice</div>
-        <div class="group-instructions">Choose the correct letter A, B, C or D.</div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">34</div><span>What is the primary purpose of protein synthesis during memory consolidation?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q34" value="A"> A. To increase the speed of information retrieval</label>
-          <label class="mc-option"><input type="radio" name="t2_q34" value="B"> B. To stabilise newly formed synaptic pathways</label>
-          <label class="mc-option"><input type="radio" name="t2_q34" value="C"> C. To transfer memories from the cortex to the hippocampus</label>
-          <label class="mc-option"><input type="radio" name="t2_q34" value="D"> D. To erase redundant memories</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">35</div><span>According to the passage, where are long-term memories ultimately stored?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q35" value="A"> A. Exclusively in the hippocampus</label>
-          <label class="mc-option"><input type="radio" name="t2_q35" value="B"> B. In the medial temporal lobe</label>
-          <label class="mc-option"><input type="radio" name="t2_q35" value="C"> C. Distributed across the cortex</label>
-          <label class="mc-option"><input type="radio" name="t2_q35" value="D"> D. In specific synaptic pathways</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">36</div><span>What role does slow-wave sleep play in memory consolidation?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q36" value="A"> A. It prevents new learning from interfering with old memories</label>
-          <label class="mc-option"><input type="radio" name="t2_q36" value="B"> B. It allows the hippocampus to transfer memories to the cortex</label>
-          <label class="mc-option"><input type="radio" name="t2_q36" value="C"> C. It eliminates memories that are no longer needed</label>
-          <label class="mc-option"><input type="radio" name="t2_q36" value="D"> D. It enhances the production of cortisol</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">37</div><span>What does the phrase "sleep-dependent memory consolidation" refer to?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q37" value="A"> A. The fact that people sleep better after intensive learning</label>
-          <label class="mc-option"><input type="radio" name="t2_q37" value="B"> B. The discovery that sleep is required for all types of learning</label>
-          <label class="mc-option"><input type="radio" name="t2_q37" value="C"> C. The finding that sleeping after learning improves long-term retention</label>
-          <label class="mc-option"><input type="radio" name="t2_q37" value="D"> D. The relationship between REM sleep and emotional memory</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">38</div><span>According to the passage, what happens to a memory when it is retrieved?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q38" value="A"> A. It is permanently strengthened</label>
-          <label class="mc-option"><input type="radio" name="t2_q38" value="B"> B. It becomes temporarily unstable</label>
-          <label class="mc-option"><input type="radio" name="t2_q38" value="C"> C. It is deleted from the hippocampus</label>
-          <label class="mc-option"><input type="radio" name="t2_q38" value="D"> D. It is duplicated across multiple brain regions</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">39</div><span>What does reconsolidation research suggest for treating PTSD?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q39" value="A"> A. Preventing patients from recalling traumatic events entirely</label>
-          <label class="mc-option"><input type="radio" name="t2_q39" value="B"> B. Intervening during the reconsolidation window to weaken traumatic memories</label>
-          <label class="mc-option"><input type="radio" name="t2_q39" value="C"> C. Using protein synthesis inhibitors to erase emotional memories</label>
-          <label class="mc-option"><input type="radio" name="t2_q39" value="D"> D. Applying slow-wave sleep therapy to consolidate positive memories</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">40</div><span>Which statement best describes the overall view of memory presented in the passage?</span></div>
-          <label class="mc-option"><input type="radio" name="t2_q40" value="A"> A. Memory is a fixed and reliable record of past experiences</label>
-          <label class="mc-option"><input type="radio" name="t2_q40" value="B"> B. Memory is a dynamic process that continues to be modified over time</label>
-          <label class="mc-option"><input type="radio" name="t2_q40" value="C"> C. Memory consolidation is complete within 24 hours of learning</label>
-          <label class="mc-option"><input type="radio" name="t2_q40" value="D"> D. The hippocampus alone is responsible for all memory storage</label>
-        </div>
-      </div>
-
-      <div class="flex justify-between" style="margin-top:16px;gap:12px">
-        <button class="btn btn-secondary" onclick="switchPassage(1)">← Passage 2</button>
-        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage</button>
-        <button class="btn btn-primary btn-lg" onclick="submitTest()">✓ Submit & Get Score</button>
-      </div>
-    </div><!-- /t2_passage-2 -->
-
-  </div><!-- /test-zone-02 -->
-
-  <!-- TEST ZONE 03 -->
-  <div id="test-zone-03" class="hidden">
-
-    <div class="passage-nav">
-      <button class="passage-tab active" id="t3_ptab-0" onclick="switchPassage(0)">📄 Passage 1</button>
-      <button class="passage-tab" id="t3_ptab-1" onclick="switchPassage(1)">📄 Passage 2</button>
-      <button class="passage-tab" id="t3_ptab-2" onclick="switchPassage(2)">📄 Passage 3</button>
-      <div class="timer-badge" id="t3_timer-display">⏱ 60:00</div>
-    </div>
-
-    <!-- PASSAGE 1: The History of Glass (Q1-13) -->
-    <div class="passage-block active" id="t3_passage-0">
-      <div class="passage-text">
-        <div class="passage-label">Passage 1, Questions 1-13</div>
-        <h3>The History of Glass</h3>
-        <p>Glass is one of humanity's oldest manufactured materials, with evidence of production dating back to Mesopotamia around 3500 BCE. Early glass was primarily used for decorative purposes, with craftsmen producing beads, amulets, and small vessels. It was not until the first century BCE that glassblowing was discovered, most likely in the region of ancient Syria. This technique, which involves inflating molten glass through a metal tube, revolutionised the craft by making it faster and far less expensive, dramatically expanding the range of objects that could be produced.</p>
-        <p>During the medieval period, Venice became the undisputed centre of European glassmaking. Venetian glassmakers were so highly prized, and their techniques so jealously guarded, that in 1291, the Venetian Republic ordered all glassmakers to relocate to the island of Murano. This served both to reduce the fire risk to the city and to allow the government to monitor the trade more closely. Glassmakers who attempted to leave and share their techniques with other regions were threatened with severe penalties, including death.</p>
-        <p>The emergence of lead crystal glass in seventeenth-century England represented another significant development. English glassmaker George Ravenscroft discovered that adding lead oxide to the glass mixture produced a material that was softer, more brilliant, easier to cut and engrave, and highly desirable for luxury tableware. By the eighteenth century, this style had spread across Europe and established Britain as a major force in glassmaking.</p>
-        <p>The Industrial Revolution transformed the scale of glass production. Previously, glass had been produced by skilled artisans in small quantities; mechanisation allowed factories to produce standardised glass sheets in large volumes, dramatically lowering costs. Window glass, once a luxury item found only in wealthy homes and churches, became affordable to the general population.</p>
-        <p>The twentieth century saw arguably the most significant advance in flat glass production: the float glass process, developed by Sir Alastair Pilkington of the Pilkington Brothers company in 1952. In this process, molten glass is poured onto a bed of molten tin, on which it floats and spreads, creating a perfectly flat and uniform surface as it cools. This technique made it possible to produce large sheets of flawless glass economically, and it remains the dominant method of flat glass production globally.</p>
-        <p>The applications of glass have extended far beyond windows and tableware. The development of optical glass in the seventeenth century enabled the creation of accurate telescopes, microscopes, and spectacles, fundamentally transforming scientific inquiry. Today, glass fibres carry the vast majority of the world's internet data, demonstrating that a material first crafted thousands of years ago remains central to modern technological infrastructure.</p>
-        <div class="passage-glossary">
-          <div class="glossary-title">Glossary</div>
-          <p><strong>lead oxide</strong>: a chemical compound of lead once commonly added to glass mixtures</p>
-        </div>
-      </div>
-
-      <!-- Q1-7: T/F/NG -->
-      <div class="question-group">
-        <div class="group-title">Questions 1-7, True / False / Not Given</div>
-        <div class="group-instructions">Do the following statements agree with the information given in the passage? Write TRUE, FALSE or NOT GIVEN.</div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">1</div><span>The earliest glass objects made by humans were intended primarily for practical use.</span></div>
-          <div class="tfng-options" id="t3_tfng-1">
-            <label class="tfng-label"><input type="radio" name="t3_q1" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="t3_q1" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="t3_q1" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">2</div><span>Glassblowing was invented by craftsmen working in Venice during the medieval period.</span></div>
-          <div class="tfng-options" id="t3_tfng-2">
-            <label class="tfng-label"><input type="radio" name="t3_q2" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="t3_q2" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="t3_q2" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">3</div><span>One reason the Venetian Republic moved glassmakers to Murano was to maintain control over their trade secrets.</span></div>
-          <div class="tfng-options" id="t3_tfng-3">
-            <label class="tfng-label"><input type="radio" name="t3_q3" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="t3_q3" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="t3_q3" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">4</div><span>George Ravenscroft's lead crystal glass was harder to cut than traditional Venetian glass.</span></div>
-          <div class="tfng-options" id="t3_tfng-4">
-            <label class="tfng-label"><input type="radio" name="t3_q4" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="t3_q4" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="t3_q4" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">5</div><span>Several glass manufacturers had unsuccessfully attempted the float glass process before Pilkington.</span></div>
-          <div class="tfng-options" id="t3_tfng-5">
-            <label class="tfng-label"><input type="radio" name="t3_q5" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="t3_q5" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="t3_q5" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">6</div><span>The Industrial Revolution made window glass accessible to ordinary people for the first time.</span></div>
-          <div class="tfng-options" id="t3_tfng-6">
-            <label class="tfng-label"><input type="radio" name="t3_q6" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="t3_q6" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="t3_q6" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-        <div class="tfng-question">
-          <div class="tfng-text"><div class="q-num">7</div><span>According to the passage, modern glass fibres are primarily used in the manufacture of scientific instruments.</span></div>
-          <div class="tfng-options" id="t3_tfng-7">
-            <label class="tfng-label"><input type="radio" name="t3_q7" value="TRUE"> TRUE</label>
-            <label class="tfng-label"><input type="radio" name="t3_q7" value="FALSE"> FALSE</label>
-            <label class="tfng-label"><input type="radio" name="t3_q7" value="NOT GIVEN"> NOT GIVEN</label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Q8-13: MC -->
-      <div class="question-group">
-        <div class="group-title">Questions 8-13, Multiple Choice</div>
-        <div class="group-instructions">Choose the correct letter, A, B, C or D.</div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">8</div><span>According to the passage, why did the Venetian Republic relocate glassmakers to Murano in 1291?</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q8" value="A"> A. To provide them with better raw materials</label>
-          <label class="mc-option"><input type="radio" name="t3_q8" value="B"> B. To protect them from competition from foreign craftsmen</label>
-          <label class="mc-option"><input type="radio" name="t3_q8" value="C"> C. To reduce the fire hazard to the city and enable closer supervision of the trade</label>
-          <label class="mc-option"><input type="radio" name="t3_q8" value="D"> D. To allow them to work alongside other skilled artisans</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">9</div><span>The word "prized" in paragraph 2 most closely means...</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q9" value="A"> A. Rewarded financially</label>
-          <label class="mc-option"><input type="radio" name="t3_q9" value="B"> B. Highly valued</label>
-          <label class="mc-option"><input type="radio" name="t3_q9" value="C"> C. Closely monitored</label>
-          <label class="mc-option"><input type="radio" name="t3_q9" value="D"> D. Officially licensed</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">10</div><span>According to the passage, what was the principal advantage of the float glass process?</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q10" value="A"> A. It eliminated the need for skilled workers in glass production</label>
-          <label class="mc-option"><input type="radio" name="t3_q10" value="B"> B. It used a new chemical process to improve the clarity of glass</label>
-          <label class="mc-option"><input type="radio" name="t3_q10" value="C"> C. It enabled the economical production of large, flawless glass sheets</label>
-          <label class="mc-option"><input type="radio" name="t3_q10" value="D"> D. It required significantly less energy than previous glassmaking methods</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">11</div><span>The passage suggests that lead crystal glass became popular largely because it was...</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q11" value="A"> A. Cheaper to produce than Venetian glass</label>
-          <label class="mc-option"><input type="radio" name="t3_q11" value="B"> B. Stronger and more durable in everyday use</label>
-          <label class="mc-option"><input type="radio" name="t3_q11" value="C"> C. Better suited to industrial applications</label>
-          <label class="mc-option"><input type="radio" name="t3_q11" value="D"> D. More visually attractive and easier to work with</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">12</div><span>According to the passage, which development in the seventeenth century contributed significantly to scientific progress?</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q12" value="A"> A. The establishment of glass factories using industrial methods</label>
-          <label class="mc-option"><input type="radio" name="t3_q12" value="B"> B. The creation of lead crystal glass in England</label>
-          <label class="mc-option"><input type="radio" name="t3_q12" value="C"> C. The development of optical glass enabling precision instruments</label>
-          <label class="mc-option"><input type="radio" name="t3_q12" value="D"> D. The introduction of glassblowing techniques from Syria</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">13</div><span>The main purpose of the final paragraph is to...</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q13" value="A"> A. Contrast the uses of ancient and modern glass</label>
-          <label class="mc-option"><input type="radio" name="t3_q13" value="B"> B. Argue that glass has replaced metals in most technological applications</label>
-          <label class="mc-option"><input type="radio" name="t3_q13" value="C"> C. Demonstrate that glass remains technologically relevant in the modern world</label>
-          <label class="mc-option"><input type="radio" name="t3_q13" value="D"> D. Describe the environmental challenges associated with glass fibre production</label>
-        </div>
-      </div>
-
-      <div class="flex justify-between" style="margin-top:16px;gap:12px">
-        <div></div>
-        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage, Continue</button>
-      </div>
-    </div><!-- /t3_passage-0 -->
-
-    <!-- PASSAGE 2: Microplastics in the Global Food Chain (Q14-26) -->
-    <div class="passage-block" id="t3_passage-1">
-      <div class="passage-text">
-        <div class="passage-label">Passage 2, Questions 14-26</div>
-        <h3>Microplastics in the Global Food Chain</h3>
-        <p>Microplastics are defined as plastic particles smaller than five millimetres in their longest dimension. They enter the environment through multiple pathways: the degradation of larger plastic items exposed to sunlight and mechanical stress; the release of synthetic fibres during the washing of clothes made from polyester, nylon, and acrylic; the breakdown of plastic packaging; and the direct manufacture of microbeads formerly incorporated into cosmetics. Although microbeads have been banned in several countries, remaining sources continue to release microplastics into waterways, soils, and the atmosphere at significant rates.</p>
-        <p>Once in the environment, microplastics are ingested by a wide range of organisms, from zooplankton, the microscopic animals at the base of many aquatic food chains, to fish, seabirds, and marine mammals. When zooplankton consume microplastics, they may experience satiation, a false sense of fullness, that reduces their actual food intake and impairs their reproduction and growth. This disruption at the base of the food chain can have cascading effects on species further up, including commercially important fish.</p>
-        <p>As organisms at lower trophic levels consume microplastics and are themselves consumed by larger predators, the concentration of microplastic particles can increase at each level in a process known as biomagnification. This means that top predators, including humans, may be exposed to significantly higher concentrations of microplastics than the ambient environment would suggest. However, the evidence for classical biomagnification of microplastics specifically remains disputed among scientists.</p>
-        <p>Studies have detected microplastics in bottled water, tap water, sea salt, honey, beer, and commercially sold seafood. Research conducted in 2018 estimated that the average person may ingest approximately 50,000 microplastic particles per year through food and water alone, with additional exposure occurring through inhalation. Plastic particles have also been found in human blood, lung tissue, and placental tissue, indicating that they can cross biological barriers and accumulate in the body.</p>
-        <p>The health implications of microplastic ingestion remain a subject of active research. Laboratory studies on animals have linked exposure to chemicals associated with plastics, including phthalates and bisphenol A, to hormonal disruption and cellular damage. However, establishing direct causal links between microplastic exposure and human health outcomes is complicated by difficulties in isolating plastic-related effects. The World Health Organisation concluded in 2019 that risks from microplastics in drinking water are currently low, while acknowledging significant uncertainty.</p>
-        <p>Policy responses have been varied. Some countries have implemented bans on single-use plastics, while others have set recycling targets. Critics argue that these measures are insufficient given the scale of plastic production, and that more radical systemic changes are required to meaningfully reduce microplastic contamination of the environment.</p>
-        <div class="passage-glossary">
-          <div class="glossary-title">Glossary</div>
-          <p><strong>trophic level</strong>: a position in a food chain, defined by what an organism eats and what eats it</p>
-          <p><strong>bisphenol A</strong>: an industrial chemical used in the manufacture of certain plastics</p>
-        </div>
-      </div>
-
-      <!-- Q14-20: Sentence completion -->
-      <div class="question-group">
-        <div class="group-title">Questions 14-20, Sentence Completion</div>
-        <div class="group-instructions">Complete the sentences below. Use NO MORE THAN TWO WORDS from the passage for each answer.</div>
-        <div class="fill-row">
-          <div class="q-num">14</div>
-          <span>The ________ of larger plastic items by sunlight and mechanical forces is one source of microplastics.</span>
-          <input class="q-input" type="text" id="t3_q14" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">15</div>
-          <span>When synthetic garments are washed, they release ________ into the water system.</span>
-          <input class="q-input" type="text" id="t3_q15" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">16</div>
-          <span>Consuming microplastics may cause zooplankton to experience ________, making them feel full when they are not.</span>
-          <input class="q-input" type="text" id="t3_q16" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">17</div>
-          <span>The process by which microplastic concentrations increase at higher levels of the food chain is called ________.</span>
-          <input class="q-input" type="text" id="t3_q17" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">18</div>
-          <span>Scientists have detected microplastic particles in human ________, lung tissue, and placental tissue.</span>
-          <input class="q-input" type="text" id="t3_q18" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">19</div>
-          <span>In addition to eating and drinking, microplastics can also enter the body through ________.</span>
-          <input class="q-input" type="text" id="t3_q19" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">20</div>
-          <span>The WHO's 2019 assessment concluded that risks from microplastics in drinking water are currently ________.</span>
-          <input class="q-input" type="text" id="t3_q20" placeholder="your answer">
-        </div>
-      </div>
-
-      <!-- Q21-26: MC -->
-      <div class="question-group">
-        <div class="group-title">Questions 21-26, Multiple Choice</div>
-        <div class="group-instructions">Choose the correct letter, A, B, C or D.</div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">21</div><span>Which of the following is NOT mentioned in the passage as a source of microplastics?</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q21" value="A"> A. The breakdown of plastic packaging</label>
-          <label class="mc-option"><input type="radio" name="t3_q21" value="B"> B. The washing of synthetic garments</label>
-          <label class="mc-option"><input type="radio" name="t3_q21" value="C"> C. The abrasion of rubber from vehicle tyres</label>
-          <label class="mc-option"><input type="radio" name="t3_q21" value="D"> D. The manufacture of microbeads in cosmetics</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">22</div><span>According to the passage, why is the effect of microplastics on zooplankton significant for the wider ecosystem?</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q22" value="A"> A. Zooplankton are the only organisms that can break down plastic particles</label>
-          <label class="mc-option"><input type="radio" name="t3_q22" value="B"> B. The loss of zooplankton directly reduces the amount of oxygen in the ocean</label>
-          <label class="mc-option"><input type="radio" name="t3_q22" value="C"> C. Disruption at the base of the food chain can affect species at higher levels</label>
-          <label class="mc-option"><input type="radio" name="t3_q22" value="D"> D. Zooplankton populations determine the distribution of commercial fish stocks</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">23</div><span>The term "biomagnification" in paragraph 3 refers to...</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q23" value="A"> A. The process by which plastic particles break down over time into smaller fragments</label>
-          <label class="mc-option"><input type="radio" name="t3_q23" value="B"> B. The tendency of microplastics to concentrate in coastal and estuarine environments</label>
-          <label class="mc-option"><input type="radio" name="t3_q23" value="C"> C. The increasing concentration of microplastics as they move up the food chain</label>
-          <label class="mc-option"><input type="radio" name="t3_q23" value="D"> D. The growth in the total volume of microplastics in the environment over time</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">24</div><span>What does the passage indicate about the health risks of microplastic ingestion for humans?</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q24" value="A"> A. They have been confirmed by the WHO as a serious global health threat</label>
-          <label class="mc-option"><input type="radio" name="t3_q24" value="B"> B. They are primarily associated with exposure through the skin rather than ingestion</label>
-          <label class="mc-option"><input type="radio" name="t3_q24" value="C"> C. Evidence from animal studies exists, but direct causal links in humans are difficult to establish</label>
-          <label class="mc-option"><input type="radio" name="t3_q24" value="D"> D. They are well understood through long-term epidemiological studies of coastal populations</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">25</div><span>According to the passage, what aspect of microplastics remains contested among scientists?</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q25" value="A"> A. Whether microplastics have been detected in human tissue</label>
-          <label class="mc-option"><input type="radio" name="t3_q25" value="B"> B. Whether the process of classical biomagnification applies to microplastics</label>
-          <label class="mc-option"><input type="radio" name="t3_q25" value="C"> C. Whether governments should ban all single-use plastics</label>
-          <label class="mc-option"><input type="radio" name="t3_q25" value="D"> D. Whether microplastics affect marine mammals more severely than fish</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">26</div><span>The word "ambient" in paragraph 3 most closely means...</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q26" value="A"> A. Fluctuating</label>
-          <label class="mc-option"><input type="radio" name="t3_q26" value="B"> B. Surrounding</label>
-          <label class="mc-option"><input type="radio" name="t3_q26" value="C"> C. Measurable</label>
-          <label class="mc-option"><input type="radio" name="t3_q26" value="D"> D. Elevated</label>
-        </div>
-      </div>
-
-      <div class="flex justify-between" style="margin-top:16px;gap:12px">
-        <button class="btn btn-secondary" onclick="switchPassage(0)">← Passage 1</button>
-        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage, Continue</button>
-      </div>
-    </div><!-- /t3_passage-1 -->
-
-    <!-- PASSAGE 3: The Psychology of Consumer Decision-Making (Q27-40) -->
-    <div class="passage-block" id="t3_passage-2">
-      <div class="passage-text">
-        <div class="passage-label">Passage 3, Questions 27-40</div>
-        <h3>The Psychology of Consumer Decision-Making</h3>
-        <p>For much of the twentieth century, economic theory was built on the assumption that consumers make rational decisions, carefully evaluating available information, calculating costs and benefits, and selecting the option that maximises their utility. This model, known as homo economicus, described a hypothetically perfect decision-maker operating with complete information and unwavering logic. However, research beginning in the 1950s began to challenge this assumption with substantial empirical evidence to the contrary.</p>
-        <p>Herbert Simon, an economist and cognitive scientist, was among the first to formally propose that human decision-making is subject to what he termed bounded rationality. Simon argued that while humans aim to make rational decisions, they are constrained by the limits of their cognitive capacity, the finite time available to process information, and the complexity of the environment. Rather than optimising, finding the single best solution, most people satisfice: they adopt the first option that meets a minimum acceptable standard, even if better alternatives may exist.</p>
-        <p>Daniel Kahneman and Amos Tversky extended this framework in the 1970s and 1980s with their work on cognitive heuristics and biases. They demonstrated that human judgment is not simply limited but systematically distorted by mental shortcuts that, while often useful, can produce predictable errors. One of their most influential findings concerns the anchoring effect: the tendency for an initial piece of numerical information, even one that is arbitrary or irrelevant, to exert a disproportionate influence on subsequent judgments. When buyers see an item marked down from a high original price, they are inclined to perceive it as a bargain regardless of whether the original price was genuinely meaningful.</p>
-        <p>A complementary body of research has examined priming, the process by which exposure to one stimulus unconsciously influences responses to subsequent stimuli. Experiments have shown that playing French music in a wine shop leads customers to purchase French wines at a higher rate, while German music results in greater sales of German wines, effects that often occur without the conscious awareness of the consumer. Taken together, priming and anchoring illustrate how purchasing decisions are frequently shaped by environmental cues and framing effects rather than by conscious deliberation.</p>
-        <p>Richard Thaler and Cass Sunstein built upon this research to develop what they called nudge theory, arguing that policymakers can design choice architectures, the arrangement of options in a decision-making environment, to steer individuals towards better decisions without restricting their freedom of choice. Classic examples include placing healthier food at eye level in a cafeteria, or enrolling employees in pension schemes by default while allowing them to opt out. Such nudges have been adopted by numerous governments as low-cost tools for promoting public health, increasing savings rates, and encouraging sustainable behaviours.</p>
-        <p>Critics of nudge theory question whether it is ethically appropriate for governments to manipulate citizens' choices, even in benevolent ways. Others argue that nudges are merely superficial interventions that address only the symptoms of poor decision-making, and that more fundamental reforms to institutions and markets are required. The debate continues as behavioural economics, the discipline that combines psychological research with economic theory, has become one of the fastest-growing fields in the social sciences.</p>
-        <div class="passage-glossary">
-          <div class="glossary-title">Glossary</div>
-          <p><strong>homo economicus</strong>: an idealised model of a purely rational, self-interested decision-maker used in classical economics</p>
-        </div>
-      </div>
-
-      <!-- Q27-33: Sentence completion -->
-      <div class="question-group">
-        <div class="group-title">Questions 27-33, Sentence Completion</div>
-        <div class="group-instructions">Complete the sentences below. Use NO MORE THAN THREE WORDS from the passage for each answer.</div>
-        <div class="fill-row">
-          <div class="q-num">27</div>
-          <span>The classical model of the rational consumer described an idealised decision-maker known as ________.</span>
-          <input class="q-input" type="text" id="t3_q27" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">28</div>
-          <span>Herbert Simon argued that real-world decision-making is subject to ________, due to cognitive and time constraints.</span>
-          <input class="q-input" type="text" id="t3_q28" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">29</div>
-          <span>According to Simon, rather than finding the optimal solution, most people ________ by selecting the first acceptable option.</span>
-          <input class="q-input" type="text" id="t3_q29" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">30</div>
-          <span>The ________ effect describes how an initial piece of numerical information can disproportionately influence later judgments.</span>
-          <input class="q-input" type="text" id="t3_q30" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">31</div>
-          <span>Research on ________ has shown that background music in a shop can unconsciously influence what customers choose to buy.</span>
-          <input class="q-input" type="text" id="t3_q31" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">32</div>
-          <span>Thaler and Sunstein developed ________ theory, which advocates for designing environments that guide people towards better choices.</span>
-          <input class="q-input" type="text" id="t3_q32" placeholder="your answer">
-        </div>
-        <div class="fill-row">
-          <div class="q-num">33</div>
-          <span>Critics of nudge theory argue that it only addresses the ________ of poor decision-making rather than its structural causes.</span>
-          <input class="q-input" type="text" id="t3_q33" placeholder="your answer">
-        </div>
-      </div>
-
-      <!-- Q34-40: MC -->
-      <div class="question-group">
-        <div class="group-title">Questions 34-40, Multiple Choice</div>
-        <div class="group-instructions">Choose the correct letter, A, B, C or D.</div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">34</div><span>According to the passage, what was the central assumption of the homo economicus model?</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q34" value="A"> A. Consumers make decisions based primarily on social comparison</label>
-          <label class="mc-option"><input type="radio" name="t3_q34" value="B"> B. Consumers have access to limited but reliable market information</label>
-          <label class="mc-option"><input type="radio" name="t3_q34" value="C"> C. Consumers act logically to maximise their personal benefit</label>
-          <label class="mc-option"><input type="radio" name="t3_q34" value="D"> D. Consumers prefer familiar products to unfamiliar alternatives</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">35</div><span>Herbert Simon's concept of bounded rationality suggests that...</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q35" value="A"> A. Humans are fundamentally incapable of rational thought</label>
-          <label class="mc-option"><input type="radio" name="t3_q35" value="B"> B. Real decision-making is constrained by cognitive and environmental limitations</label>
-          <label class="mc-option"><input type="radio" name="t3_q35" value="C"> C. Time pressure consistently improves the quality of decisions</label>
-          <label class="mc-option"><input type="radio" name="t3_q35" value="D"> D. People become more rational with experience and practice</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">36</div><span>In the passage, the anchoring effect is best illustrated by the example of...</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q36" value="A"> A. A consumer who buys French wine after hearing French music</label>
-          <label class="mc-option"><input type="radio" name="t3_q36" value="B"> B. An employee who is automatically enrolled in a pension scheme</label>
-          <label class="mc-option"><input type="radio" name="t3_q36" value="C"> C. A buyer who perceives a discounted item as a bargain based on its original price</label>
-          <label class="mc-option"><input type="radio" name="t3_q36" value="D"> D. A shopper who selects the product placed at eye level in a supermarket</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">37</div><span>According to the passage, how does priming differ from anchoring?</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q37" value="A"> A. Priming is deliberately used by retailers, whereas anchoring occurs naturally</label>
-          <label class="mc-option"><input type="radio" name="t3_q37" value="B"> B. Priming works through unconscious exposure to stimuli rather than numerical data</label>
-          <label class="mc-option"><input type="radio" name="t3_q37" value="C"> C. Priming affects individual shoppers, while anchoring affects entire markets</label>
-          <label class="mc-option"><input type="radio" name="t3_q37" value="D"> D. Priming is effective only in physical retail environments</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">38</div><span>In paragraph 5, the term "choice architectures" refers to...</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q38" value="A"> A. Physical store layouts designed to slow down customer movement</label>
-          <label class="mc-option"><input type="radio" name="t3_q38" value="B"> B. Legal regulations that restrict the range of products available to consumers</label>
-          <label class="mc-option"><input type="radio" name="t3_q38" value="C"> C. The way options are structured and presented in a decision-making environment</label>
-          <label class="mc-option"><input type="radio" name="t3_q38" value="D"> D. Computer algorithms used to personalise online shopping recommendations</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">39</div><span>Which of the following best describes the critics' view of nudge theory as presented in the passage?</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q39" value="A"> A. They believe it contradicts the fundamental principles of behavioural economics</label>
-          <label class="mc-option"><input type="radio" name="t3_q39" value="B"> B. They argue it is ineffective because most people are unaware of being nudged</label>
-          <label class="mc-option"><input type="radio" name="t3_q39" value="C"> C. They consider it ethically questionable and insufficiently radical to address structural problems</label>
-          <label class="mc-option"><input type="radio" name="t3_q39" value="D"> D. They claim it applies only to health-related decisions and not to financial behaviour</label>
-        </div>
-        <div class="mc-question">
-          <div class="mc-text"><div class="q-num">40</div><span>The writer's main purpose in this passage is to...</span></div>
-          <label class="mc-option"><input type="radio" name="t3_q40" value="A"> A. Argue that classical economic theory should be completely replaced by behavioural economics</label>
-          <label class="mc-option"><input type="radio" name="t3_q40" value="B"> B. Demonstrate that nudge theory is the most effective tool available to policymakers</label>
-          <label class="mc-option"><input type="radio" name="t3_q40" value="C"> C. Trace the development of theories that challenge the rational model of consumer behaviour</label>
-          <label class="mc-option"><input type="radio" name="t3_q40" value="D"> D. Evaluate whether priming or anchoring has a greater influence on purchasing decisions</label>
-        </div>
-      </div>
-
-      <div class="flex justify-between" style="margin-top:16px;gap:12px">
-        <button class="btn btn-secondary" onclick="switchPassage(1)">← Passage 2</button>
-        <button class="btn btn-primary" onclick="finishReadingPassage()">✅ I've finished this passage</button>
-        <button class="btn btn-primary btn-lg" onclick="submitTest()">✓ Submit &amp; Get Score</button>
-      </div>
-    </div><!-- /t3_passage-2 -->
-
-  </div><!-- /test-zone-03 -->
 
   <!-- SHARED RESULTS CARD -->
   <div class="results-card" id="results-card">
@@ -1496,145 +321,162 @@
 <div class="toast-container" id="toast-container"></div>
 
 <script src="js/data.js"></script>
+<script src="js/reading-data.js"></script>
 <script>
-// Correct answers
-const ANSWERS = {
-  // Passage 1 - T/F/NG
-  q1:  'TRUE',
-  q2:  'FALSE',
-  q3:  'FALSE',
-  q4:  'TRUE',
-  q5:  'NOT GIVEN',
-  q6:  'TRUE',
-  q7:  'NOT GIVEN',
-  // Passage 1 - MC
-  q8:  'B',
-  q9:  'B',
-  q10: 'C',
-  q11: 'B',
-  q12: 'C',
-  q13: 'B',
-  // Passage 2 - Matching headings
-  q14: 'F',
-  q15: 'B',
-  q16: 'E',
-  q17: 'A',
-  q18: 'C',
-  q19: 'D',
-  // Passage 2 - MC
-  q20: 'B',
-  q21: 'C',
-  q22: 'B',
-  q23: 'C',
-  q24: 'B',
-  q25: 'B',
-  q26: 'B',
-  // Passage 3 - Fill in blanks
-  q27: 'MONKS',
-  q28: 'MONTHS',
-  q29: 'LETTERS',
-  q30: '1500',
-  q31: 'IDEAS',
-  q32: 'COPERNICUS',
-  q33: 'MISINFORMATION',
-  // Passage 3 - MC
-  q34: 'C',
-  q35: 'B',
-  q36: 'C',
-  q37: 'B',
-  q38: 'C',
-  q39: 'C',
-  q40: 'C'
-};
+// ── Reading data-driven (LOT 2) : donnees dans js/reading-data.js, builders
+// calques sur ceux de Listening. Une seule zone #test-zone, plus de zones
+// dupliquees ni de maps ANSWERS ni de prefixes t2_/t3_.
 
-const PASSAGE_RANGES = [
-  { label: 'Passage 1 (Sleep)', start: 1,  end: 13 },
-  { label: 'Passage 2 (Urban Farming)', start: 14, end: 26 },
-  { label: 'Passage 3 (Printing Press)', start: 27, end: 40 }
-];
-
-const ANSWERS_02 = {
-  q1:'TRUE', q2:'NOT GIVEN', q3:'TRUE', q4:'FALSE', q5:'NOT GIVEN', q6:'TRUE', q7:'NOT GIVEN',
-  q8:'B', q9:'C', q10:'C', q11:'B', q12:'C', q13:'B',
-  q14:'URBAN', q15:'WITHDRAWALS', q16:'IRRIGATED', q17:'AQUIFERS', q18:'HARVESTING', q19:'NEEDS', q20:'DESALINATION',
-  q21:'C', q22:'B', q23:'C', q24:'C', q25:'D', q26:'B',
-  q27:'STABLE', q28:'SYNAPTIC', q29:'PROTEINS', q30:'DECLARATIVE', q31:'REACTIVATES', q32:'SLEEPING', q33:'RECONSOLIDATION',
-  q34:'B', q35:'C', q36:'B', q37:'C', q38:'B', q39:'B', q40:'B'
-};
-
-const PASSAGE_RANGES_02 = [
-  { label: 'Passage 1 (Renewable Energy)', start: 1, end: 13 },
-  { label: 'Passage 2 (Water Scarcity)', start: 14, end: 26 },
-  { label: 'Passage 3 (Memory)', start: 27, end: 40 }
-];
-
-const ANSWERS_03 = {
-  // Passage 1 (History of Glass), T/F/NG
-  q1: 'FALSE', q2: 'FALSE', q3: 'TRUE', q4: 'FALSE', q5: 'NOT GIVEN', q6: 'TRUE', q7: 'FALSE',
-  // Passage 1, MC
-  q8: 'C', q9: 'B', q10: 'C', q11: 'D', q12: 'C', q13: 'C',
-  // Passage 2 (Microplastics), Sentence completion
-  q14: 'DEGRADATION', q15: 'FIBRES', q16: 'SATIATION', q17: 'BIOMAGNIFICATION',
-  q18: 'BLOOD', q19: 'INHALATION', q20: 'LOW',
-  // Passage 2, MC
-  q21: 'C', q22: 'C', q23: 'C', q24: 'C', q25: 'B', q26: 'B',
-  // Passage 3 (Consumer Psychology), Sentence completion
-  q27: 'HOMO ECONOMICUS', q28: 'BOUNDED RATIONALITY', q29: 'SATISFICE',
-  q30: 'ANCHORING', q31: 'PRIMING', q32: 'NUDGE', q33: 'SYMPTOMS',
-  // Passage 3, MC
-  q34: 'C', q35: 'B', q36: 'C', q37: 'B', q38: 'C', q39: 'C', q40: 'C'
-};
-
-const PASSAGE_RANGES_03 = [
-  { label: 'Passage 1 (History of Glass)', start: 1, end: 13 },
-  { label: 'Passage 2 (Microplastics)', start: 14, end: 26 },
-  { label: 'Passage 3 (Consumer Psychology)', start: 27, end: 40 }
-];
-
-const ANSWERS_MAP = { '': ANSWERS, 't2_': ANSWERS_02, 't3_': ANSWERS_03 };
-
-let currentReadingTest = 1;
+let currentTest = null;            // objet test (READING_TESTS[key])
+let currentTestKey = 'rdtest01';   // rdtest01 / rdtest02 / rdtest03
+let currentTestNum = 1;            // 1 / 2 / 3 (events GA4 + libelles existants)
 let currentPassage = 0;
 let submitted = false;
 let timerInterval = null;
 let secondsLeft = 3600;
-let passagesDone = [false,false,false];
-let passageScoresLive = [0,0,0];
+let passagesDone = [false, false, false];
+let passageScoresLive = [0, 0, 0];
 let savedReadingAnswers = {};
+let qIndex = {};                   // n -> { q, type }
+let passageRanges = [];            // [{ start, end, label }]
 const READING_SESSION_KEY = 'ielts_reading_session';
 
-function currentPrefix() {
-  return currentReadingTest === 3 ? 't3_' : currentReadingTest === 2 ? 't2_' : '';
+// ── Builders ─────────────────────────────────────────────────────────────────
+function groupWrap(group, inner) {
+  return `<div class="question-group">
+    ${group.title ? `<div class="group-title">${group.title}</div>` : ''}
+    ${group.instructions ? `<div class="group-instructions">${group.instructions}</div>` : ''}
+    ${inner}
+  </div>`;
 }
-function currentRanges() {
-  return currentReadingTest === 3 ? PASSAGE_RANGES_03 : currentReadingTest === 2 ? PASSAGE_RANGES_02 : PASSAGE_RANGES;
+
+function buildTFNGGroup(group) {
+  const qs = group.questions.map(q => `
+    <div class="tfng-question">
+      <div class="tfng-text"><div class="q-num">${q.n}</div><span>${q.text}</span></div>
+      <div class="tfng-options" id="tfng-${q.n}">
+        <label class="tfng-label"><input type="radio" name="q${q.n}" value="TRUE"> TRUE</label>
+        <label class="tfng-label"><input type="radio" name="q${q.n}" value="FALSE"> FALSE</label>
+        <label class="tfng-label"><input type="radio" name="q${q.n}" value="NOT GIVEN"> NOT GIVEN</label>
+      </div>
+    </div>`).join('');
+  return groupWrap(group, qs);
 }
-function currentReadingTestId() {
-  return currentReadingTest === 3 ? 'rdtest03' : currentReadingTest === 2 ? 'rdtest02' : 'rdtest01';
+
+function buildMCGroup(group) {
+  const qs = group.questions.map(q => `
+    <div class="mc-question">
+      <div class="mc-text"><div class="q-num">${q.n}</div><span>${q.text}</span></div>
+      ${q.options.map((opt, i) => `<label class="mc-option" id="mc-${q.n}-${i}"><input type="radio" name="q${q.n}" value="${String.fromCharCode(65 + i)}"> ${String.fromCharCode(65 + i)}. ${opt}</label>`).join('')}
+    </div>`).join('');
+  return groupWrap(group, qs);
+}
+
+function buildMatchingGroup(group) {
+  const qs = group.questions.map(q => `
+    <div class="mc-question">
+      <div class="mc-text"><div class="q-num" style="flex-shrink:0">${q.n}</div><span>${q.text}</span></div>
+      <div>${group.options.map((o, i) => `<label class="mc-option"><input type="radio" name="q${q.n}" value="${String.fromCharCode(65 + i)}"> ${String.fromCharCode(65 + i)}. ${o}</label>`).join('')}</div>
+    </div>`).join('');
+  return groupWrap(group, `<div>${qs}</div>`);
+}
+
+function buildSentenceGroup(group) {
+  const rows = group.questions.map(q => `
+    <div class="fill-row">
+      <div class="q-num">${q.n}</div>
+      <span${q.spanStyle ? ` style="${q.spanStyle}"` : ''}>${q.sentence}</span>
+      <input type="text" id="q${q.n}" class="q-input" placeholder="your answer">
+    </div>`).join('');
+  return groupWrap(group, rows);
+}
+
+function buildSummaryGroup(group) {
+  const html = group.template.replace(/\{\{(\d+)\}\}/g, (_, n) => {
+    const w = (group.widths && group.widths[n]) || '120px';
+    return `<span style="display:inline-block;background:var(--surface);border-radius:var(--r-sm);border:1.5px solid var(--border);padding:2px 4px"><input class="q-input" type="text" id="q${n}" placeholder="${n}" style="width:${w};padding:4px 8px;text-transform:uppercase"></span>`;
+  });
+  return groupWrap(group, `<p style="${group.pStyle || 'font-size:.9375rem;line-height:1.9;margin-bottom:16px'}">${html}</p>`);
+}
+
+function buildGroup(group) {
+  switch (group.type) {
+    case 'tfng': return buildTFNGGroup(group);
+    case 'mc': return buildMCGroup(group);
+    case 'matching': return buildMatchingGroup(group);
+    case 'sentence': return buildSentenceGroup(group);
+    case 'summary': return buildSummaryGroup(group);
+    default: return '';
+  }
+}
+
+function buildPassageHTML(passage, i, lastIndex) {
+  const groups = passage.groups.map(buildGroup).join('');
+  const isLast = i === lastIndex;
+  const finishLabel = isLast ? "✅ I've finished this passage" : "✅ I've finished this passage, Continue";
+  return `<div class="passage-block${i === 0 ? ' active' : ''}" id="passage-${i}">
+    <div class="passage-text">${passage.bodyHTML}</div>
+    ${groups}
+    <div class="flex justify-end" style="margin-top:16px">
+      <button class="btn btn-primary" onclick="finishReadingPassage()">${finishLabel}</button>
+    </div>
+  </div>`;
+}
+
+function renderReadingTest() {
+  const zone = document.getElementById('test-zone');
+  const lastIndex = currentTest.passages.length - 1;
+  const tabs = currentTest.passages.map((p, i) =>
+    `<button class="passage-tab${i === 0 ? ' active' : ''}" id="ptab-${i}" onclick="switchPassage(${i})">📄 ${p.tabLabel}</button>`).join('');
+  const nav = `<div class="passage-nav" id="passage-nav">${tabs}<div class="timer-badge" id="timer-display">⏱ 60:00</div></div>`;
+  const blocks = currentTest.passages.map((p, i) => buildPassageHTML(p, i, lastIndex)).join('');
+  const submit = `<div id="reading-submit-section" style="text-align:center;padding:32px 0">
+      <p style="margin-bottom:16px;color:var(--text-muted)">Done with some or all passages? Submit to see your score.</p>
+      <button class="btn btn-success btn-lg" onclick="submitTest()">✅ Submit &amp; Get Score</button>
+    </div>`;
+  zone.innerHTML = nav + blocks + submit;
+
+  // Index des questions + plages de passages, calcules depuis les donnees.
+  qIndex = {};
+  passageRanges = currentTest.passages.map(p => {
+    let mn = Infinity, mx = -Infinity;
+    p.groups.forEach(g => g.questions.forEach(q => {
+      qIndex[q.n] = { q, type: g.type };
+      if (q.n < mn) mn = q.n;
+      if (q.n > mx) mx = q.n;
+    }));
+    return { start: mn, end: mx, label: p.resultLabel };
+  });
+}
+
+// ── Etat / init ──────────────────────────────────────────────────────────────
+function setCurrentTest(num) {
+  currentTestNum = num;
+  currentTestKey = num === 3 ? 'rdtest03' : num === 2 ? 'rdtest02' : 'rdtest01';
+  currentTest = READING_TESTS[currentTestKey];
 }
 
 function init() {
   const scores = getAllReadingScores();
-  ['rdtest01','rdtest02','rdtest03'].forEach((key,i) => {
+  ['rdtest01', 'rdtest02', 'rdtest03'].forEach((key) => {
     if (scores[key]) {
       const s = scores[key];
       const el = document.getElementById('meta-' + key);
-      if (el) el.textContent = `Last: ${s.total}/40, Band ${fmtBand(s.band)} (${s.date})`;
+      // Garde window.fmtBand : feedback-gate.js est charge en defer, il peut ne pas
+      // etre encore defini au moment de init() (bug d'ordre pre-existant, hors lot).
+      if (el && window.fmtBand) el.textContent = `Last: ${s.total}/40, Band ${fmtBand(s.band)} (${s.date})`;
     }
   });
 
-  // Reprise UNIQUEMENT après un rechargement dans le MEME onglet en cours de
-  // test (sessionStorage, vidé à la fermeture de l'onglet). Une arrivée fraîche
-  // (nouvel onglet, retour plus tard) reste sur l'écran d'accueil, sans chrono
-  // ni test_started. Jumeau du garde-fou Writing du 13/07 : plus d'auto-start
-  // depuis une progression localStorage persistante.
+  // Reprise uniquement apres rechargement du MEME onglet en cours de test
+  // (sessionStorage). Une arrivee fraiche reste sur l'accueil, sans chrono ni
+  // test_started (jumeau du garde-fou Writing).
   let sessionTest = 0;
   try { sessionTest = parseInt(sessionStorage.getItem(READING_SESSION_KEY) || '0', 10); } catch (e) {}
   if (sessionTest >= 1 && sessionTest <= 3) {
-    currentReadingTest = sessionTest;
-    document.querySelectorAll('.test-sel-btn').forEach((b,i) =>
-      b.classList.toggle('active', i === currentReadingTest - 1));
-    startTest(true); // reprise: chrono relancé, pas de nouveau test_started
+    setCurrentTest(sessionTest);
+    document.querySelectorAll('.test-sel-btn').forEach((b, i) => b.classList.toggle('active', i === sessionTest - 1));
+    startTest(true);
   }
 }
 
@@ -1656,75 +498,69 @@ function saveReadingScore(testId, passageScores, total) {
 function selectTest(id) {
   if (timerInterval) clearInterval(timerInterval);
   try { sessionStorage.removeItem(READING_SESSION_KEY); } catch (e) {}
-  currentReadingTest = id === 'test03' ? 3 : id === 'test02' ? 2 : 1;
-  document.querySelectorAll('.test-sel-btn').forEach((b,i) =>
-    b.classList.toggle('active', i === currentReadingTest - 1));
+  setCurrentTest(id === 'test03' ? 3 : id === 'test02' ? 2 : 1);
+  document.querySelectorAll('.test-sel-btn').forEach((b, i) => b.classList.toggle('active', i === currentTestNum - 1));
   document.getElementById('instructions-card').classList.remove('hidden');
-  ['test-zone','test-zone-02','test-zone-03'].forEach(z =>
-    document.getElementById(z).classList.add('hidden'));
+  document.getElementById('test-zone').classList.add('hidden');
+  document.getElementById('review-panel')?.classList.add('hidden');
   submitted = false;
 }
 
-// ── Finish passage : sauvegarde + navigation (une pierre deux coups) ────────
+// ── Finish passage : sauvegarde + navigation ─────────────────────────────────
 function finishReadingPassage() {
   const pi = currentPassage;
-  const prefix = currentPrefix();
-  const range = currentRanges()[pi];
+  const range = passageRanges[pi];
   if (!passagesDone[pi]) {
-    window.ptEvent && window.ptEvent('section_completed', { section: 'reading', test_number: currentReadingTest });
+    window.ptEvent && window.ptEvent('section_completed', { section: 'reading', test_number: currentTestNum });
     let score = 0;
     for (let qn = range.start; qn <= range.end; qn++) {
-      const key = prefix + 'q' + qn;
-      const correct = checkQ(qn, prefix);
-      markQ(qn, correct, prefix);
+      const correct = checkQ(qn);
+      markQ(qn, correct);
       if (correct) score++;
-      savedReadingAnswers[key] = getAnswerValue(key);
+      savedReadingAnswers['q' + qn] = getAnswerValue('q' + qn);
     }
     passageScoresLive[pi] = score;
     passagesDone[pi] = true;
-    document.getElementById(prefix + 'ptab-' + pi)?.classList.add('done');
-    toast(`Passage ${pi+1} saved (${score}/${range.end-range.start+1}).`, 'success');
+    document.getElementById('ptab-' + pi)?.classList.add('done');
+    toast(`Passage ${pi + 1} saved (${score}/${range.end - range.start + 1}).`, 'success');
   }
-  // Position de reprise sauvegardée = le PROCHAIN passage (pas celui qu'on
-  // vient de finir), pour reprendre au bon endroit après un rechargement.
   const nextPassage = pi < 2 ? pi + 1 : pi;
-  saveProgress('reading', currentReadingTestId(), {
+  saveProgress('reading', currentTestKey, {
     currentPassage: nextPassage, passagesDone, passageScores: passageScoresLive, answers: savedReadingAnswers,
   });
   if (pi < 2) switchPassage(pi + 1);
+  else maybeStartReview();
 }
 
 function startTest(resume = false) {
   document.getElementById('instructions-card').classList.add('hidden');
-  ['test-zone','test-zone-02','test-zone-03'].forEach(z =>
-    document.getElementById(z).classList.add('hidden'));
-  const zoneId = currentReadingTest === 3 ? 'test-zone-03' : currentReadingTest === 2 ? 'test-zone-02' : 'test-zone';
-  document.getElementById(zoneId).classList.remove('hidden');
+  document.getElementById('review-panel')?.classList.add('hidden');
+  renderReadingTest();
+  document.getElementById('test-zone').classList.remove('hidden');
   submitted = false;
 
-  const saved = loadProgress('reading', currentReadingTestId());
-  if (!resume) window.ptEvent && window.ptEvent('test_started', { section: 'reading', test_number: currentReadingTest });
+  const saved = loadProgress('reading', currentTestKey);
+  if (!resume) window.ptEvent && window.ptEvent('test_started', { section: 'reading', test_number: currentTestNum });
   if (saved) {
-    passagesDone = saved.passagesDone || [false,false,false];
-    passageScoresLive = saved.passageScores || [0,0,0];
+    passagesDone = saved.passagesDone || [false, false, false];
+    passageScoresLive = saved.passageScores || [0, 0, 0];
     savedReadingAnswers = saved.answers || {};
     restoreReadingAnswers();
   } else {
-    passagesDone = [false,false,false];
-    passageScoresLive = [0,0,0];
+    passagesDone = [false, false, false];
+    passageScoresLive = [0, 0, 0];
     savedReadingAnswers = {};
   }
 
   startTimer();
-  try { sessionStorage.setItem(READING_SESSION_KEY, String(currentReadingTest)); } catch (e) {}
+  try { sessionStorage.setItem(READING_SESSION_KEY, String(currentTestNum)); } catch (e) {}
   switchPassage(saved ? (saved.currentPassage || 0) : 0);
   toast(saved
-    ? `Progress restored, resuming at Passage ${(saved.currentPassage||0)+1}.`
+    ? `Progress restored, resuming at Passage ${(saved.currentPassage || 0) + 1}.`
     : 'Test started, Read Passage 1 and answer Questions 1-13.', 'info');
 }
 
-// Lecture/écriture uniformes qu'il s'agisse d'un champ texte, d'un select,
-// ou d'un groupe de boutons radio (qui n'ont pas d'id, seulement un name).
+// Lecture/ecriture uniformes : champ texte, select, ou groupe de radios (name).
 function getAnswerValue(key) {
   const el = document.getElementById(key);
   if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) return el.value;
@@ -1740,20 +576,14 @@ function setAnswerValue(key, value) {
 }
 
 function restoreReadingAnswers() {
-  const prefix = currentPrefix();
-  Object.keys(savedReadingAnswers).forEach(key => {
-    setAnswerValue(key, savedReadingAnswers[key]);
-  });
-  const ranges = currentRanges();
+  Object.keys(savedReadingAnswers).forEach(key => setAnswerValue(key, savedReadingAnswers[key]));
   passagesDone.forEach((done, pi) => {
     if (!done) return;
-    const range = ranges[pi];
-    for (let qn = range.start; qn <= range.end; qn++) {
-      markQ(qn, checkQ(qn, prefix), prefix);
-    }
-    const tabId = prefix + 'ptab-' + pi;
-    document.getElementById(tabId)?.classList.add('done');
+    const range = passageRanges[pi];
+    for (let qn = range.start; qn <= range.end; qn++) markQ(qn, checkQ(qn));
+    document.getElementById('ptab-' + pi)?.classList.add('done');
   });
+  if (passagesDone.every(Boolean)) maybeStartReview();
 }
 
 function startTimer() {
@@ -1775,21 +605,114 @@ function startTimer() {
 function updateTimerDisplay() {
   const m = Math.floor(secondsLeft / 60);
   const s = secondsLeft % 60;
-  const display = `⏱ ${m}:${s.toString().padStart(2,'0')}`;
-  ['timer-display', 't2_timer-display', 't3_timer-display'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) { el.textContent = display; if (secondsLeft <= 600) el.classList.add('warning'); }
-  });
+  const clock = `${m}:${s.toString().padStart(2, '0')}`;
+  const el = document.getElementById('timer-display');
+  if (el) { el.textContent = `⏱ ${clock}`; if (secondsLeft <= 600) el.classList.add('warning'); }
+  // Le panneau review reutilise le meme chrono principal (pas de temps bonus).
+  const rt = document.getElementById('review-timer');
+  if (rt) rt.textContent = clock;
 }
 
 function switchPassage(i) {
   currentPassage = i;
-  const zoneId = currentReadingTest === 3 ? 'test-zone-03' : currentReadingTest === 2 ? 'test-zone-02' : 'test-zone';
-  document.querySelectorAll(`#${zoneId} .passage-block`).forEach((b,j) =>
-    b.classList.toggle('active', j === i));
-  document.querySelectorAll(`#${zoneId} .passage-tab`).forEach((t,j) =>
-    t.classList.toggle('active', j === i));
-  window.scrollTo({ top: document.getElementById(zoneId).offsetTop - 80, behavior: 'smooth' });
+  document.querySelectorAll('#test-zone .passage-block').forEach((b, j) => b.classList.toggle('active', j === i));
+  document.querySelectorAll('#test-zone .passage-tab').forEach((t, j) => t.classList.toggle('active', j === i));
+  const zone = document.getElementById('test-zone');
+  window.scrollTo({ top: zone.offsetTop - 80, behavior: 'smooth' });
+}
+
+// Panneau review : apparait quand les 3 passages sont finis avant la fin du
+// chrono. Pas de timer separe : le chrono principal continue et auto-submit a 0.
+function maybeStartReview() {
+  if (submitted) return;
+  if (!passagesDone.every(Boolean)) return;
+  const panel = document.getElementById('review-panel');
+  if (!panel || !panel.classList.contains('hidden')) return;
+  document.getElementById('reading-submit-section')?.classList.add('hidden');
+  panel.classList.remove('hidden');
+  updateTimerDisplay();
+  panel.scrollIntoView({ behavior: 'smooth' });
+}
+
+function isAnswered(n) {
+  const key = 'q' + n;
+  const el = document.getElementById(key);
+  if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) return el.value.trim() !== '';
+  return !!document.querySelector(`input[name="${key}"]:checked`);
+}
+
+function checkQ(n) {
+  const rec = qIndex[n];
+  if (!rec) return false;
+  const answer = rec.q.answer;
+  const key = 'q' + n;
+  const el = document.getElementById(key);
+  if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) {
+    return el.value.trim().toUpperCase() === answer;
+  }
+  const checked = document.querySelector(`input[name="${key}"]:checked`);
+  return checked && checked.value === answer;
+}
+
+function markQ(n, correct) {
+  const rec = qIndex[n];
+  if (!rec) return;
+  const answer = rec.q.answer;
+  const key = 'q' + n;
+  const el = document.getElementById(key);
+
+  if (el && ((el.tagName === 'INPUT' && el.type === 'text') || el.tagName === 'SELECT')) {
+    el.classList.add(correct ? 'correct' : 'incorrect');
+    el.disabled = true;
+    if (!correct) {
+      const hint = document.createElement('div');
+      hint.style.cssText = 'font-size:.75rem;color:var(--success-dark);font-weight:600;margin-top:2px';
+      hint.textContent = '✓ ' + answer;
+      el.insertAdjacentElement('afterend', hint);
+      appendRef(rec.q, hint);
+    }
+    return;
+  }
+
+  const tfngWrap = document.getElementById('tfng-' + n);
+  if (tfngWrap) {
+    tfngWrap.querySelectorAll('.tfng-label').forEach(lbl => {
+      const inp = lbl.querySelector('input');
+      if (!inp) return;
+      inp.disabled = true;
+      if (inp.value === answer) lbl.classList.add('correct-ans');
+      else if (inp.checked && inp.value !== answer) lbl.classList.add('wrong-ans');
+    });
+    if (!correct) appendRef(rec.q, tfngWrap);
+    return;
+  }
+
+  const radios = document.querySelectorAll(`input[name="${key}"]`);
+  let questionWrap = null;
+  radios.forEach(inp => {
+    inp.disabled = true;
+    const lbl = inp.closest('.mc-option');
+    if (!lbl) return;
+    if (!questionWrap) questionWrap = lbl.closest('.mc-question');
+    if (inp.value === answer) lbl.classList.add('correct-ans');
+    else if (inp.checked && inp.value !== answer) lbl.classList.add('wrong-ans');
+  });
+  if (!correct && questionWrap) appendRef(rec.q, questionWrap);
+}
+
+// Feedback minimal sur erreur : renvoi au paragraphe (q.ref). Le champ
+// q.explanation reste vide dans ce lot, affiche seulement s'il est rempli plus tard.
+function appendRef(q, afterEl) {
+  if (!q || (!q.ref && !q.explanation)) return;
+  if (afterEl.nextElementSibling && afterEl.nextElementSibling.classList.contains('ref-note')) return;
+  const note = document.createElement('div');
+  note.className = 'ref-note';
+  note.style.cssText = 'font-size:.75rem;color:var(--text-muted);margin-top:4px;font-style:italic';
+  let txt = '';
+  if (q.ref) txt += 'See ' + q.ref;
+  if (q.explanation) txt += (txt ? '. ' : '') + q.explanation;
+  note.textContent = txt;
+  afterEl.insertAdjacentElement('afterend', note);
 }
 
 function submitTest() {
@@ -1797,26 +720,23 @@ function submitTest() {
   submitted = true;
   clearInterval(timerInterval);
   try { sessionStorage.removeItem(READING_SESSION_KEY); } catch (e) {}
+  document.getElementById('review-panel')?.classList.add('hidden');
 
-  const prefix = currentReadingTest === 3 ? 't3_' : currentReadingTest === 2 ? 't2_' : '';
-  const activeRanges = currentReadingTest === 3 ? PASSAGE_RANGES_03 : currentReadingTest === 2 ? PASSAGE_RANGES_02 : PASSAGE_RANGES;
-  const testId = currentReadingTest === 3 ? 'rdtest03' : currentReadingTest === 2 ? 'rdtest02' : 'rdtest01';
-  const metaId = currentReadingTest === 3 ? 'meta-rdtest03' : currentReadingTest === 2 ? 'meta-rdtest02' : 'meta-rdtest01';
+  const testId = currentTestKey;
+  const metaId = 'meta-' + currentTestKey;
 
   let total = 0, answeredCount = 0;
   const passageScores = [0, 0, 0];
 
   for (let qn = 1; qn <= 40; qn++) {
-    if (isAnswered(qn, prefix)) answeredCount++;
-    const correct = checkQ(qn, prefix);
+    if (isAnswered(qn)) answeredCount++;
+    const correct = checkQ(qn);
     if (correct) total++;
-    const pIdx = qn <= 13 ? 0 : qn <= 26 ? 1 : 2;
-    // Passages déjà validés via finishReadingPassage() sont déjà marqués -
-    // ré-appeler markQ() dupliquerait les indices "✓ réponse" affichés.
-    if (!passagesDone[pIdx]) markQ(qn, correct, prefix);
-    if (qn <= 13) passageScores[0] += correct ? 1 : 0;
-    else if (qn <= 26) passageScores[1] += correct ? 1 : 0;
-    else passageScores[2] += correct ? 1 : 0;
+    const pIdx = passageIndexOf(qn);
+    // Passages deja valides via finishReadingPassage() sont deja marques :
+    // re-appeler markQ() dupliquerait les indices affiches.
+    if (!passagesDone[pIdx]) markQ(qn, correct);
+    passageScores[pIdx] += correct ? 1 : 0;
   }
 
   if (answeredCount === 0) {
@@ -1830,106 +750,38 @@ function submitTest() {
   const band = getBand(isPartial ? scaledTotal : total, 'reading');
   saveReadingScore(testId, passageScores, total);
   clearProgress('reading', testId);
-  showResults(total, band, passageScores, activeRanges, answeredCount, scaledTotal);
+  showResults(total, band, passageScores, passageRanges, answeredCount, scaledTotal);
 
-  document.getElementById(metaId).textContent = isPartial
+  const metaEl = document.getElementById(metaId);
+  if (metaEl) metaEl.textContent = isPartial
     ? `Last: ${total}/${answeredCount}, ~Band ${fmtBand(band)}`
     : `Last: ${total}/40, Band ${fmtBand(band)}`;
 }
 
-function isAnswered(n, prefix='') {
-  const key = prefix + 'q' + n;
-  const el = document.getElementById(key);
-  if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) {
-    return el.value.trim() !== '';
+function passageIndexOf(qn) {
+  for (let i = 0; i < passageRanges.length; i++) {
+    if (qn >= passageRanges[i].start && qn <= passageRanges[i].end) return i;
   }
-  return !!document.querySelector(`input[name="${key}"]:checked`);
+  return 0;
 }
 
-function checkQ(n, prefix='') {
-  const qkey = 'q' + n;
-  const key = prefix + qkey;
-  const answer = ANSWERS_MAP[prefix][qkey];
-  const el = document.getElementById(key);
-  if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) {
-    return el.value.trim().toUpperCase() === answer;
-  }
-  const checked = document.querySelector(`input[name="${key}"]:checked`);
-  return checked && checked.value === answer;
-}
-
-function markQ(n, correct, prefix='') {
-  const qkey = 'q' + n;
-  const key = prefix + qkey;
-  const answer = ANSWERS_MAP[prefix][qkey];
-  const el = document.getElementById(key);
-
-  if (el && el.tagName === 'INPUT' && el.type === 'text') {
-    el.classList.add(correct ? 'correct' : 'incorrect');
-    el.disabled = true;
-    if (!correct) {
-      const hint = document.createElement('div');
-      hint.style.cssText = 'font-size:.75rem;color:var(--success-dark);font-weight:600;margin-top:2px';
-      hint.textContent = '✓ ' + answer;
-      el.insertAdjacentElement('afterend', hint);
-    }
-    return;
-  }
-
-  if (el && el.tagName === 'SELECT') {
-    el.classList.add(correct ? 'correct' : 'incorrect');
-    el.disabled = true;
-    if (!correct) {
-      const hint = document.createElement('div');
-      hint.style.cssText = 'font-size:.75rem;color:var(--success-dark);font-weight:600;margin-top:2px';
-      hint.textContent = '✓ ' + answer;
-      el.insertAdjacentElement('afterend', hint);
-    }
-    return;
-  }
-
-  const tfngWrap = document.getElementById(prefix + 'tfng-' + n);
-  if (tfngWrap) {
-    const labels = tfngWrap.querySelectorAll('.tfng-label');
-    labels.forEach(lbl => {
-      const inp = lbl.querySelector('input');
-      if (!inp) return;
-      inp.disabled = true;
-      if (inp.value === answer) lbl.classList.add('correct-ans');
-      else if (inp.checked && inp.value !== answer) lbl.classList.add('wrong-ans');
-    });
-    return;
-  }
-
-  const radios = document.querySelectorAll(`input[name="${key}"]`);
-  radios.forEach(inp => {
-    inp.disabled = true;
-    const lbl = inp.closest('.mc-option');
-    if (!lbl) return;
-    if (inp.value === answer) lbl.classList.add('correct-ans');
-    else if (inp.checked && inp.value !== answer) lbl.classList.add('wrong-ans');
-  });
-}
-
-function showResults(total, band, passageScores, ranges, answeredCount=40, scaledTotal=total) {
+function showResults(total, band, passageScores, ranges, answeredCount = 40, scaledTotal = total) {
   const card = document.getElementById('results-card');
   card.classList.add('show');
   const isPartial = answeredCount < 40;
-  // Carte de resultat au gabarit fb-hero (coherence stricte avec Writing/Speaking) :
-  // le band reste toujours visible ; le detail passe derriere le micro-feedback.
   const heroNote = isPartial
     ? `Approximate, ${total} of ${answeredCount} answered. Finish all 3 passages for an official band.`
     : `${total} of 40 correct, your free instant score.`;
   const heroHTML =
     `<div class="card card-sm fb-hero">` +
-      `<div class="fb-hero__label">📖 Reading Test 0${currentReadingTest}, Band</div>` +
+      `<div class="fb-hero__label">📖 Reading Test 0${currentTestNum}, Band</div>` +
       `<div class="fb-hero__band">${fmtBand(band)}</div>` +
       `<div class="fb-hero__note">${heroNote}</div>` +
     `</div>`;
   const subText = isPartial
     ? `⚠️ Approximate, ${answeredCount}/40 questions answered. Complete all 3 passages for an official score.`
-    : (total >= 35 ? '🎉 Great score, keep it up!' : `${35-total} more correct for a higher band`);
-  const gridHTML = ranges.map((p,i) =>
+    : (total >= 35 ? '🎉 Great score, keep it up!' : `${35 - total} more correct for a higher band`);
+  const gridHTML = ranges.map((p, i) =>
     `<div class="sec-res"><div class="val">${passageScores[i]}/${p.end - p.start + 1}</div><div class="lbl">${p.label}</div></div>`).join('');
   const detailHTML =
     `<p style="color:var(--text-muted);font-size:1.0625rem;margin:16px 0">${subText}</p>` +
@@ -1937,9 +789,8 @@ function showResults(total, band, passageScores, ranges, answeredCount=40, scale
     `<div class="sec-results-grid" style="margin-top:16px">${gridHTML}</div>`;
   const gateEl = document.getElementById('results-gate');
   if (window.FeedbackGate && gateEl) {
-    window.FeedbackGate.render(gateEl, { type: 'reading', testId: currentReadingTest, band: band, heroHTML, detailHTML });
+    window.FeedbackGate.render(gateEl, { type: 'reading', testId: currentTestNum, band: band, heroHTML, detailHTML });
   } else if (gateEl) { gateEl.innerHTML = heroHTML + detailHTML; }
-  // Placé après la carte sombre (fond clair de la page), pas dedans.
   if (window.ExamFlow) window.ExamFlow.renderNextStep('reading', card.parentElement || card);
   card.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -1949,7 +800,7 @@ function showAnswers() {
   switchPassage(0);
 }
 
-function toast(msg, type='info') {
+function toast(msg, type = 'info') {
   const container = document.getElementById('toast-container');
   const el = document.createElement('div');
   el.className = `toast ${type}`;
