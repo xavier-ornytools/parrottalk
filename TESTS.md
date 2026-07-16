@@ -1,5 +1,31 @@
 # ParrotTalk — Tests techniques
 
+## Chantier « 4 tests par module », LOT 1 : calibrage transverse (2026-07-16)
+
+Branche `feat/lot1-reading-band-fbhero`. Perimetre strict (diagnostic du 16/07) : barème Reading + cartes de resultat. Aucun push, aucun merge : Xavier valide visuellement les cartes et teste un scoring Reading dans son navigateur avant merge.
+
+**Barème Reading (`js/data.js`).** Nouvelle table `BAND_40_READING_ACADEMIC` (score brut /40 vers bande) distincte de `BAND_40` (Listening). `getBand(raw, module)` route selon le module ; defaut = `listening`, donc tous les appels Listening existants sont inchanges. `reading.html` appelle desormais `getBand(total, 'reading')` (2 endroits : `saveReadingScore` et `submitTest`). Listening strictement inchange (table et appels). Paliers 19 a 40 pris exactement du referentiel IELTS ParrotTalk v1 ; paliers 0 a 18 = prolongement Cambridge standard (le referentiel s'arrete a 5.5), signale en commentaire.
+
+**Cartes de resultat (`listening.html`, `reading.html`).** Migration de l'ancienne carte sombre (`results-card` + `band-big`) vers le gabarit `fb-hero` de Writing/Speaking : le band passe dans une carte claire `card card-sm fb-hero` (label, band, note factuelle du type « X of 40 correct »), transmise en `heroHTML` au `FeedbackGate` (au lieu de `heroHTML: ''`). Le detail (message, bouton reponses, grille par section/passage) repasse en theme clair (`--text-muted`, `btn-outline`, `sec-res` sur `--primary-pale`). Elements retires : `#results-score`, `#results-band`, classe `.band-big` (plus aucune reference).
+
+### Testé avec
+- `node --check js/data.js` : OK.
+- Execution reelle de la table (`getBand`) : 17 paliers Reading verifies conformes au referentiel (40->9,0 · 38->8,5 · 36->8,0 · 34->7,5 · 32/30->7,0 · 29/27->6,5 · 26/23->6,0 · 22/19->5,5 · extension basse OK) ; Listening inchange (39->8,0 · 35->7,0 · 30->6,0, identiques a `BAND_40`).
+- `grep` de non-regression : zero reference orpheline a `results-score` / `results-band` / `band-big` / `btn-outline--on-dark`.
+- Regle « aucun tiret cadratin/demi-cadratin » : zero dans tout le texte ajoute ce lot.
+
+### Reste a valider (navigateur, avant merge)
+- Rendu visuel des cartes `fb-hero` Listening et Reading (parite avec Writing/Speaking), en score complet et en score partiel.
+- Un scoring Reading complet dans le navigateur : verifier que le band affiche correspond bien a la table Academic (ex. 30/40 doit donner Band 7,0, contre 6,0 avec l'ancienne table Listening).
+
+### A remonter (hors perimetre LOT 1)
+- Le contenu Listening de `js/data.js` contient encore des tirets cadratins/demi (titres, `formTitle`, ex. « GREENLINE COACH TRAVEL — BOOKING FORM · Q1–10 ») : la purge du 15/07 (« 270 -> 0 ») ne couvrait pas ce fichier de donnees. A traiter dans un lot dedie (Listening etant fige ici).
+
+### Ajout apres validation de Xavier : bandes avec decimale, 4 modules
+Demande apres verification du scoring Reading : afficher les bandes avec une decimale partout (« 7.0 » et non « 7 »), sur les 4 modules. Nouveau helper partage `fmtBand(b)` dans `js/feedback-gate.js` (charge par les 4 pages), expose en `window.fmtBand` : `7 -> "7.0"`, `6.5 -> "6.5"`, valeur non finie -> `"-"`. Applique aux 11 points d'affichage de bande : `writing.html` (hero + bandes par critere), `speaking.html` (hero + badge + bandes par critere), `reading.html` et `listening.html` (hero + labels « Last: ... Band »).
+
+Teste : `node --check js/feedback-gate.js` OK ; chargement des 4 pages en jsdom sans erreur, `fmtBand` present et correct partout (7 -> 7.0, 6.5 -> 6.5, 9 -> 9.0, null -> -) ; Reading Test 01 pilote de bout en bout (30/40 justes) affiche desormais **Band 7.0** dans la carte fb-hero (contre « 7 » avant, et 6.0 avec l'ancienne table Listening). Fichiers du lot au total : `js/data.js`, `js/feedback-gate.js`, `reading.html`, `listening.html`, `writing.html`, `speaking.html`, plus `CLAUDE.md` (regle serveur local en fin de lot) et `TESTS.md`.
+
 ## Correctifs securite audit Pixel (2026-07-16) ✅
 
 Branche `fix/security-pt01-quickwins-20260716`. Correctifs issus de l'audit de code Pixel (welcometothepixel.com) du 14/07, confronte au code reel. Un commit par lot, aucun push prod : Xavier valide dans son navigateur avant merge.

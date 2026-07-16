@@ -993,7 +993,7 @@ function renderSpeakingFeedback(data, testId) {
     return `
     <div class="score-mini" style="background:${c.bg}">
       <div class="sm-tag">${c.key.toUpperCase()}</div>
-      <div class="sm-val" style="color:${c.color}">${val ?? '-'}</div>
+      <div class="sm-val" style="color:${c.color}">${fmtBand(val)}</div>
       <div class="sm-name">${c.label}</div>
     </div>`;
   }).join('');
@@ -1009,7 +1009,7 @@ function renderSpeakingFeedback(data, testId) {
   const heroHTML = `
     <div class="card card-lg fb-hero">
       <div class="fb-hero__label">Speaking Test 0${testId}, Overall Band</div>
-      <div class="fb-hero__band">${displayOverall ?? '-'}</div>
+      <div class="fb-hero__band">${fmtBand(displayOverall)}</div>
       <div class="fb-hero__note">AI estimate, your free instant result.</div>
     </div>`;
 
@@ -1017,7 +1017,7 @@ function renderSpeakingFeedback(data, testId) {
     <div class="card card-lg" style="margin-top:16px">
       <div class="flex items-center justify-between" style="margin-bottom:16px">
         <h3>Detailed feedback, Speaking Test 0${testId}</h3>
-        <span class="badge badge-primary">Band ${displayOverall ?? '-'}</span>
+        <span class="badge badge-primary">Band ${fmtBand(displayOverall)}</span>
       </div>
       <div class="score-mini-grid">${criteriaHTML}</div>
       ${data.summary?`<p style="font-size:.9375rem;color:var(--text);margin-bottom:16px">${esc(data.summary)}</p>`:''}

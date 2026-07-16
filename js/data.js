@@ -14,8 +14,36 @@ const BAND_40 = {
   33:6.5,34:6.5,35:7.0,36:7.0,37:7.5,38:7.5,39:8.0,40:9.0
 };
 
-function getBand(raw) {
-  return BAND_40[Math.min(raw, 40)] || 1.0;
+// IELTS Academic Reading, score brut /40 vers bande.
+// Paliers 19 a 40 : referentiel IELTS ParrotTalk v1 (7 juil. 2026), source de verite.
+// Paliers 0 a 18 : prolongement table Cambridge standard (le referentiel s'arrete a 5.5).
+const BAND_40_READING_ACADEMIC = {
+  40: 9.0, 39: 9.0,
+  38: 8.5, 37: 8.5,
+  36: 8.0, 35: 8.0,
+  34: 7.5, 33: 7.5,
+  32: 7.0, 31: 7.0, 30: 7.0,
+  29: 6.5, 28: 6.5, 27: 6.5,
+  26: 6.0, 25: 6.0, 24: 6.0, 23: 6.0,
+  22: 5.5, 21: 5.5, 20: 5.5, 19: 5.5,
+  18: 5.0, 17: 5.0, 16: 5.0, 15: 5.0,
+  14: 4.5, 13: 4.5,
+  12: 4.0, 11: 4.0, 10: 4.0,
+  9: 3.5, 8: 3.5,
+  7: 3.0, 6: 3.0,
+  5: 2.5, 4: 2.5,
+  3: 2.0, 2: 2.0,
+  1: 1.0, 0: 1.0
+};
+
+// Tables de conversion par module. Listening et Reading ont des courbes brut vers
+// bande distinctes (IELTS officiel). getBand route selon le module ; defaut = listening
+// pour que tous les appels Listening existants restent inchanges.
+const BAND_TABLES = { listening: BAND_40, reading: BAND_40_READING_ACADEMIC };
+
+function getBand(raw, module) {
+  const table = BAND_TABLES[module] || BAND_40;
+  return table[Math.min(raw, 40)] || 1.0;
 }
 
 // ── TEST 01 DATA ──────────────────────────────────────────────────────────────

@@ -336,5 +336,13 @@
     renderStep();
   }
 
+  // Affichage des bandes avec une decimale, coherent sur les 4 modules
+  // (7 devient "7.0", 6.5 reste "6.5"). Valeur non finie devient "-".
+  function fmtBand(b) {
+    var n = typeof b === 'number' ? b : parseFloat(b);
+    return isFinite(n) ? n.toFixed(1) : '-';
+  }
+  window.fmtBand = fmtBand;
+
   window.FeedbackGate = { render: render, renderFinalQuestionnaire: renderFinalQuestionnaire };
 })();
