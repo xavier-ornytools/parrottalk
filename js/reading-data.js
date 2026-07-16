@@ -1348,7 +1348,7 @@ const READING_TEST03 = {
               "sentence": "Research on ________ has shown that background music in a shop can unconsciously influence what customers choose to buy.",
               "spanStyle": "",
               "answer": "PRIMING",
-              "ref": "",
+              "ref": "Paragraph 4: 'research has examined priming, the process by which exposure'",
               "explanation": ""
             },
             {
@@ -1356,7 +1356,7 @@ const READING_TEST03 = {
               "sentence": "Thaler and Sunstein developed ________ theory, which advocates for designing environments that guide people towards better choices.",
               "spanStyle": "",
               "answer": "NUDGE",
-              "ref": "",
+              "ref": "Paragraph 5: 'develop what they called nudge theory'",
               "explanation": ""
             },
             {
@@ -1364,7 +1364,7 @@ const READING_TEST03 = {
               "sentence": "Critics of nudge theory argue that it only addresses the ________ of poor decision-making rather than its structural causes.",
               "spanStyle": "",
               "answer": "SYMPTOMS",
-              "ref": "",
+              "ref": "Paragraph 6: 'address only the symptoms of poor decision-making'",
               "explanation": ""
             }
           ]
@@ -1384,7 +1384,7 @@ const READING_TEST03 = {
                 "Consumers prefer familiar products to unfamiliar alternatives"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 1: 'selecting the option that maximises their utility'",
               "explanation": ""
             },
             {
@@ -1397,7 +1397,7 @@ const READING_TEST03 = {
                 "People become more rational with experience and practice"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 2: 'they are constrained by the limits of their cognitive capacity'",
               "explanation": ""
             },
             {
@@ -1410,7 +1410,7 @@ const READING_TEST03 = {
                 "A shopper who selects the product placed at eye level in a supermarket"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 3: 'they are inclined to perceive it as a bargain'",
               "explanation": ""
             },
             {
@@ -1423,7 +1423,7 @@ const READING_TEST03 = {
                 "Priming is effective only in physical retail environments"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 4: 'exposure to one stimulus unconsciously influences responses to subsequent stimuli'",
               "explanation": ""
             },
             {
@@ -1436,7 +1436,7 @@ const READING_TEST03 = {
                 "Computer algorithms used to personalise online shopping recommendations"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 5: 'the arrangement of options in a decision-making environment'",
               "explanation": ""
             },
             {
@@ -1449,7 +1449,7 @@ const READING_TEST03 = {
                 "They claim it applies only to health-related decisions and not to financial behaviour"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 6: 'question whether it is ethically appropriate for governments to manipulate'",
               "explanation": ""
             },
             {
@@ -1462,7 +1462,7 @@ const READING_TEST03 = {
                 "Evaluate whether priming or anchoring has a greater influence on purchasing decisions"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 1: 'research beginning in the 1950s began to challenge this assumption'",
               "explanation": ""
             }
           ]
