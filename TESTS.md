@@ -14,16 +14,18 @@ Branche `fix/security-pt01-quickwins-20260716`. Correctifs issus de l'audit de c
 
 ### Testé avec
 - Nouveau `node tests/e2e-xss.js` (Playwright, vrai Chrome) : **12/12**. Injecte une charge `onerror` + `<script>` dans tous les champs IA de `renderSpeakingFeedback` et `renderAIFeedback`, verifie zero execution, zero noeud injecte, charge presente uniquement sous forme de texte echappe.
-- Non-regression : `node tests/e2e-feedback.js` **36/36**, `node tests/e2e-writing-lifecycle.js` **30/30** (rendu du feedback et gating intacts apres echappement).
+- Non-regression : `node tests/e2e-feedback.js` **36/36**, `node tests/e2e-writing-lifecycle.js` **30/30** (rendu du feedback et gating intacts apres echappement). **Total non-regression : 66/66.**
 - `esc()` verifie en isolation (charge XSS neutralisee, null et nombre geres). JSON-LD des 7 pages valides (`json.loads`). Chart.js se charge sans erreur d'integrite (Chart global present). `security.txt` servi en 200.
 - Syntaxe JS des blocs inline de `writing.html` et `speaking.html` validee (`node --check`).
 - **Connu, preexistant** : `node tests/e2e-ga4-events.js` echoue sur l'etape `feedback_completed` (speaking), a l'identique sur le commit de base `deaea87` (donc SANS aucun de ces changements). Non lie a cette session, a investiguer separement.
 
-### A verifier / deployer (au go de Xavier, apres verif navigateur)
-- Visuel : un Writing complet et un Speaking complet affichent le feedback IA normalement (l'echappement ne casse rien).
-- `curl -I` sur le preview Vercel : presence de `Strict-Transport-Security` et `Permissions-Policy`.
-- Apercu de partage (OpenGraph/Twitter) et rendu de `img/og-image.png` sur un debugger social.
-- Pas de merge sur `main` ni de push prod sans validation Xavier.
+### Deploye en production (2026-07-16) ✅
+- Validation locale par Xavier (serveur local sur `localhost:8000`, origine autorisee par le Worker) : Writing complet OK, Speaking complet OK, feedback IA intact, micro fonctionnel.
+- Merge `--no-ff` sur `main` (commit `e764db8`), branche `fix/security-pt01-quickwins-20260716` poussee puis supprimee (locale et distante).
+- Deploiement **production Vercel : success**.
+- En-tetes confirmes en prod sur `https://www.parrottalk.app/` (et pages produit) : `strict-transport-security: max-age=63072000; includeSubDomains; preload` et `permissions-policy: microphone=(self), camera=(), geolocation=()`. Rappel : l'apex `parrottalk.app` renvoie un 308 vers `www`, la verif se fait donc sur `www` (ou avec `curl -IL`).
+- `img/og-image.png` servi en prod (HTTP 200, image/png) : `https://www.parrottalk.app/img/og-image.png`. `security.txt` en 200.
+- Diagnostic annexe : le feedback echouait sur le preview `*.vercel.app` car le Worker Cloudflare a une allowlist d'origines (`ALLOWED_ORIGINS`) qui exclut les domaines de preview. Contourne par la validation locale sur `localhost:8000` (deja autorise), sans toucher a la prod.
 
 ## Lifting accueil + Speaking (2026-07-15) ✅
 
