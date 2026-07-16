@@ -26,49 +26,49 @@ const READING_TEST01 = {
               "n": 1,
               "text": "Sleep is now understood to involve significant brain activity.",
               "answer": "TRUE",
-              "ref": "",
+              "ref": "Paragraph 1: 'a period of intense neurological activity during which the brain'",
               "explanation": ""
             },
             {
               "n": 2,
               "text": "Adults require exactly eight hours of sleep per night.",
               "answer": "FALSE",
-              "ref": "",
+              "ref": "Paragraph 2: 'between seven and nine hours of sleep per night'",
               "explanation": ""
             },
             {
               "n": 3,
               "text": "REM sleep occurs only once during a typical night's sleep.",
               "answer": "FALSE",
-              "ref": "",
+              "ref": "Paragraph 3: 'REM sleep, which occurs multiple times during the night'",
               "explanation": ""
             },
             {
               "n": 4,
               "text": "Sleep deprivation has been linked to increased risk of cardiovascular disease.",
               "answer": "TRUE",
-              "ref": "",
+              "ref": "Paragraph 2: 'increased risk of cardiovascular disease'",
               "explanation": ""
             },
             {
               "n": 5,
               "text": "Scientists have reached agreement on the exact biological purpose of dreaming.",
               "answer": "NOT GIVEN",
-              "ref": "",
+              "ref": "Not stated in the passage",
               "explanation": ""
             },
             {
               "n": 6,
               "text": "Exposure to screen light before bedtime can delay the body's production of melatonin.",
               "answer": "TRUE",
-              "ref": "",
+              "ref": "Paragraph 4: 'Blue light suppresses the production of melatonin'",
               "explanation": ""
             },
             {
               "n": 7,
               "text": "All individuals who take long naps will experience reduced performance afterwards.",
               "answer": "NOT GIVEN",
-              "ref": "",
+              "ref": "Not stated in the passage",
               "explanation": ""
             }
           ]
@@ -88,7 +88,7 @@ const READING_TEST01 = {
                 "Generating vivid dreams"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 3: 'deep sleep is critical for physical restoration, cell repair'",
               "explanation": ""
             },
             {
@@ -101,7 +101,7 @@ const READING_TEST01 = {
                 "A clinically recognised sleep disorder"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 6: 'the cumulative deficit that builds when a person consistently sleeps'",
               "explanation": ""
             },
             {
@@ -114,7 +114,7 @@ const READING_TEST01 = {
                 "It is the most effective way to manage sleep loss"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 6: 'this strategy only partially restores cognitive function'",
               "explanation": ""
             },
             {
