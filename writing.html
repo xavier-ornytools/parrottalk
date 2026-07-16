@@ -574,7 +574,7 @@ function renderAIFeedback(box, data, task, promptText) {
     <div class="ai-feedback__header">
       <div class="ai-badge">🤖 AI Analysis, ✍️ Writing Task ${task}</div>
     </div>
-    ${promptExcerpt ? `<p style="font-size:.8125rem;color:var(--text-secondary,#64748B);margin-bottom:10px;font-style:italic">📋 Sujet évalué : "${promptExcerpt}"</p>` : ''}
+    ${promptExcerpt ? `<p style="font-size:.8125rem;color:var(--text-secondary,#64748B);margin-bottom:10px;font-style:italic">📋 Prompt evaluated: "${promptExcerpt}"</p>` : ''}
     ${data.summary ? `<p style="font-size:.9375rem;color:var(--text);margin-bottom:12px">${esc(data.summary)}</p>` : ''}
     <div class="criteria-grid">${itemsHTML}</div>
     ${data.topTip ? `<div style="margin-top:12px;padding:12px 14px;background:var(--warning-light);border-radius:var(--r);font-size:.875rem;color:#92400E"><strong>💡 Top tip:</strong> ${esc(data.topTip)}</div>` : ''}
