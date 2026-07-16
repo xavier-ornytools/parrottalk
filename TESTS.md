@@ -1,5 +1,26 @@
 # ParrotTalk — Tests techniques
 
+## Chantier Reading data-driven, LOT 2 : sortie des donnees + renvois d'erreur (2026-07-16)
+
+Branche `feat/reading-data-driven`. Aucun push, aucun merge. Refonte : les donnees des 3 tests Reading (9 passages, 120 questions, cles de reponse, scoring) sont sorties de `reading.html` vers `js/reading-data.js` (prose des passages conservee a l'identique, extraite par `tests/reading-build-data.js`). `reading.html` rend en data-driven (`renderReadingTest`, `qIndex`) et a maigri d'environ 1400 lignes.
+
+**Renvois d'erreur (les 120 champs `ref`).** Sur reponse fausse, le feedback affiche `See Paragraph X: 'ancre'`. Prefixe passe de `Voir` a `See`. Les 120 renvois ont ete rediges au format strict `Paragraph X: 'ancre verbatim de 5 a 10 mots'` (anglais uniquement), les NOT GIVEN portant `Not stated in the passage`. Persistance imposee : 1 commit de base (refs vides) + 12 commits de 10 renvois (`renvois test X, questions Y-Z`).
+
+**Outils ajoutes.** `tests/reading-fill-refs.js` (injection des renvois par lot, re-serialisation identique au generateur, diff limite aux lignes `ref`) et `tests/reading-verify-refs.js` (garde-fou : chaque ancre doit etre une sous-chaine EXACTE du passage ET figurer dans le paragraphe cite).
+
+### Testé avec
+- Garde-fou verbatim : `120/120` renvois OK (ancre exacte + dans le paragraphe cite), sur les 3 tests.
+- Regression fonctionnelle (`tests/reading-extract.js`, Chrome headless) : `0` erreur JS ; scoring des 3 vecteurs par test, correct `40/40` band 9 (passages 13/13/14), faux `0/40` band 1, partiel `26/40` band 6.
+- Review examen ordinateur (sonde Playwright) : chrono demarre a 3600 s sans bonus ; panneau de relecture reutilise le chrono principal (meme horloge, verifie 30:00 / 30:00) ; auto-submit a 0 s avec sauvegarde du score (copie non vide) ; copie vide a 0 s = avertissement sans soumission (garde `answeredCount === 0`, comportement voulu) ; renvoi affiche uniquement sur reponse fausse, au bon format.
+- Regle « aucun tiret cadratin/demi-cadratin » respectee.
+
+### Livrable
+- Rapport PDF sur le Bureau : `2026-07-16_Reading_LOT2_renvois-data-driven.pdf` (verification/regression, review examen ordinateur, echantillon de controle de 10 renvois par test avec paragraphe cite recopie, lien localhost cliquable).
+
+### Reste a valider (navigateur, avant merge)
+- Rendu visuel des renvois sous les reponses fausses, sur les 3 tests, en score complet et partiel.
+- Coherence pedagogique fine des ancres choisies (l'echantillon de 30 est dans le rapport).
+
 ## Chantier « 4 tests par module », LOT 1 : calibrage transverse (2026-07-16)
 
 Branche `feat/lot1-reading-band-fbhero`. Perimetre strict (diagnostic du 16/07) : barème Reading + cartes de resultat. Aucun push, aucun merge : Xavier valide visuellement les cartes et teste un scoring Reading dans son navigateur avant merge.
