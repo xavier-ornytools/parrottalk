@@ -1226,7 +1226,7 @@ const READING_TEST03 = {
                 "The manufacture of microbeads in cosmetics"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 1: 'the breakdown of plastic packaging; and the direct manufacture'",
               "explanation": ""
             },
             {
@@ -1239,7 +1239,7 @@ const READING_TEST03 = {
                 "Zooplankton populations determine the distribution of commercial fish stocks"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 2: 'cascading effects on species further up'",
               "explanation": ""
             },
             {
@@ -1252,7 +1252,7 @@ const READING_TEST03 = {
                 "The growth in the total volume of microplastics in the environment over time"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 3: 'the concentration of microplastic particles can increase at each level'",
               "explanation": ""
             },
             {
@@ -1265,7 +1265,7 @@ const READING_TEST03 = {
                 "They are well understood through long-term epidemiological studies of coastal populations"
               ],
               "answer": "C",
-              "ref": "",
+              "ref": "Paragraph 5: 'establishing direct causal links between microplastic exposure and human'",
               "explanation": ""
             },
             {
@@ -1278,7 +1278,7 @@ const READING_TEST03 = {
                 "Whether microplastics affect marine mammals more severely than fish"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 3: 'evidence for classical biomagnification of microplastics specifically remains disputed'",
               "explanation": ""
             },
             {
@@ -1291,7 +1291,7 @@ const READING_TEST03 = {
                 "Elevated"
               ],
               "answer": "B",
-              "ref": "",
+              "ref": "Paragraph 3: 'than the ambient environment would suggest'",
               "explanation": ""
             }
           ]
@@ -1316,7 +1316,7 @@ const READING_TEST03 = {
               "sentence": "The classical model of the rational consumer described an idealised decision-maker known as ________.",
               "spanStyle": "",
               "answer": "HOMO ECONOMICUS",
-              "ref": "",
+              "ref": "Paragraph 1: 'This model, known as homo economicus'",
               "explanation": ""
             },
             {
@@ -1324,7 +1324,7 @@ const READING_TEST03 = {
               "sentence": "Herbert Simon argued that real-world decision-making is subject to ________, due to cognitive and time constraints.",
               "spanStyle": "",
               "answer": "BOUNDED RATIONALITY",
-              "ref": "",
+              "ref": "Paragraph 2: 'subject to what he termed bounded rationality'",
               "explanation": ""
             },
             {
@@ -1332,7 +1332,7 @@ const READING_TEST03 = {
               "sentence": "According to Simon, rather than finding the optimal solution, most people ________ by selecting the first acceptable option.",
               "spanStyle": "",
               "answer": "SATISFICE",
-              "ref": "",
+              "ref": "Paragraph 2: 'most people satisfice: they adopt the first option'",
               "explanation": ""
             },
             {
@@ -1340,7 +1340,7 @@ const READING_TEST03 = {
               "sentence": "The ________ effect describes how an initial piece of numerical information can disproportionately influence later judgments.",
               "spanStyle": "",
               "answer": "ANCHORING",
-              "ref": "",
+              "ref": "Paragraph 3: 'findings concerns the anchoring effect'",
               "explanation": ""
             },
             {
