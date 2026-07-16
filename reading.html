@@ -669,7 +669,13 @@ function markQ(n, correct) {
       hint.style.cssText = 'font-size:.75rem;color:var(--success-dark);font-weight:600;margin-top:2px';
       hint.textContent = '✓ ' + answer;
       el.insertAdjacentElement('afterend', hint);
-      appendRef(rec.q, hint);
+      // Renvoi = note-bloc. Pour un summary (inputs en ligne dans un <p> partage),
+      // on ancre APRES le paragraphe pour ne pas inserer un bloc en plein flux
+      // inline (sinon la note tombe dans le <span> du trou, trop bas). Pour une
+      // sentence completion, l'input est dans sa .fill-row : ancre au hint
+      // (inchange). appendRef empile les notes dans l'ordre des trous.
+      const summaryP = el.closest('.fill-row') ? null : el.closest('p');
+      appendRef(rec.q, summaryP || hint);
     }
     return;
   }
@@ -704,15 +710,23 @@ function markQ(n, correct) {
 // q.explanation reste vide dans ce lot, affiche seulement s'il est rempli plus tard.
 function appendRef(q, afterEl) {
   if (!q || (!q.ref && !q.explanation)) return;
-  if (afterEl.nextElementSibling && afterEl.nextElementSibling.classList.contains('ref-note')) return;
+  // Empile les notes-bloc apres l'ancre : si des .ref-note suivent deja (cas
+  // summary, ou plusieurs trous partagent le meme <p> d'ancrage), on se place
+  // apres la derniere. Dedup par question : jamais deux notes pour la meme.
+  let anchor = afterEl;
+  while (anchor.nextElementSibling && anchor.nextElementSibling.classList.contains('ref-note')) {
+    if (anchor.nextElementSibling.dataset.q === String(q.n)) return;
+    anchor = anchor.nextElementSibling;
+  }
   const note = document.createElement('div');
   note.className = 'ref-note';
+  note.dataset.q = String(q.n);
   note.style.cssText = 'font-size:.75rem;color:var(--text-muted);margin-top:4px;font-style:italic';
   let txt = '';
   if (q.ref) txt += 'See ' + q.ref;
   if (q.explanation) txt += (txt ? '. ' : '') + q.explanation;
   note.textContent = txt;
-  afterEl.insertAdjacentElement('afterend', note);
+  anchor.insertAdjacentElement('afterend', note);
 }
 
 function submitTest() {
