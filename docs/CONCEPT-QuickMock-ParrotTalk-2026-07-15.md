@@ -20,11 +20,25 @@ Un bac blanc IELTS complet mais express: les 4 disciplines couvertes en environ 
 | Discipline | Version complète | Version Quick Mock | Durée cible |
 |---|---|---|---|
 | Listening | 4 sections | 1 section | ~8 min |
-| Reading | 3 textes | 1 texte | ~15 min |
-| Writing | Task 1 + Task 2 | Task 2 seule (la plus valorisée à l'examen) | ~20 min |
+| Reading | 3 textes | 1 texte | ~20 min |
+| Writing | Task 1 + Task 2 | **Task 1 seule** | ~20 min |
 | Speaking | Part 1 + 2 + 3 | Part 2 seule (cue card) | ~4 min |
 
-Total: environ 45 à 50 minutes. Alternative plus courte si besoin: Writing Task 1 au lieu de Task 2 (~20 min gagnées) mais Task 2 est pédagogiquement plus utile.
+Total: environ 50 minutes (52 exactement, annoncé "About 50 min" côté produit).
+
+> **MAJ 17/07/2026, ce tableau fait foi.** Deux écarts avec la version du 15/07,
+> tranchés par Xavier et implémentés dans le lot Quick Mock :
+> - **Writing: Task 1 seule**, et non Task 2. Le cadrage du 15/07 retenait la
+>   Task 2 (« la plus valorisée à l'examen ») en gardant la Task 1 comme
+>   « alternative plus courte ». L'argument de durée ne tenait pas, les deux
+>   tâches valent 20 min ici. C'est bien la Task 1 qui est livrée.
+> - **Reading: 20 min**, et non 15.
+>
+> **Durée du test: 50 min.** La stratégie YouTube du 16/07 annonce « le test dure
+> 15 min » et en fait l'argument produit des 4 vidéos. C'est incompatible avec la
+> composition ci-dessus (8+20+20+4). La maquette d'accueil validée le 17/07 dit
+> « About 50 min », et c'est ce qui est en ligne. **L'argument produit des vidéos
+> est donc à réécrire avant le tournage.**
 
 ## Principes produit
 
