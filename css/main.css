@@ -919,3 +919,5 @@ select.form-control { appearance: none; cursor: pointer; }
 .footer-social a.yt:hover     { color: #FF0000; }
 .footer-social a.x:hover      { color: #fff; }
 .footer-social a.reddit:hover { color: #FF4500; }
+.footer-social a.instagram:hover { color: #E4405F; }
+.footer-social a.tiktok:hover    { color: #FE2C55; }
