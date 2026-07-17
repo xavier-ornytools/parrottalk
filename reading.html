@@ -249,7 +249,7 @@
 <div class="container" style="padding-top:32px;padding-bottom:80px">
 
   <!-- TEST SELECTOR -->
-  <div class="grid-3" style="gap:12px;margin-bottom:24px">
+  <div class="grid-4" style="gap:12px;margin-bottom:24px">
     <button class="test-sel-btn active" onclick="selectTest('test01')">
       <div class="t-num">Test 01</div>
       <div class="t-name">Sleep · Urban Farming · Printing Press</div>
@@ -264,6 +264,11 @@
       <div class="t-num">Test 03</div>
       <div class="t-name">History of Glass · Microplastics · Consumer Psychology</div>
       <div class="t-meta" id="meta-rdtest03">Not attempted yet</div>
+    </button>
+    <button class="test-sel-btn" onclick="selectTest('test04')">
+      <div class="t-num">Test 04</div>
+      <div class="t-name">Bird Migration · Forest Fungi · Concert Hall Acoustics</div>
+      <div class="t-meta" id="meta-rdtest04">Not attempted yet</div>
     </button>
   </div>
 
@@ -450,15 +455,23 @@ function renderReadingTest() {
 }
 
 // ── Etat / init ──────────────────────────────────────────────────────────────
+// Derive la clef depuis le numero (data-driven). L'ancienne cascade de ternaires
+// retombait en silence sur rdtest01 pour tout numero inconnu : un test absent se
+// chargeait comme le test 01, sans erreur visible. La garde est desormais explicite.
 function setCurrentTest(num) {
+  const key = 'rdtest' + String(num).padStart(2, '0');
+  if (!READING_TESTS[key]) {
+    console.warn('Test Reading inconnu: ' + key + ', retour au test 01.');
+    num = 1;
+  }
   currentTestNum = num;
-  currentTestKey = num === 3 ? 'rdtest03' : num === 2 ? 'rdtest02' : 'rdtest01';
+  currentTestKey = 'rdtest' + String(num).padStart(2, '0');
   currentTest = READING_TESTS[currentTestKey];
 }
 
 function init() {
   const scores = getAllReadingScores();
-  ['rdtest01', 'rdtest02', 'rdtest03'].forEach((key) => {
+  Object.keys(READING_TESTS).forEach((key) => {
     if (scores[key]) {
       const s = scores[key];
       const el = document.getElementById('meta-' + key);
@@ -473,7 +486,7 @@ function init() {
   // test_started (jumeau du garde-fou Writing).
   let sessionTest = 0;
   try { sessionTest = parseInt(sessionStorage.getItem(READING_SESSION_KEY) || '0', 10); } catch (e) {}
-  if (sessionTest >= 1 && sessionTest <= 3) {
+  if (sessionTest >= 1 && sessionTest <= Object.keys(READING_TESTS).length) {
     setCurrentTest(sessionTest);
     document.querySelectorAll('.test-sel-btn').forEach((b, i) => b.classList.toggle('active', i === sessionTest - 1));
     startTest(true);
@@ -498,7 +511,7 @@ function saveReadingScore(testId, passageScores, total) {
 function selectTest(id) {
   if (timerInterval) clearInterval(timerInterval);
   try { sessionStorage.removeItem(READING_SESSION_KEY); } catch (e) {}
-  setCurrentTest(id === 'test03' ? 3 : id === 'test02' ? 2 : 1);
+  setCurrentTest(parseInt(String(id).replace('test', ''), 10) || 1);
   document.querySelectorAll('.test-sel-btn').forEach((b, i) => b.classList.toggle('active', i === currentTestNum - 1));
   document.getElementById('instructions-card').classList.remove('hidden');
   document.getElementById('test-zone').classList.add('hidden');

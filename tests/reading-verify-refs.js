@@ -63,7 +63,28 @@ else {
   model.passages.forEach(p => p.groups.forEach(g => (g.questions || []).forEach(q => { if (q.ref) refs[String(q.n)] = q.ref; })));
 }
 
+// Total des questions du test, tous groupes confondus. Sert de denominateur :
+// compter sur Object.keys(refs) laisserait une question sans `ref` passer en
+// silence (le compteur afficherait 38/38 OK au lieu de signaler 2 manques).
+const allQ = Object.keys(answerOf).map(Number).sort((a, b) => a - b);
+
 let ok = 0; const problems = [];
+
+// Exhaustivite : en mode fichier, chaque question doit porter un renvoi. En mode
+// lot (batch.json), le lot peut etre partiel par construction, on ne l'exige pas.
+if (!batch) {
+  allQ.forEach((n) => { if (!refs[String(n)]) problems.push(`Q${n}: renvoi MANQUANT (question sans ref)`); });
+}
+
+// Reciproque de la regle 'Not stated' : une reponse NOT GIVEN ne doit jamais
+// porter de fausse ancre vers un paragraphe.
+allQ.forEach((n) => {
+  const r = refs[String(n)];
+  if (answerOf[n] === 'NOT GIVEN' && r && !/^Not stated in the passage$/.test(r)) {
+    problems.push(`Q${n}: answer=NOT GIVEN mais ref pointe un paragraphe -> ${r}`);
+  }
+});
+
 for (const k of Object.keys(refs).sort((a, b) => a - b)) {
   const ref = refs[k];
   const ans = answerOf[k];
@@ -95,5 +116,12 @@ for (const k of Object.keys(refs).sort((a, b) => a - b)) {
   else { problems.push(`Q${k}: ANCRE NON VERBATIM -> '${anchor}'`); }
 }
 
-console.log(`${testKey}: ${ok}/${Object.keys(refs).length} renvois OK.`);
-if (problems.length) { console.log('PROBLEMES:'); problems.forEach(p => console.log('  - ' + p)); process.exit(1); }
+// Verdict avant compteur : un "40/40 OK" imprime au-dessus d'une liste de
+// problemes se lit comme un succes. En cas d'echec, aucun compteur rassurant.
+const total = batch ? Object.keys(refs).length : allQ.length;
+if (problems.length) {
+  console.log(`${testKey}: ECHEC, ${problems.length} probleme(s) sur ${total} questions.`);
+  console.log('PROBLEMES:'); problems.forEach(p => console.log('  - ' + p));
+  process.exit(1);
+}
+console.log(`${testKey}: ${ok}/${total} renvois OK.`);
