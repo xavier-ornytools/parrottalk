@@ -1,5 +1,25 @@
 # ParrotTalk — Tests techniques
 
+## LOT QUICK MOCK, temps 2 : pool elargi a toutes les combinaisons (2026-07-17)
+
+Branche `lot-quick-mock-temps2`, tag `avant-lot-quick-mock-temps2-2026-07-17`. Lot **DATA-only** : aucun moteur touche, ExamFlow intouche, la mecanique de tirage inchangee depuis le temps 1. Fichiers modifies : `js/quickmock.js` (les 4 tableaux `POOL`), `sitemap.xml` (ajout `quickmock.html`), `tests/quickmock-unit.js` (verrou de cardinalite), `tests/e2e-quickmock.js` (remplisseur Listening robuste aux questions a choix).
+
+**Le chiffre corrige : 3072, pas 768.** Le PDF du temps 1 annoncait 768 = 4 x 12 x 4 x 4, chiffre faux ne d'une contradiction dans le commentaire de `js/quickmock.js` lui-meme (ligne "16 sections" contre "Cible 4 x 12 x 4 x 4"). Verifie dans la donnee : le contenu Listening reel est **16 sections** (4 tests x 4 sections, les 16 ont audio et cues sur disque), pas 4. Reading 12 passages, Writing 4, Speaking 4 confirmes exacts. Decision de Xavier : brancher les 16 sections. Cardinalite reelle **16 x 12 x 4 x 4 = 3072 combinaisons**. Chiffre sous embargo public jusqu'a confirmation de Xavier.
+
+**Le pool.** Les 4 tableaux `POOL` (`js/quickmock.js`) passent de 1 entree chacun a 16 Listening (`{test, section 0..3}` pour test01 a test04), 12 Reading (`{test, passage 0..2}` pour rdtest01 a rdtest04), `[1,2,3,4]` Writing (Task 1), `[1,2,3,4]` Speaking (Part 2). `drawCombo`, `pick`, `pickFresh` inchanges.
+
+**Le chiffre est un resultat de verification, pas une cible.** 3072 ne vaut que si les 16 sections et 12 passages se rendent tous en isole. Toute tranche defaillante aurait ete ecartee et le chiffre recalcule. Verification faite : toutes passent.
+
+### Testé avec
+- **`tests/quickmock-unit.js`, `40/40`** (etait 34/34) : ajout d'un **verrou de cardinalite** qui asserte 16/12/4/4 et le total 3072, et que **chaque** entree du pool existe reellement dans `js/data.js` / `js/reading-data.js`. Si le pool derive, le test casse avant tout deploiement. La section obsolete "POOL du temps 1, un seul billet" a ete remplacee (elle devenait fausse une fois le pool peuple).
+- **Sweep navigateur des 28 tranches** (Playwright, hors suite committee) : les **16/16 sections Listening** s'injectent en mode QM avec 10 questions chacune et leur `.mp3` reference, les **12/12 passages Reading** s'injectent avec questions et prose. Verdict : 3072 confirme.
+- **Ressources audio** : les 16 `sectionN.mp3` et 16 `sectionN.cues.json` renvoient tous `200` via le serveur local.
+- **`tests/e2e-quickmock.js`, `40/2`** en vrai Chrome, **identique a la baseline `main` pristine** (les 2 echecs sont GA4, pre-existants, non lies au lot : verifie par comparaison stash). Le seed 42 tire desormais `test03/section1` : le remplisseur Listening du test, qui ne posait que des inputs texte, a ete rendu robuste aux questions a choix (aligne sur le bloc Reading), sinon 2 bonnes reponses etaient perdues sur cette section. Ce que le test verifie (7 bonnes sur 10, mise a l'echelle sur les questions posees) est inchange.
+- **Non-regression `tests/check.js`** : `60 passed / 12 failed`, baseline exacte.
+
+### Reste (visuel, Xavier au navigateur, avant merge)
+Audio des 16 sections qui joue reellement en QM, rendu isole des 12 passages, et tenue du camembert Chart.js de `WRITING_DATA[4]` en 20 min. Donnee et injection prouvees automatiquement ci-dessus ; l'oreille et l'oeil restent a Xavier.
+
 ## LOT QUICK MOCK, temps 1 : le Quick Test, mini examen d'environ 50 min (2026-07-17)
 
 Branche `lot-quick-mock`, **mergee dans main, deployee et verifiee en prod** (verification navigateur de Xavier faite avant merge). Fichiers neufs : `js/quickmock.js`, `quickmock.html`, `tests/e2e-quickmock.js`, `tests/quickmock-unit.js`. Modifies : les 4 moteurs, `index.html`, `js/analytics.js`, `js/feedback-gate.js`, `worker/src/index.js`.

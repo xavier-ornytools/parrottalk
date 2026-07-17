@@ -126,15 +126,21 @@ for (let j = 0; j < 5; j++) keys.push(QM.comboKey(QM.start(j)));
 check('l historique est plafonne a 5', QM.history().length <= 5, String(QM.history().length));
 check('l historique retient le dernier tirage', QM.history()[0] === keys[keys.length - 1]);
 
-// ── Le POOL du temps 1 ne casse pas le tirage ────────────────────────────────
-// Avec un seul billet, l anti-repetition ne peut jamais etre satisfaite : le
-// plafond d essais evite la boucle infinie. C'est ce que ce test verifie.
-console.log('\nPOOL du temps 1 (un seul billet par module)');
+// ── POOL reel restaure : cardinalite et couverture (verrou du chiffre) ───────
+// POOL_T1 est le snapshot du pool source charge au require ; au temps 2 il porte
+// tout le contenu. Le nombre de combinaisons communique (sous embargo) doit
+// rester exact : si le POOL derive, ces checks cassent avant tout deploiement.
+console.log('\nPOOL reel : cardinalite et couverture (verrou du chiffre)');
 QM.POOL.listening = POOL_T1.listening; QM.POOL.reading = POOL_T1.reading;
 QM.POOL.writing = POOL_T1.writing; QM.POOL.speaking = POOL_T1.speaking;
-store = {}; const only1 = QM.comboKey(QM.start());
-const only2 = QM.comboKey(QM.start());
-check('tire toujours le meme billet, sans boucler', only1 === only2, only1);
+check('16 sections Listening', QM.POOL.listening.length === 16, String(QM.POOL.listening.length));
+check('12 passages Reading', QM.POOL.reading.length === 12, String(QM.POOL.reading.length));
+check('4 Writing (Task 1)', QM.POOL.writing.length === 4, String(QM.POOL.writing.length));
+check('4 Speaking (Part 2)', QM.POOL.speaking.length === 4, String(QM.POOL.speaking.length));
+const TOTAL = QM.POOL.listening.length * QM.POOL.reading.length * QM.POOL.writing.length * QM.POOL.speaking.length;
+check('3072 combinaisons au total (verrou du chiffre public)', TOTAL === 3072, String(TOTAL));
+check('chaque section Listening du POOL existe dans data.js', QM.POOL.listening.every(function (e) { return !!(TESTS[e.test] && TESTS[e.test].sections && TESTS[e.test].sections[e.section]); }));
+check('chaque passage Reading du POOL existe dans reading-data.js', QM.POOL.reading.every(function (e) { return !!(READING_TESTS[e.test] && READING_TESTS[e.test].passages && READING_TESTS[e.test].passages[e.passage]); }));
 
 console.log(`\n  ${passed} passed  |  ${failed} failed`);
 process.exit(failed > 0 ? 1 : 0);

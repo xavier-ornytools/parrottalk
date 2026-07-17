@@ -68,17 +68,30 @@
   var DRAW_TRIES = 8;
   var STATE_VERSION = 1;
 
-  // Pool de tirage. TEMPS 1 : un seul billet par module, le mecanisme de tirage
-  // est deja le bon et ne changera pas. TEMPS 2 : elargir ces 4 tableaux, une
-  // ligne chacun, apres verification VISUELLE de chaque tranche (les 16 sections
-  // ont-elles toutes leurs cues, les 12 passages se rendent-ils hors du contexte
-  // de leur test, WRITING_DATA[4] et son camembert Chart.js tient-il en 20 min).
-  // Cible : 4 x 12 x 4 x 4 = 768 combinaisons.
+  // Pool de tirage. TEMPS 2 : les 4 tableaux portent tout le contenu existant,
+  // verifie tranche par tranche au navigateur. Le mecanisme de tirage (drawCombo,
+  // pickFresh) est generique et n'a pas change depuis le temps 1.
+  // Cardinalite : 16 sections Listening (4 tests x 4 sections) x 12 passages
+  // Reading (4 tests x 3) x 4 Writing (Task 1) x 4 Speaking (Part 2) = 3072.
   var POOL = {
-    listening: [{ test: 'test01', section: 0 }],
-    reading:   [{ test: 'rdtest01', passage: 0 }],
-    writing:   [1],
-    speaking:  [1],
+    listening: [
+      { test: 'test01', section: 0 }, { test: 'test01', section: 1 },
+      { test: 'test01', section: 2 }, { test: 'test01', section: 3 },
+      { test: 'test02', section: 0 }, { test: 'test02', section: 1 },
+      { test: 'test02', section: 2 }, { test: 'test02', section: 3 },
+      { test: 'test03', section: 0 }, { test: 'test03', section: 1 },
+      { test: 'test03', section: 2 }, { test: 'test03', section: 3 },
+      { test: 'test04', section: 0 }, { test: 'test04', section: 1 },
+      { test: 'test04', section: 2 }, { test: 'test04', section: 3 },
+    ],
+    reading: [
+      { test: 'rdtest01', passage: 0 }, { test: 'rdtest01', passage: 1 }, { test: 'rdtest01', passage: 2 },
+      { test: 'rdtest02', passage: 0 }, { test: 'rdtest02', passage: 1 }, { test: 'rdtest02', passage: 2 },
+      { test: 'rdtest03', passage: 0 }, { test: 'rdtest03', passage: 1 }, { test: 'rdtest03', passage: 2 },
+      { test: 'rdtest04', passage: 0 }, { test: 'rdtest04', passage: 1 }, { test: 'rdtest04', passage: 2 },
+    ],
+    writing:  [1, 2, 3, 4],
+    speaking: [1, 2, 3, 4],
   };
 
   // ── Etat ────────────────────────────────────────────────────────────────────
