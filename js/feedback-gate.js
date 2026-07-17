@@ -70,9 +70,16 @@
   function unlockKey(type) { return LS_UNLOCKED_PREFIX + (type || 'x'); }
   function isUnlocked(type) { return lsGet(unlockKey(type)) === '1'; }
   function setUnlocked(type) { lsSet(unlockKey(type), '1'); }
+  // Un PARCOURS est en cours : Full Mock ou Quick Test. Dans les deux cas les
+  // rapports restent libres pendant le parcours et le questionnaire n'est pose
+  // qu'une fois, a la fin. Sans le Quick Test ici, un parcours de 50 minutes
+  // poserait QUATRE questionnaires, un par tranche.
   function isMockActive() {
-    try { return !!(window.ExamFlow && window.ExamFlow.isMock && window.ExamFlow.isMock()); }
-    catch (e) { return false; }
+    try {
+      if (window.ExamFlow && window.ExamFlow.isMock && window.ExamFlow.isMock()) return true;
+      if (window.QuickMock && window.QuickMock.isActive && window.QuickMock.isActive()) return true;
+      return false;
+    } catch (e) { return false; }
   }
   function isRated() { return lsGet(LS_RATED) === '1'; }
 

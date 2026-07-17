@@ -127,7 +127,12 @@ function sanitizeFeedback(body) {
   const b = body || {};
   const pick = (field) => (FEEDBACK_ENUMS[field].has(b[field]) ? b[field] : null);
   const bandNum = parseFloat(b.band);
-  const type = b.type === 'writing' || b.type === 'speaking' ? b.type : null;
+  // 'mock' et 'quickmock' viennent du questionnaire final d'un PARCOURS
+  // (renderFinalQuestionnaire), pas d'une épreuve isolée. Sans eux dans l'énumé-
+  // ration, le type était ramené à null en silence : le feedback du Full Mock ne
+  // remonte donc rien aujourd'hui, et le Quick Test aurait subi le même sort.
+  const ALLOWED_TYPES = ['writing', 'speaking', 'mock', 'quickmock'];
+  const type = ALLOWED_TYPES.includes(b.type) ? b.type : null;
   // Commentaire libre optionnel : seule donnée non énumérée. On retire les
   // caractères de contrôle, on borne à 500 caractères. Aucune donnée nominative
   // n'est demandée ; l'échappement HTML se fait à l'affichage (rapport Foundry).
