@@ -39,6 +39,67 @@
     ]
   }
   </script>
+  <style>
+    /* Les 3 entrees du site (maquette validee du 17/07). Volontairement plus
+       grandes et plus presentes que les cartes de module plus bas : c'est le
+       choix de parcours, il doit se voir en premier et donner envie. Local a
+       cette page, main.css est partage par 11 pages et n'a pas a bouger pour ca. */
+    .products { padding: 44px 0 8px; }
+    .products__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+
+    .pcard {
+      display: flex; flex-direction: column; align-items: flex-start;
+      text-align: left; width: 100%;
+      background: var(--white);
+      border: 2px solid var(--primary-light);
+      border-radius: var(--r-lg);
+      padding: 34px 28px 28px;
+      box-shadow: var(--sh);
+      cursor: pointer;
+      /* `font` complet et non `font-family` seul : la carte du milieu est un
+         <button> (elle declenche le Full Mock), et un bouton n'herite pas du
+         line-height du site. Sans ca, ses icone et pied tombaient 5px plus bas
+         que ceux des deux <a> voisins. */
+      font: inherit;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .pcard:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--sh-xl);
+      border-color: var(--primary);
+    }
+    .pcard:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+
+    .pcard__badge {
+      display: inline-flex; align-items: center;
+      padding: 5px 12px; border-radius: var(--r-full);
+      font-size: .75rem; font-weight: 700; letter-spacing: .01em;
+      margin-bottom: 18px;
+    }
+    .pcard__badge--quick  { background: #EDE9FE; color: #6D28D9; }
+    .pcard__badge--exam   { background: var(--primary-light); color: var(--primary-dark); }
+    .pcard__badge--single { background: var(--success-light); color: var(--success-dark); }
+
+    .pcard__icon { display: block; margin-bottom: 18px; line-height: 0; }
+    .pcard--quick  .pcard__icon { color: #7C3AED; }
+    .pcard--exam   .pcard__icon { color: var(--primary); }
+    .pcard--single .pcard__icon { color: var(--success-dark); }
+
+    .pcard__title {
+      font-size: 1.625rem; font-weight: 800; color: var(--dark);
+      margin: 0 0 10px; line-height: 1.2;
+    }
+    .pcard__desc {
+      font-size: 1.0625rem; color: var(--text-muted); line-height: 1.65;
+      margin: 0 0 24px; flex: 1;
+    }
+    .pcard__foot {
+      font-size: .8125rem; font-weight: 600; color: var(--text-light);
+      padding-top: 16px; border-top: 1px solid var(--border-light); width: 100%;
+    }
+
+    @media (max-width: 900px) { .products__grid { grid-template-columns: 1fr; gap: 14px; } }
+  </style>
 </head>
 <body>
 
@@ -84,11 +145,13 @@
           Free mock tests, AI writing feedback, and progress tracking.
           No subscription. No ads. Just genuine IELTS preparation.
         </p>
-        <div class="hero__actions">
-          <a href="listening.html" class="btn btn-primary btn-xl">Start Free Practice</a>
-          <button type="button" class="btn btn-secondary btn-xl" onclick="ExamFlow.startMock()">🎓 Full Mock Exam</button>
-        </div>
-        <p style="font-size:.8125rem;color:var(--text-muted);margin-top:10px">Full mock: the four sections in order, one sitting. Or <a href="dashboard.html" style="color:inherit;text-decoration:underline">view your progress</a>.</p>
+        <!-- Les 2 anciens boutons de lancement (Start Free Practice, Full Mock
+             Exam) sont supprimes : les 3 cartes produits ci-dessous sont l'unique
+             entree vers les tests, ils faisaient doublon. Rien ne devient
+             inaccessible : le Full Mock reste joignable par la carte Real Exam
+             Test et depuis dashboard.html, listening.html garde son CTA de bas de
+             page, et le dashboard est dans la nav. Le funnel test_started n'est
+             pas concerne : il est emis par les 4 pages de moteur, jamais d'ici. -->
         <div class="hero__stats">
           <div class="hero__stat">
             <strong>4</strong><span>Tests per Skill</span>
@@ -111,6 +174,51 @@
 
 <!-- PRE-BETA KIT -->
 
+<!-- PRODUITS : les 3 entrees du site (maquette validee du 17/07).
+     Section ADDITIVE, posee sous le hero, qui n'est pas touche : il porte le CTA
+     principal du funnel et test_started a deja une rupture de serie au 14/07, on
+     ne rebat pas un funnel a trois jours du tournage. La refonte profonde de
+     l'accueil est un lot post-gel.
+     Deux des trois cartes pointent vers de l'existant : le Full Mock
+     (ExamFlow.startMock) et le choix des modules. Seul le Quick Test est neuf. -->
+<section class="products">
+  <div class="container">
+    <div class="products__grid">
+
+      <a class="pcard pcard--quick" href="quickmock.html">
+        <span class="pcard__badge pcard__badge--quick">New, only on ParrotTalk</span>
+        <span class="pcard__icon" aria-hidden="true">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4.5 13.2a.7.7 0 0 0 .55 1.13H10l-1.2 7.3a.55.55 0 0 0 .98.42L19.5 10.8a.7.7 0 0 0-.55-1.13H14l1.1-7.2A.55.55 0 0 0 13 2z"/></svg>
+        </span>
+        <h3 class="pcard__title">Quick Test</h3>
+        <p class="pcard__desc">All 4 sections, short version. Your band in under an hour.</p>
+        <span class="pcard__foot">About 50 min</span>
+      </a>
+
+      <button type="button" class="pcard pcard--exam" onclick="ExamFlow.startMock()">
+        <span class="pcard__badge pcard__badge--exam">Most popular</span>
+        <span class="pcard__icon" aria-hidden="true">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 1 8.5l11 5.5 9-4.5V16h2V8.5L12 3zM5 12.3v3.4c0 1.6 3.1 3.3 7 3.3s7-1.7 7-3.3v-3.4l-7 3.5-7-3.5z"/></svg>
+        </span>
+        <h3 class="pcard__title">Real Exam Test</h3>
+        <p class="pcard__desc">All 4 sections, exam conditions, one sitting.</p>
+        <span class="pcard__foot">About 3 hours</span>
+      </button>
+
+      <a class="pcard pcard--single" href="#modules">
+        <span class="pcard__badge pcard__badge--single">Best for daily practice</span>
+        <span class="pcard__icon" aria-hidden="true">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/></svg>
+        </span>
+        <h3 class="pcard__title">Single Section Practice</h3>
+        <p class="pcard__desc">Choose the section you want to work on.</p>
+        <span class="pcard__foot">30 to 60 min</span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
 <!-- FEATURES STRIP -->
 <div class="features-strip">
   <div class="container">
@@ -125,7 +233,7 @@
 </div>
 
 <!-- MODULES -->
-<section class="section">
+<section class="section" id="modules">
   <div class="container">
     <div style="text-align:center;margin-bottom:48px">
       <div class="section-label">📚 Practice Modules</div>

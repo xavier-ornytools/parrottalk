@@ -180,8 +180,8 @@
 <!-- MAIN -->
 <div class="container" style="padding-top:32px;padding-bottom:80px">
 
-  <!-- TEST SELECTOR -->
-  <div class="grid-4" style="gap:12px;margin-bottom:24px">
+  <!-- TEST SELECTOR (masque en Quick Test : c'est le tirage qui decide) -->
+  <div id="writing-test-selector" class="grid-4" style="gap:12px;margin-bottom:24px">
     <button class="test-sel-btn active" onclick="selectWritingTest(1)" id="wbtn-1">
       <div class="t-num">Test 01</div>
       <div class="t-t1">📈 Task 1, Line graph: renewable energy %</div>
@@ -372,6 +372,9 @@
 
 <script src="js/data.js"></script>
 <script src="js/feedback-gate.js"></script>
+<!-- Script SIMPLE et non `defer` : le code inline ci-dessous consulte
+     QuickMock.isActive() des le parsing (duree, clefs de brouillon). -->
+<script src="js/quickmock.js"></script>
 <script>
 const WRITING_DATA = {
   1: {
@@ -414,12 +417,19 @@ let currentWritingTest = 1;   // test ACTIF (chargé/démarré) : source de vér
 let pendingTest = 1;          // test choisi sur l'écran d'accueil, pas encore démarré
 let testStarted = false;      // un test est-il en cours (zone de test affichée) ?
 let globalInterval = null;
-let totalSeconds = 3600;
+// Le Quick Test joue la Task 1 SEULE, en 20 min.
+const QM_ON = !!(window.QuickMock && QuickMock.isActive());
+const WRITING_DURATION = QM_ON ? QuickMock.duration('writing') : 3600;
+let totalSeconds = WRITING_DURATION;
 let writingChart = null;      // instance Chart.js du camembert Task 1 (Test 04), detruite/recreee a chaque test
 // sessionStorage (pas localStorage) : survit au rechargement du MÊME onglet, pas
 // à une arrivée fraîche. Sépare "reload en cours de test" de "ouverture de page".
-const SESSION_ACTIVE_KEY = 'ielts_writing_session';
-function draftKey(n) { return 'ielts_writing_draft_test' + n; }
+// Clefs SCOPEES en Quick Test, et ce n'est pas cosmetique : startWritingTest
+// appelle clearDraft(currentWritingTest). Si le tirage sort Writing 3 et que
+// l'utilisateur a un brouillon en cours sur le test 3 en mode isole, le Quick
+// Test le DETRUIRAIT. Le parcours a ses propres clefs, il ne touche a rien.
+const SESSION_ACTIVE_KEY = QM_ON ? 'ielts_qm_writing_session' : 'ielts_writing_session';
+function draftKey(n) { return QM_ON ? 'ielts_qm_writing_draft' : ('ielts_writing_draft_test' + n); }
 
 function highlightTest(n) {
   [1,2,3,4].forEach(i => { const b = document.getElementById('wbtn-' + i); if (b) b.classList.toggle('active', i === n); });
@@ -466,11 +476,13 @@ function startWritingTest(resume = false) {
   updateWordCount('task1-answer','wc1',150);
   updateWordCount('task2-answer','wc2',250);
   hideTask2(); // révélation en deux temps ; resumeTest rouvre Task 2 si déjà entamée
-  totalSeconds = 3600;
+  totalSeconds = WRITING_DURATION;
   startTimer();
   testStarted = true;
   try { sessionStorage.setItem(SESSION_ACTIVE_KEY, String(currentWritingTest)); } catch (e) {}
-  if (!resume) toast('Test 0' + currentWritingTest + ' started, 60 minutes. Begin with Task 1 (20 min).', 'info');
+  if (!resume) toast(QM_ON
+    ? 'Quick Test, Task 1 only, ' + Math.round(WRITING_DURATION/60) + ' minutes.'
+    : 'Test 0' + currentWritingTest + ' started, 60 minutes. Begin with Task 1 (20 min).', 'info');
   if (!resume) window.ptEvent && window.ptEvent('test_started', { section: 'writing', test_number: currentWritingTest });
 }
 
@@ -529,7 +541,10 @@ function hideTask2() {
   const card = document.getElementById('task2-card');
   const bridge = document.getElementById('task2-bridge');
   if (card) card.classList.add('hidden');
-  if (bridge) bridge.classList.remove('hidden');
+  // Quick Test : Task 1 seule. On masque aussi le PONT, sinon il proposerait
+  // d'ouvrir une Task 2 qui n'appartient pas a ce parcours. revealTask2() n'est
+  // jamais appele en Quick Test (ni par le pont, ni par le seuil des 2400 s).
+  if (bridge) bridge.classList.toggle('hidden', QM_ON);
 }
 function revealTask2() {
   const card = document.getElementById('task2-card');
@@ -552,10 +567,17 @@ function startTimer() {
     display.className = 'timer-display' +
       (totalSeconds < 300 ? ' danger' : totalSeconds < 600 ? ' warning' : '');
     const hint = document.getElementById('phase-hint');
-    if      (totalSeconds > 2400) hint.textContent = `📊 Task 1, ${Math.ceil(totalSeconds/60 - 40)} min left`;
+    // Quick Test : Task 1 seule, donc pas de bascule de phase a 2400 s (le seuil
+    // du format 60 min) et surtout pas d'ouverture automatique d'une Task 2 qui
+    // n'appartient pas a ce parcours.
+    if (QM_ON) {
+      if (totalSeconds > 0) hint.textContent = `📊 Task 1, ${Math.ceil(totalSeconds/60)} min left`;
+      else { clearInterval(globalInterval); toast('⏰ Time is up! Put your pen down.', 'error'); }
+    }
+    else if (totalSeconds > 2400) hint.textContent = `📊 Task 1, ${Math.ceil(totalSeconds/60 - 40)} min left`;
     else if (totalSeconds > 0)    hint.textContent = `📝 Task 2, ${Math.ceil(totalSeconds/60)} min left`;
     else { clearInterval(globalInterval); toast('⏰ Time is up! Put your pen down.', 'error'); }
-    if (totalSeconds === 2400) { revealTask2(); toast('20 minutes elapsed, Task 2 is now open.', 'info'); }
+    if (!QM_ON && totalSeconds === 2400) { revealTask2(); toast('20 minutes elapsed, Task 2 is now open.', 'info'); }
     if (totalSeconds === 300)  toast('⚠️ 5 minutes remaining, finish your conclusion.', 'info');
   }, 1000);
 }
@@ -714,7 +736,16 @@ function renderAIFeedback(box, data, task, promptText) {
 
   // Continuité : après la Task 2 (dernière tâche Writing), proposer l'épreuve
   // suivante ou la fin du mock.
-  if (task === 2 && window.ExamFlow) window.ExamFlow.renderNextStep('writing', box);
+  // Quick Test : la Task 1 est la fin de la tranche, on pousse le band au
+  // parcours et le hub porte la suite. ExamFlow gouverne le Full Mock, intact.
+  if (QM_ON) {
+    if (task === 1) {
+      QuickMock.recordResult('writing', { band: clampBand(data.band) });
+      QuickMock.renderNextStep('writing', box);
+    }
+  } else if (task === 2 && window.ExamFlow) {
+    window.ExamFlow.renderNextStep('writing', box);
+  }
 
   if (displayBand !== null) {
     const testKey = `test${String(currentWritingTest).padStart(2,'0')}-task${task}`;
@@ -805,7 +836,7 @@ function resetToLanding(n) {
   updateWordCount('task1-answer','wc1',150);
   updateWordCount('task2-answer','wc2',250);
   ['ai-feedback-1','ai-feedback-2'].forEach(id => { const b = document.getElementById(id); if (b) { b.classList.add('hidden'); b.innerHTML = ''; } });
-  totalSeconds = 3600;
+  totalSeconds = WRITING_DURATION;
   const disp = document.getElementById('global-timer'); if (disp) { disp.textContent = '60:00'; disp.className = 'timer-display'; }
   document.getElementById('writing-test-zone').classList.add('hidden');
   document.getElementById('writing-instructions').classList.remove('hidden');
@@ -846,6 +877,24 @@ window.addEventListener('DOMContentLoaded', () => {
   if (t1) t1.addEventListener('input', scheduleSaveDraft);
   if (t2) t2.addEventListener('input', scheduleSaveDraft);
   highlightTest(pendingTest);
+
+  // Quick Test : on demarre directement sur la Task 1 du test tire. Le selecteur
+  // n'a pas lieu d'etre, le tirage a deja decide.
+  if (QM_ON) {
+    const wTest = QuickMock.writingTest();
+    if (WRITING_DATA[wTest]) {
+      document.getElementById('writing-test-selector')?.classList.add('hidden');
+      let qmSession = 0;
+      try { qmSession = parseInt(sessionStorage.getItem(SESSION_ACTIVE_KEY) || '0', 10); } catch (e) {}
+      if (qmSession >= 1 && qmSession <= 4) resumeTest(qmSession);
+      else { pendingTest = wTest; startWritingTest(); }
+    } else {
+      console.warn('Quick Test : test Writing introuvable, retour au hub.');
+      location.href = QuickMock.HUB;
+    }
+    return;
+  }
+
   // Reload dans le MÊME onglet en cours de test → on restaure ; une arrivée
   // fraîche (nouvel onglet, retour plus tard) → écran d'accueil, aucun chrono.
   let sessionTest = 0;

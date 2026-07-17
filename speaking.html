@@ -311,8 +311,8 @@
 <!-- MAIN -->
 <div class="container" style="padding-top:32px;padding-bottom:80px">
 
-  <!-- TEST SELECTOR -->
-  <div class="spk-grid-4" style="margin-bottom:24px">
+  <!-- TEST SELECTOR (masque en Quick Test : c'est le tirage qui decide) -->
+  <div id="spk-test-selector" class="spk-grid-4" style="margin-bottom:24px">
     <button class="test-sel-btn active" onclick="selectTest(1)" id="spk-btn-1">
       <div class="t-num">Test 01</div>
       <div class="t-name">Personal Life &amp; Future Plans</div>
@@ -350,6 +350,11 @@
 </div>
 
 <script src="js/feedback-gate.js"></script>
+<!-- Script SIMPLE et non `defer` : le code inline ci-dessous consulte
+     QuickMock.isActive() des le parsing (QM_ON, taille de `recordings`). En
+     `defer`, window.QuickMock serait encore undefined, exactement le piege dont
+     window.ExamFlow souffre deja plus bas dans ce fichier. -->
+<script src="js/quickmock.js"></script>
 <script>
 const SPEAKING_TESTS = {
   1: {
@@ -452,9 +457,11 @@ const SPEAKING_TESTS = {
 
 // State
 let currentSpeakingTest = 1;
+// Le Quick Test joue la Part 2 SEULE : une question, donc une seule prise.
+const QM_ON = !!(window.QuickMock && QuickMock.isActive());
 let currentPart = 0;
 let currentQIdx = 0;
-let recordings = new Array(9).fill(null); // {blob, mimeType, duration}
+let recordings = new Array(QM_ON ? 1 : 9).fill(null); // {blob, mimeType, duration}
 let mediaRecorder = null;
 let recordingChunks = [];
 let recIntervalId = null;
@@ -479,7 +486,7 @@ function selectTest(n) {
   currentSpeakingTest = n;
   currentPart = 0;
   currentQIdx = 0;
-  recordings = new Array(9).fill(null);
+  recordings = new Array(QM_ON ? 1 : 9).fill(null);
   prepActive = false; prepSecondsLeft = 60;
   [1,2,3,4].forEach(i => document.getElementById('spk-btn-'+i).classList.toggle('active', i===n));
   document.getElementById('spk-test-zone').classList.add('hidden');
@@ -531,7 +538,8 @@ function renderPretest(n) {
 
 function startTest() {
   window.ptEvent && window.ptEvent('test_started', { section: 'speaking', test_number: currentSpeakingTest });
-  currentPart = 1;
+  // Quick Test : on entre directement sur la cue card, il n'y a pas de Part 1.
+  currentPart = QM_ON ? 2 : 1;
   currentQIdx = 0;
   document.getElementById('spk-pretest').classList.add('hidden');
   document.getElementById('spk-test-zone').classList.remove('hidden');
@@ -547,7 +555,16 @@ function backToPretest() {
 
 // ── Render recording interface ──────────────────────────────────────────────
 
+// En Quick Test, la Part 2 est la SEULE question : elle occupe l'index 0, pas 4.
+// Ce n'est pas cosmetique. checkAndSubmit envoie `questions` = getAllQuestions()
+// et les blobs en `audio_<i>` indexes sur ce meme tableau. Si on laissait les 9
+// questions avec l'unique prise en audio_4, le Worker (worker/src/index.js:457)
+// compterait 8 questions sautees et dirait a Gemini "1 of 9 questions have an
+// audio recording" : le band serait MECANIQUEMENT deprime. Rendre ces deux
+// fonctions conscientes du parcours suffit, checkAndSubmit et le Worker sont
+// deja corrects.
 function getRecordingIndex(part, qIdx) {
+  if (QM_ON) return 0;
   if (part === 1) return qIdx;
   if (part === 2) return 4;
   return 5 + qIdx;
@@ -555,6 +572,7 @@ function getRecordingIndex(part, qIdx) {
 
 function getAllQuestions(testId) {
   const t = SPEAKING_TESTS[testId];
+  if (QM_ON) return [{ question: t.part2.cue.instruction, part: 2, qIdx: 0 }];
   const qs = [];
   t.part1.questions.forEach((q, i) => qs.push({ question: q, part: 1, qIdx: i }));
   qs.push({ question: t.part2.cue.instruction, part: 2, qIdx: 0 });
@@ -640,13 +658,19 @@ function renderTestZone() {
     }
   }
 
-  // Navigation
-  const isLastQ = currentPart === 3 && currentQIdx === t.part3.questions.length - 1;
+  // Navigation. En Quick Test la cue card est l'unique question, donc la
+  // derniere : le bouton doit soumettre, jamais envoyer vers une Part 3 qui
+  // n'existe pas dans ce parcours.
+  const isLastQ = QM_ON || (currentPart === 3 && currentQIdx === t.part3.questions.length - 1);
   const doneCount = recordings.filter(Boolean).length;
 
-  let navL = currentPart===1&&currentQIdx===0
-    ? `<button class="spk-nav-prev" onclick="backToPretest()">← Back</button>`
-    : `<button class="spk-nav-prev" onclick="prevQuestion()">← Previous</button>`;
+  // En Quick Test il n'y a qu'une question : "Precedent" n'a nulle part ou
+  // aller, et "Back" ramenerait a un pre-test que le parcours a saute.
+  let navL = QM_ON
+    ? `<button class="spk-nav-prev" onclick="QuickMock.stop()">← Stop Quick Test</button>`
+    : currentPart===1&&currentQIdx===0
+      ? `<button class="spk-nav-prev" onclick="backToPretest()">← Back</button>`
+      : `<button class="spk-nav-prev" onclick="prevQuestion()">← Previous</button>`;
 
   // Verrou du bouton Suivant / soumission finale : actif uniquement quand un
   // enregistrement d'au moins 1 seconde existe pour la question courante ET
@@ -695,11 +719,11 @@ function renderTestZone() {
     </div>
     <img class="spk-mascot spk-mascot-right" src="img/mascot-speaking-right.webp" alt="" aria-hidden="true" loading="lazy">
     </div>
-    <div class="card card-sm" style="margin:12px auto 0;max-width:600px;padding:12px 16px">
+    ${QM_ON ? '' : `<div class="card card-sm" style="margin:12px auto 0;max-width:600px;padding:12px 16px">
       <div style="font-size:.8rem;font-weight:700;color:var(--text-muted);margin-bottom:8px">Overall progress</div>
       <div class="rec-progress">${dots}</div>
       <div style="font-size:.75rem;color:var(--text-muted);margin-top:8px">${doneCount}/9 responses recorded · <button onclick="checkAndSubmit()" style="background:none;border:none;color:var(--primary);cursor:pointer;font-size:.75rem;font-weight:600;padding:0">Submit for AI feedback →</button></div>
-    </div>`;
+    </div>`}`;
 
   if (isRecording) startRecordingTimerDisplay();
   if (isPart2 && prepActive && !isRecording) startPrepCountdown();
@@ -1110,7 +1134,14 @@ function renderSpeakingFeedback(data, testId) {
 
   // Continuité : dernière épreuve du parcours. En mode mock, propose l'écran
   // de fin ("You've completed all four") ; sinon, retour dashboard/accueil.
-  if (window.ExamFlow) window.ExamFlow.renderNextStep('speaking', spkBox);
+  // Quick Test : on pousse le band au parcours et c'est le hub qui porte la
+  // suite. ExamFlow gouverne le Full Mock et reste intact.
+  if (QM_ON) {
+    QuickMock.recordResult('speaking', { band: displayOverall });
+    QuickMock.renderNextStep('speaking', spkBox);
+  } else if (window.ExamFlow) {
+    window.ExamFlow.renderNextStep('speaking', spkBox);
+  }
 
   saveSpeakingFeedback(data, testId);
 }
@@ -1160,7 +1191,21 @@ function toast(msg, type='info') {
 
 // Init, au rechargement, si un résultat a été rendu, on le restaure débloqué
 // (le FeedbackGate ne repose pas les questions déjà répondues) ; sinon, sélection.
-if (!restoreSpeakingFeedback()) selectTest(1);
+// Quick Test : on entre directement sur la cue card du test tiré. On ne restaure
+// pas un feedback du mode isolé, qui n'appartient pas à ce parcours.
+if (QM_ON) {
+  const spkTest = QuickMock.speakingTest();
+  if (SPEAKING_TESTS[spkTest]) {
+    document.getElementById('spk-test-selector')?.classList.add('hidden');
+    selectTest(spkTest);
+    startTest();
+  } else {
+    console.warn('Quick Test : test Speaking introuvable, retour au hub.');
+    location.href = QuickMock.HUB;
+  }
+} else if (!restoreSpeakingFeedback()) {
+  selectTest(1);
+}
 </script>
 <footer style="text-align:center;padding:16px;font-size:.75rem;color:var(--text-muted);opacity:.7;border-top:1px solid var(--border);margin-top:32px">
   <p>Pronunciation is evaluated by AI from your audio recording. AI estimate, may vary from official scores by ±0.5-1 band.</p>

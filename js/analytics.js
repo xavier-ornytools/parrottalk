@@ -32,6 +32,22 @@
     if (localStorage.getItem(CONSENT_KEY) === "granted") loadGA4();
   };
 
+  // Parcours dans lequel l'evenement se produit : 'quick' (Quick Test), 'full'
+  // (Full Mock) ou 'single' (epreuve isolee). Resolu PARESSEUSEMENT, a l'appel :
+  // ptEvent est declenche par une action utilisateur, donc bien apres le
+  // chargement des scripts, et l'ordre async/defer n'a aucune importance ici.
+  //
+  // C'est un PARAMETRE ajoute aux evenements existants, jamais un evenement
+  // parallele : creer test_started_quick casserait les series historiques et
+  // rendrait tout comparatif impossible.
+  function currentFlow() {
+    try {
+      if (window.QuickMock && window.QuickMock.isActive()) return "quick";
+      if (window.ExamFlow && window.ExamFlow.isMock()) return "full";
+    } catch (e) {}
+    return "single";
+  }
+
   // Envoi d'un key event. Ne fait rien si : trafic interne, ou GA4 pas chargé
   // (consentement cookies non accordé). N'initialise jamais GA4 de lui-même :
   // le consentement reste piloté uniquement par le bandeau existant.
@@ -39,7 +55,9 @@
     try {
       if (isInternal()) return;
       if (typeof window.gtag !== "function") return;
-      window.gtag("event", name, params || {});
+      var p = params || {};
+      if (p.flow === undefined) p = Object.assign({ flow: currentFlow() }, p);
+      window.gtag("event", name, p);
     } catch (e) {}
   };
 

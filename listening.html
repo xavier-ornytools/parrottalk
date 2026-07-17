@@ -238,8 +238,8 @@
 <!-- MAIN -->
 <div class="container" style="padding-top:32px;padding-bottom:80px">
 
-  <!-- TEST SELECTOR -->
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:24px">
+  <!-- TEST SELECTOR (masque en Quick Test : c'est le tirage qui decide) -->
+  <div id="test-selector" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:24px">
     <button class="test-sel-btn active" data-id="test01" onclick="selectTest('test01')">
       <div class="t-num">Test 01</div>
       <div class="t-name">Coach booking · Country park · Renewable energy · Chocolate</div>
@@ -378,8 +378,17 @@
 <audio id="audio-player" preload="none"></audio>
 
 <script src="js/data.js"></script>
+<!-- Script SIMPLE et non `defer` : le code inline ci-dessous consulte
+     QuickMock.isActive() des le parsing (duree du chrono, injection de la
+     tranche). En `defer`, window.QuickMock serait encore undefined, piege dont
+     speaking.html:1163 souffre deja avec window.ExamFlow. -->
+<script src="js/quickmock.js"></script>
 <script>
 let currentTest = TEST01;
+// Le Quick Test joue UNE section. Il injecte un objet test synthetique qui n'a
+// qu'une tranche : le moteur ci-dessous ignore tout du parcours, il joue un test
+// qui n'a qu'une section.
+const QM_ON = !!(window.QuickMock && QuickMock.isActive());
 let currentSection = 0;
 let playingSection = 0;
 let audio = document.getElementById('audio-player');
@@ -412,7 +421,8 @@ function sectionMaxQ(sec) {
 // vérifier l'expiration sans attendre 32 minutes ; ignoré si absent/invalide.
 const TIMER_TEST_OVERRIDE = parseInt(new URLSearchParams(location.search).get('timer'), 10);
 const LISTENING_DURATION = (Number.isFinite(TIMER_TEST_OVERRIDE) && TIMER_TEST_OVERRIDE > 0)
-  ? TIMER_TEST_OVERRIDE : 32 * 60;
+  ? TIMER_TEST_OVERRIDE
+  : (QM_ON ? QuickMock.duration('listening') : 32 * 60);
 let secondsLeft = LISTENING_DURATION;
 
 // Review de fin (format IELTS ordinateur) : 2 min de vérification après avoir
@@ -444,6 +454,23 @@ function updateReviewTimer() {
 }
 
 function init() {
+  // Quick Test : on injecte la tranche tiree et on demarre. Le selecteur de test
+  // et la reprise du mode isole n'ont pas lieu d'etre ici, le parcours decide.
+  if (QM_ON) {
+    const slice = QuickMock.sliceListening(TESTS);
+    if (slice) {
+      currentTest = slice;
+      document.getElementById('test-selector')?.classList.add('hidden');
+      startTest();
+      return;
+    }
+    // Tranche introuvable (etat corrompu) : on ne bascule pas en silence sur le
+    // test 01, on renvoie au hub qui saura quoi faire.
+    console.warn('Quick Test : tranche Listening introuvable, retour au hub.');
+    location.href = QuickMock.HUB;
+    return;
+  }
+
   const scores = getAllScores();
   ['test01','test02','test03','test04'].forEach(id => {
     const s = scores[id];
@@ -529,21 +556,28 @@ function startTest() {
   submitted = false;
   const saved = loadProgress('listening', currentTest.id);
   if (!saved) window.ptEvent && window.ptEvent('test_started', { section: 'listening', test_number: currentTest.id });
+  // Tableaux d'etat dimensionnes sur le test REEL, jamais sur un litteral de 4.
+  // C'est le verrou du Quick Test : avec une seule section, un `[false x4]`
+  // pre-initialise ne passe JAMAIS `sectionsDone.every(Boolean)`, donc la review
+  // ne demarre pas et l'auto-submit de fin n'a jamais lieu.
+  const nSec = currentTest.sections.length;
+  const fill = (v) => new Array(nSec).fill(v);
   if (saved) {
     currentSection = saved.currentSection || 0;
-    sectionsDone = saved.sectionsDone || [false,false,false,false];
-    sectionScores = saved.sectionScores || [0,0,0,0];
+    sectionsDone = saved.sectionsDone || fill(false);
+    sectionScores = saved.sectionScores || fill(0);
     savedAnswers = saved.answers || {};
     examMode = saved.examMode !== undefined ? saved.examMode : false;
-    sectionsPlayed = saved.sectionsPlayed || [false,false,false,false];
+    sectionsPlayed = saved.sectionsPlayed || fill(false);
   } else {
     currentSection = 0;
-    sectionsDone = [false,false,false,false];
-    sectionScores = [0,0,0,0];
+    sectionsDone = fill(false);
+    sectionScores = fill(0);
     savedAnswers = {};
     examMode = !document.getElementById('practice-mode-toggle').checked;
-    sectionsPlayed = [false,false,false,false];
+    sectionsPlayed = fill(false);
   }
+  revealedUpTo = fill(0);
   persistProgress();
   buildTabs();
   renderSection(currentSection);
@@ -1135,8 +1169,18 @@ function submitTest() {
   const scaledTotal = isPartial ? Math.round((total / maxPossible) * 40) : total;
   const doneCount = sectionsDone.filter(Boolean).length;
   const band = getBand(scaledTotal);
-  saveScore(currentTest.id, sectionScores, total);
-  clearProgress('listening', currentTest.id);
+  // En Quick Test, on n'ecrit PAS dans `ielts_scores` : saveScore (js/data.js:2323)
+  // recalcule `band: getBand(total)` sur le total BRUT, donc un 10/10 sur une
+  // section y serait enregistre band 3.0. Les resultats du parcours vivent dans
+  // pt_quickmock, et le band pousse ici est celui calcule sur le total mis a
+  // l'echelle, le seul defendable.
+  if (QM_ON) {
+    QuickMock.recordResult('listening', { raw: total, max: maxPossible, scaled: scaledTotal, band: band });
+    clearProgress('listening', currentTest.id);
+  } else {
+    saveScore(currentTest.id, sectionScores, total);
+    clearProgress('listening', currentTest.id);
+  }
   showResults(total, band, isPartial, doneCount, maxPossible, scaledTotal);
 }
 
@@ -1218,7 +1262,10 @@ function showResults(total, band, isPartial=false, doneCount=4, maxPossible=40, 
   document.getElementById('submit-section').classList.add('hidden');
   // Continuité vers l'épreuve suivante (parcours complet / mode mock).
   // Placé APRÈS la carte sombre (sur fond clair de la page), pas dedans.
-  if (window.ExamFlow) window.ExamFlow.renderNextStep('listening', card.parentElement || card);
+  // Quick Test : c'est le hub qui porte la suite du parcours, pas ExamFlow (qui
+  // gouverne le Full Mock et reste intact).
+  if (QM_ON) window.QuickMock.renderNextStep('listening', card.parentElement || card);
+  else if (window.ExamFlow) window.ExamFlow.renderNextStep('listening', card.parentElement || card);
   card.scrollIntoView({ behavior: 'smooth', block: 'start' });
   const sc = getAllScores()[currentTest.id];
   const metaEl = document.getElementById('meta-'+currentTest.id);

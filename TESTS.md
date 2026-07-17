@@ -1,5 +1,44 @@
 # ParrotTalk — Tests techniques
 
+## LOT QUICK MOCK, temps 1 : le Quick Test, mini examen d'environ 50 min (2026-07-17)
+
+Branche `lot-quick-mock`, **mergee dans main, deployee et verifiee en prod** (verification navigateur de Xavier faite avant merge). Fichiers neufs : `js/quickmock.js`, `quickmock.html`, `tests/e2e-quickmock.js`, `tests/quickmock-unit.js`. Modifies : les 4 moteurs, `index.html`, `js/analytics.js`, `js/feedback-gate.js`, `worker/src/index.js`.
+
+**Le produit.** 1 section Listening (8 min) + 1 passage Reading (20 min) + Writing Task 1 seule (20 min) + Speaking Part 2 seule (4 min), piochees au hasard dans les tests existants et reutilisees MOT POUR MOT. Band global estime a la fin, etiquete estimation et jamais score officiel. Total reel 52 min, annonce "About 50 min" (arrondi derive des durees, pas ecrit en dur).
+
+**L'architecture, et la decouverte qui la commande.** Les 4 moteurs sont deja pilotes par un objet test (`currentTest.sections`, `currentTest.passages`). Donc "repliquer les moteurs" ne veut pas dire les extraire : le Quick Test leur **injecte un objet test synthetique qui n'a qu'une tranche**. Le moteur ignore tout du parcours, il joue un test qui n'a qu'une section. La tranche est passee **par reference, jamais copiee** : le "mot pour mot" est garanti par construction et verifie par identite d'objet. `js/quickmock.js` est un module FRERE de `js/exam-flow.js`, jamais une extension : ExamFlow gouverne le Full Mock qui tourne en prod, il n'a pas ete touche.
+
+**Les verrous leves.** (1) `listening.html` : `sectionsDone = [false x4]` confronte a `every(Boolean)` ne passait JAMAIS a true avec une seule section, donc pas de review et **pas d'auto-submit**. (2) `reading.html` : `if (pi < 2) switchPassage(pi + 1)` basculait sur un `#passage-1` INEXISTANT (ecran vide) et `maybeStartReview()` n'etait jamais atteint. Les tableaux d'etat sont desormais dimensionnes sur le test reel, jamais sur un litteral. (3) Chronos derives (480 / 1200 / 1200), Reading n'avait aucun override contrairement a Listening.
+
+**Le piege Speaking, le plus grave du lot.** `checkAndSubmit` envoyait TOUJOURS les 9 questions, avec l'unique prise en `audio_4` (`getRecordingIndex` codait `part===2 -> 4` en dur). Le Worker (`worker/src/index.js:457`) aurait compte 8 questions sautees et dit a Gemini "1 of 9 questions have an audio recording" : **le band aurait ete MECANIQUEMENT deprime, sans qu'aucune erreur ne le signale**. Correctif minimal : `getAllQuestions` et `getRecordingIndex` deviennent conscients du parcours, `checkAndSubmit` derive tout d'eux et n'a pas ete touche, le Worker non plus.
+
+**Les brouillons des utilisateurs.** `startWritingTest` appelle `clearDraft(currentWritingTest)`. Si le tirage sortait Writing 3 et que l'utilisateur avait un brouillon en cours sur le test 3, **le Quick Test le detruisait**. `draftKey` et `SESSION_ACTIVE_KEY` sont scopees au parcours.
+
+**Etancheite avec le mode isole.** `saveScore` (`js/data.js:2323`) recalcule `band: getBand(total)` sur le total BRUT : un 10/10 sur une section y serait enregistre **band 3.0**. En Quick Test on n'ecrit ni dans `ielts_scores` ni dans `ielts_reading_scores`, les resultats vivent dans `pt_quickmock`. Le Quick Test ne pose jamais `pt_mock`.
+
+**GA4.** `ptEvent` injecte un parametre `flow` (quick|full|single) resolu paresseusement. UN SEUL point de changement, aucun site d'appel touche. C'est un PARAMETRE sur les evenements existants, jamais un evenement parallele : `test_started_quick` aurait casse les series historiques. **Action Xavier, hors code : declarer `flow` en dimension personnalisee dans la console GA4.**
+
+**Worker, un one-liner qui corrige aussi le Full Mock.** `sanitizeFeedback` n'acceptait que `writing|speaking`, tout autre type etant ramene a `null` EN SILENCE. `mock` etait deja perdu : **le questionnaire final du Full Mock ne remontait rien en base, depuis toujours**. `mock` et `quickmock` ajoutes a l'enumeration.
+
+**Accueil.** Les 3 entrees de la maquette validee (Quick Test, Real Exam Test, Single Section Practice), en section additive. Les 2 anciens boutons du hero ont ete supprimes sur demande de Xavier apres verification visuelle : ils faisaient doublon. Aucun script ne les accrochait, et le funnel `test_started` est intact par construction (il est emis par les 4 pages de moteur, jamais par l'accueil).
+
+### Testé avec
+- **`tests/e2e-quickmock.js`, `42/42`** en vrai Chrome : parcours complet d'une traite, les 2 verrous, le piege Speaking prouve **par interception de la requete reelle** (1 question + `audio_0`, jamais `audio_4`), la survie du brouillon utilisateur, l'etancheite (aucune entree `qm-` dans les scores du mode isole), l'arrondi IELTS, `flow:quick`, et le refus de la moyenne partielle. **Les 2 endpoints IA sont MOCKES** : un Quick Test consomme 2 evaluations du quota (10/jour/IP partage), 5 suffiraient a bloquer une journee de tournage.
+- **`tests/quickmock-unit.js`, `34/34`**, sans navigateur : arrondi IELTS sur les cas limites, refus de la moyenne partielle, et le "mot pour mot" verifie **par identite d'objet**. Le tirage est eprouve sur POOL ELARGI : avec le pool de 1 du temps 1, "meme seed donne meme combinaison" est vrai trivialement et **ne prouve rien**.
+- **Non-regression des 4 moteurs en mode isole, verifiee moteur par moteur** : Listening 13/13 (4 sections, chrono 1920, 1 section sur 4 ne declenche toujours pas la review), Reading 11/11 (chrono 3600, plages 1-13/14-26/27-40 intactes), Writing 12/12 (revelation en 2 temps intacte, seuil des 2400 s toujours actif) + `e2e-writing-lifecycle` `30/30`, Speaking 12/12 (9 questions, les 3 index de mapping inchanges, Part 2 -> Part 3 intact).
+- **Accueil** : conformite a la maquette verifiee par assertion (titres, badges, descriptions, durees), cartes mesurees plus grandes que les cartes de module (355px contre 317px), 1 colonne en 375px, aucune 404.
+- **Non-regression `tests/check.js`** : `60 passed / 12 failed`, exactement la baseline preexistante.
+
+### Limite connue, non resolue, hors lot
+**Le mode isole Reading peut rendre band 9 sur 3 bonnes reponses.** `reading.html` divise par `answeredCount` : repondre juste a 3 questions sur 13 et ignorer les autres donne `3/3*40` = band 9. **Demontre au navigateur** : meme scenario, le Quick Test donne 3.5 et le mode isole 9.0. Le correctif est volontairement SCOPE au Quick Test : changer la regle du mode isole modifierait les bands d'un produit en prod, sans demande, a 3 jours de la deadline. **Bug reel du produit actuel, a traiter dans un lot dedie apres le gel.**
+
+### Reste au temps 2
+Elargir les 4 tableaux `POOL` de `js/quickmock.js` (une ligne chacun) : 4 x 12 x 4 x 4 = 768 combinaisons. Le code du tirage ne bouge pas, c'est la **donnee** qui est a verifier (les 16 sections ont-elles toutes leurs cues, les 12 passages se rendent-ils hors du contexte de leur test, `WRITING_DATA[4]` et son camembert Chart.js tient-il en 20 min).
+
+### Livrable
+- Compte-rendu .md sur le Bureau : `2026-07-17_LOT-QUICK-MOCK_avancement.md`.
+- PDF de fin de lot sur le Bureau : `2026-07-17_Rapport_LOT-QUICK-MOCK.pdf`.
+
 ## Chantier « 4 tests par module », Reading 04 : Bird Migration + Forest Fungi + Concert Hall Acoustics (2026-07-17)
 
 Branche `lot-reading-04`, **mergee dans main, deployee et verifiee en prod** (verification navigateur de Xavier faite avant merge). Fichiers de code modifies : `js/reading-data.js`, `reading.html`, `tests/reading-verify-refs.js`, et un nouveau `tests/e2e-reading-test04.js`.
