@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Test, ParrotTalk</title>
+  <meta name="description" content="A short IELTS mock: all four sections in about 50 minutes, with an estimated band at the end. Free, no account needed.">
+  <link rel="canonical" href="https://www.parrottalk.app/quickmock.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ParrotTalk">
+  <meta property="og:title" content="Quick Test, your IELTS band in under an hour">
+  <meta property="og:description" content="A short IELTS mock: all four sections in about 50 minutes, with an estimated band at the end. Free, no account needed.">
+  <meta property="og:url" content="https://www.parrottalk.app/quickmock.html">
+  <meta property="og:image" content="https://www.parrottalk.app/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ParrotTalkApp">
+  <meta name="twitter:title" content="Quick Test, your IELTS band in under an hour">
+  <meta name="twitter:description" content="A short IELTS mock: all four sections in about 50 minutes, with an estimated band at the end. Free, no account needed.">
+  <meta name="twitter:image" content="https://www.parrottalk.app/img/og-image.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "ParrotTalk IELTS Quick Test",
+    "url": "https://www.parrottalk.app/quickmock.html",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "ParrotTalk",
+      "url": "https://www.parrottalk.app/"
+    },
+    "description": "A short IELTS mock: all four sections in about 50 minutes, with an estimated band at the end. Free, no account needed."
+  }
+  </script>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
+  <script src="js/analytics.js" async></script>
+  <script src="js/cookie-banner.js" defer></script>
+  <script src="js/feedback-gate.js" defer></script>
+  <style>
+    /* Etapes du parcours. Le hub ne rend aucune question : il annonce, il
+       oriente, il synthetise. Tout le reste vit dans les 4 moteurs existants. */
+    .qm-steps { display: flex; gap: 8px; margin: 20px 0 4px; }
+    .qm-step {
+      flex: 1; text-align: center; padding: 10px 6px; border-radius: var(--r-sm);
+      background: var(--border-light); color: var(--text-light);
+      font-size: .8125rem; font-weight: 600; border: 1.5px solid transparent;
+    }
+    .qm-step__icon { display: block; font-size: 1.125rem; margin-bottom: 2px; filter: grayscale(1); opacity: .5; }
+    .qm-step.is-done { background: var(--success-light); color: var(--success-dark); border-color: var(--success); }
+    .qm-step.is-done .qm-step__icon { filter: none; opacity: 1; }
+    .qm-step.is-current { background: var(--primary-pale); color: var(--primary-xdark); border-color: var(--primary); }
+    .qm-step.is-current .qm-step__icon { filter: none; opacity: 1; }
+    .qm-step__band { display: block; font-size: .9375rem; font-weight: 800; margin-top: 2px; }
+
+    .qm-meta { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 14px; }
+    .qm-pill {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-full);
+      padding: 5px 12px; font-size: .8125rem; color: var(--text-muted); font-weight: 500;
+    }
+    .qm-scope { color: var(--text-muted); font-size: .9375rem; margin-top: 4px; }
+    .qm-note { font-size: .8125rem; color: var(--text-light); margin-top: 12px; line-height: 1.6; }
+    @media (max-width: 640px) {
+      .qm-steps { gap: 5px; }
+      .qm-step { font-size: .6875rem; padding: 8px 3px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__logo">
+      <img src="img/logo-official.webp" alt="ParrotTalk">
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="listening.html" class="nav__link">Listening</a>
+      <a href="reading.html"   class="nav__link">Reading</a>
+      <a href="writing.html"   class="nav__link">Writing</a>
+      <a href="speaking.html"  class="nav__link">Speaking</a>
+      <a href="dashboard.html" class="nav__link">Dashboard</a>
+    </div>
+    <a href="dashboard.html" class="nav__cta">My Progress</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="container" style="padding-top:32px;padding-bottom:80px;max-width:760px">
+  <div id="qm-zone"></div>
+</div>
+
+<footer style="text-align:center;padding:16px;font-size:.75rem;color:var(--text-muted);opacity:.7;border-top:1px solid var(--border);margin-top:32px">
+  ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.
+  <p style="margin-top:8px"><a href="faq.html" style="color:inherit;text-decoration:underline">FAQ</a> &middot; <a href="privacy.html" style="color:inherit;text-decoration:underline">Privacy Policy</a> &middot; <a href="legal-notice.html" style="color:inherit;text-decoration:underline">Legal Notice</a> &middot; <a href="terms.html" style="color:inherit;text-decoration:underline">Terms of Use</a></p>
+</footer>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script src="js/data.js"></script>
+<script src="js/quickmock.js"></script>
+<script>
+/* Hub du Quick Test. Trois ecrans, pilotes par QuickMock.currentStep() :
+ *   null      -> landing (le tirage a lieu au clic sur Start, pas avant)
+ *   listening..speaking -> transition vers la tranche suivante
+ *   done      -> synthese et band global estime
+ *
+ * Le hub ne rend aucune question et ne calcule aucun score : les moteurs
+ * poussent leur resultat via QuickMock.recordResult(), le hub ne fait que lire.
+ */
+
+var QM = window.QuickMock;
+var MIN = function (s) { return Math.round(s / 60); };
+
+// Le total reel des tranches fait 52 min (8+20+20+4). La maquette validee annonce
+// "About 50 min" : on arrondit a la dizaine plutot que d'ecrire 50 en dur, pour
+// que le chiffre reste derive des durees reelles si elles bougent.
+var TOTAL_MIN = function () {
+  var s = QM.ORDER.reduce(function (n, m) { return n + QM.duration(m); }, 0);
+  return Math.round(s / 60 / 10) * 10;
+};
+
+function readSeed() {
+  var s = parseInt(new URLSearchParams(location.search).get('qmseed'), 10);
+  return isFinite(s) ? s : null;
+}
+
+// Bandeau des 4 etapes, present sur les 3 ecrans : le candidat voit toujours ou
+// il en est et ce qu'il a deja obtenu.
+function stepsHTML(current) {
+  var st = QM.get();
+  var res = (st && st.results) || {};
+  return '<div class="qm-steps">' + QM.ORDER.map(function (m) {
+    var done = !!res[m];
+    var cls = 'qm-step' + (done ? ' is-done' : (m === current ? ' is-current' : ''));
+    return '<div class="' + cls + '">' +
+      '<span class="qm-step__icon">' + QM.ICON[m] + '</span>' + QM.LABELS[m] +
+      (done && typeof res[m].band === 'number' ? '<span class="qm-step__band">' + fmt(res[m].band) + '</span>' : '') +
+    '</div>';
+  }).join('') + '</div>';
+}
+
+function fmt(b) { return (window.fmtBand ? window.fmtBand(b) : (typeof b === 'number' ? b.toFixed(1) : '-')); }
+
+// ── Ecran 1 : landing ────────────────────────────────────────────────────────
+function renderIdle(zone) {
+  zone.innerHTML =
+    '<div class="card card-lg" style="text-align:center">' +
+      '<div class="badge badge-primary" style="margin-bottom:12px">New, only on ParrotTalk</div>' +
+      '<h1 style="font-size:2rem;margin-bottom:8px">⚡ Quick Test</h1>' +
+      '<p style="color:var(--text-muted);font-size:1.0625rem;max-width:520px;margin:0 auto 4px">' +
+        'All 4 sections, short version. Your band in under an hour.' +
+      '</p>' +
+      '<div class="qm-meta">' +
+        '<span class="qm-pill">⏱ About ' + TOTAL_MIN() + ' min</span>' +
+        '<span class="qm-pill">🎧 One section</span>' +
+        '<span class="qm-pill">📖 One passage</span>' +
+        '<span class="qm-pill">✍️ Task 1</span>' +
+        '<span class="qm-pill">🎤 Part 2</span>' +
+      '</div>' +
+      stepsHTML('listening') +
+      '<div class="card card-sm" style="background:var(--surface);text-align:left;margin:20px 0">' +
+        '<p style="font-size:.9375rem;color:var(--text);line-height:1.7">' +
+          '<strong>How it works.</strong> We pick your four sections at random from our full tests, ' +
+          'so each Quick Test is different. You take them one after the other, then you get an ' +
+          'estimated band. Everything is timed, like the real exam.' +
+        '</p>' +
+      '</div>' +
+      '<button type="button" class="btn btn-primary btn-xl" onclick="startQuick()">Start Quick Test →</button>' +
+      '<p class="qm-note">' +
+        'The estimate comes from a short test, so it is a snapshot of your current level, not an official IELTS score. ' +
+        'For exam conditions, take the <a href="index.html" style="color:var(--primary)">Real Exam Test</a> instead.' +
+      '</p>' +
+    '</div>';
+}
+
+// ── Ecran 2 : transition ─────────────────────────────────────────────────────
+function renderStep(zone, step) {
+  var pos = QM.stepIndex(step);
+  var st = QM.get();
+  var done = QM.ORDER.filter(function (m) { return st.results[m]; }).length;
+  zone.innerHTML =
+    '<div class="card card-lg" style="text-align:center">' +
+      '<div class="exam-flow__mock" style="margin-bottom:4px">Quick Test · step ' + pos + ' of ' + QM.ORDER.length + '</div>' +
+      '<div style="font-size:3rem;line-height:1.2">' + QM.ICON[step] + '</div>' +
+      '<h1 style="font-size:1.75rem;margin-bottom:4px">' + QM.LABELS[step] + '</h1>' +
+      '<p class="qm-scope">' + QM.SCOPE[step] + '</p>' +
+      '<div class="qm-meta"><span class="qm-pill">⏱ About ' + MIN(QM.duration(step)) + ' min</span></div>' +
+      stepsHTML(step) +
+      '<a class="btn btn-primary btn-xl" style="margin-top:20px" href="' + QM.PAGES[step] + '?qm=1">' +
+        (done === 0 ? 'Start ' : 'Continue to ') + QM.LABELS[step] + ' →' +
+      '</a>' +
+      '<div style="margin-top:10px"><button type="button" class="btn btn-ghost" onclick="QuickMock.stop()">Stop Quick Test</button></div>' +
+    '</div>';
+}
+
+// ── Ecran 3 : synthese ───────────────────────────────────────────────────────
+// Le band global est une ESTIMATION : il repose sur une extrapolation de 10
+// questions vers 40 cote Listening. L'etiquetage n'est pas cosmetique, c'est la
+// seule chose qui rend ce chiffre defendable.
+function renderDone(zone) {
+  var st = QM.get();
+  var res = st.results;
+  var overall = QM.overallBand(res);
+  var c = st.combo;
+
+  var heroHTML =
+    '<div class="card card-sm fb-hero">' +
+      '<div class="fb-hero__label">⚡ Quick Test · Estimated Band</div>' +
+      '<div class="fb-hero__band">' + (overall === null ? '-' : fmt(overall)) + '</div>' +
+      '<div class="fb-hero__note">' +
+        (overall === null
+          ? 'Complete all four to see your estimated band.'
+          : 'Estimate from a short test, not an official IELTS score.') +
+      '</div>' +
+    '</div>';
+
+  // Classes reelles de css/main.css:446-457 : .score-val porte la couleur par
+  // module (.score-card.listening .score-val), .score-label et .score-date sont
+  // les seuls enfants stylees. Ne pas inventer de sous-classes ici : elles
+  // seraient sans style.
+  var cards = QM.ORDER.map(function (m) {
+    var r = res[m];
+    var detail = r && typeof r.raw === 'number' ? r.raw + '/' + r.max + ' correct' : QM.SCOPE[m];
+    return '<div class="score-card ' + m + '">' +
+      '<div class="score-val">' + (r ? fmt(r.band) : '-') + '</div>' +
+      '<div class="score-label">' + QM.ICON[m] + ' ' + QM.LABELS[m] + '</div>' +
+      '<div class="score-date">' + detail + '</div>' +
+    '</div>';
+  }).join('');
+
+  var detailHTML =
+    '<div class="score-grid" style="margin-top:16px">' + cards + '</div>' +
+    '<div class="card card-sm" style="background:var(--surface);text-align:left;margin-top:16px">' +
+      '<div style="font-size:.8125rem;font-weight:700;color:var(--text-muted);margin-bottom:6px">What you took</div>' +
+      '<p style="font-size:.875rem;color:var(--text-muted);line-height:1.7">' +
+        '🎧 ' + c.listening.test + ', section ' + (c.listening.section + 1) + ' &middot; ' +
+        '📖 ' + c.reading.test + ', passage ' + (c.reading.passage + 1) + ' &middot; ' +
+        '✍️ Writing test ' + c.writing.test + ', Task 1 &middot; ' +
+        '🎤 Speaking test ' + c.speaking.test + ', Part 2' +
+      '</p>' +
+    '</div>' +
+    '<div style="margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
+      '<button type="button" class="btn btn-primary" onclick="restartQuick()">Take another Quick Test</button>' +
+      '<a class="btn btn-outline" href="dashboard.html">View Dashboard</a>' +
+    '</div>';
+
+  zone.innerHTML =
+    stepsHTML(null) +
+    '<div id="qm-gate"></div>' +
+    '<p class="qm-note" style="text-align:center">' +
+      'A Quick Test is short by design, so two attempts can differ by a band. ' +
+      'For a result you can rely on, take the <a href="index.html" style="color:var(--primary)">Real Exam Test</a>.' +
+    '</p>';
+
+  // Un seul questionnaire pour tout le parcours, jamais un par tranche : c'est
+  // le meme regime que le Full Mock, et le code est celui de FeedbackGate.
+  var gate = document.getElementById('qm-gate');
+  if (window.FeedbackGate && typeof window.FeedbackGate.render === 'function') {
+    window.FeedbackGate.render(gate, {
+      type: 'writing', testId: c.writing.test, band: overall,
+      heroHTML: heroHTML, detailHTML: detailHTML,
+    });
+  } else {
+    gate.innerHTML = heroHTML + detailHTML;
+  }
+}
+
+// ── Actions ──────────────────────────────────────────────────────────────────
+function startQuick() {
+  QM.start(readSeed());
+  location.href = QM.PAGES[QM.ORDER[0]] + '?qm=1';
+}
+
+function restartQuick() {
+  QM.clear();
+  startQuick();
+}
+
+function render() {
+  var zone = document.getElementById('qm-zone');
+  var step = QM.isActive() ? QM.currentStep() : null;
+  if (!step) renderIdle(zone);
+  else if (step === 'done') renderDone(zone);
+  else renderStep(zone, step);
+}
+
+// DOMContentLoaded et pas un appel au parsing : feedback-gate.js est charge en
+// `defer`, donc window.FeedbackGate et window.fmtBand n'existent pas encore
+// pendant le parsing. C'est le piege dont speaking.html:1163 souffre deja, et
+// que writing.html evite par ce meme moyen.
+window.addEventListener('DOMContentLoaded', render);
+</script>
+</body>
+</html>

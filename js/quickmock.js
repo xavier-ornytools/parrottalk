@@ -44,7 +44,18 @@
   var ORDER  = ['listening', 'reading', 'writing', 'speaking'];
   var LABELS = { listening: 'Listening', reading: 'Reading', writing: 'Writing', speaking: 'Speaking' };
   var ICON   = { listening: '🎧', reading: '📖', writing: '✍️', speaking: '🎤' };
+  var PAGES  = { listening: 'listening.html', reading: 'reading.html', writing: 'writing.html', speaking: 'speaking.html' };
   var HUB    = 'quickmock.html';
+
+  // Ce que le candidat joue reellement dans chaque tranche, affiche sur l'ecran
+  // de transition. Sert a annoncer honnetement la reduction : on ne pretend pas
+  // qu'une section vaut une epreuve.
+  var SCOPE = {
+    listening: 'One section, 10 questions',
+    reading:   'One passage',
+    writing:   'Task 1 only',
+    speaking:  'Part 2 only, the cue card',
+  };
 
   // Secondes allouees a chaque tranche. Listening lit sa duree via ?timer= qui
   // existe deja (listening.html:412). Speaking n'a pas de chrono d'epreuve : il
@@ -246,7 +257,8 @@
   }
 
   window.QuickMock = {
-    ORDER: ORDER, LABELS: LABELS, ICON: ICON, DURATION: DURATION, POOL: POOL,
+    ORDER: ORDER, LABELS: LABELS, ICON: ICON, PAGES: PAGES, SCOPE: SCOPE,
+    DURATION: DURATION, POOL: POOL, HUB: HUB,
     isActive: isActive, get: get, start: start, stop: stop, clear: clear,
     currentStep: currentStep, stepIndex: stepIndex, duration: duration,
     sliceListening: sliceListening, sliceReading: sliceReading,
