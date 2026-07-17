@@ -1,5 +1,25 @@
 # ParrotTalk — Tests techniques
 
+## LOT CORRECTIFS SEO issus de l'audit (2026-07-17)
+
+Branche `lot-seo-fixes`, tag `avant-lot-seo-fixes-2026-07-17`. Lot **MARKUP-only** (balises head), aucun moteur touche, aucune logique JS modifiee, ExamFlow intouche. Trois correctifs valides par Xavier apres l'audit SEO du 17/07, et rien d'autre. Fichiers modifies : `listening.html`, `reading.html`, `writing.html`, `speaking.html`, `quickmock.html`, `dashboard.html` (balise `title`), `index.html` (canonical et og:url), `privacy.html`, `terms.html`, `legal-notice.html` (ajout canonical). Les URLs Instagram et TikTok du bloc social ne sont PAS touchees (sujet separe).
+
+**Correctif 1, balises title.** Les six pages applicatives alignent leur `title` sur la formulation de leur `og:title`, deja plus riche en mots-cles. Patron unique retenu sur tout le site : `[formulation] · ParrotTalk`, separateur point median (U+00B7) entoure d'espaces, marque en fin. Ce patron etait deja celui de faq, privacy, terms et legal-notice ; les six pages corrigees s'y alignent, ce qui rend dix pages sur onze coherentes. L'accueil conserve son format d'accueil distinct (`ParrotTalk: Free AI-Powered IELTS Preparation`), hors des six pages listees par le lot.
+
+**Correctif 2, canonical de l'accueil.** `index.html` passe canonical et `og:url` de `https://www.parrottalk.app/index.html` a `https://www.parrottalk.app/`, aligne sur le sitemap (option A de l'audit). Verifie qu'aucune balise SEO de la page ne reference plus `/index.html` (le `url` du JSON-LD etait deja en racine). Le lien relatif du logo de navigation (`href="index.html"`) est un lien fonctionnel partage par toutes les pages, pas une balise canonique : hors perimetre, inchange.
+
+**Correctif 3, canonical manquants.** `privacy.html`, `terms.html`, `legal-notice.html` recoivent un canonical auto-referent, meme emplacement et meme patron que les huit autres pages (juste apres le `title`). Les onze pages indexables ont desormais un canonical.
+
+### Testé avec
+- **`tests/check.js`, `60 passed / 12 failed`**, baseline exacte : les 12 echecs sont FAQ, pre-existants, non lies. Les titles et canonical modifies ne cassent aucune assertion.
+- **`tests/e2e-footer-social.js`, `33/0`** en vrai Chrome : non-regression du bloc social (les 5 liens, le JSON-LD, le mobile 375px) apres modification des balises head des memes pages.
+- **`tests/quickmock-unit.js`, `40/40`**, baseline exacte.
+- **`tests/e2e-quickmock.js`, `40/2`** (seed 42), baseline exacte : les 2 echecs GA4 pre-existants, non lies.
+- Verifie par script : les onze pages indexables ont un canonical auto-referent (accueil en racine), separateur de title unique sur les dix pages hors accueil, aucun `/index.html` residuel en balise SEO, aucun tiret cadratin ni demi-cadratin introduit.
+
+### Reste (visuel, Xavier au navigateur)
+Aspect des nouveaux titres dans l'onglet du navigateur et en partage social, sur prod www. La donnee est prouvee automatiquement ci-dessus ; l'oeil reste a Xavier.
+
 ## LOT RESEAUX SOCIAUX : ajout Instagram et TikTok (2026-07-17)
 
 Branche `lot-social-ig-tiktok`, tag `avant-lot-social-2026-07-17`. Lot **MARKUP/DATA-only** : aucun moteur touche, ExamFlow intouche, aucune logique JS modifiee. Fichiers modifies : les 10 pages de contenu (`index.html`, `listening.html`, `reading.html`, `writing.html`, `speaking.html`, `dashboard.html`, `privacy.html`, `terms.html`, `legal-notice.html`, `faq.html`), `css/main.css` (2 regles hover), `tests/e2e-footer-social.js` (verrou passe de 3 a 5 liens).
