@@ -1,5 +1,30 @@
 # ParrotTalk — Tests techniques
 
+## Calibrage de l'evaluateur IA, Writing et Speaking (2026-07-17)
+
+Branche `fix/calibrage-evaluateur`, **non mergee** (en attente de la verification navigateur de Xavier). Un seul fichier de code modifie : `worker/src/index.js`. Aucun deploiement du code evaluateur.
+
+**Probleme.** Sondes en conditions reelles : copies sous-notees d'environ 1.5 band, avec des defauts inventes pour justifier la note. Deux volets : corriger le prompt (Writing et Speaking) et faire calculer la note globale par le code.
+
+**Cause reelle, etablie par la mesure avant.** Le gabarit JSON du prompt Writing contenait des valeurs d'exemple (`"band": "6.5"` x3, `"grammar": "6.0"`). Les 5 copies de reference, certifiees band 4 a 9, ont TOUTES recu exactement ce profil : `coherence` 6.5, `lexical` 6.5, `grammar` 6.0, sans exception. Le modele recopiait l'exemple au lieu de noter. S'y ajoutaient l'ancre « An average test-taker scores 5.5-6.5 » et l'absence totale de descripteurs de bandes hautes (le prompt ne listait que des regles de penalite).
+
+**Corrige.** Ancres numeriques supprimees (gabarit en `<number 0-9>`), descripteurs de bande 4 a 9 ajoutes, regles de preuve (tout defaut cite doit etre quote et verifiable), independance des criteres, interdiction d'inventer des donnees du visuel (le Worker ne recoit jamais l'image en Task 1), interdiction de commenter les mecanismes internes. Cote code : `band` Writing = moyenne des 4 criteres avec arrondi officiel IELTS (mi-chemin vers le haut), la valeur renvoyee par Gemini est ignoree, comme le faisait deja Speaking pour `overall`. Aucun bonus, aucune borne plancher.
+
+### Testé avec
+- **Banc de sondes Writing** : 5 copies de niveau certifie externe (4 officielles ielts.org avec commentaires d'examinateur, bands 4 / 5.5 / 6 / 7.5 ; 1 modele band 9 d'ieltsliz.com). 2 passes chacune, avant (prod) et apres (`wrangler dev --remote`), soit 20 evaluations. Protocole a 2 passes impose par `temperature: 0.3` (non deterministe) ; les 2 passes sont sorties identiques dans tous les cas sauf une.
+- **Banc de sondes Speaking** : les 9 enregistrements reels de Xavier (Test 1), rejoues a l'identique avant et apres. Meme audio des deux cotes, seule facon d'isoler l'effet du prompt (le front ne conserve pas l'audio, un reenregistrement aurait invalide la comparaison).
+- **Volet 2 verifie sur 14 evaluations** : band global == moyenne des 4 criteres, arrondi officiel, sur Writing comme sur Speaking. Le seul ecart apparent vient du cap `under_length`, qui est prioritaire sur la moyenne par design.
+- **Contröles de non-regression** : caps `under_length` et `bullet_format` toujours appliques (`capsApplied` present) ; aucune inflation en bas d'echelle (W4 band 4 et W5 band 5.5 inchangees) ; W3, certifiee band 6, passe de 6.5 a exactement 6.0.
+- **Disparition des defauts inventes, verifiee** : avant, sur une copie band 9, le modele ecrivait « the graph shows it starting earlier, around 1991-1992 » alors qu'il ne recoit aucune image. Apres, plus aucune affirmation sur le visuel. Speaking avant : `toFix` generique et invérifiable (« Frequent grammatical errors »). Speaking apres : 9 defauts tous cites et retrouves dans le transcript (« I'm more studying », « in another times », « an hard worker man »).
+- **Fuites de mecanique interne supprimees** : avant, le candidat lisait « 119 words is 79.3% of 150, just shy of the 80% threshold for a 5.0 cap ». Apres, plus aucune occurrence.
+- **Test de faisabilite Gemini Pro** (extension du lot, aucun passage en production, modele remis a Flash) : `gemini-2.5-pro` renvoie 404 (« no longer available to new users »), test mene sur `gemini-pro-latest`. Le Pro exige le mode thinking (`thinkingBudget: 0` refuse) et un budget de sortie superieur. Nettement plus juste (W1 band 9 : 8.5 contre 7.0 ; W4 band 4 : 4.0 contre 5.0), mais **2 echecs de parse JSON sur 10**, latence 18.1s contre 3.7s, et environ 13x le cout. Non retenu en l'etat.
+
+### Limite connue, non resolue
+Le plafonnement du haut de bande n'est que reduit, pas supprime : W2, copie **officielle certifiee 7.5**, reste notee 6.5 avant comme apres, et avec Pro egalement. Les trois configurations convergent sur 6.5, ce qui interroge la copie autant que l'evaluateur.
+
+### Livrable
+- Compte-rendu .md sur le Bureau : `2026-07-17_CR_Final_Calibrage-evaluateur.md` (tableaux avant/apres Writing et Speaking, comparatif Flash/Pro, couts, recommandations).
+
 ## Chantier « 4 tests par module », Writing 04 : Test 04 UK household spending + Environment (2026-07-16)
 
 Branche `feat/writing-test-04`, **non mergee** (en attente de la verification navigateur de Xavier). Un seul fichier de code modifie : `writing.html`.
