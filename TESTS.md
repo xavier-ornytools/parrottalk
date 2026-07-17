@@ -2,7 +2,11 @@
 
 ## Calibrage de l'evaluateur IA, Writing et Speaking (2026-07-17)
 
-Branche `fix/calibrage-evaluateur`, **non mergee** (en attente de la verification navigateur de Xavier). Un seul fichier de code modifie : `worker/src/index.js`. Aucun deploiement du code evaluateur.
+Branche `fix/calibrage-evaluateur`, **mergee dans main, deployee et verifiee en prod** (verification navigateur de Xavier faite). Un seul fichier de code modifie : `worker/src/index.js`.
+
+**Verification en production apres deploiement** (Version ID `db22a853`), rejeu des 5 copies certifiees : W1 (certifie 9) 7.0, W2 (7.5) 6.0, W3 (6) **6.0 exact**, W4 (4) **4.0 exact**, W5 (5.5) 5.0 avec cap. Volet 2 conforme 5/5. A noter : le premier rejeu, lance immediatement apres `wrangler deploy`, renvoyait encore l'ancien comportement (profil 6.5/6.5/6.5/6). C'etait la propagation Cloudflare, pas un echec de deploiement : le comportement corrige apparait apres environ 40 secondes. **Ne jamais conclure d'un test lance dans les secondes qui suivent un deploy.**
+
+**Variance a connaitre.** `temperature: 0.3`, le modele n'est pas deterministe. Sur la meme copie, les rejeux ont donne 6.5 puis 6.0 (W2) et 5.0 puis 4.0 (W4). **Un ecart de 0.5 a 1 band entre deux evaluations identiques est normal.** Tout test de non-regression sur l'evaluateur doit se faire en 2 passes minimum, jamais sur un seul appel.
 
 **Probleme.** Sondes en conditions reelles : copies sous-notees d'environ 1.5 band, avec des defauts inventes pour justifier la note. Deux volets : corriger le prompt (Writing et Speaking) et faire calculer la note globale par le code.
 
