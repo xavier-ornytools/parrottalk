@@ -1472,4 +1472,497 @@ const READING_TEST03 = {
   ]
 };
 
-const READING_TESTS = { rdtest01: READING_TEST01, rdtest02: READING_TEST02, rdtest03: READING_TEST03 };
+const READING_TEST04 = {
+  "id": "rdtest04",
+  "title": "Reading Test 04",
+  "passages": [
+    {
+      "number": 1,
+      "tabLabel": "Passage 1",
+      "resultLabel": "Passage 1 (Bird Migration)",
+      "label": "Passage 1, Questions 1-13",
+      "heading": "The Navigation of Migratory Birds",
+      "bodyHTML": "\n        <div class=\"passage-label\">Passage 1, Questions 1-13</div>\n        <h3>The Navigation of Migratory Birds</h3>\n        <p>Each autumn, billions of birds abandon the breeding grounds of the northern hemisphere and travel towards warmer latitudes, returning the following spring to raise their young where they were themselves born. The distances involved are difficult to grasp. The Arctic tern, the most extreme traveller among them, moves between the polar regions twice a year and may cover forty thousand kilometres in a single annual cycle. What continues to puzzle biologists is not the endurance these journeys demand but the accuracy with which they are performed. Many species migrate at night, alone, across oceans that offer no landmarks of any kind, and a substantial proportion of them are young birds making the journey for the first time, without the guidance of an experienced adult.</p>\n        <p>Part of the answer lies in the planet itself. Birds possess a magnetic compass, and two mechanisms have been proposed to explain it. The first involves cryptochromes, light-sensitive proteins in the retina whose chemical reactions appear to be modulated by magnetic fields, which would mean that a migrating bird effectively sees the field superimposed on its visual surroundings. The second involves crystals of magnetite, a naturally magnetic mineral, found in tissue around the upper beak of several species. Laboratory work has established one important detail: the avian compass does not respond to polarity in the way a walker's needle does. Instead it reads the angle at which the field lines meet the surface of the earth, an inclination compass that separates poleward from equatorward but cannot, on its own, tell north from south.</p>\n        <p>The sky supplies a second set of cues. Birds migrating by day take bearings from the sun, compensating for its movement by means of an internal clock, so that a bird kept under artificial daylight shifted by six hours will depart on a course predictably rotated from the correct one. Night migrants read the stars, but not, as was once assumed, by recognising individual constellations. Experiments conducted in planetariums during the 1960s demonstrated that young birds learn the axis around which the night sky appears to turn, and that this rotational centre, rather than any particular star, defines north for them. Nestlings raised beneath a sky turning about a false centre adopted that false centre as north, and oriented accordingly for the rest of their lives.</p>\n        <p>Closer to the ground, migrants also use what they can see and, more surprisingly, what they can smell. Coastlines, mountain ridges and river valleys are followed as leading lines, and experienced individuals return year after year to the same stopover woodlands, sometimes to the same hedgerow. Homing pigeons displaced from their lofts appear to consult an olfactory map, associating particular atmospheric odours carried on prevailing winds with particular directions from home; birds whose sense of smell has been temporarily blocked are markedly worse at choosing a homeward bearing. Whether wild migrants rely on odour to the same degree remains contested, and the evidence outside the pigeon literature is thin.</p>\n        <p>None of this explains how a bird that has never migrated knows where to go. The prevailing account is that first-year birds inherit a simple programme, often described as clock-and-compass: fly in a given direction, for a given length of time, and stop. The programme is astonishingly specific. Warblers held captive during the migration season become restless at night and orient in the direction their free-living relatives are taking, and the number of nights over which this restlessness persists corresponds closely to the duration of the real journey. Crossbreeding populations with different routes produces offspring that head off on an intermediate bearing, which is difficult to explain unless the direction is written into the genome.</p>\n        <p>The limits of the inherited programme were exposed by a classic experiment. In 1958 the Dutch ornithologist A. C. Perdeck captured thousands of starlings migrating through the Netherlands and released them several hundred kilometres to the south, in Switzerland. The adults, which had made the journey before, corrected for the displacement and reached their usual wintering areas. The juveniles did not. They continued on the heading they had inherited and spent the winter in an area parallel to, but far from, the one their species normally occupies. The conclusion drawn from this, and confirmed many times since, is that the compass is innate while the map is learned, and that a young bird acquires the ability to determine its position only through the experience of having travelled.</p>\n        <p>These ancient systems are now being disrupted at speed. Artificial light draws nocturnal migrants off course and holds them circling above illuminated structures until they are exhausted, and several cities have found that darkening tall buildings on peak migration nights reduces collisions sharply. Warming springs advance the emergence of the insects on which many migrants depend, while the birds themselves, cued by day length rather than temperature, arrive on an unchanged schedule and increasingly miss the peak. The chain is only as strong as its weakest link: a species may be abundant on its breeding grounds and secure in its wintering range, and still decline steeply because a single stopover marsh, where it must double its body weight in a fortnight, has been drained.</p>\n      ",
+      "groups": [
+        {
+          "type": "tfng",
+          "title": "Questions 1-7, True / False / Not Given",
+          "instructions": "Do the following statements agree with the information given in the passage? Write TRUE, FALSE or NOT GIVEN.",
+          "questions": [
+            {
+              "n": 1,
+              "text": "The Arctic tern travels between the polar regions twice each year.",
+              "answer": "TRUE",
+              "ref": "Paragraph 1: 'moves between the polar regions twice a year'",
+              "explanation": ""
+            },
+            {
+              "n": 2,
+              "text": "Most birds migrating for the first time are accompanied by experienced adults.",
+              "answer": "FALSE",
+              "ref": "Paragraph 1: 'making the journey for the first time, without the guidance'",
+              "explanation": ""
+            },
+            {
+              "n": 3,
+              "text": "The magnetic compass of a bird works in the same way as a walker's compass needle.",
+              "answer": "FALSE",
+              "ref": "Paragraph 2: 'the avian compass does not respond to polarity'",
+              "explanation": ""
+            },
+            {
+              "n": 4,
+              "text": "Cryptochromes are located in the beak tissue of migrating birds.",
+              "answer": "FALSE",
+              "ref": "Paragraph 2: 'cryptochromes, light-sensitive proteins in the retina'",
+              "explanation": ""
+            },
+            {
+              "n": 5,
+              "text": "Magnetite has been found in more bird species than cryptochrome has.",
+              "answer": "NOT GIVEN",
+              "ref": "Not stated in the passage",
+              "explanation": ""
+            },
+            {
+              "n": 6,
+              "text": "Young birds establish north by learning which point the night sky turns around.",
+              "answer": "TRUE",
+              "ref": "Paragraph 3: 'the axis around which the night sky appears to turn'",
+              "explanation": ""
+            },
+            {
+              "n": 7,
+              "text": "Pigeons whose sense of smell is blocked fly more slowly than unaffected birds.",
+              "answer": "NOT GIVEN",
+              "ref": "Not stated in the passage",
+              "explanation": ""
+            }
+          ]
+        },
+        {
+          "type": "mc",
+          "title": "Questions 8-13, Multiple Choice",
+          "instructions": "Choose the correct letter, A, B, C or D.",
+          "questions": [
+            {
+              "n": 8,
+              "text": "The avian magnetic compass is called an inclination compass because it:",
+              "options": [
+                "Responds to the strength of the field rather than its direction",
+                "Reads the angle at which the field lines meet the ground",
+                "Depends on crystals of magnetite in the beak",
+                "Tells north from south more reliably than a needle does"
+              ],
+              "answer": "B",
+              "ref": "Paragraph 2: 'the angle at which the field lines meet the surface'",
+              "explanation": ""
+            },
+            {
+              "n": 9,
+              "text": "What happens to a bird kept under artificial daylight shifted by six hours?",
+              "options": [
+                "It departs on a course rotated from the correct one",
+                "It loses the ability to orient altogether",
+                "It compensates correctly after a short delay",
+                "It switches to using the stars instead"
+              ],
+              "answer": "A",
+              "ref": "Paragraph 3: 'depart on a course predictably rotated from the correct one'",
+              "explanation": ""
+            },
+            {
+              "n": 10,
+              "text": "Nestlings raised beneath a night sky turning about a false centre:",
+              "options": [
+                "Failed to develop any sense of direction",
+                "Corrected their error once released outdoors",
+                "Treated the false centre as north permanently",
+                "Relied on the magnetic compass instead"
+              ],
+              "answer": "C",
+              "ref": "Paragraph 3: 'adopted that false centre as north, and oriented accordingly'",
+              "explanation": ""
+            },
+            {
+              "n": 11,
+              "text": "According to the passage, evidence that migratory direction is inherited comes from:",
+              "options": [
+                "The olfactory maps of homing pigeons",
+                "The behaviour of adult starlings after displacement",
+                "The fall in collisions when tall buildings are darkened",
+                "Crossbred populations whose offspring take an intermediate bearing"
+              ],
+              "answer": "D",
+              "ref": "Paragraph 5: 'offspring that head off on an intermediate bearing'",
+              "explanation": ""
+            },
+            {
+              "n": 12,
+              "text": "In Perdeck's starling experiment, the juvenile birds:",
+              "options": [
+                "Followed the adults to the usual wintering grounds",
+                "Returned to the Netherlands before continuing",
+                "Kept to their inherited heading and wintered in the wrong area",
+                "Failed to orient in any consistent direction"
+              ],
+              "answer": "C",
+              "ref": "Paragraph 6: 'continued on the heading they had inherited'",
+              "explanation": ""
+            },
+            {
+              "n": 13,
+              "text": "The passage concludes that a young bird is born knowing:",
+              "options": [
+                "Both its direction and its position",
+                "Its position but not its direction",
+                "Its direction, but must learn to work out its position",
+                "Neither, since both develop only with experience"
+              ],
+              "answer": "C",
+              "ref": "Paragraph 6: 'the compass is innate while the map is learned'",
+              "explanation": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "tabLabel": "Passage 2",
+      "resultLabel": "Passage 2 (Forest Fungi)",
+      "label": "Passage 2, Questions 14-26",
+      "heading": "The Hidden Networks Beneath Forests",
+      "bodyHTML": "\n        <div class=\"passage-label\">Passage 2, Questions 14-26</div>\n        <h3>The Hidden Networks Beneath Forests</h3>\n        <p><strong>A.</strong> A forest is in some ways easier to understand from below than from above. Beneath the leaf litter of almost any woodland lies a dense fabric of fungal threads, each far finer than a root hair, growing through the soil and wrapping themselves around, and sometimes inside, the roots of trees. The association is called a mycorrhiza, from the Greek words for fungus and root, and it is not a curiosity of particular forests but the ordinary condition of terrestrial plant life: something in the region of nine out of ten land plants form one. The quantities are hard to picture. A single teaspoon of healthy forest soil may contain several kilometres of fungal filament, and the fungus attached to one mature tree can reach through hundreds of cubic metres of ground.</p>\n        <p><strong>B.</strong> The relationship was correctly described earlier than is often supposed, and then ignored. In 1885 the German botanist Albert Bernhard Frank, asked by his government to improve the cultivation of truffles, reported that the roots of forest trees were routinely sheathed in fungal tissue, coined the term mycorrhiza, and proposed that the two organisms were feeding one another. His contemporaries were unpersuaded. The prevailing assumption was that a fungus on a root was an infection, and the notion that a plant might depend on one for its nourishment struck most botanists as implausible. Frank's interpretation was not widely accepted until well into the twentieth century, and the machinery of the exchange he had guessed at was not demonstrated until radioactive tracers became available after the Second World War.</p>\n        <p><strong>C.</strong> What each partner supplies is now reasonably well established. The tree, which can make sugars from air and sunlight but cannot mine the soil efficiently, delivers a portion of its photosynthetic production underground; estimates of the share vary, but a figure of up to a third of the carbon a tree fixes is often quoted. The fungus, which cannot photosynthesise at all, returns mineral nutrients, above all phosphorus and nitrogen, together with water. Its advantage is geometric. Hyphae are slender enough to enter soil pores that a root cannot penetrate, and by extending far beyond the root tip they enlarge the volume of soil a tree can draw on by orders of magnitude.</p>\n        <p><strong>D.</strong> The finding that captured public attention came later, and concerned the trees rather than the fungi. Because a single fungal individual may connect the roots of many trees, the network offers a route by which material can move from one plant to another. Working in the forests of British Columbia in the 1990s, Suzanne Simard labelled trees with carbon isotopes and detected the label subsequently in neighbouring trees of different species, including seedlings growing in deep shade that could not have fixed the carbon themselves. Mapping the connections revealed that they are not evenly distributed: a few large old trees, sometimes called hub trees, are linked to far more individuals than the rest, and their removal disconnects the network disproportionately.</p>\n        <p><strong>E.</strong> The popular account of these findings has run some way ahead of the evidence. The image of a forest as a cooperative in which strong trees feed weak ones is appealing, but a fungus is not a charity, and there is no obvious reason why one should ferry carbon to a plant that is not paying for it. Much of the carbon detected in a neighbouring tree may never have entered that tree at all, remaining in the fungal tissue wrapped around its roots, where the labelling method cannot distinguish the two. Sceptics also note that a large share of the work has been done on seedlings in pots rather than on mature trees in forests, and a review published in 2023 concluded that several of the claims repeated most confidently in the press rest on only a handful of field studies, some of which have never been replicated.</p>\n        <p><strong>F.</strong> For forestry the practical implications are less disputed than the biology. A network built over centuries is destroyed in an afternoon by heavy machinery, and a clear-felled site replanted with nursery stock may hold no fungal partners suited to the species being planted, which is one reason why replanting fails on ground where the same species grew perfectly well before. Foresters increasingly retain scattered veteran trees when harvesting, not for their timber but as reservoirs of fungal life from which the network can regrow, and there is interest in inoculating nursery seedlings with fungi collected on the site itself. The measures are cheap. The difficulty is that their benefit appears over decades, on a timescale that few forestry accounts are built to measure.</p>\n      ",
+      "groups": [
+        {
+          "type": "matching",
+          "title": "Questions 14-19, Matching Headings",
+          "instructions": "Match each paragraph (A-F) with the correct heading from the list below. Choose from: A. An exchange of goods underground &nbsp;·&nbsp; B. A description ignored by its own century &nbsp;·&nbsp; C. Where the popular story outruns the proof &nbsp;·&nbsp; D. The scale of a hidden partnership &nbsp;·&nbsp; E. Evidence that material moves between trees &nbsp;·&nbsp; F. What the findings mean for managing woodland &nbsp;·&nbsp; G. A threat from introduced species &nbsp;·&nbsp; H. The economics of the timber trade",
+          "options": [
+            "An exchange of goods underground",
+            "A description ignored by its own century",
+            "Where the popular story outruns the proof",
+            "The scale of a hidden partnership",
+            "Evidence that material moves between trees",
+            "What the findings mean for managing woodland",
+            "A threat from introduced species",
+            "The economics of the timber trade"
+          ],
+          "questions": [
+            {
+              "n": 14,
+              "text": "Paragraph A",
+              "answer": "D",
+              "ref": "Paragraph A: 'the ordinary condition of terrestrial plant life'",
+              "explanation": ""
+            },
+            {
+              "n": 15,
+              "text": "Paragraph B",
+              "answer": "B",
+              "ref": "Paragraph B: 'correctly described earlier than is often supposed, and then ignored'",
+              "explanation": ""
+            },
+            {
+              "n": 16,
+              "text": "Paragraph C",
+              "answer": "A",
+              "ref": "Paragraph C: 'What each partner supplies is now reasonably well established'",
+              "explanation": ""
+            },
+            {
+              "n": 17,
+              "text": "Paragraph D",
+              "answer": "E",
+              "ref": "Paragraph D: 'material can move from one plant to another'",
+              "explanation": ""
+            },
+            {
+              "n": 18,
+              "text": "Paragraph E",
+              "answer": "C",
+              "ref": "Paragraph E: 'has run some way ahead of the evidence'",
+              "explanation": ""
+            },
+            {
+              "n": 19,
+              "text": "Paragraph F",
+              "answer": "F",
+              "ref": "Paragraph F: 'the practical implications are less disputed than the biology'",
+              "explanation": ""
+            }
+          ]
+        },
+        {
+          "type": "mc",
+          "title": "Questions 20-26, Multiple Choice",
+          "instructions": "Choose the correct letter, A, B, C or D.",
+          "questions": [
+            {
+              "n": 20,
+              "text": "In which year did Albert Bernhard Frank introduce the term mycorrhiza?",
+              "options": [
+                "1858",
+                "1885",
+                "1900",
+                "1945"
+              ],
+              "answer": "B",
+              "ref": "Paragraph B: 'In 1885 the German botanist Albert Bernhard Frank'",
+              "explanation": ""
+            },
+            {
+              "n": 21,
+              "text": "Why did Frank's contemporaries reject his interpretation?",
+              "options": [
+                "They believed truffles were unrelated to forest trees",
+                "They thought the fungus damaged the soil",
+                "They regarded a fungus on a root as an infection",
+                "They had no way of measuring the flow of nutrients"
+              ],
+              "answer": "C",
+              "ref": "Paragraph B: 'a fungus on a root was an infection'",
+              "explanation": ""
+            },
+            {
+              "n": 22,
+              "text": "What share of the carbon it fixes is a tree often said to send underground?",
+              "options": [
+                "Up to a tenth",
+                "About half",
+                "Up to a third",
+                "Nearly all of it"
+              ],
+              "answer": "C",
+              "ref": "Paragraph C: 'up to a third of the carbon a tree fixes'",
+              "explanation": ""
+            },
+            {
+              "n": 23,
+              "text": "The advantage of hyphae over roots is described as geometric because hyphae:",
+              "options": [
+                "Can enter pores that a root is too thick to reach",
+                "Grow in regular patterns through the soil",
+                "Multiply faster than root tips do",
+                "Form symmetrical connections between trees"
+              ],
+              "answer": "A",
+              "ref": "Paragraph C: 'enter soil pores that a root cannot penetrate'",
+              "explanation": ""
+            },
+            {
+              "n": 24,
+              "text": "What did Suzanne Simard's isotope work detect?",
+              "options": [
+                "Carbon moving from fungi into the atmosphere",
+                "Seedlings producing more carbon than mature trees",
+                "Hub trees absorbing carbon from seedlings",
+                "The label appearing in neighbouring trees of different species"
+              ],
+              "answer": "D",
+              "ref": "Paragraph D: 'detected the label subsequently in neighbouring trees of different species'",
+              "explanation": ""
+            },
+            {
+              "n": 25,
+              "text": "Why do sceptics doubt that carbon detected near a tree has reached that tree?",
+              "options": [
+                "The isotopes decay before they arrive",
+                "It may remain in the fungal tissue around the roots",
+                "The trees release it again immediately",
+                "The measurements are taken in the wrong season"
+              ],
+              "answer": "B",
+              "ref": "Paragraph E: 'remaining in the fungal tissue wrapped around its roots'",
+              "explanation": ""
+            },
+            {
+              "n": 26,
+              "text": "Why do foresters retain veteran trees on harvested ground?",
+              "options": [
+                "Because their timber becomes more valuable later",
+                "To provide shade for nursery stock",
+                "As reservoirs of fungal life from which the network can regrow",
+                "Because heavy machinery cannot reach them"
+              ],
+              "answer": "C",
+              "ref": "Paragraph F: 'reservoirs of fungal life from which the network can regrow'",
+              "explanation": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "tabLabel": "Passage 3",
+      "resultLabel": "Passage 3 (Concert Hall Acoustics)",
+      "label": "Passage 3, Questions 27-40",
+      "heading": "The Acoustics of Concert Halls",
+      "bodyHTML": "\n        <div class=\"passage-label\">Passage 3, Questions 27-40</div>\n        <h3>The Acoustics of Concert Halls</h3>\n        <p>An orchestra can play the same symphony, with the same instruments and the same conductor, in two halls a few streets apart and produce two quite different experiences. Until the end of the nineteenth century nobody could say why, and the acoustic quality of a room was regarded as a matter of luck. The subject acquired a science almost by accident. In 1895 Harvard University asked a young physics instructor, Wallace Clement Sabine, to do something about a new lecture theatre in which a speaker was effectively unintelligible; a sentence, once uttered, hung in the air long enough to blur the one that followed. Sabine had no method to draw on, and spent years carrying seat cushions in and out of the room at night, timing by ear how long an organ pipe took to fade into silence.</p>\n        <p>Out of that tedious work came the founding quantity of architectural acoustics. Sabine defined the reverberation time of a room as the interval a sound requires to fall by sixty decibels, roughly the point at which it becomes inaudible beneath audience noise, and he showed that it can be predicted before a building exists: it rises with the volume of the room and falls with the total absorption of its surfaces and contents. The optimum depends entirely on what the room is for. Speech demands a short reverberation time, around a second, so that consonants are not smeared together; romantic orchestral music wants something close to two seconds, which supplies the warmth and blend audiences associate with a great hall; and a cathedral, at seven or eight seconds, is unusable for either but ideal for the plainchant it was built to carry.</p>\n        <p>Two shapes dominate the concert halls of the world. The older is the shoebox: a tall, narrow rectangle, of which the Musikverein in Vienna, opened in 1870, is the most admired example. Its proportions were arrived at without calculation, and its excellence was recognised only afterwards. The alternative was introduced in Berlin, where Hans Scharoun's Philharmonie of 1963 abandoned the rectangle altogether and terraced the audience in irregular blocks around a central platform, an arrangement that became known as the vineyard. The vineyard brings the audience nearer the players and seats more of them, which is why many recent halls have adopted it; the shoebox, whose side walls are close together, remains the form that acousticians reach for when sound quality is the only criterion.</p>\n        <p>The reason a narrow room flatters music has to do with what arrives early. A listener hears the direct sound first, then a scatter of reflections from the surfaces of the room, then a diffuse tail. Reflections arriving within roughly eighty milliseconds of the direct sound are not heard as echoes at all: the ear merges them with the original and registers the music as louder and fuller. What matters is where they come from. Reflections that reach the two ears from the sides, rather than from the ceiling, arrive slightly out of step, and the brain interprets that difference as spatial impression, the sense that the sound has width and that the listener is inside it rather than in front of it. A wide hall cannot deliver them, because its side walls are too far away.</p>\n        <p>Materials do the rest, and they are less glamorous than the geometry. Bass frequencies are only reflected by surfaces heavy enough to resist being set in motion, which is why the great nineteenth-century halls, with their thick plaster on masonry, sound warm, and why a lightweight partition, however handsome, drains the low end from an orchestra. The statuary and applied ornament of those halls, added for reasons unconnected with sound, scatter reflections in all directions and prevent the harshness a flat wall produces. The largest absorber in any hall, however, is the audience itself, which is why seats are upholstered to a carefully judged degree: the aim is that an empty seat should soak up roughly as much sound as an occupied one, so that the hall an orchestra rehearses in resembles the hall it performs in.</p>\n        <p>The modern designer is better armed than Sabine was. Ray-tracing software follows tens of thousands of sound paths through a proposed building and reports what a listener in a given seat would hear; physical models at one-tenth scale are tested with ultrasound; and auralisation lets a client hear a recording processed to sound as it would in a hall not yet built. None of it removes the risk. Several celebrated halls have opened to poor reviews and been altered afterwards, and many new venues are designed with variable acoustics: movable panels, retractable banners and chambers that enlarge the effective volume.</p>\n        <p>What no model captures is the part of the judgement that is not physical. Musicians need to hear each other on the platform, and a hall that is glorious in the stalls and hopeless on stage will be disliked by the very people whose playing determines how it sounds. Listeners disagree, consistently and irreconcilably, about how much reverberation is too much. And the numbers, however carefully computed, describe a room rather than a performance: the Musikverein was not designed by anyone who understood why it works. Acoustics can now explain a great deal about why a hall sounds as it does. It remains poor at predicting, before the first note is played, whether people will love it.</p>\n      ",
+      "groups": [
+        {
+          "type": "summary",
+          "title": "Questions 27-33, Complete the Summary",
+          "instructions": "Complete the summary using words from the passage. Write ONE WORD ONLY for each answer.",
+          "pStyle": "font-size:.9375rem;line-height:1.9;margin-bottom:16px",
+          "template": "The scientific study of concert hall acoustics began in 1895, when {{27}} was asked to correct a lecture theatre in which speech could not be understood. He defined reverberation time as the interval a sound needs to fall by sixty {{28}}, and showed that it rises with the volume of a room and falls with its total {{29}}. Two forms of hall now dominate: the narrow {{30}}, of which the Vienna Musikverein is the most admired example, and the terraced vineyard plan, first built in {{31}} in 1963. Music sounds enveloping when reflections reach the listener from the {{32}} within about eighty milliseconds. Because the audience absorbs more sound than anything else, seats are {{33}} so that a rehearsal resembles a performance.",
+          "widths": {
+            "27": "120px",
+            "28": "120px",
+            "29": "130px",
+            "30": "120px",
+            "31": "100px",
+            "32": "100px",
+            "33": "140px"
+          },
+          "questions": [
+            {
+              "n": 27,
+              "answer": "SABINE",
+              "ref": "Paragraph 1: 'a young physics instructor, Wallace Clement Sabine'",
+              "explanation": ""
+            },
+            {
+              "n": 28,
+              "answer": "DECIBELS",
+              "ref": "Paragraph 2: 'the interval a sound requires to fall by sixty decibels'",
+              "explanation": ""
+            },
+            {
+              "n": 29,
+              "answer": "ABSORPTION",
+              "ref": "Paragraph 2: 'falls with the total absorption of its surfaces and contents'",
+              "explanation": ""
+            },
+            {
+              "n": 30,
+              "answer": "SHOEBOX",
+              "ref": "Paragraph 3: 'The older is the shoebox: a tall, narrow rectangle'",
+              "explanation": ""
+            },
+            {
+              "n": 31,
+              "answer": "BERLIN",
+              "ref": "Paragraph 3: 'The alternative was introduced in Berlin'",
+              "explanation": ""
+            },
+            {
+              "n": 32,
+              "answer": "SIDES",
+              "ref": "Paragraph 4: 'Reflections that reach the two ears from the sides'",
+              "explanation": ""
+            },
+            {
+              "n": 33,
+              "answer": "UPHOLSTERED",
+              "ref": "Paragraph 5: 'seats are upholstered to a carefully judged degree'",
+              "explanation": ""
+            }
+          ]
+        },
+        {
+          "type": "mc",
+          "title": "Questions 34-40, Multiple Choice",
+          "instructions": "Choose the correct letter, A, B, C or D.",
+          "questions": [
+            {
+              "n": 34,
+              "text": "What problem was Sabine originally asked to solve?",
+              "options": [
+                "A cathedral produced too little reverberation",
+                "Two halls in the same street sounded different",
+                "A speaker in a lecture theatre could not be understood",
+                "An orchestra sounded too quiet in a new hall"
+              ],
+              "answer": "C",
+              "ref": "Paragraph 1: 'a new lecture theatre in which a speaker was effectively unintelligible'",
+              "explanation": ""
+            },
+            {
+              "n": 35,
+              "text": "According to the passage, the reverberation time of a room:",
+              "options": [
+                "Rises with its volume and falls with its absorption",
+                "Is fixed by the shape of the room alone",
+                "Must be the same for speech and for music",
+                "Cannot be predicted before the building is finished"
+              ],
+              "answer": "A",
+              "ref": "Paragraph 2: 'it rises with the volume of the room and falls'",
+              "explanation": ""
+            },
+            {
+              "n": 36,
+              "text": "Why is a cathedral unsuitable for orchestral music?",
+              "options": [
+                "Its walls are too heavy to reflect bass frequencies",
+                "It cannot seat a large enough audience",
+                "Its reflections arrive from the ceiling",
+                "Its reverberation time is far too long"
+              ],
+              "answer": "D",
+              "ref": "Paragraph 2: 'at seven or eight seconds, is unusable for either'",
+              "explanation": ""
+            },
+            {
+              "n": 37,
+              "text": "What does the passage say about the Musikverein?",
+              "options": [
+                "Its proportions were calculated in advance",
+                "It was the first vineyard hall to be built",
+                "Its quality was only appreciated after it was finished",
+                "It has since been altered to improve its sound"
+              ],
+              "answer": "C",
+              "ref": "Paragraph 3: 'its excellence was recognised only afterwards'",
+              "explanation": ""
+            },
+            {
+              "n": 38,
+              "text": "Why do acousticians still favour the shoebox form?",
+              "options": [
+                "It seats more of the audience",
+                "It is cheaper to build",
+                "It suits amplified music better",
+                "Its side walls are close together"
+              ],
+              "answer": "D",
+              "ref": "Paragraph 3: 'whose side walls are close together'",
+              "explanation": ""
+            },
+            {
+              "n": 39,
+              "text": "Reflections that arrive within roughly eighty milliseconds are:",
+              "options": [
+                "Heard as distinct echoes",
+                "Merged with the direct sound and heard as greater fullness",
+                "Absorbed entirely by the audience",
+                "Audible only in a wide hall"
+              ],
+              "answer": "B",
+              "ref": "Paragraph 4: 'the ear merges them with the original'",
+              "explanation": ""
+            },
+            {
+              "n": 40,
+              "text": "What does the final paragraph suggest about acoustic science?",
+              "options": [
+                "It can now predict how much an audience will like a hall",
+                "It has made the shoebox form obsolete",
+                "It explains why a hall sounds as it does better than it predicts approval",
+                "It matters less than the opinion of the musicians"
+              ],
+              "answer": "C",
+              "ref": "Paragraph 7: 'It remains poor at predicting, before the first note'",
+              "explanation": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+const READING_TESTS = { rdtest01: READING_TEST01, rdtest02: READING_TEST02, rdtest03: READING_TEST03, rdtest04: READING_TEST04 };
