@@ -145,11 +145,13 @@
           Free mock tests, AI writing feedback, and progress tracking.
           No subscription. No ads. Just genuine IELTS preparation.
         </p>
-        <div class="hero__actions">
-          <a href="listening.html" class="btn btn-primary btn-xl">Start Free Practice</a>
-          <button type="button" class="btn btn-secondary btn-xl" onclick="ExamFlow.startMock()">🎓 Full Mock Exam</button>
-        </div>
-        <p style="font-size:.8125rem;color:var(--text-muted);margin-top:10px">Full mock: the four sections in order, one sitting. Or <a href="dashboard.html" style="color:inherit;text-decoration:underline">view your progress</a>.</p>
+        <!-- Les 2 anciens boutons de lancement (Start Free Practice, Full Mock
+             Exam) sont supprimes : les 3 cartes produits ci-dessous sont l'unique
+             entree vers les tests, ils faisaient doublon. Rien ne devient
+             inaccessible : le Full Mock reste joignable par la carte Real Exam
+             Test et depuis dashboard.html, listening.html garde son CTA de bas de
+             page, et le dashboard est dans la nav. Le funnel test_started n'est
+             pas concerne : il est emis par les 4 pages de moteur, jamais d'ici. -->
         <div class="hero__stats">
           <div class="hero__stat">
             <strong>4</strong><span>Tests per Skill</span>
