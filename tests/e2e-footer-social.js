@@ -1,9 +1,10 @@
 #!/usr/bin/env node
-// Vérifie les liens sociaux du footer (vrai Chrome) : 3 liens (YouTube + X + Reddit)
-// avec href corrects, target=_blank, rel noopener/noreferrer, SVG VISIBLE et de taille
-// lisible (>= 28px), sur toutes les pages de contenu ; + JSON-LD Organization valide
-// avec sameAs (YouTube + X + Reddit) sur l'accueil ; + rendu mobile 375px (icônes
-// lisibles, zone cliquable confortable, pas de débordement horizontal).
+// Vérifie les liens sociaux du footer (vrai Chrome) : 5 liens (YouTube + X + Reddit
+// + Instagram + TikTok) avec href corrects, target=_blank, rel noopener/noreferrer,
+// SVG VISIBLE et de taille lisible (>= 28px), sur toutes les pages de contenu ;
+// + JSON-LD Organization valide avec sameAs (YouTube + X + Reddit + Instagram + TikTok)
+// sur l'accueil ; + rendu mobile 375px (icônes lisibles, zone cliquable confortable,
+// pas de débordement horizontal).
 const { chromium } = require('playwright-core');
 const BASE = process.env.PARROTTALK_TEST_URL || 'http://localhost:8000';
 const CHROME = process.argv[2] || '/usr/bin/google-chrome';
@@ -46,11 +47,13 @@ async function main() {
     const yt = info.find(i => (i.href || '').includes('youtube.com/@ParrotTalkApp'));
     const x = info.find(i => (i.href || '').includes('x.com/ParrotTalkApp'));
     const rd = info.find(i => (i.href || '').includes('reddit.com/user/ParrotTalkApp'));
+    const ig = info.find(i => (i.href || '').includes('instagram.com/parrottalk.app'));
+    const tt = info.find(i => (i.href || '').includes('tiktok.com/@parrottalk.app'));
     const relOk = info.every(i => (i.rel || '').includes('noopener') && (i.rel || '').includes('noreferrer'));
     const tgtOk = info.every(i => i.target === '_blank');
     const svgOk = info.every(i => i.hasSvg && i.shown);
     const sizeOk = info.every(i => i.iconW >= MIN_ICON && i.iconH >= MIN_ICON);
-    c(`${p} : 3 liens (YouTube + X + Reddit)`, info.length === 3 && yt && x && rd);
+    c(`${p} : 5 liens (YouTube + X + Reddit + Instagram + TikTok)`, info.length === 5 && yt && x && rd && ig && tt);
     c(`${p} : target=_blank + rel noopener/noreferrer`, relOk && tgtOk);
     c(`${p} : SVG visibles et >= ${MIN_ICON}px (rendu ${info[0] ? info[0].iconW : 0}px)`, svgOk && sizeOk);
   }
@@ -63,9 +66,10 @@ async function main() {
     try { return JSON.parse(s.textContent); } catch (e) { return 'invalid'; }
   });
   c('Accueil : JSON-LD Organization valide', ld && ld !== 'invalid' && ld['@type'] === 'Organization');
-  c('Accueil : sameAs vers YouTube + X + Reddit', ld && Array.isArray(ld.sameAs) &&
+  c('Accueil : sameAs vers YouTube + X + Reddit + Instagram + TikTok', ld && Array.isArray(ld.sameAs) &&
     ld.sameAs.some(u => u.includes('youtube')) && ld.sameAs.some(u => u.includes('x.com')) &&
-    ld.sameAs.some(u => u.includes('reddit')));
+    ld.sameAs.some(u => u.includes('reddit')) && ld.sameAs.some(u => u.includes('instagram')) &&
+    ld.sameAs.some(u => u.includes('tiktok')));
 
   // ── Mobile 375px ──────────────────────────────────────────────────────────────
   console.log('\n=== Mobile (375px) : lisibilité + pas de débordement ===');
@@ -75,7 +79,7 @@ async function main() {
   const mSize = minfo.every(i => i.iconW >= MIN_ICON && i.iconH >= MIN_ICON);
   const mTap = minfo.every(i => i.tapW >= MIN_TARGET && i.tapH >= MIN_TARGET);
   const overflow = await m.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-  c(`375px : 3 icônes présentes`, minfo.length === 3);
+  c(`375px : 5 icônes présentes`, minfo.length === 5);
   c(`375px : icônes >= ${MIN_ICON}px sans zoomer (rendu ${minfo[0] ? minfo[0].iconW : 0}px)`, mSize);
   c(`375px : zone cliquable >= ${MIN_TARGET}px (rendu ${minfo[0] ? minfo[0].tapW : 0}px)`, mTap);
   c(`375px : pas de débordement horizontal (overflow ${overflow}px)`, overflow <= 0);

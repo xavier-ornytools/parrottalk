@@ -1,5 +1,25 @@
 # ParrotTalk — Tests techniques
 
+## LOT RESEAUX SOCIAUX : ajout Instagram et TikTok (2026-07-17)
+
+Branche `lot-social-ig-tiktok`, tag `avant-lot-social-2026-07-17`. Lot **MARKUP/DATA-only** : aucun moteur touche, ExamFlow intouche, aucune logique JS modifiee. Fichiers modifies : les 10 pages de contenu (`index.html`, `listening.html`, `reading.html`, `writing.html`, `speaking.html`, `dashboard.html`, `privacy.html`, `terms.html`, `legal-notice.html`, `faq.html`), `css/main.css` (2 regles hover), `tests/e2e-footer-social.js` (verrou passe de 3 a 5 liens).
+
+**Ce qui est ajoute.** Deux reseaux, Instagram et TikTok, aux cotes des trois deja en place (YouTube, X, Reddit). Le bloc social passe donc de 3 a **5 icones**. Presence : le footer `footer-social` des 10 pages, le header `nav__social` (accueil uniquement), et le `sameAs` du JSON-LD Organization (accueil). Rien retire : YouTube et Reddit, deja lies et non mentionnes dans la demande, sont conserves (R15, aucune initiative de suppression).
+
+**Le handle differe des trois autres.** Instagram `https://www.instagram.com/parrottalk.app` et TikTok `https://www.tiktok.com/@parrottalk.app`, **avec un point**, confirmes explicitement par Xavier. Les trois reseaux existants utilisent le handle sans point `ParrotTalkApp`. Verification automatique des URLs impossible depuis la session (Instagram et TikTok renvoient 200 meme sur compte inexistant, X renvoie 402 au bot) : la forme exacte a ete tranchee par Xavier, proprietaire des comptes, jamais devinee.
+
+**Icones.** SVG glyphes officiels Instagram et TikTok, `viewBox 0 0 24 24`, `fill currentColor`, meme patron que les 3 existants. Footer 30px force par le CSS, header 16px. Hover `#E4405F` (Instagram), `#FE2C55` (TikTok).
+
+### Testé avec
+- **`tests/e2e-footer-social.js`, `33/0`** en vrai Chrome : les **5 liens** presents sur les 9 pages couvertes, href corrects, `target=_blank` + `rel noopener/noreferrer`, SVG visibles >= 28px (rendu 30px) ; JSON-LD Organization valide avec `sameAs` vers les 5 reseaux ; rendu **mobile 375px** avec 5 icones, zone cliquable 44px, **aucun debordement horizontal** (overflow 0px). Le verrou du test a ete releve de 3 a 5 liens.
+- **Non-regression `tests/e2e-quickmock.js`, `40/2`** (seed 42), baseline exacte : les 2 echecs sont GA4, pre-existants, non lies au lot.
+- **Non-regression `tests/quickmock-unit.js`, `40/40`**, baseline exacte.
+- **Non-regression `tests/check.js`, `60 passed / 12 failed`**, baseline exacte : les 12 echecs sont FAQ, pre-existants, non lies au lot.
+- Comptes verifies par script : 5 ancres dans chaque `footer-social` des 10 pages, 5 dans le `nav__social` de l'accueil, 5 URLs dans le `sameAs`. Aucun tiret cadratin ni demi-cadratin introduit.
+
+### Reste (visuel, Xavier au navigateur)
+Aspect et alignement des 2 nouvelles icones dans le footer et le header, en desktop et en mobile, sur prod www et sans-www. La donnee, le rendu et l'absence de debordement sont prouves automatiquement ci-dessus ; l'oeil reste a Xavier.
+
 ## LOT QUICK MOCK, temps 2 : pool elargi a toutes les combinaisons (2026-07-17)
 
 Branche `lot-quick-mock-temps2`, tag `avant-lot-quick-mock-temps2-2026-07-17`. Lot **DATA-only** : aucun moteur touche, ExamFlow intouche, la mecanique de tirage inchangee depuis le temps 1. Fichiers modifies : `js/quickmock.js` (les 4 tableaux `POOL`), `sitemap.xml` (ajout `quickmock.html`), `tests/quickmock-unit.js` (verrou de cardinalite), `tests/e2e-quickmock.js` (remplisseur Listening robuste aux questions a choix).
