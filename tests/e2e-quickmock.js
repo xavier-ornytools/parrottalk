@@ -80,8 +80,20 @@ const SPEAKING_MOCK = {
   check('chrono a 480 s', lst.dur === 480, String(lst.dur));
 
   await page.evaluate(() => {
+    // Pool temps 2 : le seed peut tirer n'importe laquelle des 16 sections, dont
+    // certaines melent inputs texte et questions a choix. On pose la bonne reponse
+    // quel que soit le type (texte ou radio), comme le fait deja le bloc Reading.
+    // Les 3 dernieres restent fausses (texte errone, ou choix laisse vide).
     const qs = getQuestions(currentTest.sections[0]);
-    qs.forEach((q, i) => { const el = document.getElementById('q' + q.n); if (el) el.value = (i < 7 ? q.answer : 'FAUX'); });
+    qs.forEach((q, i) => {
+      const el = document.getElementById('q' + q.n);
+      if (i < 7) {
+        if (el) el.value = q.answer;
+        else { const radio = document.querySelector('input[name="q' + q.n + '"][value="' + q.answer + '"]'); if (radio) radio.checked = true; }
+      } else if (el) {
+        el.value = 'FAUX';
+      }
+    });
     finishSection();
   });
   await page.waitForTimeout(300);
