@@ -796,8 +796,11 @@ function showResults(total, band, passageScores, ranges, answeredCount = 40, sca
   const card = document.getElementById('results-card');
   card.classList.add('show');
   const isPartial = answeredCount < 40;
+  // `total` = reponses correctes, `answeredCount` = reponses donnees. Le mot
+  // "correct" est indispensable ici : sans lui, "5 of 26 answered" se lit "5
+  // repondues sur 26" et contredit le "26/40 questions answered" affiche dessous.
   const heroNote = isPartial
-    ? `Approximate, ${total} of ${answeredCount} answered. Finish all 3 passages for an official band.`
+    ? `Approximate, ${total} correct out of ${answeredCount} answered. Finish all 3 passages for an official band.`
     : `${total} of 40 correct, your free instant score.`;
   const heroHTML =
     `<div class="card card-sm fb-hero">` +
