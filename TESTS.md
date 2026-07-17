@@ -1,5 +1,33 @@
 # ParrotTalk — Tests techniques
 
+## Chantier « 4 tests par module », Reading 04 : Bird Migration + Forest Fungi + Concert Hall Acoustics (2026-07-17)
+
+Branche `lot-reading-04`, **mergee dans main, deployee et verifiee en prod** (verification navigateur de Xavier faite avant merge). Fichiers de code modifies : `js/reading-data.js`, `reading.html`, `tests/reading-verify-refs.js`, et un nouveau `tests/e2e-reading-test04.js`.
+
+**Test 04.** 4e test Reading (`READING_TEST04`, clef `rdtest04`), dernier test avant le lot Quick Mock. 3 passages originaux ParrotTalk, aucune marque tierce, aucun texte repris : The Navigation of Migratory Birds (858 mots, 7 paragraphes numerotes), The Hidden Networks Beneath Forests (771 mots, 6 paragraphes lettres A-F), The Acoustics of Concert Halls (896 mots, 7 paragraphes numerotes). Themes volontairement distincts des 9 passages existants. 40 questions sur le patron riche du Test 01, le seul a couvrir les 4 types du moteur : `tfng` (7), `mc` (20), `matching` (6), `summary` (7). Les 40 renvois sont au format LOT 2, ancre verbatim de 5 a 10 mots. Timer 60 min herite sans configuration (`3600` est en dur dans `reading.html`, pas dans les donnees).
+
+**Piege d'integration, le plus important du lot.** `setCurrentTest` et `selectTest` derivaient la clef par une cascade de ternaires (`num === 3 ? 'rdtest03' : num === 2 ? 'rdtest02' : 'rdtest01'`) qui **retombait en silence sur `rdtest01` pour tout numero inconnu**. Sans correction, `selectTest('test04')` aurait charge le Test 01 avec un contenu parfait et invisible, **sans aucune erreur console**. Remplace par une derivation `'rdtest' + padStart(2,'0')` avec garde explicite et `console.warn`. `init()` boucle desormais sur `Object.keys(READING_TESTS)` et la borne de reprise `sessionTest <= 3` devient `<= Object.keys(READING_TESTS).length` : le lot Reading 05 ne retombera pas dans le piege. Grille `grid-3 -> grid-4` (le responsive `grid-4` existait deja : 2 colonnes tablette, 1 colonne mobile).
+
+**Garde-fou renforce, 3 angles morts fermes.** `tests/reading-verify-refs.js` existait deja et couvrait le verbatim ; il ne couvrait pas : (1) **l'exhaustivite**, une question sans champ `ref` etait ignoree en silence et le compteur affichait `38/38 OK` au lieu de signaler 2 manques, donc un « 40/40 » ne prouvait pas que les 40 renvois existaient ; (2) **la reciproque NOT GIVEN**, une reponse `NOT GIVEN` portant une fausse ancre vers un paragraphe passait sans rien declencher ; (3) **l'affichage**, le compteur `40/40 renvois OK` s'imprimait AU-DESSUS de la liste des problemes, ce qui se lit comme un succes. Le verdict `ECHEC` remplace desormais le compteur. Le denominateur est le nombre de questions, plus le nombre de refs presents.
+
+**Avenant, resume de score partiel.** Signale par Xavier a la verification navigateur : le hero affichait `5 of 26 answered` et le sous-texte `26/40 questions answered`, contradictoires a la lecture. **Les chiffres etaient justes** (`total` = correctes, `answeredCount` = repondues), c'est le mot `correct` qui manquait dans la seule branche partielle, la branche complete ecrivant bien `40 of 40 correct`. Aucun score n'etait mal calcule. Corrige en `5 correct out of 26 answered`.
+
+### Testé avec
+- **Garde-fou des ancres** : `rdtest01` a `rdtest04`, `40/40` chacun, sortie 0. Le denominateur 40 est desormais le nombre de questions, donc le 40/40 prouve l'exhaustivite.
+- **Garde-fou eprouve sur copie mutee hors depot** (le point qui compte : un garde-fou qui repond toujours OK ne prouve rien). 4 mutations injectees, 4 detectees, sortie 1 : ancre non verbatim, renvoi manquant, ancre presente mais mauvais paragraphe cite, `NOT GIVEN` avec fausse ancre. La 3e mutation du premier essai n'avait pas mordu et donnait un faux negatif du test lui-meme, refaite avec assertion de mutation.
+- **e2e `tests/e2e-reading-test04.js`, `13/13`** en vrai Chrome (playwright-core), en local ET **rejoue contre la prod** (`PARROTTALK_TEST_URL=https://parrottalk.app`) : 4e bouton present et libelle, `selectTest('test04')` charge bien `rdtest04` et non `rdtest01` (assertion dediee au piege ci-dessus), 3 passages rendus, 40 questions repondables, timer `60:00`, et non-regression du chargement des Tests 01/02/03 sur leur propre contenu.
+- **Renvois verifies en conditions reelles au navigateur** : reponse fausse -> `See Paragraph 1: 'moves between the polar regions twice a year'` ; `NOT GIVEN` -> `See Not stated in the passage`, sans fausse ancre.
+- **Resume de score verifie sur le cas exact signale** : scenario 26 repondues / 5 correctes injecte, avant `5 of 26 answered`, apres `5 correct out of 26 answered` + `26/40 questions answered`, concordants.
+- **Longueur et R4 verifiees par script** : 858 / 771 / 896 mots, tous dans la borne 700-900 ; zero tiret cadratin ou demi-cadratin dans l'integralite du test 04.
+- **Non-regression `tests/check.js`** : `60 passed / 12 failed`, exactement la baseline preexistante (sortie 1 attendue).
+
+### Limite connue, non resolue, hors lot
+Au rechargement de la page, la vignette d'un test deja passe affiche `Not attempted yet` au lieu du dernier score. Le score est bien sauvegarde en `localStorage`, il n'est jamais reaffiche : `feedback-gate.js` est charge en `defer`, donc `window.fmtBand` n'existe pas encore quand `init()` s'execute, et la garde `if (el && window.fmtBand)` saute la ligne. Bug d'ordre preexistant, deja commente dans le code, touche les 4 tests. Merite son propre lot.
+
+### Livrable
+- Compte-rendu .md sur le Bureau : `2026-07-17_LOT-READING-04_compte-rendu.md`.
+- PDF de fin de lot sur le Bureau : `2026-07-17_Rapport_LOT-READING-04.pdf`.
+
 ## Calibrage de l'evaluateur IA, Writing et Speaking (2026-07-17)
 
 Branche `fix/calibrage-evaluateur`, **mergee dans main, deployee et verifiee en prod** (verification navigateur de Xavier faite). Un seul fichier de code modifie : `worker/src/index.js`.
