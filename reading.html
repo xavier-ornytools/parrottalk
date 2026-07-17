@@ -249,7 +249,7 @@
 <div class="container" style="padding-top:32px;padding-bottom:80px">
 
   <!-- TEST SELECTOR -->
-  <div class="grid-4" style="gap:12px;margin-bottom:24px">
+  <div id="test-selector" class="grid-4" style="gap:12px;margin-bottom:24px">
     <button class="test-sel-btn active" onclick="selectTest('test01')">
       <div class="t-num">Test 01</div>
       <div class="t-name">Sleep · Urban Farming · Printing Press</div>
@@ -327,6 +327,10 @@
 
 <script src="js/data.js"></script>
 <script src="js/reading-data.js"></script>
+<!-- Script SIMPLE et non `defer` : le code inline ci-dessous consulte
+     QuickMock.isActive() des le parsing (duree du chrono, injection de la
+     tranche). En `defer`, window.QuickMock serait encore undefined. -->
+<script src="js/quickmock.js"></script>
 <script>
 // ── Reading data-driven (LOT 2) : donnees dans js/reading-data.js, builders
 // calques sur ceux de Listening. Une seule zone #test-zone, plus de zones
@@ -338,7 +342,14 @@ let currentTestNum = 1;            // 1 / 2 / 3 (events GA4 + libelles existants
 let currentPassage = 0;
 let submitted = false;
 let timerInterval = null;
-let secondsLeft = 3600;
+// Le Quick Test joue UN passage. Il injecte un objet test synthetique qui n'a
+// qu'une tranche : le moteur ci-dessous ignore tout du parcours.
+const QM_ON = !!(window.QuickMock && QuickMock.isActive());
+// Duree de l'epreuve. Reading n'a pas d'override ?timer= (contrairement a
+// Listening), la valeur etait ecrite en dur a deux endroits : ici et dans
+// startTimer(). Elle est desormais derivee.
+const READING_DURATION = QM_ON ? QuickMock.duration('reading') : 3600;
+let secondsLeft = READING_DURATION;
 let passagesDone = [false, false, false];
 let passageScoresLive = [0, 0, 0];
 let savedReadingAnswers = {};
@@ -470,6 +481,25 @@ function setCurrentTest(num) {
 }
 
 function init() {
+  // Quick Test : on injecte la tranche tiree et on demarre. Le selecteur de test
+  // et la reprise du mode isole n'ont pas lieu d'etre ici, le parcours decide.
+  if (QM_ON) {
+    const slice = QuickMock.sliceReading(READING_TESTS);
+    if (slice) {
+      currentTest = slice;
+      currentTestKey = slice.id;
+      currentTestNum = 0;
+      document.getElementById('test-selector')?.classList.add('hidden');
+      startTest();
+      return;
+    }
+    // Tranche introuvable (etat corrompu) : on ne bascule pas en silence sur le
+    // test 01, on renvoie au hub.
+    console.warn('Quick Test : tranche Reading introuvable, retour au hub.');
+    location.href = QuickMock.HUB;
+    return;
+  }
+
   const scores = getAllReadingScores();
   Object.keys(READING_TESTS).forEach((key) => {
     if (scores[key]) {
@@ -537,11 +567,16 @@ function finishReadingPassage() {
     document.getElementById('ptab-' + pi)?.classList.add('done');
     toast(`Passage ${pi + 1} saved (${score}/${range.end - range.start + 1}).`, 'success');
   }
-  const nextPassage = pi < 2 ? pi + 1 : pi;
+  // Dernier index derive du test REEL, jamais le litteral 2. Avec un seul
+  // passage (Quick Test), `pi < 2` etait vrai pour pi=0 : on basculait sur un
+  // bloc #passage-1 inexistant (ecran vide) et maybeStartReview() n'etait jamais
+  // atteint, donc pas de review et pas d'auto-submit.
+  const lastPi = currentTest.passages.length - 1;
+  const nextPassage = pi < lastPi ? pi + 1 : pi;
   saveProgress('reading', currentTestKey, {
     currentPassage: nextPassage, passagesDone, passageScores: passageScoresLive, answers: savedReadingAnswers,
   });
-  if (pi < 2) switchPassage(pi + 1);
+  if (pi < lastPi) switchPassage(pi + 1);
   else maybeStartReview();
 }
 
@@ -554,19 +589,27 @@ function startTest(resume = false) {
 
   const saved = loadProgress('reading', currentTestKey);
   if (!resume) window.ptEvent && window.ptEvent('test_started', { section: 'reading', test_number: currentTestNum });
+  // Tableaux d'etat dimensionnes sur le test REEL, jamais sur un litteral de 3 :
+  // avec un seul passage, `passagesDone.every(Boolean)` sur un [false x3]
+  // pre-initialise ne passe jamais a true, donc pas de review ni d'auto-submit.
+  const nPas = currentTest.passages.length;
+  const fill = (v) => new Array(nPas).fill(v);
   if (saved) {
-    passagesDone = saved.passagesDone || [false, false, false];
-    passageScoresLive = saved.passageScores || [0, 0, 0];
+    passagesDone = saved.passagesDone || fill(false);
+    passageScoresLive = saved.passageScores || fill(0);
     savedReadingAnswers = saved.answers || {};
     restoreReadingAnswers();
   } else {
-    passagesDone = [false, false, false];
-    passageScoresLive = [0, 0, 0];
+    passagesDone = fill(false);
+    passageScoresLive = fill(0);
     savedReadingAnswers = {};
   }
 
   startTimer();
-  try { sessionStorage.setItem(READING_SESSION_KEY, String(currentTestNum)); } catch (e) {}
+  // Pas de marqueur de session en Quick Test : cette clef porte un NUMERO de test
+  // du mode isole (1 a 4) et sert sa reprise. Un id synthetique n'y a pas sa
+  // place, et l'y ecrire ferait reprendre le mode isole sur un test fantome.
+  if (!QM_ON) { try { sessionStorage.setItem(READING_SESSION_KEY, String(currentTestNum)); } catch (e) {} }
   switchPassage(saved ? (saved.currentPassage || 0) : 0);
   toast(saved
     ? `Progress restored, resuming at Passage ${(saved.currentPassage || 0) + 1}.`
@@ -601,7 +644,7 @@ function restoreReadingAnswers() {
 
 function startTimer() {
   if (timerInterval) clearInterval(timerInterval);
-  secondsLeft = 3600;
+  secondsLeft = READING_DURATION;
   timerInterval = setInterval(() => {
     secondsLeft--;
     updateTimerDisplay();
@@ -773,10 +816,26 @@ function submitTest() {
   }
 
   const isPartial = answeredCount < 40;
-  const scaledTotal = isPartial ? Math.round((total / answeredCount) * 40) : total;
+  // Base de la mise a l'echelle. En mode isole, l'historique divise par
+  // `answeredCount` : repondre juste a 3 questions sur 13 donne 3/3*40 = band 9.
+  // Inacceptable comme base d'un band global, donc en Quick Test on divise par le
+  // nombre de questions POSEES (base Listening, une non-repondue compte comme
+  // fausse). Le correctif est volontairement SCOPE : changer la regle du mode
+  // isole modifierait les bands d'un produit en prod, sans demande, et ce n'est
+  // pas le peril de ce lot. La divergence reste documentee dans TESTS.md.
+  const qAsked = passageRanges.reduce((n, r) => n + (r.end - r.start + 1), 0);
+  const denom = QM_ON ? qAsked : answeredCount;
+  const scaledTotal = isPartial ? Math.round((total / denom) * 40) : total;
   const band = getBand(isPartial ? scaledTotal : total, 'reading');
-  saveReadingScore(testId, passageScores, total);
-  clearProgress('reading', testId);
+  // En Quick Test, on n'ecrit pas dans `ielts_reading_scores` : saveReadingScore
+  // recalcule le band sur le total BRUT, il serait faux pour un seul passage.
+  if (QM_ON) {
+    QuickMock.recordResult('reading', { raw: total, max: qAsked, scaled: scaledTotal, band: band });
+    clearProgress('reading', testId);
+  } else {
+    saveReadingScore(testId, passageScores, total);
+    clearProgress('reading', testId);
+  }
   showResults(total, band, passageScores, passageRanges, answeredCount, scaledTotal);
 
   const metaEl = document.getElementById(metaId);
@@ -821,7 +880,10 @@ function showResults(total, band, passageScores, ranges, answeredCount = 40, sca
   if (window.FeedbackGate && gateEl) {
     window.FeedbackGate.render(gateEl, { type: 'reading', testId: currentTestNum, band: band, heroHTML, detailHTML });
   } else if (gateEl) { gateEl.innerHTML = heroHTML + detailHTML; }
-  if (window.ExamFlow) window.ExamFlow.renderNextStep('reading', card.parentElement || card);
+  // Quick Test : c'est le hub qui porte la suite du parcours, pas ExamFlow (qui
+  // gouverne le Full Mock et reste intact).
+  if (QM_ON) window.QuickMock.renderNextStep('reading', card.parentElement || card);
+  else if (window.ExamFlow) window.ExamFlow.renderNextStep('reading', card.parentElement || card);
   card.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
