@@ -6,6 +6,10 @@ workers_dev = true
 [[kv_namespaces]]
 binding = "RATE_KV"
 id = "0da4e6df070a4012a69f941d2ed89eed"
+# KV isolé pour "wrangler dev" : les sondes de calibrage ne touchent ni le
+# quota par IP ni le compteur de budget mensuel de la production. Wrangler
+# refuse de démarrer en dev sans lui. Non utilisé par "wrangler deploy".
+preview_id = "9c892226df2a43ca866725885caedfc3"
 
 [vars]
 DAILY_LIMIT_PER_IP = "10"

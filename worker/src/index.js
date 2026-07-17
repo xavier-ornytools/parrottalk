@@ -311,18 +311,35 @@ GRADING RULES (hard numeric caps, not suggestions; apply these strictly regardle
 - If the essay is severely under length (fewer than 80 percent of the required minimum, i.e. fewer than ${Math.round((minWords || 0) * 0.8)} words for this task), cap ${criterion1} at 5.0 maximum.
 - If the content reads as a memorized or generic answer with no real connection to the specific prompt given, penalize severely.
 
-Return ONLY valid JSON — no markdown:
+BAND DESCRIPTORS (score each criterion against these, not against a typical candidate):
+- 9: fully operational command. Errors are rare and read as slips.
+- 8: fully operational command with occasional unsystematic inaccuracies. Wide, natural, precise range.
+- 7: good command. Occasional errors. Some flexibility and precision.
+- 6: generally effective command despite some inaccuracies.
+- 5: partial command, frequent problems.
+- 4 and below: basic command, frequent breakdowns in meaning.
+
+EVIDENCE AND CONSISTENCY RULES (mandatory, these override any instinct to stay near the middle of the scale):
+- Every weakness you cite must be REAL and verifiable: quote the exact word, phrase or sentence from the essay that contains it. If you cannot quote it, do not cite it. Inventing or misdescribing a fault in order to justify a lower band is a serious grading error.
+- Before citing a phrase as an error, re-read it in context and confirm it is genuinely incorrect and not merely an unusual but valid construction.
+- You are given ONLY the task prompt and the essay text. For Task 1 you do NOT see the chart, graph, table or diagram, and you have NO access to the underlying figures. Never claim a reported value is inaccurate, and never state what the visual "shows": you cannot know. Judge only how the response selects, organises, compares and expresses information. Fabricating data from a visual you cannot see is a serious grading error.
+- The band you give a criterion must match your own comment on that criterion. If your comment names no concrete, quoted weakness, the band must reflect that positive description rather than defaulting to a mid-scale figure.
+- Score each of the four criteria independently, on its own evidence. Do not converge them toward one another or toward the middle of the scale. Different criteria commonly deserve different bands, and two different essays should rarely receive identical profiles.
+- Do not compress scores toward the middle. If the response meets the band 8 or band 9 descriptors, award band 8 or band 9. If it meets band 4, award band 4.
+- Write every comment for the candidate, about their English. Never mention or reason about word-count thresholds, percentages, caps, or any internal grading mechanism: that is handled elsewhere and is meaningless to the reader.
+
+Return ONLY valid JSON, no markdown:
 {
-  "band": "6.5",
-  "summary": "One sentence overall assessment. AI estimate — may vary from official scores by ±0.5–1 band.",
-  "${criterion1key}": { "band": "6.5", "comment": "2-3 sentences on ${criterion1}" },
-  "coherence": { "band": "6.5", "comment": "2-3 sentences on Coherence & Cohesion" },
-  "lexical":   { "band": "6.5", "comment": "2-3 sentences on Lexical Resource" },
-  "grammar":   { "band": "6.0", "comment": "2-3 sentences on Grammatical Range & Accuracy" },
+  "band": <number 0-9, halves allowed>,
+  "summary": "One sentence overall assessment. AI estimate, may vary from official scores by 0.5 to 1 band.",
+  "${criterion1key}": { "band": <number 0-9, halves allowed>, "comment": "2-3 sentences on ${criterion1}. Quote the essay for any weakness cited." },
+  "coherence": { "band": <number 0-9, halves allowed>, "comment": "2-3 sentences on Coherence & Cohesion. Quote the essay for any weakness cited." },
+  "lexical":   { "band": <number 0-9, halves allowed>, "comment": "2-3 sentences on Lexical Resource. Quote the essay for any weakness cited." },
+  "grammar":   { "band": <number 0-9, halves allowed>, "comment": "2-3 sentences on Grammatical Range & Accuracy. Quote the essay for any weakness cited." },
   "topTip": "Single most impactful improvement"
 }
 
-Be realistic. An average test-taker scores 5.5–6.5.`;
+Award the band the response actually earns against the descriptors above.`;
 
   const { parsed, inputTokens, outputTokens, totalTokens } = await callGemini(env, [
     { role: 'user', parts: [{ text: userPrompt }] },
@@ -345,31 +362,13 @@ Be realistic. An average test-taker scores 5.5–6.5.`;
   if (isSeverelyUnderLength) capsApplied.push('under_length');
   if (isBulletFormat) capsApplied.push('bullet_format');
 
-  if ((isSeverelyUnderLength || isBulletFormat) && parsed[criterion1key]) {
-    const rawTaskBand = parseFloat(parsed[criterion1key].band);
-    if (Number.isFinite(rawTaskBand)) parsed[criterion1key].band = Math.min(5.0, rawTaskBand);
-  }
-  if (isBulletFormat && parsed.coherence) {
-    const rawCoherenceBand = parseFloat(parsed.coherence.band);
-    if (Number.isFinite(rawCoherenceBand)) parsed.coherence.band = Math.min(5.0, rawCoherenceBand);
-  }
-  if (capsApplied.length > 0) {
-    const rawOverallBand = parseFloat(parsed.band);
-    if (Number.isFinite(rawOverallBand)) parsed.band = Math.min(5.0, rawOverallBand);
-    parsed.capsApplied = capsApplied;
-    console.warn('[caps] plafond Writing appliqué en code', { task, capsApplied, essayWordCount, underLengthThreshold });
-  }
-
-  parsed.band = clampBand(parsed.band);
-  if (parsed.band === null) {
-    parsed.bandError = 'AI returned an invalid band value.';
-    console.warn('[clampBand] band Writing invalide, mis à null', { task });
-  }
-
-  // Même garde-fou sur les 4 sous-critères (taskAchievement/taskResponse,
-  // coherence, lexical, grammar) : chacun porte son propre band Gemini,
-  // niché dans un sous-objet { band, comment }.
-  [criterion1key, 'coherence', 'lexical', 'grammar'].forEach(key => {
+  // Garde-fou sur les 4 sous-critères (taskAchievement/taskResponse, coherence,
+  // lexical, grammar) : chacun porte son propre band Gemini, niché dans un
+  // sous-objet { band, comment }. Clampés EN PREMIER, car le band global est
+  // désormais calculé à partir d'eux : la moyenne doit porter sur des valeurs
+  // déjà normalisées à un multiple de 0.5.
+  const criteriaKeys = [criterion1key, 'coherence', 'lexical', 'grammar'];
+  criteriaKeys.forEach(key => {
     if (!parsed[key]) return;
     parsed[key].band = clampBand(parsed[key].band);
     if (parsed[key].band === null) {
@@ -377,6 +376,37 @@ Be realistic. An average test-taker scores 5.5–6.5.`;
       console.warn('[clampBand] band Writing invalide (critère)', { task, key });
     }
   });
+
+  if ((isSeverelyUnderLength || isBulletFormat) && parsed[criterion1key] && parsed[criterion1key].band !== null) {
+    parsed[criterion1key].band = Math.min(5.0, parsed[criterion1key].band);
+  }
+  if (isBulletFormat && parsed.coherence && parsed.coherence.band !== null) {
+    parsed.coherence.band = Math.min(5.0, parsed.coherence.band);
+  }
+
+  // Band global = moyenne des 4 critères, arrondie au demi-band le plus proche
+  // (arrondi officiel IELTS, mi-chemin vers le haut : 6.75 -> 7.0, 6.25 -> 6.5).
+  // La valeur "band" renvoyée par Gemini est ignorée : elle n'est pas une
+  // moyenne, c'est une opinion. Même philosophie que le calcul de "overall"
+  // côté Speaking, on ne fait pas confiance à l'arithmétique du modèle.
+  // Un critère invalide rend la moyenne incalculable : on renvoie null plutôt
+  // qu'un chiffre non fondé (aligné sur Speaking, décision Xavier 2026-07-17).
+  const critBands = criteriaKeys.map(k => (parsed[k] ? parsed[k].band : null));
+  if (critBands.every(v => v !== null)) {
+    parsed.band = clampBand(critBands.reduce((a, b) => a + b, 0) / 4);
+  } else {
+    parsed.band = null;
+    parsed.bandError = 'AI returned an invalid criterion value, band could not be computed.';
+    console.warn('[clampBand] band Writing non calculable, un critère est invalide', { task });
+  }
+
+  // Plafond global conservé : il prime sur la moyenne, une copie plafonnée ne
+  // peut pas remonter via ses autres critères.
+  if (capsApplied.length > 0) {
+    if (parsed.band !== null) parsed.band = Math.min(5.0, parsed.band);
+    parsed.capsApplied = capsApplied;
+    console.warn('[caps] plafond Writing appliqué en code', { task, capsApplied, essayWordCount, underLengthThreshold });
+  }
 
   const cost = estimateCost(env, inputTokens, 0, outputTokens);
   const budget = await checkAndUpdateBudget(env, cost);
@@ -473,7 +503,23 @@ Return ONLY valid JSON:
   "topTip": "One concrete actionable improvement"
 }
 
-Be realistic. Average test-taker: 5.5–6.5. Band 7+ requires consistent fluency and accurate complex grammar.`;
+BAND DESCRIPTORS (score each criterion against these, not against a typical candidate):
+- 9: fluent with only rare repetition or self-correction. Full, natural, precise range.
+- 8: fluent with only occasional repetition or hesitation. Wide range, occasional unsystematic inaccuracies.
+- 7: speaks at length without noticeable effort. Some flexibility and precision. Occasional errors.
+- 6: willing to speak at length, coherence sometimes lost through hesitation or repetition.
+- 5: usually maintains flow but relies on repetition and self-correction.
+- 4 and below: frequent breakdowns, noticeable pauses, limited range.
+
+EVIDENCE AND CONSISTENCY RULES (mandatory, these override any instinct to stay near the middle of the scale):
+- Every item in "toFix" must be REAL and verifiable: quote what the candidate actually said. If you cannot quote it, do not list it. Inventing or misdescribing a weakness in order to justify a lower band is a serious grading error.
+- Before citing a phrase as an error, re-read it in context and confirm it is genuinely incorrect and not merely an unusual but valid construction.
+- The band you give each criterion must match your own "summary", "strengths" and "toFix". If you name no concrete, quoted weakness for a criterion, its band must reflect that positive description rather than defaulting to a mid-scale figure.
+- Score each of the four criteria independently, on its own evidence. Do not converge them toward one another or toward the middle of the scale. Different criteria commonly deserve different bands.
+- Do not compress scores toward the middle. If the candidate meets the band 8 or band 9 descriptors, award band 8 or band 9. If they meet band 4, award band 4.
+- Write every comment for the candidate, about their English. Never mention or reason about any internal grading mechanism.
+
+Award the band the candidate actually earns against the descriptors above.`;
 
   geminiParts.push({ text: systemPrompt });
 
