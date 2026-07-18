@@ -293,7 +293,18 @@
         '<button type="button" id="qm-resume-quit" style="background:transparent;color:#cdeee6;border:1px solid rgba(255,255,255,.45);padding:6px 12px;border-radius:6px;cursor:pointer">Quit Quick Test</button>';
       document.body.insertBefore(bar, document.body.firstChild);
       var q = document.getElementById('qm-resume-quit');
-      if (q) q.addEventListener('click', function () { clear(); bar.remove(); });
+      if (q) q.addEventListener('click', function () {
+        clear(); // retire l'etat pt_quickmock
+        // Purge aussi les progressions residuelles des tranches Quick Test (ids
+        // "qm-...") pour ne laisser aucun etat quick susceptible d'interferer.
+        try {
+          for (var i = localStorage.length - 1; i >= 0; i--) {
+            var k = localStorage.key(i);
+            if (k && /^ielts_progress_.*_qm-/.test(k)) localStorage.removeItem(k);
+          }
+        } catch (e) {}
+        bar.remove();
+      });
     } catch (e) {}
   }
   if (typeof document !== 'undefined' && document.addEventListener) {
