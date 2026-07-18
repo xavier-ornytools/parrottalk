@@ -29,16 +29,24 @@ console.log('[ HTML files ]');
 ['index.html','dashboard.html','listening.html','reading.html','writing.html','speaking.html','privacy.html']
   .forEach(f => check(f, () => exists(f)));
 
-// API files
+// API + Worker. L'evaluation IA (Writing, Speaking, transcription) a migre le
+// 16/07 des fichiers api/*-feedback et api/*-transcribe vers le Worker Cloudflare
+// (worker/src/index.js). Assertions adaptees au Worker le 18/07 (point 3 dette).
 console.log('\n[ API routes ]');
-['api/writing-feedback.js','api/speaking-transcribe.js','api/speaking-feedback.js','api/subscribe.js']
-  .forEach(f => check(f, () => exists(f)));
+check('api/subscribe.js', () => exists('api/subscribe.js'));
+check('worker/src/index.js (evaluation IA)', () => exists('worker/src/index.js'));
+check('worker route /evaluate/writing (ex api/writing-feedback.js)', () => contains('worker/src/index.js', '/evaluate/writing'));
+check('worker route /evaluate/speaking (ex api/speaking-feedback.js)', () => contains('worker/src/index.js', '/evaluate/speaking'));
 
-// API files use CommonJS (not ESM)
+// Format des sorties serveur. api/subscribe.js reste en Node CommonJS ; le Worker
+// Cloudflare est un module ES (export default), format normal de la plateforme.
 console.log('\n[ API CommonJS format ]');
-['api/speaking-transcribe.js','api/speaking-feedback.js','api/subscribe.js'].forEach(f =>
-  check(`${f} uses module.exports`, () =>
-    contains(f, 'module.exports') && !contains(f, 'export default')));
+check('api/subscribe.js uses module.exports', () =>
+  contains('api/subscribe.js', 'module.exports') && !contains('api/subscribe.js', 'export default'));
+check('worker/src/index.js est un module ES (export default)', () =>
+  contains('worker/src/index.js', 'export default'));
+check('worker produit un transcript Speaking (ex api/speaking-transcribe.js)', () =>
+  contains('worker/src/index.js', 'transcript'));
 
 // data.js exports
 console.log('\n[ data.js exports ]');
@@ -54,9 +62,12 @@ check('handleSectionEnd fixed', () => contains('listening.html', 'function handl
 check('playingSection var',     () => contains('listening.html', 'let playingSection'));
 check('seekAudio takes el',     () => contains('listening.html', 'function seekAudio(e, el)'));
 check('cancelTTS on submit',    () => {
+  // La garde "aucune reponse" a ete ajoutee en tete de submitTest, repoussant
+  // l'appel cancelTTS au-dela des 120 premiers caracteres. On inspecte donc un
+  // segment plus large du corps de la fonction (adapte le 18/07).
   const src = fs.readFileSync(path.join(root, 'listening.html'), 'utf8');
   const submitFn = src.slice(src.indexOf('function submitTest'));
-  return submitFn.slice(0, 120).includes('cancelTTS');
+  return submitFn.slice(0, 900).includes('cancelTTS');
 });
 
 // reading.html critical symbols
@@ -114,38 +125,31 @@ check('consent flag uses parrottalk_ prefix (survives dashboard reset)', () =>
 
 // FAQ
 console.log('\n[ FAQ ]');
-check('index.html has at least 10 FAQ items', () => {
-  const src = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+// La FAQ a ete deplacee de index.html vers la page dediee faq.html le 15/07.
+// Assertions repointees sur faq.html le 18/07 (point 3 dette). faq.html etant
+// entierement la FAQ, on verifie le fichier entier plutot qu'une tranche.
+check('faq.html has at least 10 FAQ items', () => {
+  const src = fs.readFileSync(path.join(root, 'faq.html'), 'utf8');
   return (src.match(/class="faq-item"/g) || []).length >= 10;
 });
 check('FAQ states non-affiliation with IELTS/British Council', () =>
-  contains('index.html', 'not affiliated with, endorsed by, sponsored by, or connected'));
+  contains('faq.html', 'not affiliated with, endorsed by, sponsored by, or connected'));
 check('FAQ states the band is an AI estimate, not an official result', () =>
-  contains('index.html', "it's an AI-generated estimate"));
-check('FAQ does not claim a measured accuracy figure (future tense only)', () => {
-  const src = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-  const faqSection = src.slice(src.indexOf('id="faq-list"'), src.indexOf('id="faq-list"') + 6000);
-  return !/±\s*\d+(\.\d+)?\s*%/.test(faqSection); // no invented precision percentage
+  contains('faq.html', "it's an AI-generated estimate"));
+check('FAQ does not claim a measured accuracy figure (no percentage)', () => {
+  const src = fs.readFileSync(path.join(root, 'faq.html'), 'utf8');
+  return !/±\s*\d+(\.\d+)?\s*%/.test(src); // no invented precision percentage
 });
 check('FAQ no longer promises the site "will always be free"', () =>
-  !contains('index.html', 'will always be free'));
-check('FAQ links to privacy.html', () => {
-  const src = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-  const faqSection = src.slice(src.indexOf('id="faq-list"'), src.indexOf('id="faq-list"') + 6000);
-  return faqSection.includes('href="privacy.html"');
-});
-check('FAQ links to terms.html', () => {
-  const src = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-  const faqSection = src.slice(src.indexOf('id="faq-list"'), src.indexOf('id="faq-list"') + 6000);
-  return faqSection.includes('href="terms.html"');
-});
+  !contains('faq.html', 'will always be free'));
+check('FAQ links to privacy.html', () => contains('faq.html', 'href="privacy.html"'));
+check('FAQ links to terms.html', () => contains('faq.html', 'href="terms.html"'));
 check('FAQ does not mention the newsletter (Brevo not verified in prod)', () => {
-  const src = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-  const faqSection = src.slice(src.indexOf('id="faq-list"'), src.indexOf('id="faq-list"') + 6000);
-  return !/newsletter|subscribe/i.test(faqSection);
+  const src = fs.readFileSync(path.join(root, 'faq.html'), 'utf8');
+  return !/newsletter|subscribe/i.test(src);
 });
 check('FAQ band-variance sentence reads as a caution, not a guarantee', () =>
-  contains('index.html', 'not a measured accuracy figure or a guarantee'));
+  contains('faq.html', 'not a measured accuracy figure or a guarantee'));
 
 console.log(`\n${'='.repeat(30)}`);
 console.log(`  ${passed} passed  |  ${failed} failed`);
