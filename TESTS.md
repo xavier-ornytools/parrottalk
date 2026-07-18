@@ -1,5 +1,16 @@
 # ParrotTalk — Tests techniques
 
+## Session regression lancement + nouvelle navigation (2026-07-18)
+
+Branche `fix-quick-aiguillage-2026-07-18`, tag `avant-regression-nav-2026-07-18`. Aucun push. Commits atomiques.
+
+- **Aiguillage Quick Test vs isole** : QM_ON exige le parametre `?qm` pose par le hub, plus une banniere Resume/Quit. Test `e2e-quick-routing` 12/12. Commit `74898c6`. Valide en visuel par Xavier.
+- **Regression de lancement, cause racine** : `loadProgress` (js/data.js) faisait `JSON.parse` sans try/catch. Une progression residuelle illisible dans le navigateur du visiteur bloquait Listening (4/4, via findInProgressListeningTest a l'init) et Reading Test 1 (via startTest du seul test corrompu). Erreur console reproduite : "... is not valid JSON". Fix : try/catch, purge de la cle fautive, retour null. Le bouton "Quit Quick Test" purge aussi les progressions de tranches quick (ids qm-*). Commit `f08b1a8`.
+- **Test de lancement manquant** : `tests/e2e-launch-all.js`, chaque test de chaque module (16) se lance en contexte VIERGE et SALE, soit 32/32. Avant le fix : 24/32. Commit `52074a5`.
+- **Nouvelle navigation** sur les 11 pages : Quick Test, Real Exam Test, Single Section Practice, Dashboard. Liens a href crawlables, mots-cles SEO portes par title et aria-label. Commit `a580b4b`.
+
+Suite complete verte : check.js 72/0, quickmock-unit 40/0, e2e-launch-all 32/0, e2e-quick-routing 12/0, e2e-reading-score 7/0, e2e-ga4-events 14/0, e2e-footer-social 33/0, e2e-images 27/0, e2e-feedback 36/0, e2e-writing-lifecycle 30/0, e2e-xss 12/0, e2e-reading-tracking 7/0, e2e-reading-test04 13/0. Sauf les 2 preexistants documentes, NON traites ici : `e2e-quickmock` 40/2 (parametre flow:quick) et `e2e-persistence` (ReferenceError currentRanges, variable jamais definie).
+
 ## Session apurement dette technique (2026-07-18)
 
 Branche `session-dette-2026-07-18`, tag de securite `avant-dette-2026-07-18`. Cinq points, commits atomiques, aucun push.
