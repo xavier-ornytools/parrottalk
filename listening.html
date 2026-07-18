@@ -388,7 +388,10 @@ let currentTest = TEST01;
 // Le Quick Test joue UNE section. Il injecte un objet test synthetique qui n'a
 // qu'une tranche : le moteur ci-dessous ignore tout du parcours, il joue un test
 // qui n'a qu'une section.
-const QM_ON = !!(window.QuickMock && QuickMock.isActive());
+// Quick Test actif seulement si on est entre par le flux quick (parametre ?qm du
+// hub) ET qu'un Quick Test est en cours. Empeche le detournement d'une arrivee
+// isolee quand un etat quick traine dans le localStorage (fix aiguillage 18/07).
+const QM_ON = new URLSearchParams(location.search).has('qm') && !!(window.QuickMock && QuickMock.isActive());
 let currentSection = 0;
 let playingSection = 0;
 let audio = document.getElementById('audio-player');

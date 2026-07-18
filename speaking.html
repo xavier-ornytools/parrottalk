@@ -458,7 +458,10 @@ const SPEAKING_TESTS = {
 // State
 let currentSpeakingTest = 1;
 // Le Quick Test joue la Part 2 SEULE : une question, donc une seule prise.
-const QM_ON = !!(window.QuickMock && QuickMock.isActive());
+// Quick Test actif seulement si on est entre par le flux quick (parametre ?qm du
+// hub) ET qu'un Quick Test est en cours. Empeche le detournement d'une arrivee
+// isolee quand un etat quick traine dans le localStorage (fix aiguillage 18/07).
+const QM_ON = new URLSearchParams(location.search).has('qm') && !!(window.QuickMock && QuickMock.isActive());
 let currentPart = 0;
 let currentQIdx = 0;
 let recordings = new Array(QM_ON ? 1 : 9).fill(null); // {blob, mimeType, duration}
