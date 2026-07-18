@@ -517,8 +517,15 @@ attributs bougent (mêmes aspect ratios, mêmes tailles CSS). Pas de fallback
 - Exercice (listening/reading/writing/speaking) : ~2,3 Mo → **~30 Ko**.
 - Dashboard : ~1,7 Mo → **58 Ko**.
 - `img/` global : 18 Mo → **2,1 Mo** (dont 1,5 Mo de `banner-hero.png` orpheline,
-  jamais affichée ni en méta — laissée hors périmètre, **à supprimer dans un
-  prochain chantier**).
+  jamais affichée ni en méta, laissée hors périmètre à ce lot).
+  **MAJ 18/07/2026 (point 5 dette)** : `img/` mesuré à **1,7 Mo** aujourd'hui.
+  Les 20 PNG sources orphelins (les 18 `ChatGPT Image ....png`, plus
+  `banner-hero.png` et `ParrotTalk_logo_contact.png`, tous remplacés par des WebP
+  déjà servis) ont été déplacés hors de `img/` vers `_image-sources/` (rien
+  supprimé, voir `_image-sources/README.md`). Seul `og-image.png` (0,46 Mo,
+  aperçu social) reste servi dans `img/`. Aucune conversion WebP supplémentaire :
+  les images affichées sont déjà en WebP et aucun outil de conversion n'est
+  disponible (cwebp, ImageMagick, vips absents ; installation hors cadre).
 
 **Testé avec :**
 - `node tests/e2e-images.js` (Playwright, Chrome) : **27/27** sur 9 pages —
