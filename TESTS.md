@@ -1,5 +1,17 @@
 # ParrotTalk — Tests techniques
 
+## Session apurement dette technique (2026-07-18)
+
+Branche `session-dette-2026-07-18`, tag de securite `avant-dette-2026-07-18`. Cinq points, commits atomiques, aucun push.
+
+- **Point 1, score Reading.** Mode isole: calcul unifie avec le Quick Test (`denom = qAsked`, division par les questions posees, 40 en mode isole), fini le band gonfle (3 justes sur 40 ne donne plus band 9). Reaffichage du dernier score au rechargement: fallback `window.fmtBand` en tete de `init()` sur Reading et Listening (Writing et Speaking n'ont pas de vignette de dernier score au chargement). Test `tests/e2e-reading-score.js` (nouveau): avant fix 2/7, apres fix 7/7. Commit `f8cca18`.
+- **Point 2, GA4 feedback_completed Speaking.** Le code emet bien l'event (section=speaking, `feedback-gate.js:208`), le TEST etait perime (il sautait l'etape commentaire Skip et le CTA). Donc aucun sous-comptage des stats Speaking, pas de rupture de serie a annoter. Test corrige, plus le bloc Reading et Listening du meme fichier, perime aussi. `e2e-ga4-events.js`: 14/14. Commit `4ee00ad`.
+- **Point 3, check.js.** 12 assertions perimees adaptees (api/* migres vers le Worker, FAQ vers faq.html, cancelTTS fenetre elargie), aucune supprimee ni desactivee. 72/72. Commit `dabae7b`.
+- **Point 4, R4 data.js.** 63 tirets cadratins et demi-cadratins remplaces (titres et options vers deux-points, plages vers tiret simple). 0 restant. Suite complete verte, aucune regression. Commit `3c681fa`.
+- **Point 5, images.** `img/` passe de 32 Mo a 1,7 Mo: 20 PNG sources orphelins deplaces vers `_image-sources/` (rien supprime). Aucune conversion WebP (images affichees deja en WebP, seul og-image.png reste servi, outils de conversion absents). `e2e-images.js`: 27/27. Commit `15a15f3`.
+
+Deux echecs PRE-EXISTANTS, hors des 5 points et non causes par cette session (identiques avant et apres): `e2e-quickmock` 40/2 (parametre `flow:quick` sur test_started) et `e2e-persistence` (ReferenceError `currentRanges`, variable jamais definie dans reading.html).
+
 ## LOT CORRECTIFS SEO issus de l'audit (2026-07-17)
 
 Branche `lot-seo-fixes`, tag `avant-lot-seo-fixes-2026-07-17`. Lot **MARKUP-only** (balises head), aucun moteur touche, aucune logique JS modifiee, ExamFlow intouche. Trois correctifs valides par Xavier apres l'audit SEO du 17/07, et rien d'autre. Fichiers modifies : `listening.html`, `reading.html`, `writing.html`, `speaking.html`, `quickmock.html`, `dashboard.html` (balise `title`), `index.html` (canonical et og:url), `privacy.html`, `terms.html`, `legal-notice.html` (ajout canonical). Les URLs Instagram et TikTok du bloc social ne sont PAS touchees (sujet separe).
