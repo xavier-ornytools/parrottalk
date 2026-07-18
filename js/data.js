@@ -54,7 +54,7 @@ const TEST01 = {
   sections: [
     {
       number: 1,
-      title: "Greenline Coach Travel — Ticket Booking",
+      title: "Greenline Coach Travel: Ticket Booking",
       audio: "audio/test01/section1.mp3",
       cues: [
         {
@@ -93,7 +93,7 @@ const TEST01 = {
         }
       ],
       type: "form",
-      formTitle: "GREENLINE COACH TRAVEL — BOOKING FORM · Q1–10",
+      formTitle: "GREENLINE COACH TRAVEL: BOOKING FORM · Q1-10",
       instructions: "Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.",
       questions: [
         {
@@ -190,7 +190,7 @@ const TEST01 = {
     },
     {
       number: 2,
-      title: "Oakmoor Country Park — Visitor Orientation",
+      title: "Oakmoor Country Park: Visitor Orientation",
       audio: "audio/test01/section2.mp3",
       cues: [
         {
@@ -232,8 +232,8 @@ const TEST01 = {
       groups: [
         {
           type: "form",
-          formTitle: "OAKMOOR COUNTRY PARK — MAP · Q11–15",
-          instructions: "Label the map below. Write the correct letter, A–H, next to each place.",
+          formTitle: "OAKMOOR COUNTRY PARK: MAP · Q11-15",
+          instructions: "Label the map below. Write the correct letter, A-H, next to each place.",
           questions: [
             {
               n: 11,
@@ -337,7 +337,7 @@ const TEST01 = {
     },
     {
       number: 3,
-      title: "Tutorial — Renewable Energy Presentation",
+      title: "Tutorial: Renewable Energy Presentation",
       audio: "audio/test01/section3.mp3",
       cues: [
         {
@@ -437,9 +437,9 @@ const TEST01 = {
           type: "matching",
           instructions: "Who will do each task? Write A (Ben), B (Priya) or C (Dr Reyes).",
           options: [
-            "A — Ben",
-            "B — Priya",
-            "C — Dr Reyes"
+            "A: Ben",
+            "B: Priya",
+            "C: Dr Reyes"
           ],
           questions: [
             {
@@ -470,7 +470,7 @@ const TEST01 = {
         },
         {
           type: "form",
-          formTitle: "PRESENTATION DETAILS · Q29–30",
+          formTitle: "PRESENTATION DETAILS · Q29-30",
           instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
           questions: [
             {
@@ -496,7 +496,7 @@ const TEST01 = {
     },
     {
       number: 4,
-      title: "Lecture — A Short History of Chocolate",
+      title: "Lecture: A Short History of Chocolate",
       audio: "audio/test01/section4.mp3",
       cues: [
         {
@@ -520,7 +520,7 @@ const TEST01 = {
         }
       ],
       type: "form",
-      formTitle: "A SHORT HISTORY OF CHOCOLATE — LECTURE NOTES · Q31–40",
+      formTitle: "A SHORT HISTORY OF CHOCOLATE: LECTURE NOTES · Q31-40",
       instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
       questions: [
         {
@@ -621,7 +621,7 @@ const TEST02 = {
   sections: [
     {
       number: 1,
-      title: "Harbourview Leisure Centre — Membership",
+      title: "Harbourview Leisure Centre: Membership",
       audio: "audio/test02/section1.mp3",
       cues: [
         {
@@ -660,7 +660,7 @@ const TEST02 = {
         }
       ],
       type: "form",
-      formTitle: "HARBOURVIEW LEISURE CENTRE — MEMBERSHIP FORM · Q1–10",
+      formTitle: "HARBOURVIEW LEISURE CENTRE: MEMBERSHIP FORM · Q1-10",
       instructions: "Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.",
       questions: [
         {
@@ -756,7 +756,7 @@ const TEST02 = {
     },
     {
       number: 2,
-      title: "Riverside Community Garden — Volunteer Induction",
+      title: "Riverside Community Garden: Volunteer Induction",
       audio: "audio/test02/section2.mp3",
       cues: [
         {
@@ -798,8 +798,8 @@ const TEST02 = {
       groups: [
         {
           type: "form",
-          formTitle: "RIVERSIDE COMMUNITY GARDEN — MAP · Q11–15",
-          instructions: "Label the map below. Write the correct letter, A–H, next to each feature.",
+          formTitle: "RIVERSIDE COMMUNITY GARDEN: MAP · Q11-15",
+          instructions: "Label the map below. Write the correct letter, A-H, next to each feature.",
           questions: [
             {
               n: 11,
@@ -871,7 +871,7 @@ const TEST02 = {
         },
         {
           type: "form",
-          formTitle: "VOLUNTEER NOTES · Q18–20",
+          formTitle: "VOLUNTEER NOTES · Q18-20",
           instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
           questions: [
             {
@@ -906,7 +906,7 @@ const TEST02 = {
     },
     {
       number: 3,
-      title: "Tutorial — Urban Noise Project",
+      title: "Tutorial: Urban Noise Project",
       audio: "audio/test02/section3.mp3",
       cues: [
         {
@@ -986,9 +986,9 @@ const TEST02 = {
           type: "matching",
           instructions: "Who will carry out each task? Write A (Tom), B (Maya) or C (Dr Hollis).",
           options: [
-            "A — Tom",
-            "B — Maya",
-            "C — Dr Hollis"
+            "A: Tom",
+            "B: Maya",
+            "C: Dr Hollis"
           ],
           questions: [
             {
@@ -1027,7 +1027,7 @@ const TEST02 = {
         },
         {
           type: "form",
-          formTitle: "PROJECT DETAILS · Q28–30",
+          formTitle: "PROJECT DETAILS · Q28-30",
           instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
           questions: [
             {
@@ -1062,7 +1062,7 @@ const TEST02 = {
     },
     {
       number: 4,
-      title: "Lecture — The Rise of Urban Beekeeping",
+      title: "Lecture: The Rise of Urban Beekeeping",
       audio: "audio/test02/section4.mp3",
       cues: [
         {
@@ -1086,7 +1086,7 @@ const TEST02 = {
         }
       ],
       type: "form",
-      formTitle: "THE RISE OF URBAN BEEKEEPING — LECTURE NOTES · Q31–40",
+      formTitle: "THE RISE OF URBAN BEEKEEPING: LECTURE NOTES · Q31-40",
       instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
       questions: [
         {
@@ -1179,7 +1179,7 @@ const TEST02 = {
   ]
 };
 
-// ── TEST 03 DATA — TTS (SpeechSynthesis, no MP3 required) ────────────────────
+// ── TEST 03 DATA: TTS (SpeechSynthesis, no MP3 required) ────────────────────
 // script[] = [{t:'text', r:rate, p:pitch}]  r=0.85 staff/lecturer  r=0.92 student
 // lang = accent de la section (comme le vrai IELTS, qui mélange les accents
 // entre sections). Repli automatique sur en-GB si la voix n'existe pas sur la
@@ -1191,7 +1191,7 @@ const TEST03 = {
   sections: [
     {
       number: 1,
-      title: "Meadowbank Community Hall — Event Booking",
+      title: "Meadowbank Community Hall: Event Booking",
       audio: "audio/test03/section1.mp3",
       cues: [
         {
@@ -1230,7 +1230,7 @@ const TEST03 = {
         }
       ],
       type: "form",
-      formTitle: "MEADOWBANK COMMUNITY HALL — BOOKING FORM · Q1–10",
+      formTitle: "MEADOWBANK COMMUNITY HALL: BOOKING FORM · Q1-10",
       instructions: "Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.",
       questions: [
         {
@@ -1328,7 +1328,7 @@ const TEST03 = {
     },
     {
       number: 2,
-      title: "Seabridge Aquarium — Visitor Briefing",
+      title: "Seabridge Aquarium: Visitor Briefing",
       audio: "audio/test03/section2.mp3",
       cues: [
         {
@@ -1370,8 +1370,8 @@ const TEST03 = {
       groups: [
         {
           type: "form",
-          formTitle: "SEABRIDGE AQUARIUM — MAP · Q11–15",
-          instructions: "Label the map below. Write the correct letter, A–H, next to each place.",
+          formTitle: "SEABRIDGE AQUARIUM: MAP · Q11-15",
+          instructions: "Label the map below. Write the correct letter, A-H, next to each place.",
           questions: [
             {
               n: 11,
@@ -1475,7 +1475,7 @@ const TEST03 = {
     },
     {
       number: 3,
-      title: "Tutorial — Geography Field Trip Planning",
+      title: "Tutorial: Geography Field Trip Planning",
       audio: "audio/test03/section3.mp3",
       cues: [
         {
@@ -1575,9 +1575,9 @@ const TEST03 = {
           type: "matching",
           instructions: "Who will do each task? Write A (Sam), B (Nadia) or C (Dr Okafor).",
           options: [
-            "A — Sam",
-            "B — Nadia",
-            "C — Dr Okafor"
+            "A: Sam",
+            "B: Nadia",
+            "C: Dr Okafor"
           ],
           questions: [
             {
@@ -1608,7 +1608,7 @@ const TEST03 = {
         },
         {
           type: "form",
-          formTitle: "FIELD TRIP DETAILS · Q29–30",
+          formTitle: "FIELD TRIP DETAILS · Q29-30",
           instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
           questions: [
             {
@@ -1636,7 +1636,7 @@ const TEST03 = {
     },
     {
       number: 4,
-      title: "Lecture — A Short History of Tea",
+      title: "Lecture: A Short History of Tea",
       audio: "audio/test03/section4.mp3",
       cues: [
         {
@@ -1660,7 +1660,7 @@ const TEST03 = {
         }
       ],
       type: "form",
-      formTitle: "A SHORT HISTORY OF TEA — LECTURE NOTES · Q31–40",
+      formTitle: "A SHORT HISTORY OF TEA: LECTURE NOTES · Q31-40",
       instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
       questions: [
         {
@@ -1758,7 +1758,7 @@ const TEST04 = {
   sections: [
     {
       number: 1,
-      title: "Oakwood Student Lettings — Room Enquiry",
+      title: "Oakwood Student Lettings: Room Enquiry",
       audio: "audio/test04/section1.mp3",
       cues: [
         {
@@ -1797,7 +1797,7 @@ const TEST04 = {
         }
       ],
       type: "form",
-      formTitle: "OAKWOOD STUDENT LETTINGS — ENQUIRY FORM · Q1–10",
+      formTitle: "OAKWOOD STUDENT LETTINGS: ENQUIRY FORM · Q1-10",
       instructions: "Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.",
       questions: [
         {
@@ -1892,7 +1892,7 @@ const TEST04 = {
     },
     {
       number: 2,
-      title: "Northgate Library — New Member Tour",
+      title: "Northgate Library: New Member Tour",
       audio: "audio/test04/section2.mp3",
       cues: [
         {
@@ -1934,8 +1934,8 @@ const TEST04 = {
       groups: [
         {
           type: "form",
-          formTitle: "NORTHGATE LIBRARY — PLAN · Q11–15",
-          instructions: "Label the plan below. Write the correct letter, A–H, next to each area.",
+          formTitle: "NORTHGATE LIBRARY: PLAN · Q11-15",
+          instructions: "Label the plan below. Write the correct letter, A-H, next to each area.",
           questions: [
             {
               n: 11,
@@ -2007,7 +2007,7 @@ const TEST04 = {
         },
         {
           type: "form",
-          formTitle: "MEMBERSHIP NOTES · Q18–20",
+          formTitle: "MEMBERSHIP NOTES · Q18-20",
           instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
           questions: [
             {
@@ -2043,7 +2043,7 @@ const TEST04 = {
     },
     {
       number: 3,
-      title: "Tutorial — Campus Café Market Research",
+      title: "Tutorial: Campus Café Market Research",
       audio: "audio/test04/section3.mp3",
       cues: [
         {
@@ -2123,9 +2123,9 @@ const TEST04 = {
           type: "matching",
           instructions: "Who will carry out each task? Write A (Jack), B (Leila) or C (Dr Bennett).",
           options: [
-            "A — Jack",
-            "B — Leila",
-            "C — Dr Bennett"
+            "A: Jack",
+            "B: Leila",
+            "C: Dr Bennett"
           ],
           questions: [
             {
@@ -2164,7 +2164,7 @@ const TEST04 = {
         },
         {
           type: "form",
-          formTitle: "PROJECT DETAILS · Q28–30",
+          formTitle: "PROJECT DETAILS · Q28-30",
           instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
           questions: [
             {
@@ -2199,7 +2199,7 @@ const TEST04 = {
     },
     {
       number: 4,
-      title: "Lecture — A Short History of the Bicycle",
+      title: "Lecture: A Short History of the Bicycle",
       audio: "audio/test04/section4.mp3",
       cues: [
         {
@@ -2223,7 +2223,7 @@ const TEST04 = {
         }
       ],
       type: "form",
-      formTitle: "A SHORT HISTORY OF THE BICYCLE — LECTURE NOTES · Q31–40",
+      formTitle: "A SHORT HISTORY OF THE BICYCLE: LECTURE NOTES · Q31-40",
       instructions: "Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.",
       questions: [
         {
