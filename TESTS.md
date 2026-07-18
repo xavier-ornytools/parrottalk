@@ -1,5 +1,36 @@
 # ParrotTalk — Tests techniques
 
+## Page Mock Exam, porte d'entree de l'examen complet (2026-07-18)
+
+Branche `mockexam-2026-07-18` depuis `main 8fed13a`, tag de securite `avant-mockexam-2026-07-18`.
+Aucun push. **ExamFlow non modifie** (interdit) : la page l'appelle, point.
+
+**Nouvelle page `mockexam.html`** (squelette clone de `quickmock.html`). Porte d'entree claire de
+l'examen complet, comme quickmock.html l'est pour le Quick Test. Contenu : hero "Real Exam Test"
+(langage de gratuite minimal, "for now, it is 100% free", pas de "forever"), 4 cartes de sections
+INFORMATIVES (Listening ~30min, Reading 60min, Writing 60min, Speaking ~12min), et UN bouton unique
+"Start Full Mock Exam" -> `ExamFlow.startMock()` (`js/exam-flow.js:33`, pose `pt_mock` puis redirige
+vers `listening.html?mock=1`). Si `pt_mock.active` a l'arrivee : banniere reprendre (Continue ->
+`listening.html?mock=1`) ou recommencer (`ExamFlow.stopMock(); ExamFlow.startMock();`). Le moteur ne
+memorise pas l'etape courante, donc "Continue" reprend le fil du parcours, il ne saute pas a une
+epreuve precise. CSS : classes existantes + petit `<style>` page-local (`.mex-*`), aucune modif de
+`css/main.css`.
+
+**Cablage.** Lien nav "Mock Exam" des 11 pages : `href` passe de `index.html#modes` a `mockexam.html`
+(`title`/`aria-label` "IELTS Mock Exam" inchanges, SEO). Carte "Real Exam Test" (`index.html:201`)
+convertie de `<button onclick="ExamFlow.startMock()">` en `<a href="mockexam.html">` (lien crawlable).
+Bouton `dashboard.html:128` -> lien vers `mockexam.html`. `sitemap.xml` passe a **12 URLs** (ajout
+mockexam.html, priority 0.8 weekly). `robots.txt` : aucun Disallow, rien a changer.
+
+**Tests (vrai Chrome, port 8000), tout vert :**
+- `tests/e2e-mockexam.js` (nouveau) : **10/10**. Page sans erreur JS, 4 cartes rendues, bouton visible,
+  nav "Mock Exam" active, clic reel qui pose `pt_mock.active` ET arrive sur `listening.html?mock=1`,
+  banniere reprendre/recommencer en etat mock actif, carte index -> mockexam.html.
+- `tests/nav-visual-check.js` (mockexam.html ajoute) : desktop 1280 et mobile 390 **PASS**, tablette
+  800 sans debordement (cette page, comme quickmock, n'a pas de cluster social dans la nav).
+- Non-regression : `e2e-launch-all` clean **16/16** et dirty **16/16**, `e2e-quick-routing` **12/0**,
+  `check.js` **72/0**.
+
 ## Reprise regression nav + non-lancement des tests (2026-07-18)
 
 Branche `reprise-nav-2026-07-18`, repartie du tag sain `avant-regression-nav-2026-07-18`

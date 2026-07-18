@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Exam Test, the full IELTS mock experience · ParrotTalk</title>
+  <meta name="description" content="A full IELTS mock exam: Listening, Reading, Writing and Speaking back to back in exam conditions, real timings, with a final band at the end. For now, it is 100% free, no account needed.">
+  <link rel="canonical" href="https://www.parrottalk.app/mockexam.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ParrotTalk">
+  <meta property="og:title" content="Real Exam Test, the full IELTS mock experience">
+  <meta property="og:description" content="A full IELTS mock exam: all four sections back to back in exam conditions, real timings, with a final band at the end. For now, it is 100% free, no account needed.">
+  <meta property="og:url" content="https://www.parrottalk.app/mockexam.html">
+  <meta property="og:image" content="https://www.parrottalk.app/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ParrotTalkApp">
+  <meta name="twitter:title" content="Real Exam Test, the full IELTS mock experience">
+  <meta name="twitter:description" content="A full IELTS mock exam: all four sections back to back in exam conditions, real timings, with a final band at the end. For now, it is 100% free, no account needed.">
+  <meta name="twitter:image" content="https://www.parrottalk.app/img/og-image.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "ParrotTalk IELTS Mock Exam",
+    "url": "https://www.parrottalk.app/mockexam.html",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "ParrotTalk",
+      "url": "https://www.parrottalk.app/"
+    },
+    "description": "A full IELTS mock exam: all four sections back to back in exam conditions, real timings, with a final band at the end. For now, it is 100% free, no account needed."
+  }
+  </script>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
+  <script src="js/analytics.js" async></script>
+  <script src="js/cookie-banner.js" defer></script>
+  <script src="js/exam-flow.js" defer></script>
+  <script src="js/feedback-gate.js" defer></script>
+  <style>
+    /* Variante Mock Exam du page-hero (bleu), comme .page-hero.quick pour le
+       Quick Test. Le page-hero porte padding-top: calc(var(--nav-h) + 40px),
+       indispensable sous la nav fixe. Styles page-local : aucune modif de main.css. */
+    .page-hero.mock {
+      background: linear-gradient(135deg, #DBEAFE 0%, #EFF6FF 100%);
+      border-bottom: 3px solid #93C5FD;
+    }
+    /* 4 cartes de sections, INFORMATIVES (elles decrivent l'examen, ne lancent rien). */
+    .mex-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 8px 0 28px; }
+    .mex-card { display: flex; gap: 14px; align-items: flex-start; }
+    .mex-card__icon { font-size: 1.75rem; line-height: 1; flex-shrink: 0; }
+    .mex-card__title { font-size: 1rem; font-weight: 700; color: var(--dark); margin: 0 0 2px; }
+    .mex-card__meta { font-size: .8125rem; color: var(--text-muted); margin: 0; line-height: 1.5; }
+    /* Banniere reprendre/recommencer, montee par JS si un mock est en cours.
+       Meme esprit que la banniere de QuickMock (fond sombre, actions a droite). */
+    .mex-resume { display: none; background: #0f3d3e; color: #fff; border-radius: var(--r); padding: 14px 18px; margin-bottom: 22px; }
+    .mex-resume__inner { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+    .mex-resume__actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .mex-start-wrap { text-align: center; margin-top: 8px; }
+    .mex-note { font-size: .8125rem; color: var(--text-light); margin-top: 14px; text-align: center; line-height: 1.6; }
+    @media (max-width: 640px) { .mex-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__logo">
+      <img src="img/logo-official.webp" alt="ParrotTalk">
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="quickmock.html" class="nav__link" title="IELTS Quick Test" aria-label="IELTS Quick Test, all four sections in under an hour">Quick Test</a>
+      <a href="mockexam.html" class="nav__link active" title="IELTS Mock Exam" aria-label="IELTS Mock Exam, full test in exam conditions">Mock Exam</a>
+      <a href="index.html#modules" class="nav__link" title="IELTS Practice by Section" aria-label="IELTS Practice by Section, Listening Reading Writing and Speaking">Practice</a>
+      <a href="dashboard.html" class="nav__link" title="Your IELTS Progress Dashboard" aria-label="Your IELTS progress dashboard">Dashboard</a>
+    </div>
+    <a href="dashboard.html" class="nav__cta">My Progress</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero mock">
+  <div class="container">
+    <div class="page-hero__text" style="max-width:760px">
+      <span class="badge badge-free">Free</span>
+      <h1>Real Exam Test</h1>
+      <p>The full IELTS experience: all four sections back to back in exam conditions, with real timings and a final band score. For now, it is 100% free, no account needed.</p>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container" style="padding-top:28px;padding-bottom:80px;max-width:820px">
+
+  <!-- Banniere reprendre/recommencer (montee par JS si pt_mock.active) -->
+  <div id="mex-resume" class="mex-resume" role="status"></div>
+
+  <p style="text-align:center;color:var(--text-muted);margin:0 0 20px">
+    You will move through the four sections in the real exam order. Each section keeps its own timer.
+  </p>
+
+  <!-- 4 cartes de sections, informatives -->
+  <div class="mex-grid">
+    <div class="card mex-card">
+      <span class="mex-card__icon" aria-hidden="true">🎧</span>
+      <div>
+        <p class="mex-card__title">1. Listening</p>
+        <p class="mex-card__meta">Four recorded sections, 40 questions. About 30 minutes.</p>
+      </div>
+    </div>
+    <div class="card mex-card">
+      <span class="mex-card__icon" aria-hidden="true">📖</span>
+      <div>
+        <p class="mex-card__title">2. Reading</p>
+        <p class="mex-card__meta">Three passages, 40 questions. 60 minutes.</p>
+      </div>
+    </div>
+    <div class="card mex-card">
+      <span class="mex-card__icon" aria-hidden="true">✍️</span>
+      <div>
+        <p class="mex-card__title">3. Writing</p>
+        <p class="mex-card__meta">Two tasks, an essay and a report or letter. 60 minutes.</p>
+      </div>
+    </div>
+    <div class="card mex-card">
+      <span class="mex-card__icon" aria-hidden="true">🎤</span>
+      <div>
+        <p class="mex-card__title">4. Speaking</p>
+        <p class="mex-card__meta">Three parts with an AI examiner. About 12 minutes.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bouton unique de lancement : appelle le mecanisme existant, ExamFlow non modifie -->
+  <div class="mex-start-wrap">
+    <button type="button" class="btn btn-primary btn-xl" id="mex-start" onclick="ExamFlow.startMock()">Start Full Mock Exam →</button>
+    <p class="mex-note">Plan for about 3 hours in one sitting, like the real test. You get an estimated band for each section and overall.</p>
+  </div>
+
+</div>
+
+<footer style="text-align:center;padding:16px;font-size:.75rem;color:var(--text-muted);opacity:.7;border-top:1px solid var(--border);margin-top:32px">
+  ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.
+  <p style="margin-top:8px"><a href="faq.html" style="color:inherit;text-decoration:underline">FAQ</a> &middot; <a href="privacy.html" style="color:inherit;text-decoration:underline">Privacy Policy</a> &middot; <a href="legal-notice.html" style="color:inherit;text-decoration:underline">Legal Notice</a> &middot; <a href="terms.html" style="color:inherit;text-decoration:underline">Terms of Use</a></p>
+</footer>
+
+<div id="toast-container" class="toast-container"></div>
+
+<script>
+  // Etat "examen en cours" : si un mock est actif, proposer de reprendre (re-entrer
+  // le parcours guide a Listening, la progression par section est conservee) ou de
+  // recommencer (stopMock puis startMock, redemarrage propre). ExamFlow est APPELE,
+  // jamais modifie. Le moteur ne memorise pas l'etape courante, donc "reprendre"
+  // reprend le fil du parcours, il ne saute pas a une epreuve precise.
+  document.addEventListener('DOMContentLoaded', function () {
+    var EF = window.ExamFlow;
+    if (!EF || !EF.isMock || !EF.isMock()) return;
+    var box = document.getElementById('mex-resume');
+    if (!box) return;
+    box.innerHTML =
+      '<div class="mex-resume__inner">' +
+        '<span>🎓 You have a mock exam in progress.</span>' +
+        '<span class="mex-resume__actions">' +
+          '<a class="btn btn-primary btn-sm" href="listening.html?mock=1">Continue mock exam</a>' +
+          '<button type="button" class="btn btn-ghost btn-sm" id="mex-restart">Start over</button>' +
+        '</span>' +
+      '</div>';
+    box.style.display = 'block';
+    var r = document.getElementById('mex-restart');
+    if (r) r.addEventListener('click', function () { EF.stopMock(); EF.startMock(); });
+  });
+</script>
+</body>
+</html>

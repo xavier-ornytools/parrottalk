@@ -24,7 +24,7 @@ const CHROME = process.argv[2] || process.env.CHROME_PATH || '/usr/bin/google-ch
 const SHOT = path.join(__dirname, 'screenshots', 'nav');
 const C = { g: '\x1b[32m', r: '\x1b[31m', d: '\x1b[2m', x: '\x1b[0m' };
 
-const PAGES = ['index.html', 'reading.html', 'listening.html', 'dashboard.html'];
+const PAGES = ['index.html', 'reading.html', 'listening.html', 'dashboard.html', 'mockexam.html'];
 // gate = largeur qui decide du PASS/FAIL (celles exigees : desktop et mobile).
 // La tablette 800 est INFORMATIVE : la bande 600-900px est intrinsequement
 // serree dans le .nav existant (constat verifie aussi sur l'ancienne nav), et
