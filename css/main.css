@@ -125,13 +125,22 @@ p  { color: var(--text-muted); }
 .nav__links {
   display: flex; align-items: center; gap: 4px;
 }
+/* Pilules bleues, meme aspect que le CTA (.nav__cta). Padding et rayon
+   inchanges : seule la couleur change, la geometrie reste identique. */
 .nav__link {
   padding: 6px 14px; border-radius: var(--r-full);
-  font-size: .875rem; font-weight: 500; color: var(--text-muted);
-  transition: color .2s, background .2s;
+  font-size: .875rem; font-weight: 500;
+  color: var(--white); background: var(--primary);
+  transition: color .2s, background .2s, box-shadow .2s;
 }
-.nav__link:hover, .nav__link.active {
-  color: var(--primary); background: var(--primary-pale);
+.nav__link:hover {
+  color: var(--white); background: var(--primary-dark);
+}
+/* Page courante : reste fond bleu / texte blanc, distinguee par une bordure
+   interne blanche (aucune couleur nouvelle). */
+.nav__link.active {
+  color: var(--white); background: var(--primary-dark);
+  box-shadow: inset 0 0 0 1.5px var(--white);
 }
 .nav__cta {
   padding: 8px 18px; background: var(--primary);
