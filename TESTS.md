@@ -1,5 +1,59 @@
 # ParrotTalk — Tests techniques
 
+## Reprise regression nav + non-lancement des tests (2026-07-18)
+
+Branche `reprise-nav-2026-07-18`, repartie du tag sain `avant-regression-nav-2026-07-18`
+(`5e74255`). Tag de securite `reprise-nav-start-2026-07-18` sur l'ancien HEAD `d21f65d`.
+main intact `d6d3fb7`, aucun push. Les commits suspects de la session precedente
+(`d21f65d`, `a580b4b`, `52074a5`, `f08b1a8`, `74898c6`) NE sont PAS repris tels quels :
+on reapplique morceau par morceau, chaque morceau verifie au navigateur reel.
+
+**Harnais honnete (`tests/e2e-launch-all.js`, reecrit).** L'ancien annoncait 32/32 en
+mesurant un proxy (zone de taille non nulle) sans jamais cliquer Play ni jouer l'audio.
+Le nouveau mesure le REEL : Listening exige que `audio.currentTime` avance apres un clic
+Play reel (pas de clic force), Reading exige des champs de reponse rendus (>0), Writing
+l'editeur visible, Speaking la zone rendue ; toute erreur JS invalide le lancement. Deux
+contextes localStorage : `clean` (premier visiteur) et `dirty` (utilisateur qui revient :
+Quick Test abandonne, progres perime, cle corrompue). Captures dans `tests/screenshots/`.
+
+**Cause racine du non-lancement, prouvee au navigateur (pas une hypothese).** Le harnais
+a isole quatre defauts distincts, dans l'ordre :
+1. Detournement des pages normales par un `pt_quickmock` actif residuel, car au tag
+   `QM_ON = QuickMock.isActive()` n'exigeait pas `?qm`. Corrige en reappliquant
+   l'aiguillage (`74898c6`).
+2. Progres de test corrompu (JSON tronque) non garde dans `loadProgress`, qui cassait
+   l'init. Corrige en reappliquant `loadProgress` robuste (`f08b1a8`).
+3. Progres perime restaurant `sectionsPlayed=true` : le bouton Play etait desactive et
+   `togglePlay` sortait aussitot (le vrai "clic play sans reaction"). Le message du commit
+   `f08b1a8` pretendait a tort que loadProgress etait la cause racine : le harnais prouve
+   qu'il ne corrige QUE le JSON corrompu. Corrige dans `listening.html` : sur reprise, ne
+   re-verrouiller le Play que pour les sections REELLEMENT terminees.
+4. `audio.play()` sans `.catch` : un rejet (autoplay, decodage, reseau) restait silencieux.
+   Corrige : `.catch` qui annule le verrou et affiche un retour visible. ExamFlow intouche.
+
+**Resultats reels du harnais (vrai Chrome, headless, port 8000).**
+- `node tests/e2e-launch-all.js` (clean) : **16/16 PASS**, dont 4 audios Listening qui
+  avancent reellement (currentTime 0.25 a 0.39 s), Reading 111 a 156 champs rendus.
+- `STATE=dirty node tests/e2e-launch-all.js` : **16/16 PASS** apres correctifs (etait 0/16
+  au depart : detournement, puis 14/16 apres aiguillage, 15/16 apres loadProgress).
+
+**Nav refaite (`tests/nav-visual-check.js`).** Libelles affiches courts (Quick Test /
+Mock Exam / Practice / Dashboard), SEO complet conserve en `title`+`aria-label` (4/4 mots
+cles sur les 11 pages), CSS `.nav` strictement inchange, bloc identique partout sauf la
+classe `active`. Geometrie + captures aux 3 largeurs : **desktop 1280 et mobile 390 PASS**
+(aucun debordement/chevauchement, pas de scroll horizontal). Tablette 800 informative :
+serree sur `index.html` (2 libelles sur 2 lignes), limite intrinseque du `.nav` existant,
+verifiee pire sur l'ancienne nav (premier lien masque derriere le logo). Non corrigeable
+sans toucher au CSS `.nav`, hors scope.
+
+**Robustesse annexe reperee, NON corrigee (hors scope, session dediee).** `js/quickmock.js`
+lit `st.combo.listening/reading/writing/speaking` sans garder que `combo` existe : un etat
+quickmock malforme (ancienne version) planterait l'init. Recommandation : garde
+`if (!st || !st.combo) return null;` dans `sliceListening/sliceReading/writingTest/speakingTest`.
+
+Commits : `435e4a8` (aiguillage), `77e86cc` (loadProgress), `f4baeaf` (harnais), `730b2eb`
+(fix Play + catch), `827316f` (nav).
+
 ## Session apurement dette technique (2026-07-18)
 
 Branche `session-dette-2026-07-18`, tag de securite `avant-dette-2026-07-18`. Cinq points, commits atomiques, aucun push.
