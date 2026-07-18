@@ -578,7 +578,14 @@ function startTest() {
     sectionScores = saved.sectionScores || fill(0);
     savedAnswers = saved.answers || {};
     examMode = saved.examMode !== undefined ? saved.examMode : false;
-    sectionsPlayed = saved.sectionsPlayed || fill(false);
+    // Ne re-verrouille le Play que pour les sections REELLEMENT terminees. Une
+    // section "jouee mais non terminee" = ecoute interrompue (onglet ferme en
+    // cours). Sur reprise, la rendre rejouable, sinon l'utilisateur retombe sur
+    // un bouton Play mort (regression du 18/07 : "clic play sans reaction" quand
+    // un progres perime restaure sectionsPlayed=true). Une section terminee garde
+    // le verrou d'ecoute unique.
+    const savedPlayed = saved.sectionsPlayed || fill(false);
+    sectionsPlayed = savedPlayed.map((p, i) => !!p && !!sectionsDone[i]);
   } else {
     currentSection = 0;
     sectionsDone = fill(false);
@@ -888,7 +895,19 @@ function togglePlay() {
       if (!audio.src.endsWith(expected)) { audio.src = expected; }
       playingSection = currentSection;
       firedCues = new Set(); // nouvelle lecture → cues rejouables depuis le début
-      audio.play(); setPlayIcon(true);
+      const pr = audio.play(); setPlayIcon(true);
+      // audio.play() renvoie une promesse qui peut ETRE REJETEE (politique
+      // autoplay, decodage, reseau). Sans .catch, le rejet est silencieux et le
+      // bouton reste desactive : "clic play sans reaction". On annule alors le
+      // verrou pour que l'utilisateur puisse reessayer, avec un retour visible.
+      if (pr && pr.catch) pr.catch(() => {
+        setPlayIcon(false);
+        sectionsPlayed[currentSection] = false;
+        persistProgress();
+        updatePlayButtonState();
+        refreshTabLocks();
+        toast('Audio could not start. Tap Play to try again.', 'warning');
+      });
     }
     sectionsPlayed[currentSection] = true;
     persistProgress();
@@ -910,7 +929,14 @@ function togglePlay() {
   }
   const expected = sec.audio;
   if (!audio.src.endsWith(expected)) { audio.src = expected; }
-  if (audio.paused) { playingSection = currentSection; audio.play(); setPlayIcon(true); }
+  if (audio.paused) {
+    playingSection = currentSection;
+    const pr = audio.play(); setPlayIcon(true);
+    if (pr && pr.catch) pr.catch(() => {
+      setPlayIcon(false);
+      toast('Audio could not start. Tap Play to try again.', 'warning');
+    });
+  }
   else { audio.pause(); setPlayIcon(false); }
 }
 
