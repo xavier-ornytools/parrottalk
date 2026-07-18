@@ -2340,8 +2340,20 @@ function saveProgress(module, testId, data) {
   localStorage.setItem(key, JSON.stringify({ ...data, updatedAt: Date.now() }));
 }
 function loadProgress(module, testId) {
-  const raw = localStorage.getItem(`ielts_progress_${module}_${testId}`);
-  return raw ? JSON.parse(raw) : null;
+  const key = `ielts_progress_${module}_${testId}`;
+  const raw = localStorage.getItem(key);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    // Progression illisible (residu tronque ou corrompu dans le navigateur du
+    // visiteur) : ne JAMAIS bloquer le lancement d'un test pour ca. Un visiteur
+    // normal ne sait pas purger son localStorage. On retire la cle fautive et on
+    // repart proprement, sans progression. Correctif racine de la regression du
+    // 18/07 (Listening 4/4 et Reading Test 1 bloques par un JSON.parse non garde).
+    try { localStorage.removeItem(key); } catch (e2) {}
+    return null;
+  }
 }
 function clearProgress(module, testId) {
   localStorage.removeItem(`ielts_progress_${module}_${testId}`);
