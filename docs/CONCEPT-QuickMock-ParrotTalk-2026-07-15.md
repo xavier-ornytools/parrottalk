@@ -1,11 +1,11 @@
 # CONCEPT PRODUIT: QUICK MOCK (ParrotTalk)
 
 parrottalk.app, projet parrottalk_restored, 15 juillet 2026
-Statut: BACKLOG, à cadrer puis développer après le Speaking v4. Ce document est un cadrage produit, pas encore un ordre de mission.
+Statut: LIVRE et déployé en prod (le Quick Mock a été développé, mergé et mis en ligne). Ce document reste le cadrage produit d'origine (15/07), conservé pour référence.
 
 ## L'idée en une phrase
 
-Un bac blanc IELTS complet mais express: les 4 disciplines couvertes en environ 45 minutes au lieu de 2h30 à 3h pour le mock test complet.
+Un bac blanc IELTS complet mais express: les 4 disciplines couvertes en moins d'une heure (environ 45 à 50 min, 3 fois plus court que le test officiel de 3h) au lieu de 2h30 à 3h pour le mock test complet.
 
 ## Pourquoi
 
@@ -34,11 +34,13 @@ Total: environ 50 minutes (52 exactement, annoncé "About 50 min" côté produit
 >   tâches valent 20 min ici. C'est bien la Task 1 qui est livrée.
 > - **Reading: 20 min**, et non 15.
 >
-> **Durée du test: 50 min.** La stratégie YouTube du 16/07 annonce « le test dure
-> 15 min » et en fait l'argument produit des 4 vidéos. C'est incompatible avec la
-> composition ci-dessus (8+20+20+4). La maquette d'accueil validée le 17/07 dit
-> « About 50 min », et c'est ce qui est en ligne. **L'argument produit des vidéos
-> est donc à réécrire avant le tournage.**
+> **Durée du test: jusqu'à 1h (environ 50 min en pratique, 3 fois plus court que le
+> test officiel de 3h), couvrant les 4 modules.** La stratégie YouTube du 16/07
+> annonçait « le test dure 15 min » et en faisait l'argument produit des 4 vidéos :
+> c'était une erreur de calcul, incompatible avec la composition ci-dessus
+> (8+20+20+4), éradiquée comme durée du Quick Mock. La maquette d'accueil validée le
+> 17/07 dit « About 50 min », et c'est ce qui est en ligne. **L'argument produit des
+> vidéos est donc à réécrire avant le tournage.**
 
 ## Principes produit
 

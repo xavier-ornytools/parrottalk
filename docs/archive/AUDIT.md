@@ -1,3 +1,5 @@
+> PERIME au 18/07/2026, conserve pour historique, voir TESTS.md pour l'etat courant.
+
 # AUDIT — ParrotTalk (Session 1, lecture seule)
 
 > Audit du repo `parrottalk_restored` suite au premier test blanc IELTS complet.

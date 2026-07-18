@@ -1,3 +1,5 @@
+> PERIME au 18/07/2026, conserve pour historique, voir TESTS.md pour l'etat courant.
+
 # CORRECTIONS-PLAN — ParrotTalk
 
 > Plan de corrections découpé en sessions futures, basé sur `AUDIT.md`.

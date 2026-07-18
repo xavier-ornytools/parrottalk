@@ -90,10 +90,10 @@ Branche `lot-quick-mock`, **mergee dans main, deployee et verifiee en prod** (ve
 - **Non-regression `tests/check.js`** : `60 passed / 12 failed`, exactement la baseline preexistante.
 
 ### Limite connue, non resolue, hors lot
-**Le mode isole Reading peut rendre band 9 sur 3 bonnes reponses.** `reading.html` divise par `answeredCount` : repondre juste a 3 questions sur 13 et ignorer les autres donne `3/3*40` = band 9. **Demontre au navigateur** : meme scenario, le Quick Test donne 3.5 et le mode isole 9.0. Le correctif est volontairement SCOPE au Quick Test : changer la regle du mode isole modifierait les bands d'un produit en prod, sans demande, a 3 jours de la deadline. **Bug reel du produit actuel, a traiter dans un lot dedie apres le gel.**
+**Le mode isole Reading peut rendre band 9 sur 3 bonnes reponses.** `reading.html` divise par `answeredCount` : repondre juste a 3 questions sur 13 et ignorer les autres donne `3/3*40` = band 9. **Demontre au navigateur** : meme scenario, le Quick Test donne 3.5 et le mode isole 9.0. Le correctif est volontairement SCOPE au Quick Test : changer la regle du mode isole modifierait les bands d'un produit en prod, sans demande, a 3 jours de la deadline. **Bug reel du produit actuel, a traiter dans un lot dedie apres la fin de chantier du front (20/07 : le front est termine, seules de petites retouches cosmetiques restent permises, ce n'est pas un mur).**
 
 ### Reste au temps 2
-Elargir les 4 tableaux `POOL` de `js/quickmock.js` (une ligne chacun) : 4 x 12 x 4 x 4 = 768 combinaisons. Le code du tirage ne bouge pas, c'est la **donnee** qui est a verifier (les 16 sections ont-elles toutes leurs cues, les 12 passages se rendent-ils hors du contexte de leur test, `WRITING_DATA[4]` et son camembert Chart.js tient-il en 20 min).
+Elargir les 4 tableaux `POOL` de `js/quickmock.js` (une ligne chacun) : 16 x 12 x 4 x 4 = 3072 combinaisons (corrige le 18/07, ancien 768 errone). Le code du tirage ne bouge pas, c'est la **donnee** qui est a verifier (les 16 sections ont-elles toutes leurs cues, les 12 passages se rendent-ils hors du contexte de leur test, `WRITING_DATA[4]` et son camembert Chart.js tient-il en 20 min).
 
 ### Livrable
 - Compte-rendu .md sur le Bureau : `2026-07-17_LOT-QUICK-MOCK_avancement.md`.
@@ -471,6 +471,11 @@ IA, le canal IA fait l'essentiel du trafic → accueil explicite des crawlers IA
 - `sitemap.xml` : 9 pages (accueil `/`, les 4 épreuves + dashboard, 3 pages
   légales), URLs canoniques `https://www.parrottalk.app/`. La FAQ est une section
   de l'accueil (pas de page dédiée), couverte par l'URL racine.
+  **MAJ 18/07/2026** : le sitemap ne compte plus 9 URLs mais 11, `faq.html` étant
+  devenue une page dédiée puis `quickmock.html` ayant été ajoutée. Décompte vérifié
+  ce jour dans `sitemap.xml` : 11 `<loc>` (accueil, quickmock, les 4 épreuves,
+  dashboard, faq, privacy, terms, legal-notice). Un décompte d'audit citait 10 ;
+  le fichier en sert 11 (écart d'une URL à confirmer par Xavier).
 - Domaine canonique confirmé par test réel : `parrottalk.app` renvoie 308 →
   `www.parrottalk.app`.
 

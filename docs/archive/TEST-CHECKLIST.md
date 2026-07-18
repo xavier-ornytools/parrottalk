@@ -1,3 +1,5 @@
+> PERIME au 18/07/2026, conserve pour historique, voir TESTS.md pour l'etat courant.
+
 # ParrotTalk — Checklist de test
 
 **Date :** _______________  
