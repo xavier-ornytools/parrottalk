@@ -475,13 +475,13 @@ IA, le canal IA fait l'essentiel du trafic → accueil explicite des crawlers IA
   devenue une page dédiée puis `quickmock.html` ayant été ajoutée. Décompte vérifié
   ce jour dans `sitemap.xml` : 11 `<loc>` (accueil, quickmock, les 4 épreuves,
   dashboard, faq, privacy, terms, legal-notice). Un décompte d'audit citait 10 ;
-  le fichier en sert 11 (écart d'une URL à confirmer par Xavier).
+  le fichier en sert 11 (vérifié le 18/07, décompte clos à 11).
 - Domaine canonique confirmé par test réel : `parrottalk.app` renvoie 308 →
   `www.parrottalk.app`.
 
 **Testé avec :**
 - Local : `/robots.txt` → 200 `text/plain`, `/sitemap.xml` → 200
-  `application/xml`, XML bien formé (9 `<loc>`), 9 URLs = 9 fichiers réels.
+  `application/xml`, XML bien formé (9 `<loc>` à cette date du 13/07 ; 11 depuis le 18/07).
 - `vercel.json` audité : aucun `rewrite`/`redirect` ne touche `/robots.txt` ni
   `/sitemap.xml` (les rewrites ne visent que `/api/`).
 - Validation navigateur manuelle par Xavier (serveur local) avant merge.
@@ -490,7 +490,7 @@ IA, le canal IA fait l'essentiel du trafic → accueil explicite des crawlers IA
 Mergé sur `main` (merge commit `be32f22`) et poussé. Worker inchangé. Déploiement
 Vercel confirmé par `curl` : `www.parrottalk.app/robots.txt` → 200 `text/plain`
 (agents IA + moteurs + ligne Sitemap présents), `www.parrottalk.app/sitemap.xml`
-→ 200 `application/xml` (9 URLs), et `parrottalk.app/robots.txt` suit le 308 vers
+→ 200 `application/xml` (9 URLs au 13/07, 11 depuis le 18/07), et `parrottalk.app/robots.txt` suit le 308 vers
 le www (200 final). Déclaration du sitemap dans Search Console faite par Xavier
 lui-même (hors périmètre code).
 

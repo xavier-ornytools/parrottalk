@@ -35,7 +35,7 @@ Coût attendu du Test 02 : ~0,25 € (négligeable).
 ## CONVENTION — intros de marque (RÈGLE STRICTE : zéro mention de marque tierce dans l'audio)
 Le préambule de la Section 1 de chaque test est une **intro de marque ParrotTalk**,
 en rotation fixe (champ `intro` de la source d'authoring). Aucune occurrence du mot
-d'une marque tierce dans l'audio (question de fond chez l'avocat le 18/07).
+d'une marque tierce dans l'audio (question de fond chez l'avocat, RDV Me Kouhana le 20/07).
 - **Test 01** : « Welcome to your ParrotTalk listening test, the most realistic exam simulation. You will hear a number of different recordings, and you will hear each one only once. »
 - **Test 02** : « Welcome to the ParrotTalk listening test — true exam conditions, real exam difficulty. You will hear a number of different recordings… »
 - **Test 03** : « Welcome to your ultimate listening challenge, the ParrotTalk test. You will hear a number of different recordings… »
