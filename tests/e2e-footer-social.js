@@ -47,7 +47,7 @@ async function main() {
     const yt = info.find(i => (i.href || '').includes('youtube.com/@ParrotTalkApp'));
     const x = info.find(i => (i.href || '').includes('x.com/ParrotTalkApp'));
     const rd = info.find(i => (i.href || '').includes('reddit.com/user/ParrotTalkApp'));
-    const ig = info.find(i => (i.href || '').includes('instagram.com/parrottalk.app'));
+    const ig = info.find(i => (i.href || '').includes('instagram.com/parrottalkapp'));
     const tt = info.find(i => (i.href || '').includes('tiktok.com/@parrottalk.app'));
     const relOk = info.every(i => (i.rel || '').includes('noopener') && (i.rel || '').includes('noreferrer'));
     const tgtOk = info.every(i => i.target === '_blank');
