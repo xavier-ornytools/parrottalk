@@ -269,6 +269,38 @@
     container.appendChild(wrap);
   }
 
+  // Banniere explicite quand un Quick Test est en cours mais qu'on arrive sur une
+  // page de module en mode ISOLE (sans le parametre ?qm du hub) : au lieu de
+  // detourner silencieusement la page, on propose de reprendre ou de quitter le
+  // Quick Test. Corrige le bug d'aiguillage du 18/07.
+  var MODULE_PAGE = /\/(reading|listening|writing|speaking)\.html$/;
+  function mountResumeBanner() {
+    try {
+      if (!isActive()) return;
+      if (new URLSearchParams(location.search).has('qm')) return; // entree quick legitime, pas de banniere
+      if (!MODULE_PAGE.test(location.pathname)) return;            // pages de module seulement
+      if (!document.body || document.getElementById('qm-resume-banner')) return;
+      var step = currentStep();
+      var nextLabel = (step && step !== 'done') ? (LABELS[step] || '') : '';
+      var bar = document.createElement('div');
+      bar.id = 'qm-resume-banner';
+      bar.setAttribute('role', 'status');
+      bar.style.cssText = 'position:sticky;top:0;z-index:9999;background:#0f3d3e;color:#fff;padding:10px 14px;display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:14px;line-height:1.4';
+      bar.innerHTML =
+        '<span>You have a Quick Test in progress' + (nextLabel ? ' (next: ' + nextLabel + ')' : '') +
+        '. This page is open as a single isolated section.</span>' +
+        '<a href="' + HUB + '" style="background:#16897d;color:#fff;padding:6px 12px;border-radius:6px;text-decoration:none;font-weight:600">Resume Quick Test</a>' +
+        '<button type="button" id="qm-resume-quit" style="background:transparent;color:#cdeee6;border:1px solid rgba(255,255,255,.45);padding:6px 12px;border-radius:6px;cursor:pointer">Quit Quick Test</button>';
+      document.body.insertBefore(bar, document.body.firstChild);
+      var q = document.getElementById('qm-resume-quit');
+      if (q) q.addEventListener('click', function () { clear(); bar.remove(); });
+    } catch (e) {}
+  }
+  if (typeof document !== 'undefined' && document.addEventListener) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountResumeBanner);
+    else mountResumeBanner();
+  }
+
   window.QuickMock = {
     ORDER: ORDER, LABELS: LABELS, ICON: ICON, PAGES: PAGES, SCOPE: SCOPE,
     DURATION: DURATION, POOL: POOL, HUB: HUB,
@@ -278,5 +310,6 @@
     writingTest: writingTest, speakingTest: speakingTest,
     recordResult: recordResult, overallBand: overallBand,
     renderNextStep: renderNextStep, comboKey: comboKey, history: history,
+    mountResumeBanner: mountResumeBanner,
   };
 })();

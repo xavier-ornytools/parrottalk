@@ -418,7 +418,10 @@ let pendingTest = 1;          // test choisi sur l'écran d'accueil, pas encore 
 let testStarted = false;      // un test est-il en cours (zone de test affichée) ?
 let globalInterval = null;
 // Le Quick Test joue la Task 1 SEULE, en 20 min.
-const QM_ON = !!(window.QuickMock && QuickMock.isActive());
+// Quick Test actif seulement si on est entre par le flux quick (parametre ?qm du
+// hub) ET qu'un Quick Test est en cours. Empeche le detournement d'une arrivee
+// isolee quand un etat quick traine dans le localStorage (fix aiguillage 18/07).
+const QM_ON = new URLSearchParams(location.search).has('qm') && !!(window.QuickMock && QuickMock.isActive());
 const WRITING_DURATION = QM_ON ? QuickMock.duration('writing') : 3600;
 let totalSeconds = WRITING_DURATION;
 let writingChart = null;      // instance Chart.js du camembert Task 1 (Test 04), detruite/recreee a chaque test

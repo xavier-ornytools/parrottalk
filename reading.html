@@ -344,7 +344,13 @@ let submitted = false;
 let timerInterval = null;
 // Le Quick Test joue UN passage. Il injecte un objet test synthetique qui n'a
 // qu'une tranche : le moteur ci-dessous ignore tout du parcours.
-const QM_ON = !!(window.QuickMock && QuickMock.isActive());
+// Quick Test actif seulement si on est ENTRE dans le flux quick (parametre ?qm
+// pose par le hub quickmock.html a chaque lancement), ET qu'un Quick Test est en
+// cours. Sans ce garde-fou, une arrivee isolee (lien Single Section Practice,
+// menu) etait detournee en Quick Test des qu'un etat quick trainait dans le
+// localStorage (bug d'aiguillage du 18/07). L'entree isolee reste isolee ; une
+// banniere explicite propose de reprendre ou quitter le Quick Test en cours.
+const QM_ON = new URLSearchParams(location.search).has('qm') && !!(window.QuickMock && QuickMock.isActive());
 // Duree de l'epreuve. Reading n'a pas d'override ?timer= (contrairement a
 // Listening), la valeur etait ecrite en dur a deux endroits : ici et dans
 // startTimer(). Elle est desormais derivee.
@@ -497,6 +503,21 @@ function init() {
       currentTestKey = slice.id;
       currentTestNum = 0;
       document.getElementById('test-selector')?.classList.add('hidden');
+      // Coherence d'affichage Quick Test : le page-hero persiste (startTest ne le
+      // masque pas), on l'aligne sur le format reduit (une section) au lieu de
+      // "3 passages / 40 questions / 60 minutes", incoherent avec la tranche quick.
+      (function () {
+        var hero = document.querySelector('.page-hero.reading');
+        if (!hero) return;
+        var h1 = hero.querySelector('h1'); if (h1) h1.textContent = 'Quick Test, Reading';
+        var sub = h1 ? h1.nextElementSibling : null;
+        if (sub && sub.tagName === 'P') sub.textContent = 'One passage, a single section of a full IELTS Reading test.';
+        hero.querySelectorAll('.badge').forEach(function (b) {
+          var t = b.textContent.trim();
+          if (/Passages/i.test(t)) b.textContent = '1 Passage';
+          else if (/minutes/i.test(t)) b.textContent = 'One section';
+        });
+      })();
       startTest();
       return;
     }
@@ -866,18 +887,22 @@ function showResults(total, band, passageScores, ranges, answeredCount = 40, sca
   // `total` = reponses correctes, `answeredCount` = reponses donnees. Le mot
   // "correct" est indispensable ici : sans lui, "5 of 26 answered" se lit "5
   // repondues sur 26" et contredit le "26/40 questions answered" affiche dessous.
-  const heroNote = isPartial
-    ? `Approximate, ${total} correct out of ${answeredCount} answered. Finish all 3 passages for an official band.`
-    : `${total} of 40 correct, your free instant score.`;
+  const heroNote = QM_ON
+    ? `${total} correct out of ${answeredCount} in this Quick Test section.`
+    : (isPartial
+      ? `Approximate, ${total} correct out of ${answeredCount} answered. Finish all 3 passages for an official band.`
+      : `${total} of 40 correct, your free instant score.`);
   const heroHTML =
     `<div class="card card-sm fb-hero">` +
-      `<div class="fb-hero__label">📖 Reading Test 0${currentTestNum}, Band</div>` +
+      `<div class="fb-hero__label">📖 ${QM_ON ? 'Quick Test, Reading' : 'Reading Test 0' + currentTestNum}, Band</div>` +
       `<div class="fb-hero__band">${fmtBand(band)}</div>` +
       `<div class="fb-hero__note">${heroNote}</div>` +
     `</div>`;
-  const subText = isPartial
-    ? `⚠️ Approximate, ${answeredCount}/40 questions answered. Complete all 3 passages for an official score.`
-    : (total >= 35 ? '🎉 Great score, keep it up!' : `${35 - total} more correct for a higher band`);
+  const subText = QM_ON
+    ? `Quick Test section scored. Continue the Quick Test for your estimated band.`
+    : (isPartial
+      ? `⚠️ Approximate, ${answeredCount}/40 questions answered. Complete all 3 passages for an official score.`
+      : (total >= 35 ? '🎉 Great score, keep it up!' : `${35 - total} more correct for a higher band`));
   const gridHTML = ranges.map((p, i) =>
     `<div class="sec-res"><div class="val">${passageScores[i]}/${p.end - p.start + 1}</div><div class="lbl">${p.label}</div></div>`).join('');
   const detailHTML =
