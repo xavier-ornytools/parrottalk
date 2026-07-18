@@ -92,13 +92,20 @@ async function testFeedbackEvents(browser) {
   await page.waitForTimeout(150);
   // Réinstalle l'enregistreur (renderSpeakingFeedback a émis evaluation_received avant)
   await page.evaluate(() => { window.__ev = []; });
+  // Les 3 questions du gate (une par etape, re-rendu a chaque reponse).
   await page.click('.fb-opt[data-val="about_right"]'); await page.waitForTimeout(600);
   await page.click('.fb-opt[data-val="3_6m"]'); await page.waitForTimeout(600);
-  await page.click('.fb-opt[data-val="detailed_corrections"]'); await page.waitForTimeout(900);
+  await page.click('.fb-opt[data-val="detailed_corrections"]'); await page.waitForTimeout(700);
+  // Etape commentaire libre (optionnelle). Skip declenche submitFeedback donc
+  // feedback_completed. C'est l'etape que l'ancienne version du test oubliait, d'ou
+  // les 2 faux echecs : le code emettait bien l'event, le test ne l'atteignait pas.
+  await page.click('.fb-comment__skip'); await page.waitForTimeout(500);
   let ev = await events(page);
   const fc = ev.find(e => e.name === 'feedback_completed');
   check('feedback_completed émis (section=speaking)', !!fc && fc.params.section === 'speaking');
 
+  // "See my detailed feedback" revele le rapport et fait apparaitre la note de beta.
+  await page.click('.fb-thanks__cta'); await page.waitForTimeout(500);
   await page.click('.fb-rating__scale .fb-opt[data-n="4"]');
   await page.waitForTimeout(200);
   ev = await events(page);
@@ -114,8 +121,10 @@ async function testReadingListening(browser) {
   // Reading
   await page.goto(`${BASE_URL}/reading.html`);
   await prep(page);
-  await page.click('button:has-text("Start Test")');
+  await page.click(`button[onclick="selectTest('test01')"]`);
   await page.waitForTimeout(150);
+  await page.click(`button[onclick="startTest()"]`);
+  await page.waitForTimeout(200);
   await page.evaluate(() => finishReadingPassage());
   let ev = await events(page);
   check('Reading test_started émis (section=reading)', ev.some(e => e.name === 'test_started' && e.params.section === 'reading'));
@@ -124,8 +133,10 @@ async function testReadingListening(browser) {
   // Listening
   await page.goto(`${BASE_URL}/listening.html`);
   await prep(page);
-  await page.click('button:has-text("Start Test")');
+  await page.click(`button[onclick="selectTest('test01')"]`);
   await page.waitForTimeout(150);
+  await page.click(`button[onclick="startTest()"]`);
+  await page.waitForTimeout(200);
   await page.evaluate(() => finishSection());
   ev = await events(page);
   check('Listening test_started émis (section=listening)', ev.some(e => e.name === 'test_started' && e.params.section === 'listening'));
