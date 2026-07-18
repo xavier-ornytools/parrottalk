@@ -62,7 +62,7 @@ const SPEAKING_MOCK = {
   console.log('\nHub et tirage');
   await reset();
   await page.goto(URL + '/quickmock.html?qmseed=' + SEED, { waitUntil: 'networkidle' });
-  await page.click('button:has-text("Start Quick Test")');
+  await page.click('button:has-text("Start Quick Mock Test")');
   await page.waitForURL('**/listening.html*');
   const combo1 = await page.evaluate(() => JSON.stringify(QuickMock.get().combo));
   check('Start tire une composition et entre dans Listening', !!combo1);

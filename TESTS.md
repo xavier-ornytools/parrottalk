@@ -1,5 +1,25 @@
 # ParrotTalk — Tests techniques
 
+## LOT SEO/AEO naming : mock test + writing checker + purge wording (2026-07-18)
+
+Branche `site-seo-naming-2026-07-18`, tag de securite `avant-site-seo-naming-2026-07-18` (HEAD `4fe0a73`). Aucun push. ExamFlow (`js/exam-flow.js`) et `css/main.css` intouches. Lot MARKUP/CONTENU : renommages SEO/AEO, une nouvelle page statique, purge du wording de gratuite conditionnelle. Issu de la consultation SEO/AEO du 18/07 (mock test et checker absents de nos titles/H1/URL/schemas).
+
+**Renommages (12 pages).** Nav des 12 pages : "Quick Test" vers "Quick Mock Test", "Mock Exam" vers "Mock Test" (title et aria "IELTS Mock Test, full test under real exam conditions"), "Practice" garde son libelle visible, title et aria alignes sur "IELTS Practice Tests". mockexam.html : title "Free IELTS Mock Test Online", H1 "IELTS Mock Test", meta/og/twitter/JSON-LD alignes, name du schema "ParrotTalk IELTS Mock Test", sous-titre conservant l'argument real exam. quickmock.html : "Quick Test" vers "Quick Mock Test" partout (title, og, twitter, JSON-LD, H1, badges, boutons, ecrans du hub, alt), et les 2 renvois "Real Exam Test" du hub vers "Mock Test". index.html : cartes d'accueil "Quick Mock Test" et "IELTS Mock Test".
+
+**Nouvelle page writing-checker.html.** title "Free IELTS Writing Checker", canonical, OG et twitter, JSON-LD WebApplication + Offer (modele des pages modules) et FAQPage (3 Q/R en langage naturel), copy sobre, CTA vers `writing.html` (aucune logique d'outil neuve), styles page-local uniquement. Maillage : lien footer "Writing Checker" sur les 12 pages + mention contextuelle dans `writing.html`. `sitemap.xml` : 13 URLs.
+
+**Purge wording.** Les 5 occurrences de "For now, it is 100% free" de mockexam.html remplacees par "100% free, no sign-up" (terme "no sign-up" cite par ChatGPT dans nos releves). Balayage complet : 0 occurrence de "for now / for the moment / always free / forever free" liee a la gratuite.
+
+**Tests (vrai Chrome, port 8000).**
+- `e2e-launch-all` clean **16/16**, dirty **16/16**.
+- `e2e-quick-routing` **12/0**.
+- `check.js` **72/72**.
+- `e2e-mockexam` **10/10** (cablage nav + carte + demarrage mock).
+- `nav-visual-check` : desktop 1280 et mobile 390 **PASS** (5 pages), tablette 800 informative (index serre, pre-existant hors scope). Les libelles nav plus longs ne debordent pas a 1280 ni 390.
+- `e2e-quickmock` **40/2**, baseline exacte : le selecteur du bouton de demarrage a ete synchronise sur le nouveau libelle "Start Quick Mock Test" (1 ligne, `tests/e2e-quickmock.js:65`), sinon le test se bloquait sur l'ancien texte. Les 40 passes confirment le flux quick de bout en bout apres renommage ; les 2 echecs restants sont les GA `flow:quick` pre-existants.
+- `e2e-persistence` : `ReferenceError currentRanges`, pre-existant, inchange.
+- Controles script : 0 tiret cadratin ou demi-cadratin introduit ; "mock test" et "checker" desormais portes sur toutes les pages (ancres nav + surfaces cibles), sans bourrage dans le corps.
+
 ## Page Mock Exam, porte d'entree de l'examen complet (2026-07-18)
 
 Branche `mockexam-2026-07-18` depuis `main 8fed13a`, tag de securite `avant-mockexam-2026-07-18`.

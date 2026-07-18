@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free IELTS Writing Checker · ParrotTalk</title>
+  <meta name="description" content="A free IELTS Writing checker: paste your Task 1 or Task 2 essay and get an estimated band score with feedback on the four official criteria. 100% free, no sign-up.">
+  <link rel="canonical" href="https://www.parrottalk.app/writing-checker.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ParrotTalk">
+  <meta property="og:title" content="Free IELTS Writing Checker">
+  <meta property="og:description" content="A free IELTS Writing checker: paste your Task 1 or Task 2 essay and get an estimated band score with feedback on the four official criteria. 100% free, no sign-up.">
+  <meta property="og:url" content="https://www.parrottalk.app/writing-checker.html">
+  <meta property="og:image" content="https://www.parrottalk.app/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ParrotTalkApp">
+  <meta name="twitter:title" content="Free IELTS Writing Checker">
+  <meta name="twitter:description" content="A free IELTS Writing checker: paste your Task 1 or Task 2 essay and get an estimated band score with feedback on the four official criteria. 100% free, no sign-up.">
+  <meta name="twitter:image" content="https://www.parrottalk.app/img/og-image.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "ParrotTalk IELTS Writing Checker",
+    "url": "https://www.parrottalk.app/writing-checker.html",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "ParrotTalk",
+      "url": "https://www.parrottalk.app/"
+    },
+    "description": "A free IELTS Writing checker: paste your Task 1 or Task 2 essay and get an estimated band score with feedback on the four official criteria. 100% free, no sign-up."
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is there a free IELTS Writing checker?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. The ParrotTalk Writing Checker is 100% free, with no sign-up. You can check IELTS Writing Task 1 and Task 2 essays and get an estimated band score with feedback on the four official criteria."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does the ParrotTalk Writing Checker score my essay?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "It evaluates your essay on the four official IELTS Writing criteria: Task Achievement, Coherence and Cohesion, Lexical Resource, and Grammatical Range and Accuracy. It returns an estimated band for each criterion and an overall estimate, with feedback tied to your own text."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which IELTS Writing tasks can I check?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Both. You can check a Task 1 report and a Task 2 essay. The band is an estimate to guide your practice, not an official IELTS result."
+        }
+      }
+    ]
+  }
+  </script>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
+  <script src="js/analytics.js" async></script>
+  <script src="js/cookie-banner.js" defer></script>
+  <style>
+    /* Variante Checker du page-hero (violet doux), meme systeme que .page-hero.mock.
+       Styles page-local uniquement : aucune modif de css/main.css. */
+    .page-hero.checker {
+      background: linear-gradient(135deg, #EDE9FE 0%, #F5F3FF 100%);
+      border-bottom: 3px solid #C4B5FD;
+    }
+    .chk-hero { max-width: 760px; margin: 0 auto; text-align: center; }
+    .chk-body { max-width: 720px; margin: 0 auto; text-align: center; }
+    .chk-body p { font-size: 1rem; line-height: 1.75; color: var(--text); margin: 0 0 18px; }
+    .chk-crit { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 8px 0 28px; }
+    .chk-crit__item { background: var(--surface); border-radius: var(--r); padding: 12px 14px; }
+    .chk-crit__tag { font-size: .75rem; font-weight: 700; color: var(--primary); }
+    .chk-crit__name { font-size: .875rem; font-weight: 600; color: var(--text); margin-top: 1px; }
+    .chk-cta { text-align: center; margin: 8px 0 8px; }
+    .chk-note { font-size: .8125rem; color: var(--text-light); text-align: center; margin-top: 14px; line-height: 1.6; }
+    @media (max-width: 640px) { .chk-crit { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__logo">
+      <img src="img/logo-official.webp" alt="ParrotTalk">
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="quickmock.html" class="nav__link" title="IELTS Quick Mock Test" aria-label="IELTS Quick Mock Test, all four sections in under an hour">Quick Mock Test</a>
+      <a href="mockexam.html" class="nav__link" title="IELTS Mock Test" aria-label="IELTS Mock Test, full test under real exam conditions">Mock Test</a>
+      <a href="index.html#modules" class="nav__link" title="IELTS Practice Tests" aria-label="IELTS Practice Tests, Listening Reading Writing and Speaking">Practice</a>
+      <a href="dashboard.html" class="nav__link" title="Your IELTS Progress Dashboard" aria-label="Your IELTS progress dashboard">Dashboard</a>
+    </div>
+    <a href="dashboard.html" class="nav__cta">My Progress</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero checker">
+  <div class="container">
+    <div class="page-hero__text chk-hero">
+      <span class="badge badge-free">Free</span>
+      <h1>IELTS Writing Checker</h1>
+      <p>Paste your IELTS Writing Task 1 or Task 2 essay and get an estimated band score in seconds, with feedback on the four official criteria. 100% free, no sign-up.</p>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container" style="padding-top:32px;padding-bottom:80px;max-width:820px">
+  <div class="chk-body">
+
+    <p>The ParrotTalk Writing Checker reads your essay the way an IELTS examiner does. It looks at the four official criteria, gives you an estimated band for each one and an overall estimate, and explains what holds your score back.</p>
+
+    <div class="chk-crit">
+      <div class="chk-crit__item"><div class="chk-crit__tag">Criterion 1</div><div class="chk-crit__name">Task Achievement</div></div>
+      <div class="chk-crit__item"><div class="chk-crit__tag">Criterion 2</div><div class="chk-crit__name">Coherence and Cohesion</div></div>
+      <div class="chk-crit__item"><div class="chk-crit__tag">Criterion 3</div><div class="chk-crit__name">Lexical Resource</div></div>
+      <div class="chk-crit__item"><div class="chk-crit__tag">Criterion 4</div><div class="chk-crit__name">Grammatical Range and Accuracy</div></div>
+    </div>
+
+    <p>Write or paste your answer to a Task 1 report or a Task 2 essay, and the AI returns targeted feedback: what works, what limits your band, and concrete points to fix. Every comment is tied to your own text, so you know exactly what to change before your real exam.</p>
+
+    <p>The band is an estimate to guide your practice, not an official IELTS result. ParrotTalk is independent and not affiliated with IELTS, the British Council, IDP, or Cambridge English. It is 100% free, with no sign-up and no ads.</p>
+
+    <div class="chk-cta">
+      <a href="writing.html" class="btn btn-primary btn-xl">Check your IELTS Writing &rarr;</a>
+      <p class="chk-note">The checker runs inside the free Writing practice module: pick a task, write your answer, and get your estimated band with feedback.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer style="text-align:center;padding:16px;font-size:.75rem;color:var(--text-muted);opacity:.7;border-top:1px solid var(--border);margin-top:32px">
+  ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.
+  <p style="margin-top:8px"><a href="faq.html" style="color:inherit;text-decoration:underline">FAQ</a> &middot; <a href="privacy.html" style="color:inherit;text-decoration:underline">Privacy Policy</a> &middot; <a href="legal-notice.html" style="color:inherit;text-decoration:underline">Legal Notice</a> &middot; <a href="terms.html" style="color:inherit;text-decoration:underline">Terms of Use</a> &middot; <a href="writing-checker.html" style="color:inherit;text-decoration:underline">Writing Checker</a></p>
+</footer>
+
+</body>
+</html>
