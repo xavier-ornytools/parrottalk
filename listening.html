@@ -454,6 +454,13 @@ function updateReviewTimer() {
 }
 
 function init() {
+  // Reaffichage du dernier score (correctif 18/07) : feedback-gate.js definit
+  // window.fmtBand mais il est charge en `defer`, donc absent quand init() tourne
+  // au parse. On garantit ici un fmtBand identique ; feedback-gate.js le reassigne
+  // ensuite sans effet de bord. Sans ca, les vignettes restaient "Not attempted yet".
+  if (typeof window.fmtBand !== 'function') {
+    window.fmtBand = function (b) { var n = typeof b === 'number' ? b : parseFloat(b); return isFinite(n) ? n.toFixed(1) : '-'; };
+  }
   // Quick Test : on injecte la tranche tiree et on demarre. Le selecteur de test
   // et la reprise du mode isole n'ont pas lieu d'etre ici, le parcours decide.
   if (QM_ON) {

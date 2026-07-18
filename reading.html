@@ -481,6 +481,13 @@ function setCurrentTest(num) {
 }
 
 function init() {
+  // Reaffichage du dernier score (correctif 18/07) : feedback-gate.js definit
+  // window.fmtBand mais il est charge en `defer`, donc absent quand init() tourne
+  // au parse. On garantit ici un fmtBand identique ; feedback-gate.js le reassigne
+  // ensuite sans effet de bord. Sans ca, les vignettes restaient "Not attempted yet".
+  if (typeof window.fmtBand !== 'function') {
+    window.fmtBand = function (b) { var n = typeof b === 'number' ? b : parseFloat(b); return isFinite(n) ? n.toFixed(1) : '-'; };
+  }
   // Quick Test : on injecte la tranche tiree et on demarre. Le selecteur de test
   // et la reprise du mode isole n'ont pas lieu d'etre ici, le parcours decide.
   if (QM_ON) {
@@ -816,15 +823,16 @@ function submitTest() {
   }
 
   const isPartial = answeredCount < 40;
-  // Base de la mise a l'echelle. En mode isole, l'historique divise par
-  // `answeredCount` : repondre juste a 3 questions sur 13 donne 3/3*40 = band 9.
-  // Inacceptable comme base d'un band global, donc en Quick Test on divise par le
-  // nombre de questions POSEES (base Listening, une non-repondue compte comme
-  // fausse). Le correctif est volontairement SCOPE : changer la regle du mode
-  // isole modifierait les bands d'un produit en prod, sans demande, et ce n'est
-  // pas le peril de ce lot. La divergence reste documentee dans TESTS.md.
+  // Base de la mise a l'echelle, UNIFIEE entre Quick Test et mode isole (correctif
+  // du 18/07). On divise toujours par le nombre de questions POSEES (qAsked), une
+  // question non repondue comptant comme fausse (meme regle que Listening). Avant,
+  // le mode isole divisait par `answeredCount` : repondre juste a 3 questions sur
+  // 40 donnait 3/3*40 = band 9, un band gonfle et incoherent avec le band sauve par
+  // saveReadingScore (base sur le total brut). En mode isole, qAsked vaut 40 (les 3
+  // passages couvrent les 40 questions), donc scaledTotal egale total : le band
+  // affiche en session egale le band sauve, reaffiche correctement au rechargement.
   const qAsked = passageRanges.reduce((n, r) => n + (r.end - r.start + 1), 0);
-  const denom = QM_ON ? qAsked : answeredCount;
+  const denom = qAsked;
   const scaledTotal = isPartial ? Math.round((total / denom) * 40) : total;
   const band = getBand(isPartial ? scaledTotal : total, 'reading');
   // En Quick Test, on n'ecrit pas dans `ielts_reading_scores` : saveReadingScore
@@ -840,7 +848,7 @@ function submitTest() {
 
   const metaEl = document.getElementById(metaId);
   if (metaEl) metaEl.textContent = isPartial
-    ? `Last: ${total}/${answeredCount}, ~Band ${fmtBand(band)}`
+    ? `Last: ${total}/40, ~Band ${fmtBand(band)}`
     : `Last: ${total}/40, Band ${fmtBand(band)}`;
 }
 
