@@ -98,7 +98,19 @@
 
   function get() { try { return JSON.parse(localStorage.getItem(LS_QM) || 'null'); } catch (e) { return null; } }
   function set(st) { try { localStorage.setItem(LS_QM, JSON.stringify(st)); } catch (e) {} }
-  function isActive() { var s = get(); return !!(s && s.active); }
+
+  // Un etat n'est EXPLOITABLE que s'il porte sa composition. Un pt_quickmock
+  // ecrit par une version anterieure (ou tronque par un quota localStorage) peut
+  // avoir active:true SANS combo : sans ce controle, les 4 moteurs entrent en
+  // mode quick avec ?qm=1 puis lisent st.combo.listening sur undefined, et
+  // l'init de la page meurt sur un TypeError. Le controle est place ici, au seul
+  // point que toutes les pages consultent, pour que la degradation soit unique
+  // et systematique : etat malforme = Quick Test inactif = mode normal.
+  function isUsable(s) {
+    return !!(s && s.active && s.combo &&
+      s.combo.listening && s.combo.reading && s.combo.writing && s.combo.speaking);
+  }
+  function isActive() { return isUsable(get()); }
   function clear() { try { localStorage.removeItem(LS_QM); } catch (e) {} }
   function stop() { clear(); location.href = 'index.html'; }
 
@@ -175,9 +187,10 @@
   // desynchroniser des resultats, un calcul non.
   function currentStep() {
     var st = get();
-    if (!st) return null;
+    if (!isUsable(st)) return null;
+    var res = st.results || {};
     for (var i = 0; i < ORDER.length; i++) {
-      if (!st.results[ORDER[i]]) return ORDER[i];
+      if (!res[ORDER[i]]) return ORDER[i];
     }
     return 'done';
   }
@@ -196,7 +209,7 @@
   // detournera jamais la reprise de session de la page normale.
   function sliceListening(TESTS) {
     var st = get();
-    if (!st) return null;
+    if (!st || !st.combo || !st.combo.listening) return null;
     var c = st.combo.listening;
     var src = TESTS[c.test];
     if (!src || !src.sections || !src.sections[c.section]) return null;
@@ -209,7 +222,7 @@
 
   function sliceReading(READING_TESTS) {
     var st = get();
-    if (!st) return null;
+    if (!st || !st.combo || !st.combo.reading) return null;
     var c = st.combo.reading;
     var src = READING_TESTS[c.test];
     if (!src || !src.passages || !src.passages[c.passage]) return null;
@@ -220,8 +233,10 @@
     };
   }
 
-  function writingTest()  { var s = get(); return s ? s.combo.writing.test : null; }
-  function speakingTest() { var s = get(); return s ? s.combo.speaking.test : null; }
+  // Meme garde que les slices : un etat sans combo rend null, et l'appelant
+  // retombe sur son test par defaut au lieu de planter au parsing.
+  function writingTest()  { var s = get(); return (s && s.combo && s.combo.writing)  ? s.combo.writing.test  : null; }
+  function speakingTest() { var s = get(); return (s && s.combo && s.combo.speaking) ? s.combo.speaking.test : null; }
 
   // ── Resultats et band global ────────────────────────────────────────────────
 
@@ -230,7 +245,8 @@
   // Writing/Speaking (le Worker calcule deja leur band par le code).
   function recordResult(module, payload) {
     var st = get();
-    if (!st || ORDER.indexOf(module) === -1) return;
+    if (!st || !st.combo || ORDER.indexOf(module) === -1) return;
+    if (!st.results) st.results = {};
     st.results[module] = Object.assign({}, payload, { at: Date.now() });
     set(st);
   }

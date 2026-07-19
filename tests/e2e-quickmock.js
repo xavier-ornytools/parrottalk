@@ -243,6 +243,60 @@ const SPEAKING_MOCK = {
   check('test_started porte flow:quick', ts && ts.p.flow === 'quick', ts ? JSON.stringify(ts.p) : 'aucun event');
   check('les parametres historiques sont preserves', ts && ts.p.section === 'listening', ts ? JSON.stringify(ts.p) : '-');
 
+  // ── 10. Etat quickmock MALFORME (robustesse du 18/07) ─────────────────────
+  // Un pt_quickmock ecrit par une version anterieure peut porter active:true
+  // SANS combo. Avant la garde, les 4 moteurs entraient quand meme en mode quick
+  // avec ?qm=1, puis lisaient st.combo.listening sur undefined : TypeError, init
+  // de page morte. Attendu desormais : Quick Test considere inactif, les 4 pages
+  // s'initialisent proprement en MODE NORMAL, aucune erreur JS.
+  console.log('\nEtat quickmock malforme (sans combo)');
+  const errBefore = jsErrors.length;
+  const MALFORMED = JSON.stringify({ v: 1, active: true, started: 1, seed: null, results: {} });
+
+  await page.goto(URL + '/quickmock.html', { waitUntil: 'domcontentloaded' });
+  await page.evaluate((m) => { localStorage.clear(); sessionStorage.clear(); localStorage.setItem('pt_quickmock', m); }, MALFORMED);
+
+  const api = await page.evaluate(() => ({
+    active: QuickMock.isActive(),
+    step: QuickMock.currentStep(),
+    wt: QuickMock.writingTest(),
+    st: QuickMock.speakingTest(),
+    sl: QuickMock.sliceListening({}),
+    sr: QuickMock.sliceReading({}),
+  }));
+  check('isActive() rejette un etat sans combo', api.active === false, String(api.active));
+  check('currentStep() rend null, pas une exception', api.step === null, String(api.step));
+  check('writingTest()/speakingTest() rendent null', api.wt === null && api.st === null, api.wt + '/' + api.st);
+  check('sliceListening()/sliceReading() rendent null', api.sl === null && api.sr === null);
+
+  // Le hub doit retomber sur son ecran d'accueil (le bouton Start est present).
+  await page.goto(URL + '/quickmock.html', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(300);
+  check('le hub retombe sur l ecran d accueil',
+    (await page.locator('button:has-text("Start Quick Mock Test")').count()) === 1);
+
+  // Les 4 moteurs, appeles avec ?qm=1 malgre l'etat casse.
+  const NORMAL = { listening: 32 * 60, reading: 3600, writing: 3600 };
+  for (const mod of ['listening', 'reading', 'writing', 'speaking']) {
+    await page.evaluate((m) => localStorage.setItem('pt_quickmock', m), MALFORMED);
+    await page.goto(URL + '/' + mod + '.html?qm=1', { waitUntil: 'networkidle' });
+    await page.waitForTimeout(400);
+    const qmOn = await page.evaluate(() => QM_ON);
+    check(mod + '.html?qm=1 retombe en mode normal (QM_ON=false)', qmOn === false, String(qmOn));
+    if (NORMAL[mod]) {
+      // Une branche par page, jamais un objet litteral : chaque page ne declare
+      // QUE sa propre constante, un litteral les evaluerait toutes les trois.
+      const dur = await page.evaluate((m) => {
+        if (m === 'listening') return LISTENING_DURATION;
+        if (m === 'reading') return READING_DURATION;
+        return WRITING_DURATION;
+      }, mod);
+      check(mod + ' reprend sa duree normale (' + NORMAL[mod] + ' s)', dur === NORMAL[mod], String(dur));
+    }
+  }
+  check('aucune erreur JS sur les 4 pages avec l etat malforme',
+    jsErrors.length === errBefore, jsErrors.slice(errBefore).join(' | '));
+
   console.log('\n  erreurs JS : ' + (jsErrors.length ? jsErrors.slice(0, 3).join(' | ') : 'aucune'));
   if (jsErrors.length) failed++;
   await browser.close();
