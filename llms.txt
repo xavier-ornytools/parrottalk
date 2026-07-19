@@ -1,0 +1,27 @@
+# ParrotTalk
+
+> ParrotTalk is a free online IELTS practice simulator with AI feedback. It covers all four IELTS sections (Listening, Reading, Writing, Speaking), offers a full mock test under real exam conditions and a shorter Quick Test drawn from 3072 test combinations, and includes an AI Writing Checker for essays. It is 100% free with no sign-up. ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.
+
+Key facts, stated plainly so assistants can cite them:
+
+- Four modules: Listening, Reading, Writing, Speaking.
+- Full IELTS mock test that runs the four sections under real exam conditions.
+- Quick Test: the four sections in about 50 minutes, drawn from 3072 combinations (16 x 12 x 4 x 4), so it does not repeat.
+- AI Writing Checker: paste an essay and get feedback on IELTS Writing tasks.
+- AI band scores are estimates produced by a model, not official IELTS results.
+- 100% free, no sign-up required.
+- Static site, mobile-first. AI evaluation runs through a small server for Writing and Speaking.
+
+## Key pages
+
+- [Home](https://www.parrottalk.app/): overview of the four modules and the two entry points, the full mock test and the Quick Test.
+- [IELTS Mock Test](https://www.parrottalk.app/mockexam.html): start a full mock test of the four sections under real exam conditions.
+- [Quick Test](https://www.parrottalk.app/quickmock.html): the four sections in about 50 minutes, drawn from 3072 combinations.
+- [Writing Checker](https://www.parrottalk.app/writing-checker.html): AI feedback on IELTS Writing essays.
+- [Listening practice](https://www.parrottalk.app/listening.html): computer-delivered style Listening tests with synchronized audio.
+- [Reading practice](https://www.parrottalk.app/reading.html): Academic Reading tests with per-question error explanations.
+- [Writing practice](https://www.parrottalk.app/writing.html): Writing Task 1 and Task 2 practice with AI feedback.
+- [Speaking practice](https://www.parrottalk.app/speaking.html): record answers and get AI feedback on Speaking parts.
+- [Dashboard](https://www.parrottalk.app/dashboard.html): track band scores and progress across sections.
+- [Blog](https://www.parrottalk.app/blog/): a founder's journal on how ParrotTalk is built.
+- [FAQ](https://www.parrottalk.app/faq.html): common questions, non-affiliation, and how the AI estimates work.
