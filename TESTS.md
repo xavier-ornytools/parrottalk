@@ -1,5 +1,40 @@
 # ParrotTalk — Tests techniques
 
+## LOT 4 blog : 5 cartouches de plus EN STOCK (2026-07-19)
+
+Branche `blog-lot3-2026-07-19`, qui reste la branche de stock courante (non renommee). **Aucun merge, aucun push, aucune publication.** `main` intact a `160b51e`. ExamFlow (`js/exam-flow.js`) et `css/main.css` intouches. Principe fixe du blog respecte : les articles sont des cartouches en stock, le tir se fait un par un via `scripts/publish-article.sh` aux dates du calendrier.
+
+**Articles ecrits (5).** Episodes 07/07 au 09/07 de la chronologie, dans l'ordre du calendrier editorial, 700 a 1200 mots, anglais, voix journal de bord a la premiere personne, matiere reelle relue dans les commits et dans TESTS.md, dates reelles citees dans le texte, temps de lecture en dur.
+
+| Slug | Titre | Episode | Pub | Mots | Source relue |
+|---|---|---|---|---|---|
+| `never-losing-your-progress` | The bug that mattered most: never losing your progress | 07/07 | 31/07 | 900 | commit `7f5f446`, TESTS "Session 3, Etape A" |
+| `the-day-a-passing-test-lied-to-me` | The day a passing test lied to me | 07/07 | 02/08 | 850 | TESTS "Fix post-session 3, restauration automatique manquante" |
+| `starting-to-measure` | Starting to measure whether any of this works | 08/07 | 04/08 | 819 | commit `1b028cf` |
+| `rewriting-the-faq-around-proof` | Rewriting the FAQ around proof, not promises | 08/07 | 06/08 | 789 | commits `aff4364`, `8cb2d1b` |
+| `opening-the-doors-beta` | Opening the doors: the friends-and-family beta | 09/07 | 08/08 | 887 | commits `f49d0e7`, `fae12a6`, TESTS "Bloc pre-beta" |
+
+Le 6e prevu, `Moving the AI off the browser` (episode 04/07, pub 29/07), n'est **pas ecrit** : arbitrage Xavier du 19/07, faute d'image source disponible (voir ci-dessous). Il reprendra sa place en tete du prochain lot.
+
+**Arbitrages editoriaux appliques** (heritage du lot 3) : aucun chiffre analytics sauf des debuts modestes assumes, jamais le mot declencheur ni la mecanique des releves, aucun chiffre de cout, aucune vulnerabilite, partenaires anonymises, aucun juridique ni pricing ni sphere privee, le positif en avant et les rates racontes en lecons.
+
+**Images, arbitrage du 19/07.** Le stock `_image-sources/` compte 20 fichiers, dont 10 consommes par le lot 3. Apres inspection au pixel : les sources 8 et 19 sont la meme illustration, la 18 est identique a la 7 deja utilisee, et les bannieres OrnyTools sont hors charte. Il ne restait que **5 sujets de perroquet propres et distincts pour 12 emplacements**. Decision de Xavier : **un sujet par article, jamais partage avec un autre article**, decline en deux recadrages differents (vignette serree sur la tete, image d'article en plan plus large), et 5 articles ce soir au lieu de 6. Tous les recadrages excluent le wording incruste des sources ("100% FREE. FOREVER.", "FREE FOR EVERYONE"). Trois derives par article : `-card.webp` 320, `.webp` 480, `-og.jpg` 1200x630, tous sous 80 Ko.
+
+**Integration au stock.** `blog/index.html` : 10 cartes, ordre antechronologique (08/08 au 19/07). `blog/feed.xml` : 10 items, `lastBuildDate` cale sur le plus recent. `sitemap.xml` : 24 URLs. Format des 5 nouvelles entrees strictement identique a celui du lot 3, donc compatible avec l'extraction chirurgicale du script de tir (verifie par le dry run ci-dessous).
+
+**Tests etendus.** `tests/e2e-blog.js` passe de 5 a 10 articles (liste, ordre antechronologique, compteurs de cartes, de photos distinctes et de fichiers image). `tests/check.js` recoit un bloc LOT 4 et, surtout, **ses compteurs ne sont plus ecrits en dur** : le nombre de cartes, de vignettes, d'entrees sitemap et feed est derive de `ALL_ARTS`, et la liste des fichiers du grep wording est derivee du contenu du dossier `blog/`. Une cartouche ajoutee au stock est desormais couverte sans qu'on ait a penser a l'inscrire dans les tests.
+
+**Resultats (vrai Chrome, port 8000, branche de stock).**
+- `check.js` **169/0** (contre 138 avant le lot).
+- `e2e-blog` **107/0** sur les 10 articles.
+- `e2e-quick-routing` **12/0**. `e2e-footer-social` **33/0**. `e2e-mockexam` **10/0**. `nav-visual-check` **10/0**. `e2e-images` **27/0**.
+- `e2e-launch-all` clean **16/16**, dirty **16/16**.
+- `e2e-quickmock` **42/0** : l'exception GA4 `flow:quick` n'a pas tire sur ce run. Rappel du lot technique du 19/07 : elle est intermittente, jamais plus de 2 echecs, et le cas d'etat malforme vit sur `main`, pas sur cette branche de stock.
+
+**Dry run du script de tir.** Branche jetable `jetable-dryrun-2026-07-19` creee depuis `main`, script extrait du stock, tir a blanc de `starting-to-measure`. Le garde-fou de branche a bien averti (branche differente de `main`), l'auto-verification d'etape 3 a confirme "uniquement les 7 fichiers de starting-to-measure", le gate complet est passe, et le commit produit ne touche que : `blog/starting-to-measure/index.html`, les 3 images du slug, plus 3 lignes d'insertion dans `blog/index.html`, `blog/feed.xml` et `sitemap.xml`. **Les 4 autres cartouches du lot 4 et les 4 du lot 3 sont restees en stock** : le blog de la branche jetable ne contenait que l'article fondateur et l'article tire, 2 cartes dans l'index. Branche jetable supprimee ensuite, `main` verifie intact a `160b51e`.
+
+**Grep wording final.** `grep -rniE "for now|for the moment|forever|always free"` sur tout le HTML : **0 occurrence dans le blog**, 10 articles compris. Une occurrence subsiste hors blog, `quickmock.html:64`, un commentaire CSS citant la formule pour expliquer quelles bannieres sont ecartees : elle est **deja corrigee sur `main`** par le lot technique du 19/07 et arrivera sur cette branche a la prochaine synchronisation. Aucun tiret cadratin ni demi-cadratin dans les 5 articles. Orthographe marque : 83 occurrences de ParrotTalk, 0 variante.
+
 ## LOT 3 blog : 4 premiers articles du calendrier (2026-07-19)
 
 Branche `blog-lot3-2026-07-19` depuis `main`, tag `avant-blog-lot3-2026-07-19`. Aucun push, aucun merge. `css/main.css` et `js/exam-flow.js` intouches. Ecriture des 4 premiers articles du calendrier editorial valide, en respectant les arbitrages de Xavier (aucun chiffre analytics sauf petits volumes des debuts, jamais le mot declencheur AEO, aucun cout chiffre, aucune vulnerabilite securite, Gary/Francois anonymises, aucun volet juridique/pricing/prive).
