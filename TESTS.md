@@ -1,5 +1,21 @@
 # ParrotTalk — Tests techniques
 
+## LOT 1 blog : infrastructure + article fondateur (2026-07-19)
+
+Branche `blog-lot1-2026-07-19` depuis `main`, tag de securite `avant-blog-2026-07-19`. Aucun push, aucun merge. ExamFlow (`js/exam-flow.js`) et `css/main.css` intouches (les pages blog ne chargent meme pas exam-flow). Lot INFRA + CONTENU issu du plan `2026-07-19_parrottalk_plan-blog-seo-aeo.md` (volet 1, option A).
+
+**Infrastructure (nouveaux fichiers).** `blog/index.html` (index de rubrique, JSON-LD Blog, lien RSS, classes `main.css` + `<style>` local). `blog/_template-article.html` (gabarit reutilisable a jetons, head complet). `blog/how-i-built-an-ielts-site-with-ai/index.html` (article 1, URL propre `/blog/<slug>/`). `blog/feed.xml` (RSS 2.0). Chemins root-absolus (`/css`, `/js`, `/img`, `/mockexam.html`) pour des pages imbriquees robustes. Head article : title, meta description, canonical, OG type `article` (+ published/modified/author), Twitter card, lien RSS, JSON-LD `Article` + `BreadcrumbList`, auteur "Xavier, founder of ParrotTalk", dates, temps de lecture ecrit en dur (7 min).
+
+**Maillage.** Lien `Blog` (`href="blog/"`) ajoute au footer des 13 pages publiques (5 footers riches `footer__links`, 8 footers compacts inline). Article -> 2 liens produit en prose (mockexam, quickmock) + 1 encart CTA (mockexam). `sitemap.xml` : 15 URLs (13 + index blog priorite 0.7 + article priorite 0.6). `robots.txt` inchange (accueille deja les crawlers IA).
+
+**Wording (regle absolue du lot).** Gratuite = "100% free" ou "free" uniquement. Grep final sur tout le HTML blog : 0 occurrence de "free forever / always free / for now / forever free / gratuit". 0 tiret cadratin ou demi-cadratin (R4). Orthographe marque : 60 "ParrotTalk", 0 variante (R5).
+
+**Tests (vrai Chrome, port 8000).**
+- `check.js` **102/0** (dont 20 assertions blog neuves : existence, head SEO, JSON-LD, wording, lien footer sur les 13 pages).
+- `e2e-blog` (nouveau) **35/0** : index charge sans erreur JS + article liste + RSS + canonical ; article sans erreur JS + H1 + fil d'ariane + JSON-LD Article/BreadcrumbList + auteur + liens produit + anti-bourrage (1 a 2 liens prose) ; lien Blog du footer sur les 13 pages publiques ; RSS et sitemap bien formes (fetch same-origin + DOMParser). Captures 1280 et 390 dans `tests/screenshots/blog/`.
+- Non-regression suite existante : `e2e-footer-social` **33/0**, `e2e-launch-all` **16/16**, `quickmock-unit` **40/0**, `e2e-mockexam` **10/0**, `e2e-reading-score` **7/0**, `e2e-quick-routing` **12/0**, `e2e-xss` **12/0**, `e2e-images` **27/0**, `nav-visual-check` **10/0**.
+- `e2e-quickmock` **40/2** : baseline exacte, les 2 echecs sont les events GA4 `flow:quick` pre-existants (GA4 ne tire pas en local headless), sans lien avec le blog.
+
 ## LOT SEO/AEO naming : mock test + writing checker + purge wording (2026-07-18)
 
 Branche `site-seo-naming-2026-07-18`, tag de securite `avant-site-seo-naming-2026-07-18` (HEAD `4fe0a73`). Aucun push. ExamFlow (`js/exam-flow.js`) et `css/main.css` intouches. Lot MARKUP/CONTENU : renommages SEO/AEO, une nouvelle page statique, purge du wording de gratuite conditionnelle. Issu de la consultation SEO/AEO du 18/07 (mock test et checker absents de nos titles/H1/URL/schemas).
