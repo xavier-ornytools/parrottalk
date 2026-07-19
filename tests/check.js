@@ -151,6 +151,60 @@ check('FAQ does not mention the newsletter (Brevo not verified in prod)', () => 
 check('FAQ band-variance sentence reads as a caution, not a guarantee', () =>
   contains('faq.html', 'not a measured accuracy figure or a guarantee'));
 
+// Blog (LOT 1, 2026-07-19)
+console.log('\n[ Blog ]');
+const ART_REL = 'blog/how-i-built-an-ielts-site-with-ai/index.html';
+check('blog/index.html exists', () => exists('blog/index.html'));
+check('blog/_template-article.html exists', () => exists('blog/_template-article.html'));
+check('blog/feed.xml exists', () => exists('blog/feed.xml'));
+check('article 1 exists', () => exists(ART_REL));
+check('article : canonical vers /blog/<slug>/', () =>
+  contains(ART_REL, 'rel="canonical" href="https://www.parrottalk.app/blog/how-i-built-an-ielts-site-with-ai/"'));
+check('article : og:type article', () => contains(ART_REL, 'property="og:type" content="article"'));
+check('article : JSON-LD Article', () => contains(ART_REL, '"@type": "Article"'));
+check('article : JSON-LD BreadcrumbList', () => contains(ART_REL, '"@type": "BreadcrumbList"'));
+check('article : lien RSS alternate', () => contains(ART_REL, 'type="application/rss+xml"'));
+check('article : auteur Xavier, founder of ParrotTalk', () => contains(ART_REL, 'Xavier, founder of ParrotTalk'));
+check('article : lien produit mockexam', () => contains(ART_REL, 'href="/mockexam.html"'));
+check('article : lien produit quickmock', () => contains(ART_REL, 'href="/quickmock.html"'));
+check('article : temps de lecture en dur', () => contains(ART_REL, 'min read'));
+check('article : image d\'article en petite figure flottee', () =>
+  contains(ART_REL, 'article-figure') && contains(ART_REL, 'img/blog/how-i-built-an-ielts-site-with-ai.webp'));
+check('article : og:image = og jpg du blog', () => contains(ART_REL, 'img/blog/how-i-built-an-ielts-site-with-ai-og.jpg'));
+check('image article webp existe', () => exists('img/blog/how-i-built-an-ielts-site-with-ai.webp'));
+check('vignette card webp existe', () => exists('img/blog/how-i-built-an-ielts-site-with-ai-card.webp'));
+check('og jpg existe', () => exists('img/blog/how-i-built-an-ielts-site-with-ai-og.jpg'));
+check('index blog : vignette pointe -card.webp', () =>
+  contains('blog/index.html', 'post__thumb') && contains('blog/index.html', 'how-i-built-an-ielts-site-with-ai-card.webp'));
+check('deux photos distinctes (vignette -card != image article)', () => {
+  const idx = fs.readFileSync(path.join(root, 'blog/index.html'), 'utf8');
+  const art = fs.readFileSync(path.join(root, ART_REL), 'utf8');
+  const idxThumb = /class="post__thumb"[\s\S]*?src="([^"]+)"/.exec(idx);
+  const artFig = /class="article-figure"[\s\S]*?src="([^"]+)"/.exec(art);
+  return idxThumb && artFig && idxThumb[1] !== artFig[1] && /-card\.webp$/.test(idxThumb[1]);
+});
+check('gabarit : 3 derives + regle photos distinctes', () =>
+  contains('blog/_template-article.html', '{{SLUG}}.webp') &&
+  contains('blog/_template-article.html', '{{SLUG}}-card.webp') &&
+  contains('blog/_template-article.html', '{{SLUG}}-og.jpg') &&
+  contains('blog/_template-article.html', 'DEUX photos differentes'));
+// Wording : gratuite permanente/temporaire bannie sur tout le HTML du blog
+check('blog : aucune formule "free forever"', () => {
+  const files = ['blog/index.html', 'blog/_template-article.html', ART_REL];
+  return files.every(f => !/free forever|always free|forever free/i.test(fs.readFileSync(path.join(root, f), 'utf8')));
+});
+check('blog : aucune formule "for now"', () => {
+  const files = ['blog/index.html', 'blog/_template-article.html', ART_REL];
+  return files.every(f => !/\bfor now\b/i.test(fs.readFileSync(path.join(root, f), 'utf8')));
+});
+check('sitemap : contient l\'index blog', () => contains('sitemap.xml', 'https://www.parrottalk.app/blog/</loc>'));
+check('sitemap : contient l\'article 1', () => contains('sitemap.xml', '/blog/how-i-built-an-ielts-site-with-ai/</loc>'));
+
+console.log('\n[ Blog footer link on every public page ]');
+['index.html','listening.html','reading.html','writing.html','speaking.html','dashboard.html',
+ 'writing-checker.html','quickmock.html','mockexam.html','faq.html','privacy.html','terms.html','legal-notice.html']
+  .forEach(f => check(`${f} : footer links to blog/`, () => contains(f, 'href="blog/"')));
+
 console.log(`\n${'='.repeat(30)}`);
 console.log(`  ${passed} passed  |  ${failed} failed`);
 console.log('='.repeat(30) + '\n');

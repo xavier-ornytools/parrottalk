@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The ParrotTalk Blog: Building a Free IELTS Practice Site in the Open</title>
+  <link rel="canonical" href="https://www.parrottalk.app/blog/">
+  <meta name="description" content="A founder's journal about building ParrotTalk, a 100% free IELTS practice site with AI feedback. Real notes on mock tests, writing correction and what actually works.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ParrotTalk">
+  <meta property="og:title" content="The ParrotTalk Blog: Building a Free IELTS Practice Site in the Open">
+  <meta property="og:description" content="A founder's journal about building ParrotTalk, a 100% free IELTS practice site with AI feedback.">
+  <meta property="og:url" content="https://www.parrottalk.app/blog/">
+  <meta property="og:image" content="https://www.parrottalk.app/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ParrotTalkApp">
+  <meta name="twitter:title" content="The ParrotTalk Blog: Building a Free IELTS Practice Site in the Open">
+  <meta name="twitter:description" content="A founder's journal about building ParrotTalk, a 100% free IELTS practice site with AI feedback.">
+  <meta name="twitter:image" content="https://www.parrottalk.app/img/og-image.png">
+  <link rel="alternate" type="application/rss+xml" title="ParrotTalk Blog RSS" href="https://www.parrottalk.app/blog/feed.xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
+  <script src="/js/analytics.js" async></script>
+  <script src="/js/cookie-banner.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "The ParrotTalk Blog",
+    "description": "A founder's journal about building ParrotTalk, a 100% free IELTS practice site with AI feedback.",
+    "url": "https://www.parrottalk.app/blog/",
+    "publisher": {
+      "@type": "Organization",
+      "name": "ParrotTalk",
+      "url": "https://www.parrottalk.app/"
+    }
+  }
+  </script>
+  <style>
+    /* Styles locaux au blog. main.css est partage par tout le site et n'est pas
+       modifie : on ne fait ici que composer avec ses variables et ses classes. */
+    .blog-head { padding: calc(var(--nav-h) + 24px) 0 8px; }
+    .blog-head h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); line-height: 1.15; margin: 0 0 12px; color: var(--dark); }
+    .blog-head p { font-size: 1.1rem; color: var(--text-muted); max-width: 640px; margin: 0; }
+
+    .blog-list { padding: 32px 0 64px; display: grid; gap: 22px; }
+
+    /* Carte article : cadre net (bordure + coins arrondis + ombre maison), petite
+       vignette a cote du texte. Le titre est la vedette, la photo un simple accent,
+       jamais pleine largeur ni banniere. */
+    .post {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      box-shadow: var(--sh);
+      padding: 22px 26px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .post:hover { transform: translateY(-3px); box-shadow: var(--sh-lg); border-color: var(--primary-light); }
+    .post__thumb {
+      flex: 0 0 140px; width: 140px; height: 140px;
+      border-radius: var(--r); overflow: hidden; background: var(--surface);
+    }
+    .post__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .post__body { flex: 1 1 auto; min-width: 0; }
+    .post__meta { font-size: .82rem; color: var(--text-light); margin: 0 0 8px; letter-spacing: .01em; }
+    .post__title { font-size: 1.35rem; line-height: 1.25; margin: 0 0 8px; color: var(--dark); }
+    .post__excerpt { font-size: .98rem; color: var(--text-muted); margin: 0 0 12px; }
+    .post__more { font-weight: 600; color: var(--primary); font-size: .95rem; }
+    @media (max-width: 560px) {
+      .post { flex-direction: column; align-items: flex-start; gap: 14px; padding: 18px 18px 20px; }
+      .post__thumb { flex-basis: auto; width: 120px; height: 120px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="/index.html" class="nav__logo">
+      <img src="/img/logo-official.webp" alt="ParrotTalk">
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="/quickmock.html" class="nav__link" title="IELTS Quick Mock Test" aria-label="IELTS Quick Mock Test, all four sections in under an hour">Quick Mock Test</a>
+      <a href="/mockexam.html" class="nav__link" title="IELTS Mock Test" aria-label="IELTS Mock Test, full test under real exam conditions">Mock Test</a>
+      <a href="/index.html#modules" class="nav__link" title="IELTS Practice Tests" aria-label="IELTS Practice Tests, Listening Reading Writing and Speaking">Practice</a>
+      <a href="/dashboard.html" class="nav__link" title="Your IELTS Progress Dashboard" aria-label="Your IELTS progress dashboard">Dashboard</a>
+    </div>
+    <a href="/listening.html" class="nav__cta">Start Free</a>
+  </div>
+</nav>
+
+<main class="container">
+  <header class="blog-head">
+    <h1>The ParrotTalk journal</h1>
+    <p>Notes from building a 100% free IELTS practice site with AI feedback. What I tried, what broke, and what actually helped candidates.</p>
+  </header>
+
+  <section class="blog-list">
+    <a class="post" href="/blog/how-i-built-an-ielts-site-with-ai/">
+      <div class="post__thumb">
+        <img src="/img/blog/how-i-built-an-ielts-site-with-ai-card.webp" width="320" height="320"
+             alt="The ParrotTalk parrot mascot in a speech bubble" loading="lazy">
+      </div>
+      <div class="post__body">
+        <p class="post__meta">By Xavier, founder of ParrotTalk · July 19, 2026 · 7 min read</p>
+        <h2 class="post__title">I couldn't find an IELTS site I liked, so I built one by talking to an AI</h2>
+        <p class="post__excerpt">How ParrotTalk went from a one-day prototype to a real IELTS practice platform, built in the open, one honest fix at a time.</p>
+        <span class="post__more">Read the story &rarr;</span>
+      </div>
+    </a>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__logo">
+        <span>🦜</span> ParrotTalk
+      </div>
+      <div class="footer__links">
+        <a href="/listening.html">Listening</a>
+        <a href="/reading.html">Reading</a>
+        <a href="/writing.html">Writing</a>
+        <a href="/speaking.html">Speaking</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/writing-checker.html">Writing Checker</a>
+        <a href="/blog/">Blog</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/legal-notice.html">Legal Notice</a>
+        <a href="/terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <p class="footer__copy">© 2026 ParrotTalk · Free IELTS Preparation · parrottalk.app</p>
+    <p class="footer__copy" style="font-size:.75rem;opacity:.6;margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
+  </div>
+</footer>
+
+</body>
+</html>

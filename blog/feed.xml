@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>The ParrotTalk Blog</title>
+    <link>https://www.parrottalk.app/blog/</link>
+    <atom:link href="https://www.parrottalk.app/blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>A founder's journal about building ParrotTalk, a 100% free IELTS practice site with AI feedback.</description>
+    <language>en</language>
+    <lastBuildDate>Sat, 19 Jul 2026 08:00:00 +0200</lastBuildDate>
+    <item>
+      <title>I couldn't find an IELTS site I liked, so I built one by talking to an AI</title>
+      <link>https://www.parrottalk.app/blog/how-i-built-an-ielts-site-with-ai/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/how-i-built-an-ielts-site-with-ai/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Sat, 19 Jul 2026 08:00:00 +0200</pubDate>
+      <description>The honest story of building ParrotTalk, a 100% free IELTS practice site with AI feedback. From a one-day prototype to a real platform, one fix at a time.</description>
+    </item>
+  </channel>
+</rss>
