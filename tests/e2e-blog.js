@@ -59,7 +59,19 @@ async function main() {
   c('index blog : lien vers l\'article 1', idx.linksArticle);
   c('index blog : lien RSS present', /\/blog\/feed\.xml$/.test(idx.rss || ''), idx.rss || '');
   c('index blog : canonical = /blog/', idx.canon === 'https://www.parrottalk.app/blog/', idx.canon || '');
-  c('index blog : carte avec vignette image webp', /\/img\/blog\/.+\.webp$/.test(idx.cardImg || ''), idx.cardImg || '');
+  c('index blog : carte avec vignette -card.webp', /\/img\/blog\/.+-card\.webp$/.test(idx.cardImg || ''), idx.cardImg || '');
+  // Garde-fou taille : la vignette ne doit pas depasser un quart de la largeur de la carte.
+  const thumbGeo = await page.evaluate(() => {
+    const card = document.querySelector('.post');
+    const thumb = document.querySelector('.post__thumb');
+    if (!card || !thumb) return null;
+    const cw = card.getBoundingClientRect().width;
+    const tw = thumb.getBoundingClientRect().width;
+    return { cardW: Math.round(cw), thumbW: Math.round(tw), ratio: tw / cw };
+  });
+  c('index blog : vignette petite (<= 1/4 de la carte, jamais banniere)',
+    thumbGeo && thumbGeo.thumbW <= 160 && thumbGeo.ratio <= 0.25,
+    thumbGeo ? `vignette ${thumbGeo.thumbW}px / carte ${thumbGeo.cardW}px = ${(thumbGeo.ratio*100).toFixed(0)}%` : 'introuvable');
   await page.screenshot({ path: path.join(SHOT, 'index-1280.png'), fullPage: true });
   const pm = await b.newPage({ viewport: { width: 390, height: 800 } });
   await pm.goto(`${BASE}/blog/`, { waitUntil: 'domcontentloaded' });
@@ -84,7 +96,7 @@ async function main() {
     // Liens produit en prose = hors encart CTA (.article-cta), pour mesurer le bourrage reel.
     const proseLinks = Array.from(document.querySelectorAll('.article-body a'))
       .filter(a => !a.closest('.article-cta')).map(a => a.getAttribute('href'));
-    const hero = document.querySelector('.article-hero img');
+    const hero = document.querySelector('.article-figure img');
     const ogImg = document.querySelector('meta[property="og:image"]');
     const ldImg = (lds.find(l => l && l['@type'] === 'Article') || {}).image;
     return {
@@ -113,9 +125,14 @@ async function main() {
   c('article : lien produit vers quickmock', art.toQuick);
   c('article : 1 a 2 liens produit en prose (anti bourrage)', art.proseProductLinks >= 1 && art.proseProductLinks <= 2, `prose=${art.proseProductLinks}`);
   c('article : 1 encart CTA produit', art.hasCta);
-  c('article : image de tete presente (webp) + alt', /\/img\/blog\/.+\.webp$/.test(art.heroSrc || '') && (art.heroAlt || '').length > 8, art.heroSrc || '');
+  c('article : image discrete presente (webp) + alt', /\/img\/blog\/.+\.webp$/.test(art.heroSrc || '') && (art.heroAlt || '').length > 8, art.heroSrc || '');
   c('article : og:image + JSON-LD image pointent l\'og du blog',
     /\/img\/blog\/.+-og\.jpg$/.test(art.ogImage || '') && art.ogImage === art.ldImage, art.ogImage || '');
+  // Deux photos DIFFERENTES : la vignette d'index et l'image d'article ne partagent pas le meme fichier.
+  const base = s => (s || '').split('/').pop();
+  c('deux photos differentes (vignette index != image article)',
+    base(idx.cardImg) !== base(art.heroSrc) && !!base(idx.cardImg) && !!base(art.heroSrc),
+    `index=${base(idx.cardImg)} article=${base(art.heroSrc)}`);
   await ap.screenshot({ path: path.join(SHOT, 'article-1280.png'), fullPage: true });
   const am = await b.newPage({ viewport: { width: 390, height: 800 } });
   await am.goto(`${BASE}/${ART}`, { waitUntil: 'domcontentloaded' });
@@ -189,17 +206,23 @@ async function main() {
       im.onerror = () => res({ ok: false, w: 0 });
       im.src = src;
     });
-    const hero = await fetch('/img/blog/how-i-built-an-ielts-site-with-ai.webp');
+    const art = await fetch('/img/blog/how-i-built-an-ielts-site-with-ai.webp');
+    const card = await fetch('/img/blog/how-i-built-an-ielts-site-with-ai-card.webp');
     const og = await fetch('/img/blog/how-i-built-an-ielts-site-with-ai-og.jpg');
-    const heroBytes = (await hero.arrayBuffer()).byteLength;
+    const artBytes = (await art.arrayBuffer()).byteLength;
+    const cardBytes = (await card.arrayBuffer()).byteLength;
     const ogBytes = (await og.arrayBuffer()).byteLength;
-    const heroDec = await decode('/img/blog/how-i-built-an-ielts-site-with-ai.webp');
+    const artDec = await decode('/img/blog/how-i-built-an-ielts-site-with-ai.webp');
+    const cardDec = await decode('/img/blog/how-i-built-an-ielts-site-with-ai-card.webp');
     const ogDec = await decode('/img/blog/how-i-built-an-ielts-site-with-ai-og.jpg');
-    return { heroStatus: hero.status, heroBytes, heroDec, ogStatus: og.status, ogBytes, ogDec };
+    return { artStatus: art.status, artBytes, artDec, cardStatus: card.status, cardBytes, cardDec, ogStatus: og.status, ogBytes, ogDec };
   });
-  c('hero webp : 200 + image decodee + poids web (<200k)',
-    imgs.heroStatus === 200 && imgs.heroDec.ok && imgs.heroDec.w > 0 && imgs.heroBytes < 200000,
-    `${Math.round(imgs.heroBytes/1024)}k ${imgs.heroDec.w}px`);
+  c('image article webp : 200 + decodee + poids web (<120k)',
+    imgs.artStatus === 200 && imgs.artDec.ok && imgs.artDec.w > 0 && imgs.artBytes < 120000,
+    `${Math.round(imgs.artBytes/1024)}k ${imgs.artDec.w}px`);
+  c('vignette card webp : 200 + decodee + poids web (<80k)',
+    imgs.cardStatus === 200 && imgs.cardDec.ok && imgs.cardDec.w > 0 && imgs.cardBytes < 80000,
+    `${Math.round(imgs.cardBytes/1024)}k ${imgs.cardDec.w}px`);
   c('og jpg : 200 + image decodee 1200px + poids web (<300k)',
     imgs.ogStatus === 200 && imgs.ogDec.ok && imgs.ogDec.w === 1200 && imgs.ogBytes < 300000,
     `${Math.round(imgs.ogBytes/1024)}k ${imgs.ogDec.w}px`);

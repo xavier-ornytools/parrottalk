@@ -64,8 +64,9 @@
     .article-head { padding: 18px 0 8px; }
     .article-head h1 { font-size: clamp(1.8rem, 4.2vw, 2.5rem); line-height: 1.16; margin: 0 0 14px; color: var(--dark); }
     .article-meta { font-size: .9rem; color: var(--text-muted); margin: 0; }
-    .article-hero { margin: 20px 0 4px; }
-    .article-hero img { width: 100%; height: auto; display: block; border-radius: var(--r-lg); box-shadow: var(--sh-sm); }
+    .article-figure { float: right; width: 190px; margin: 6px 0 14px 24px; }
+    .article-figure img { width: 100%; height: auto; display: block; border-radius: var(--r); box-shadow: var(--sh-sm); }
+    @media (max-width: 560px) { .article-figure { float: none; width: 150px; margin: 4px auto 16px; } }
     .article-body { font-size: 1.08rem; line-height: 1.72; color: var(--text); padding: 12px 0 8px; }
     .article-body h2 { font-size: 1.5rem; line-height: 1.25; margin: 38px 0 12px; color: var(--dark); }
     .article-body p { margin: 0 0 18px; }
@@ -112,12 +113,11 @@
         <p class="article-meta">By Xavier, founder of ParrotTalk · July 19, 2026 · 7 min read</p>
       </header>
 
-      <figure class="article-hero">
-        <img src="/img/blog/how-i-built-an-ielts-site-with-ai.webp" width="900" height="900"
-             alt="A blue and gold macaw saying thank you in many languages, the ParrotTalk mascot" loading="eager">
-      </figure>
-
       <div class="article-body">
+        <figure class="article-figure">
+          <img src="/img/blog/how-i-built-an-ielts-site-with-ai.webp" width="480" height="480"
+               alt="A blue and gold macaw saying thank you in many languages, the ParrotTalk mascot" loading="lazy">
+        </figure>
         <p>I am not a developer. I have never written software for a living. What I had, a few weeks ago, was a very specific frustration: I wanted to practice for the IELTS with realistic tests and honest feedback, and every site I opened either hid the good part behind a paywall, drowned me in ads, or graded my writing with a score and nothing else. So one morning I decided to stop looking and start building, and the only tool I really trusted to help me was an AI I could talk to like a colleague.</p>
 
         <p>This is the story of how ParrotTalk went from an idea in my head to a working IELTS practice site, told honestly, including the parts that broke. If you are preparing for the exam, I think how a tool is built tells you something about whether you can trust it.</p>

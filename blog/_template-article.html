@@ -73,8 +73,9 @@
     .article-head { padding: 18px 0 8px; }
     .article-head h1 { font-size: clamp(1.8rem, 4.2vw, 2.5rem); line-height: 1.16; margin: 0 0 14px; color: var(--dark); }
     .article-meta { font-size: .9rem; color: var(--text-muted); margin: 0; }
-    .article-hero { margin: 20px 0 4px; }
-    .article-hero img { width: 100%; height: auto; display: block; border-radius: var(--r-lg); box-shadow: var(--sh-sm); }
+    .article-figure { float: right; width: 190px; margin: 6px 0 14px 24px; }
+    .article-figure img { width: 100%; height: auto; display: block; border-radius: var(--r); box-shadow: var(--sh-sm); }
+    @media (max-width: 560px) { .article-figure { float: none; width: 150px; margin: 4px auto 16px; } }
     .article-body { font-size: 1.08rem; line-height: 1.72; color: var(--text); padding: 12px 0 8px; }
     .article-body h2 { font-size: 1.5rem; line-height: 1.25; margin: 38px 0 12px; color: var(--dark); }
     .article-body p { margin: 0 0 18px; }
@@ -121,16 +122,20 @@
         <p class="article-meta">By Xavier, founder of ParrotTalk · {{DATE_HUMAN}} · {{READ_MIN}} min read</p>
       </header>
 
-      <!-- Emplacement image standard. Par article, generer 2 derives web depuis
-           _image-sources/ (PIL, comme le lot images) :
-             img/blog/{{SLUG}}.webp     hero + vignette carte (largeur ~900, q80)
-             img/blog/{{SLUG}}-og.jpg   image sociale 1200x630 (og/twitter/JSON-LD)
-           Ne jamais choisir une image portant un wording de gratuite interdit. -->
-      <figure class="article-hero">
-        <img src="/img/blog/{{SLUG}}.webp" width="900" height="900" alt="{{IMAGE_ALT}}" loading="eager">
-      </figure>
-
       <div class="article-body">
+        <!-- Image d'article : petite, flottee a droite, elle ACCOMPAGNE le texte
+             (jamais pleine largeur ni banniere). Par article, generer 3 derives web
+             depuis _image-sources/ (PIL, comme le lot images) :
+               img/blog/{{SLUG}}.webp        image d'article, ~480px, q80
+               img/blog/{{SLUG}}-card.webp   vignette carte d'index, ~320px, q80
+               img/blog/{{SLUG}}-og.jpg      image sociale 1200x630 (og/twitter/JSON-LD)
+             REGLE PHOTOS : chaque article a SES PROPRES photos. La vignette d'index et
+             l'image d'article sont DEUX photos differentes, et aucune photo deja
+             employee ailleurs sur le blog n'est reutilisee. Aucun wording de gratuite
+             permanente ou temporaire incruste dans l'image. -->
+        <figure class="article-figure">
+          <img src="/img/blog/{{SLUG}}.webp" width="480" height="480" alt="{{IMAGE_ALT}}" loading="lazy">
+        </figure>
         {{BODY}}
       </div>
     </article>
