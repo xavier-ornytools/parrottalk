@@ -6,13 +6,45 @@
     <atom:link href="https://www.parrottalk.app/blog/feed.xml" rel="self" type="application/rss+xml"/>
     <description>A founder's journal about building ParrotTalk, a 100% free IELTS practice site with AI feedback.</description>
     <language>en</language>
-    <lastBuildDate>Sat, 19 Jul 2026 08:00:00 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 27 Jul 2026 08:00:00 +0200</lastBuildDate>
+    <item>
+      <title>The honesty pass: cutting every claim I could not stand behind</title>
+      <link>https://www.parrottalk.app/blog/the-honesty-pass/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/the-honesty-pass/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Mon, 27 Jul 2026 08:00:00 +0200</pubDate>
+      <description>Early on I went through every page of ParrotTalk and removed anything that was not strictly true. The day it stopped being a demo.</description>
+    </item>
+    <item>
+      <title>Ten bugs, and letting you submit one section at a time</title>
+      <link>https://www.parrottalk.app/blog/ten-bugs-and-one-section-at-a-time/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/ten-bugs-and-one-section-at-a-time/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Sat, 25 Jul 2026 08:00:00 +0200</pubDate>
+      <description>An unglamorous bug-fix day, and the feature hiding inside the bug list: practice one IELTS section at a time.</description>
+    </item>
+    <item>
+      <title>Teaching a parrot to grade a voice in one day</title>
+      <link>https://www.parrottalk.app/blog/teaching-a-parrot-to-grade-a-voice/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/teaching-a-parrot-to-grade-a-voice/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Thu, 23 Jul 2026 08:00:00 +0200</pubDate>
+      <description>Day one of ParrotTalk: building browser voice recording and AI Speaking feedback in a single day.</description>
+    </item>
+    <item>
+      <title>How our AI scoring works, and how accurate it is</title>
+      <link>https://www.parrottalk.app/blog/how-our-scoring-works/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/how-our-scoring-works/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Tue, 21 Jul 2026 08:00:00 +0200</pubDate>
+      <description>How ParrotTalk estimates your IELTS band with AI, what we calibrated to make it fair, and the limits we are honest about.</description>
+    </item>
     <item>
       <title>I couldn't find an IELTS site I liked, so I built one by talking to an AI</title>
       <link>https://www.parrottalk.app/blog/how-i-built-an-ielts-site-with-ai/</link>
       <guid isPermaLink="true">https://www.parrottalk.app/blog/how-i-built-an-ielts-site-with-ai/</guid>
       <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
-      <pubDate>Sat, 19 Jul 2026 08:00:00 +0200</pubDate>
+      <pubDate>Sun, 19 Jul 2026 08:00:00 +0200</pubDate>
       <description>The honest story of building ParrotTalk, a 100% free IELTS practice site with AI feedback. From a one-day prototype to a real platform, one fix at a time.</description>
     </item>
   </channel>

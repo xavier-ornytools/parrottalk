@@ -205,6 +205,34 @@ console.log('\n[ Blog footer link on every public page ]');
  'writing-checker.html','quickmock.html','mockexam.html','faq.html','privacy.html','terms.html','legal-notice.html']
   .forEach(f => check(`${f} : footer links to blog/`, () => contains(f, 'href="blog/"')));
 
+// Blog LOT 3, 4 nouveaux articles (2026-07-19)
+console.log('\n[ Blog LOT 3 ]');
+const NEW_ARTS = ['how-our-scoring-works', 'teaching-a-parrot-to-grade-a-voice',
+                  'ten-bugs-and-one-section-at-a-time', 'the-honesty-pass'];
+NEW_ARTS.forEach(s => {
+  const rel = `blog/${s}/index.html`;
+  check(`${s} : page existe`, () => exists(rel));
+  check(`${s} : og:type article + JSON-LD Article + BreadcrumbList`, () =>
+    contains(rel, 'property="og:type" content="article"') && contains(rel, '"@type": "Article"') && contains(rel, '"@type": "BreadcrumbList"'));
+  check(`${s} : image d'article + og + figure`, () =>
+    contains(rel, `img/blog/${s}.webp`) && contains(rel, `img/blog/${s}-og.jpg`) && contains(rel, 'article-figure'));
+  check(`${s} : 3 derives image existent`, () =>
+    exists(`img/blog/${s}.webp`) && exists(`img/blog/${s}-card.webp`) && exists(`img/blog/${s}-og.jpg`));
+  check(`${s} : wording gratuite propre`, () => {
+    const src = fs.readFileSync(path.join(root, rel), 'utf8');
+    return !/free forever|always free|\bfor now\b|forever free/i.test(src);
+  });
+  check(`${s} : auteur Xavier, temps de lecture`, () =>
+    contains(rel, 'Xavier, founder of ParrotTalk') && contains(rel, 'min read'));
+});
+const ALL_ARTS = NEW_ARTS.concat('how-i-built-an-ielts-site-with-ai');
+check('index blog : 5 cartes', () =>
+  (fs.readFileSync(path.join(root, 'blog/index.html'), 'utf8').match(/class="post"/g) || []).length === 5);
+check('index blog : les 5 vignettes en -card.webp', () =>
+  ALL_ARTS.every(s => contains('blog/index.html', `${s}-card.webp`)));
+check('sitemap : les 5 articles blog', () => ALL_ARTS.every(s => contains('sitemap.xml', `/blog/${s}/</loc>`)));
+check('feed : les 5 articles blog', () => ALL_ARTS.every(s => contains('blog/feed.xml', `/blog/${s}/`)));
+
 console.log(`\n${'='.repeat(30)}`);
 console.log(`  ${passed} passed  |  ${failed} failed`);
 console.log('='.repeat(30) + '\n');

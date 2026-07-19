@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How our AI scoring works, and how accurate it is: ParrotTalk</title>
+  <link rel="canonical" href="https://www.parrottalk.app/blog/how-our-scoring-works/">
+  <meta name="description" content="How ParrotTalk estimates your IELTS band with AI, what we calibrated to make it fair, and the limits we are honest about. It is an estimate, not an official result.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="ParrotTalk">
+  <meta property="og:title" content="How our AI scoring works, and how accurate it is">
+  <meta property="og:description" content="How ParrotTalk estimates your IELTS band with AI, what we calibrated to make it fair, and the limits we are honest about.">
+  <meta property="og:url" content="https://www.parrottalk.app/blog/how-our-scoring-works/">
+  <meta property="og:image" content="https://www.parrottalk.app/img/blog/how-our-scoring-works-og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-07-21T08:00:00+02:00">
+  <meta property="article:modified_time" content="2026-07-21T08:00:00+02:00">
+  <meta property="article:author" content="Xavier, founder of ParrotTalk">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ParrotTalkApp">
+  <meta name="twitter:title" content="How our AI scoring works, and how accurate it is">
+  <meta name="twitter:description" content="How ParrotTalk estimates your IELTS band with AI, and the limits we are honest about.">
+  <meta name="twitter:image" content="https://www.parrottalk.app/img/blog/how-our-scoring-works-og.jpg">
+  <link rel="alternate" type="application/rss+xml" title="ParrotTalk Blog RSS" href="https://www.parrottalk.app/blog/feed.xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
+  <script src="/js/analytics.js" async></script>
+  <script src="/js/cookie-banner.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How our AI scoring works, and how accurate it is",
+    "description": "How ParrotTalk estimates your IELTS band with AI, what we calibrated to make it fair, and the limits we are honest about.",
+    "image": "https://www.parrottalk.app/img/blog/how-our-scoring-works-og.jpg",
+    "datePublished": "2026-07-21T08:00:00+02:00",
+    "dateModified": "2026-07-21T08:00:00+02:00",
+    "author": { "@type": "Person", "name": "Xavier, founder of ParrotTalk" },
+    "publisher": { "@type": "Organization", "name": "ParrotTalk", "url": "https://www.parrottalk.app/" },
+    "mainEntityOfPage": "https://www.parrottalk.app/blog/how-our-scoring-works/"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.parrottalk.app/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.parrottalk.app/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "How our AI scoring works", "item": "https://www.parrottalk.app/blog/how-our-scoring-works/" }
+    ]
+  }
+  </script>
+  <style>
+    .article-wrap { max-width: 720px; margin: 0 auto; }
+    .crumbs { font-size: .85rem; color: var(--text-light); padding: calc(var(--nav-h) + 20px) 0 0; }
+    .crumbs a { color: var(--text-muted); text-decoration: none; }
+    .crumbs a:hover { text-decoration: underline; }
+    .article-head { padding: 18px 0 8px; }
+    .article-head h1 { font-size: clamp(1.8rem, 4.2vw, 2.5rem); line-height: 1.16; margin: 0 0 14px; color: var(--dark); }
+    .article-meta { font-size: .9rem; color: var(--text-muted); margin: 0; }
+    .article-figure { float: right; width: 190px; margin: 6px 0 14px 24px; }
+    .article-figure img { width: 100%; height: auto; display: block; border-radius: var(--r); box-shadow: var(--sh-sm); }
+    @media (max-width: 560px) { .article-figure { float: none; width: 150px; margin: 4px auto 16px; } }
+    .article-body { font-size: 1.08rem; line-height: 1.72; color: var(--text); padding: 12px 0 8px; }
+    .article-body h2 { font-size: 1.5rem; line-height: 1.25; margin: 38px 0 12px; color: var(--dark); }
+    .article-body p { margin: 0 0 18px; }
+    .article-body ul { margin: 0 0 18px; padding-left: 1.3em; }
+    .article-body li { margin: 0 0 8px; }
+    .article-body a { color: var(--primary); }
+    .article-cta { background: var(--primary-pale); border: 1px solid var(--primary-light); border-radius: var(--r-lg); padding: 22px 24px; margin: 34px 0 8px; }
+    .article-cta p { margin: 0 0 8px; }
+    .article-back { padding: 8px 0 64px; }
+    .article-back a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="/index.html" class="nav__logo">
+      <img src="/img/logo-official.webp" alt="ParrotTalk">
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="/quickmock.html" class="nav__link">Quick Mock Test</a>
+      <a href="/mockexam.html" class="nav__link">Mock Test</a>
+      <a href="/index.html#modules" class="nav__link">Practice</a>
+      <a href="/dashboard.html" class="nav__link">Dashboard</a>
+    </div>
+    <a href="/listening.html" class="nav__cta">Start Free</a>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="article-wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> / <a href="/blog/">Blog</a> / How our scoring works
+    </nav>
+
+    <article>
+      <header class="article-head">
+        <h1>How our AI scoring works, and how accurate it is</h1>
+        <p class="article-meta">By Xavier, founder of ParrotTalk · July 21, 2026 · 4 min read</p>
+      </header>
+
+      <div class="article-body">
+        <figure class="article-figure">
+          <img src="/img/blog/how-our-scoring-works.webp" width="480" height="480"
+               alt="The ParrotTalk parrot mascot writing notes with a pen, the ParrotTalk mascot" loading="lazy">
+        </figure>
+
+        <p>Whenever someone tries ParrotTalk, the first honest question is the right one: can a machine really tell me my IELTS band, and should I trust the number it gives back? This is a break from my usual journal entries. It is the page I point people to when they ask how the scoring works, because you deserve a plain answer before you rely on it.</p>
+
+        <p>Let me start with the most important sentence on the whole site. <strong>The band you see is an estimate produced by a model. It is not an official IELTS result.</strong> ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English. Only the real exam gives you a real band. What we give you is a well-calibrated compass, so you know roughly where you stand and, more usefully, why.</p>
+
+        <h2>What actually happens when you finish a test</h2>
+
+        <p>For Reading and Listening, scoring is not really the interesting part: your answers are either right or wrong, and a published band scale turns your raw score into a band. There is no AI opinion involved there.</p>
+
+        <p>Writing and Speaking are where the AI does the work. When you submit an essay or a spoken answer, it is read against the four official criteria for that skill, the same categories a human examiner uses, and you get a band for each criterion plus feedback that points at concrete sentences. For Speaking, your recording is transcribed first, then judged. The goal was never a bare number. It was feedback you can act on tonight.</p>
+
+        <h2>The calibration, in plain terms</h2>
+
+        <p>Early on, the honest truth is that the scores were mushy. Two very different essays could come back with almost the same band, and the model would sometimes reward length or big words instead of the things the criteria actually measure. So in mid-July I spent a focused stretch fixing exactly that. Three changes mattered most.</p>
+
+        <p>First, I removed the worked examples the model had been leaning on. It had a habit of copying the band from a sample it had seen onto whatever you wrote, which is the opposite of assessing your work. Second, I wrote the official band descriptors, from band 4 up to band 9, straight into the instructions, so the judgement is anchored to the real scale rather than a vibe. Third, and this is the part I am most careful about, <strong>the final band is computed by our own code from the per-criterion marks, not lifted from whatever summary number the model felt like printing.</strong> The model assesses; the arithmetic is ours.</p>
+
+        <p>I did not just trust that this felt better. I checked the new scoring against answers whose real bands I knew, including officially marked samples and a set of my own recorded answers, and tuned until the estimates lined up sensibly. That is the honest version of "how accurate is AI IELTS scoring": close enough to be genuinely useful for practice, and never presented as official.</p>
+
+        <h2>The limits I want you to keep in mind</h2>
+
+        <ul>
+          <li>It is an estimate. Treat a single band like a weather forecast, not a verdict. Do a few tests and watch the trend rather than obsessing over one number.</li>
+          <li>Handwriting, exam nerves, and a real examiner's judgement are not in the loop here. The real thing can land half a band either side.</li>
+          <li>The feedback is the point. If the AI marking says your Task 2 lacks a clear position, that note is more valuable than the digit next to it.</li>
+        </ul>
+
+        <p>If you want to see it on your own writing, the fastest way is the <a href="/writing-checker.html">AI writing checker</a>, and if you want the full picture across all four skills you can sit a <a href="/mockexam.html">free mock test</a>. Both are free.</p>
+
+        <div class="article-cta">
+          <p><strong>Want the short version?</strong> The band is an AI estimate to guide your practice, not an official score. We built it to be honest about that.</p>
+          <p><a href="/faq.html">Read more in the FAQ &rarr;</a></p>
+        </div>
+
+        <p>I would rather undersell this than oversell it. A tool that quietly rounds you up to the band you want is not helping you pass. One that gives you an honest estimate and shows its reasoning is. That is the whole idea, and it is why calibration was worth a hard day of work. Back to the regular journal next time.</p>
+      </div>
+    </article>
+
+    <div class="article-back">
+      <a href="/blog/">&larr; Back to the journal</a>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__logo"><span>🦜</span> ParrotTalk</div>
+      <div class="footer__links">
+        <a href="/listening.html">Listening</a>
+        <a href="/reading.html">Reading</a>
+        <a href="/writing.html">Writing</a>
+        <a href="/speaking.html">Speaking</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/writing-checker.html">Writing Checker</a>
+        <a href="/blog/">Blog</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/legal-notice.html">Legal Notice</a>
+        <a href="/terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <p class="footer__copy">© 2026 ParrotTalk · Free IELTS Preparation · parrottalk.app</p>
+    <p class="footer__copy" style="font-size:.75rem;opacity:.6;margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
+  </div>
+</footer>
+
+</body>
+</html>

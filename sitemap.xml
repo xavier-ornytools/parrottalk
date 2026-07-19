@@ -19,6 +19,30 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://www.parrottalk.app/blog/how-our-scoring-works/</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.parrottalk.app/blog/teaching-a-parrot-to-grade-a-voice/</loc>
+    <lastmod>2026-07-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.parrottalk.app/blog/ten-bugs-and-one-section-at-a-time/</loc>
+    <lastmod>2026-07-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.parrottalk.app/blog/the-honesty-pass/</loc>
+    <lastmod>2026-07-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://www.parrottalk.app/quickmock.html</loc>
     <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>

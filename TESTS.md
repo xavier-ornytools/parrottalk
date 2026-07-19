@@ -1,5 +1,25 @@
 # ParrotTalk — Tests techniques
 
+## LOT 3 blog : 4 premiers articles du calendrier (2026-07-19)
+
+Branche `blog-lot3-2026-07-19` depuis `main`, tag `avant-blog-lot3-2026-07-19`. Aucun push, aucun merge. `css/main.css` et `js/exam-flow.js` intouches. Ecriture des 4 premiers articles du calendrier editorial valide, en respectant les arbitrages de Xavier (aucun chiffre analytics sauf petits volumes des debuts, jamais le mot declencheur AEO, aucun cout chiffre, aucune vulnerabilite securite, Gary/Francois anonymises, aucun volet juridique/pricing/prive).
+
+**Articles (anglais, journal de bord, 700 a 742 mots, temps de lecture 4 min, gabarit `_template-article.html`).**
+- `how-our-scoring-works` (exception hors chrono, pub 21/07) : how accurate is AI IELTS scoring. Maillage writing-checker, mockexam, faq.
+- `teaching-a-parrot-to-grade-a-voice` (30/06, pub 23/07) : IELTS Speaking practice online. Maillage speaking.
+- `ten-bugs-and-one-section-at-a-time` (03/07, pub 25/07) : angle humble beginnings, submit par section. Maillage mockexam.
+- `the-honesty-pass` (04/07, pub 27/07) : IELTS practice without subscription. Maillage faq, home.
+
+**Images.** Chaque article a SES 2 photos de perroquet, distinctes entre elles et jamais reutilisees ailleurs sur le blog (8 nouvelles + les 2 de l'article 1 = 10 fichiers distincts). Sources `_image-sources/` recadrees serre pour exclure tout texte, aucun visuel portant un wording interdit. Derives PIL par article : vignette `-card.webp` (320px), image `-.webp` (480px, petite flottee a droite), social `-og.jpg` (1200x630). Chaque article : 1 a 2 liens produit en prose.
+
+**Index / feed / sitemap.** Index : 5 cartes en ordre antechronologique (honnetete 27/07, ten-bugs 25/07, voix 23/07, scoring 21/07, fondateur 19/07). `feed.xml` : 5 items (jours de semaine corriges, 19/07 = dimanche). `sitemap.xml` : 19 URLs (13 site + blog index + 5 articles).
+
+**Tests (vrai Chrome, port 8000).**
+- `check.js` **138/0** (dont 28 assertions blog LOT 3 : existence, head SEO, images, wording, index 5 cartes, sitemap/feed).
+- `e2e-blog` **67/0** : les 5 articles (charge, H1, fil d'ariane, JSON-LD Article/BreadcrumbList, auteur, image + og:image/twitter/JSON-LD coherents, 1 a 2 liens produit prose, CTA), index 5 cartes en ordre antechrono avec vignette -card <= 1/4 de la carte, regle des 2 photos differentes par article, aucune photo reutilisee (10 distincts), feed + sitemap avec les 5, 15 fichiers image decodes et poids web. Captures index + article scoring (1280, 390).
+- Non-regression : `e2e-launch-all` clean **16/16** + dirty **16/16**, `e2e-quick-routing` **12/0**, `e2e-footer-social` **33/0**, `e2e-mockexam` **10/0**, `nav-visual-check` **10/0**, `e2e-quickmock` **42/0** (les 2 events GA4 flow:quick n'ont pas echoue ce run).
+- Grep wording final sur tout le HTML blog : 0 forever/always free/for now. 0 tiret cadratin (R4). Marque conforme (R5).
+
 ## LOT 1 blog : infrastructure + article fondateur (2026-07-19)
 
 Branche `blog-lot1-2026-07-19` depuis `main`, tag de securite `avant-blog-2026-07-19`. Aucun push, aucun merge. ExamFlow (`js/exam-flow.js`) et `css/main.css` intouches (les pages blog ne chargent meme pas exam-flow). Lot INFRA + CONTENU issu du plan `2026-07-19_parrottalk_plan-blog-seo-aeo.md` (volet 1, option A).
