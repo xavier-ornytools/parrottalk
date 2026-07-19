@@ -83,6 +83,12 @@
   }
   function isRated() { return lsGet(LS_RATED) === '1'; }
 
+  // Noms de parametres GA4 : les dimensions personnalisees declarees cote
+  // propriete sont `band_score`, `rating` et `flow`. GA4 ne fait AUCUN
+  // rapprochement approximatif : un parametre nomme `fb_band` ou `fb_rating`
+  // part bien dans la requete collect, mais aucune dimension ne le lit, donc
+  // toutes les lignes d'Explore affichent (not set). Les noms ci-dessous sont
+  // donc contractuels : ne pas les prefixer.
   function ga(event, params) {
     // Passe par window.ptEvent (analytics.js) : respecte l'exclusion du trafic
     // interne (pt_internal) et le garde consentement. No-op si ptEvent absent.
@@ -158,7 +164,7 @@
 
     function onAnswer(q, val, btnEl) {
       answers[q.id] = val;
-      ga('feedback_answer', { fb_question: q.id, fb_answer: val, fb_type: opts.type, fb_band: opts.band });
+      ga('feedback_answer', { fb_question: q.id, fb_answer: val, fb_type: opts.type, band_score: opts.band });
       // État sélectionné visible, puis transition vers la question suivante.
       var qWrap = gate.querySelector('.fb-q');
       if (qWrap) qWrap.classList.add('fb-locked');
@@ -204,7 +210,7 @@
       var c = (comment || '').trim();
       if (c) { payload.freeComment = c.slice(0, 500); ga('feedback_comment', { fb_type: opts.type }); }
       postFeedback(payload);
-      ga('feedback_unlocked', { fb_type: opts.type, fb_band: opts.band });
+      ga('feedback_unlocked', { fb_type: opts.type, band_score: opts.band });
       ga('feedback_completed', { section: opts.type });
     }
 
@@ -258,7 +264,7 @@
       buttons[i].addEventListener('click', function (ev) {
         var n = parseInt(ev.currentTarget.getAttribute('data-n'), 10);
         lsSet(LS_RATED, '1');
-        ga('feedback_rating', { fb_rating: n, fb_type: opts.type });
+        ga('feedback_rating', { rating: n, fb_type: opts.type });
         ga('beta_rating_given', { rating: n });
         postFeedback({ type: opts.type, testId: opts.testId, band: opts.band, betaRating: n });
         ev.currentTarget.classList.add('fb-opt--selected');

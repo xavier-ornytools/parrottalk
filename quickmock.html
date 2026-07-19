@@ -61,7 +61,8 @@
     /* Mascotte du Quick Mock Test : la fusee (vitesse, lancement). Ombre violette
        plutot que le bleu de .page-hero__mascot, pour rester dans l'identite de
        la page. Les bannieres du site (hero-rocket, hero-study) sont ecartees a
-       dessein : elles portent du texte incruste, dont "100% FREE. FOREVER.". */
+       dessein : elles portent du texte incruste qui promet la gratuite au-dela
+       de ce que le wording valide autorise (seul "100% free" est admis). */
     .page-hero.quick .page-hero__mascot img {
       filter: drop-shadow(0 10px 28px rgba(109, 40, 217, .28));
     }
@@ -264,7 +265,10 @@ function renderIdle(zone) {
 function renderStep(zone, step) {
   document.getElementById('qm-hero').innerHTML = heroStep(step);
   var st = QM.get();
-  var done = QM.ORDER.filter(function (m) { return st.results[m]; }).length;
+  // Meme garde que stepsHTML : un etat quick sans bloc `results` (version
+  // anterieure, ou ecriture tronquee) ne doit pas casser le rendu du hub.
+  var res = (st && st.results) || {};
+  var done = QM.ORDER.filter(function (m) { return res[m]; }).length;
   zone.innerHTML =
     '<div class="card card-lg qm-card" style="text-align:center">' +
       stepsHTML(step) +

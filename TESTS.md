@@ -1,5 +1,23 @@
 # ParrotTalk — Tests techniques
 
+## LOT technique groupe : cablage GA4 rating, garde quickmock, wording mockexam (2026-07-19)
+
+Branche `lot-technique-2026-07-19` depuis `main da357ee`, tag de securite `avant-lot-technique-2026-07-19`. ExamFlow (`js/exam-flow.js`) et `css/main.css` intouches. Trois micro-taches independantes.
+
+**Tache 1, cablage GA4 rating (`js/feedback-gate.js`).** Cause prouvee par capture de la requete `collect` reelle (vrai `gtag.js`, requetes vers google-analytics.com interceptees puis AVORTEES, donc aucune donnee de test envoyee a la propriete). Les dimensions personnalisees declarees sont `band_score`, `rating`, `flow` ; le code envoyait `fb_band` et `fb_rating`, noms qu'aucune dimension ne lit. Avant : `feedback_answer` partait avec `ep.fb_question, ep.fb_answer, ep.fb_type, ep.flow, epn.fb_band` (aucun `rating`, aucun `band_score`), `feedback_rating` avec `epn.fb_rating`. Seul `beta_rating_given` alimentait la dimension `rating`, d'ou le "(not set)" sur toutes les lignes d'Explore. Correction : `fb_band` devient `band_score` (`feedback_answer`, `feedback_unlocked`), `fb_rating` devient `rating` (`feedback_rating`). `flow` etait deja correct (injecte par `ptEvent`, `js/analytics.js`), aucune modification. Apres, capture verifiee : `feedback_answer` porte `epn.band_score = 6.5`, `feedback_rating` porte `epn.rating = 4`, `beta_rating_given` inchange. Rappel : GA4 met 24 a 48 h a refleter le correctif, et ne retro-remplit jamais l'historique.
+
+**Tache 2, garde etat quickmock malforme (`js/quickmock.js`, `quickmock.html`).** Robustesse consignee le 18/07. Nouvelle fonction `isUsable(s)` : un etat n'est exploitable que s'il porte `active` ET les 4 blocs de `combo`. `isActive()` s'appuie dessus, donc les 4 moteurs (qui calculent tous `QM_ON = has('qm') && QuickMock.isActive()`) degradent en une seule fois. Gardes ajoutees en profondeur : `sliceListening`, `sliceReading`, `writingTest`, `speakingTest`, `currentStep` (plus `st.results || {}`), `recordResult`. Cote hub, `renderStep` lit `(st && st.results) || {}` comme `stepsHTML` le faisait deja.
+
+**Tache 3, wording mockexam.** Les 5 occurrences de "For now, it is 100% free" avaient deja ete purgees le 18/07 (commit `ea79a97`, present dans `origin/main`) : verification faite, `mockexam.html` en local en contient **0**. Seule correction restante : un commentaire CSS de `quickmock.html` citait litteralement "100% FREE. FOREVER.", reformule pour que le grep soit reellement a zero. Grep final sur tout le HTML du site, `for now / for the moment / forever / always free`, insensible a la casse : **0 occurrence**.
+
+**Tests (vrai Chrome, port 8000). Baseline mesuree avant modification, identique apres.**
+- `check.js` **110/0**.
+- `e2e-blog` **43/0**. `e2e-quick-routing` **12/0**. `e2e-footer-social` **33/0**. `e2e-mockexam` **10/0**. `nav-visual-check` **10/0**.
+- `e2e-launch-all` clean **16/16**, dirty **16/16**.
+- `e2e-ga4-events` **14/0** (hors gate, lance en non-regression : `evaluation_received` avec `band_score` et `beta_rating_given` avec `rating=4` restent verts).
+- `e2e-quickmock` **55/0** : 40 assertions historiques + **15 nouvelles** pour l'etat malforme (section 10). Cas ajoute : `pt_quickmock` present avec `active:true` mais SANS `combo` ; on verifie que `isActive()` rend false, que `currentStep()` rend null au lieu de lever, que les slices et `writingTest`/`speakingTest` rendent null, que le hub retombe sur son ecran d'accueil, que les 4 pages appelees avec `?qm=1` retombent en mode normal (`QM_ON=false`, durees 1920 / 3600 / 3600 s) et qu'aucune erreur JS n'est levee.
+- Exception GA4 `flow:quick` : **elle est intermittente, pas stable**. Mesure au baseline (avant toute modification) puis apres : 3 lancements donnent 0, 0 puis 2 echecs, toujours les deux memes assertions (`test_started porte flow:quick`, `les parametres historiques sont preserves`), jamais un de plus. Course de synchronisation entre le stub `gtag` pose par `addInitScript` et l'attente de 400 ms de la section 9. Non traite : hors des 3 taches du lot.
+
 ## LOT 1 blog : infrastructure + article fondateur (2026-07-19)
 
 Branche `blog-lot1-2026-07-19` depuis `main`, tag de securite `avant-blog-2026-07-19`. Aucun push, aucun merge. ExamFlow (`js/exam-flow.js`) et `css/main.css` intouches (les pages blog ne chargent meme pas exam-flow). Lot INFRA + CONTENU issu du plan `2026-07-19_parrottalk_plan-blog-seo-aeo.md` (volet 1, option A).
