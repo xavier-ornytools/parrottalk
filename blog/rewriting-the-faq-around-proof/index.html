@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rewriting the FAQ around proof, not promises: ParrotTalk</title>
+  <link rel="canonical" href="https://www.parrottalk.app/blog/rewriting-the-faq-around-proof/">
+  <meta name="description" content="I rebuilt the ParrotTalk FAQ from the actual code rather than from what I wished were true, and admitted a real gap in the process.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="ParrotTalk">
+  <meta property="og:title" content="Rewriting the FAQ around proof, not promises">
+  <meta property="og:description" content="Rebuilding the FAQ from the actual code instead of from what I wished were true, gaps included.">
+  <meta property="og:url" content="https://www.parrottalk.app/blog/rewriting-the-faq-around-proof/">
+  <meta property="og:image" content="https://www.parrottalk.app/img/blog/rewriting-the-faq-around-proof-og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-08-06T08:00:00+02:00">
+  <meta property="article:modified_time" content="2026-08-06T08:00:00+02:00">
+  <meta property="article:author" content="Xavier, founder of ParrotTalk">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ParrotTalkApp">
+  <meta name="twitter:title" content="Rewriting the FAQ around proof, not promises">
+  <meta name="twitter:description" content="Rebuilding the FAQ from the actual code instead of from what I wished were true, gaps included.">
+  <meta name="twitter:image" content="https://www.parrottalk.app/img/blog/rewriting-the-faq-around-proof-og.jpg">
+  <link rel="alternate" type="application/rss+xml" title="ParrotTalk Blog RSS" href="https://www.parrottalk.app/blog/feed.xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#129437;</text></svg>">
+  <script src="/js/analytics.js" async></script>
+  <script src="/js/cookie-banner.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Rewriting the FAQ around proof, not promises",
+    "description": "I rebuilt the ParrotTalk FAQ from the actual code rather than from what I wished were true, and admitted a real gap in the process.",
+    "image": "https://www.parrottalk.app/img/blog/rewriting-the-faq-around-proof-og.jpg",
+    "datePublished": "2026-08-06T08:00:00+02:00",
+    "dateModified": "2026-08-06T08:00:00+02:00",
+    "author": { "@type": "Person", "name": "Xavier, founder of ParrotTalk" },
+    "publisher": { "@type": "Organization", "name": "ParrotTalk", "url": "https://www.parrottalk.app/" },
+    "mainEntityOfPage": "https://www.parrottalk.app/blog/rewriting-the-faq-around-proof/"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.parrottalk.app/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.parrottalk.app/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Rewriting the FAQ around proof, not promises", "item": "https://www.parrottalk.app/blog/rewriting-the-faq-around-proof/" }
+    ]
+  }
+  </script>
+  <style>
+    .article-wrap { max-width: 720px; margin: 0 auto; }
+    .crumbs { font-size: .85rem; color: var(--text-light); padding: calc(var(--nav-h) + 20px) 0 0; }
+    .crumbs a { color: var(--text-muted); text-decoration: none; }
+    .crumbs a:hover { text-decoration: underline; }
+    .article-head { padding: 18px 0 8px; }
+    .article-head h1 { font-size: clamp(1.8rem, 4.2vw, 2.5rem); line-height: 1.16; margin: 0 0 14px; color: var(--dark); }
+    .article-meta { font-size: .9rem; color: var(--text-muted); margin: 0; }
+    .article-figure { float: right; width: 190px; margin: 6px 0 14px 24px; }
+    .article-figure img { width: 100%; height: auto; display: block; border-radius: var(--r); box-shadow: var(--sh-sm); }
+    @media (max-width: 560px) { .article-figure { float: none; width: 150px; margin: 4px auto 16px; } }
+    .article-body { font-size: 1.08rem; line-height: 1.72; color: var(--text); padding: 12px 0 8px; }
+    .article-body h2 { font-size: 1.5rem; line-height: 1.25; margin: 38px 0 12px; color: var(--dark); }
+    .article-body p { margin: 0 0 18px; }
+    .article-body ul { margin: 0 0 18px; padding-left: 1.3em; }
+    .article-body li { margin: 0 0 8px; }
+    .article-body a { color: var(--primary); }
+    .article-cta { background: var(--primary-pale); border: 1px solid var(--primary-light); border-radius: var(--r-lg); padding: 22px 24px; margin: 34px 0 8px; }
+    .article-cta p { margin: 0 0 8px; }
+    .article-back { padding: 8px 0 64px; }
+    .article-back a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="/index.html" class="nav__logo">
+      <img src="/img/logo-official.webp" alt="ParrotTalk">
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="/quickmock.html" class="nav__link">Quick Mock Test</a>
+      <a href="/mockexam.html" class="nav__link">Mock Test</a>
+      <a href="/index.html#modules" class="nav__link">Practice</a>
+      <a href="/dashboard.html" class="nav__link">Dashboard</a>
+    </div>
+    <a href="/listening.html" class="nav__cta">Start Free</a>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="article-wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> / <a href="/blog/">Blog</a> / Rewriting the FAQ
+    </nav>
+
+    <article>
+      <header class="article-head">
+        <h1>Rewriting the FAQ around proof, not promises</h1>
+        <p class="article-meta">By Xavier, founder of ParrotTalk &middot; August 6, 2026 &middot; 4 min read</p>
+      </header>
+
+      <div class="article-body">
+        <figure class="article-figure">
+          <img src="/img/blog/rewriting-the-faq-around-proof.webp" width="480" height="480"
+               alt="The ParrotTalk parrot mascot in a headset beside an open book" loading="lazy">
+        </figure>
+        <p>Also on July 8, I rewrote the FAQ. It went from six questions to eleven, but the number is the least interesting part. What changed was the method: I wrote every answer by reading the code that was actually running, rather than by describing the tool I had in my head.</p>
+
+        <p>Those two documents are never quite the same, and the gap between them is where a site quietly loses your trust.</p>
+
+        <h2>Answering from the source, not from memory</h2>
+
+        <p>The old FAQ was not dishonest. It was written the way most product FAQs are written, from a general sense of how the thing works. That is fine right up until someone asks a precise question, and then it falls apart in small embarrassing ways.</p>
+
+        <p>So for each question I went and looked. How is the Speaking answer really assessed? Open the code, read what is sent, read what comes back, then write that down: it is evaluated against the four official criteria, it requires your consent before anything is recorded, and here is what happens to the audio afterwards. I matched the wording on retention to the privacy policy line by line, because two pages on the same site giving two slightly different accounts of what happens to your voice is not a rounding error, it is a reason to leave.</p>
+
+        <p>The same treatment went to the band score. Every answer that touches it now says the same thing in the same plain words: it is an estimate produced by a model, it is there to guide your practice, and it is not an official IELTS result. And where a candidate might reasonably want a precision figure, the FAQ gives none, because I do not have one that would survive scrutiny. Inventing a percentage would have been the easiest sentence in the document to write and the fastest way to deserve being called out.</p>
+
+        <h2>The part I could have quietly skipped</h2>
+
+        <p>Here is the one that mattered most, and the one nobody would have caught for months.</p>
+
+        <p>IELTS comes in two flavours, Academic and General Training, and the Reading paper converts raw marks to a band differently for each. When I checked the code, only the Academic conversion existed. The old FAQ, without ever quite saying so, left you with the impression that both were fully handled.</p>
+
+        <p>I had a choice. I could leave the vague phrasing, which was not technically a lie, and get round to it later. Or I could write the limitation into the FAQ in plain language, where every visitor would see it, including the ones deciding whether this site was good enough for them.</p>
+
+        <p>I wrote it in. A tool that tells you what it cannot do yet is one you can calibrate your trust against. A tool that lets you find out for yourself, at the worst possible moment, has taken something from you. And there is a selfish argument too: a gap you have published is a gap you are going to fix, because it is now sitting in public with your name next to it.</p>
+
+        <p>While I was there I found one more over-promise about the site staying free, on a different part of the same page, and cut it for the same reason I had cut its twin a few days earlier. ParrotTalk is 100% free with no sign-up, and I say so happily in the present tense. Guaranteeing the distant future is a promise, not a fact, and this document was supposed to be made of facts.</p>
+
+        <h2>Making the honesty testable</h2>
+
+        <p>The last step was the one that turned intention into something durable. Good intentions rot: a page written carefully in July gets edited hastily in October by the same person who wrote it, at midnight, in a hurry.</p>
+
+        <p>So I added automated checks over the FAQ. They verify that the disclaimers are present, that the wording I chose deliberately has not drifted back toward the comfortable version, and that the links to the privacy and terms pages genuinely resolve rather than merely existing as blue text. A dead link on a privacy page is its own small statement about how much anybody cares.</p>
+
+        <p>The result is that the honesty is now enforced by something other than my own memory. If a future version of me tries to reintroduce a claim I once decided I could not stand behind, the test suite says no before anyone else has to.</p>
+
+        <p>That is what I mean by proof rather than promises. Not "trust us", but "here is the answer, here is the limit, and here is the check that keeps it that way". You can read the whole thing on the <a href="/faq.html">FAQ page</a> and hold me to every line of it.</p>
+        <div class="article-cta">
+          <p><strong>Read it and hold me to it.</strong> Every answer is meant to survive being checked.</p>
+          <p><a href="/faq.html">Read the FAQ &rarr;</a></p>
+        </div>
+      </div>
+    </article>
+
+    <div class="article-back">
+      <a href="/blog/">&larr; Back to the journal</a>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__logo"><span>&#129437;</span> ParrotTalk</div>
+      <div class="footer__links">
+        <a href="/listening.html">Listening</a>
+        <a href="/reading.html">Reading</a>
+        <a href="/writing.html">Writing</a>
+        <a href="/speaking.html">Speaking</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/writing-checker.html">Writing Checker</a>
+        <a href="/blog/">Blog</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/legal-notice.html">Legal Notice</a>
+        <a href="/terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <p class="footer__copy">&copy; 2026 ParrotTalk &middot; Free IELTS Preparation &middot; parrottalk.app</p>
+    <p class="footer__copy" style="font-size:.75rem;opacity:.6;margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
+  </div>
+</footer>
+
+</body>
+</html>

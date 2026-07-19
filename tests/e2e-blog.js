@@ -2,14 +2,14 @@
 /*
  * e2e-blog.js  (blog, LOT 1 puis LOT 3 : 5 articles)
  *
- * Verifie l'infrastructure blog et les 5 articles dans un vrai Chrome :
- *   - /blog/ charge, liste 5 cartes, chaque carte a une vignette -card.webp PETITE (<= 1/4 de la carte)
+ * Verifie l'infrastructure blog et les 10 articles dans un vrai Chrome :
+ *   - /blog/ charge, liste 10 cartes, chaque carte a une vignette -card.webp PETITE (<= 1/4 de la carte)
  *   - chaque article charge sans erreur JS, H1 + fil d'ariane, JSON-LD Article + BreadcrumbList,
  *     auteur, image d'article -<slug>.webp, og:image/twitter/JSON-LD = -<slug>-og.jpg,
  *     1 a 2 liens produit en prose (anti-bourrage)
  *   - DEUX photos differentes par article (vignette != image) et AUCUNE reutilisee ailleurs sur le blog
  *   - lien Blog du footer sur toutes les pages publiques
- *   - feed.xml et sitemap.xml bien formes et contenant les 5 articles
+ *   - feed.xml et sitemap.xml bien formes et contenant les 10 articles
  *   - ressources image (10 webp + 5 og) : 200, decodees, poids web
  * Captures : tests/screenshots/blog/ (index + un article, 1280 et 390).
  *
@@ -25,6 +25,11 @@ const SHOT = path.join(__dirname, 'screenshots', 'blog');
 
 // Ordre antechronologique attendu dans l'index (le plus recent en premier).
 const ARTICLES = [
+  'opening-the-doors-beta',
+  'rewriting-the-faq-around-proof',
+  'starting-to-measure',
+  'the-day-a-passing-test-lied-to-me',
+  'never-losing-your-progress',
   'the-honesty-pass',
   'ten-bugs-and-one-section-at-a-time',
   'teaching-a-parrot-to-grade-a-voice',
@@ -68,12 +73,12 @@ async function main() {
     };
   });
   c('index blog : aucune erreur JS', idxErr.length === 0, idxErr[0] || '');
-  c('index blog : 5 cartes listees', idx.count === 5, `count=${idx.count}`);
+  c('index blog : 10 cartes listees', idx.count === 10, `count=${idx.count}`);
   c('index blog : lien RSS present', /\/blog\/feed\.xml$/.test(idx.rss || ''));
   c('index blog : canonical = /blog/', idx.canon === 'https://www.parrottalk.app/blog/');
   c('index blog : chaque carte a une vignette -card.webp', idx.cards.every(c => /\/img\/blog\/.+-card\.webp$/.test(c.thumb || '')),
     idx.cards.map(c => base(c.thumb)).join(', '));
-  c('index blog : ordre antechronologique', idx.cards.map(c => (c.href || '').replace(/\/blog\/|\//g, '')).slice(0, 5).join(',') === ARTICLES.join(','),
+  c('index blog : ordre antechronologique', idx.cards.map(c => (c.href || '').replace(/\/blog\/|\//g, '')).slice(0, 10).join(',') === ARTICLES.join(','),
     idx.cards.map(c => (c.href || '').split('/').filter(Boolean).pop()).join(','));
   // Garde-fou taille de vignette (article 1 : la banniere avait ete refusee).
   const thumbGeo = await page.evaluate(() => {
@@ -166,7 +171,7 @@ async function main() {
   c('chaque article : vignette != image (2 photos differentes)', twoDiff,
     ARTICLES.map(s => `${s}:${cardBySlug[s]}|${heroBySlug[s]}`).join('  '));
   const allPhotos = [...Object.values(cardBySlug), ...Object.values(heroBySlug)];
-  c('aucune photo reutilisee ailleurs sur le blog (10 fichiers distincts)',
+  c('aucune photo reutilisee ailleurs sur le blog (20 fichiers distincts)',
     new Set(allPhotos).size === allPhotos.length, `${new Set(allPhotos).size}/${allPhotos.length} distincts`);
 
   // ── Lien Blog du footer sur toutes les pages publiques ──────────────────────
@@ -208,11 +213,11 @@ async function main() {
       imgs,
     };
   }, ARTICLES);
-  c('feed.xml : RSS bien forme + les 5 articles', data.feedOk && data.feedHas);
-  c('sitemap.xml : bien forme + index blog + les 5 articles', data.smOk && data.smHas);
+  c('feed.xml : RSS bien forme + les 10 articles', data.feedOk && data.feedHas);
+  c('sitemap.xml : bien forme + index blog + les 10 articles', data.smOk && data.smHas);
   const imgEntries = Object.entries(data.imgs);
   const imgOk = imgEntries.every(([k, v]) => v.status === 200 && v.w > 0 && v.bytes < 300000);
-  c('images blog : 15 fichiers 200 + decodes + poids web (<300k)', imgOk,
+  c('images blog : 30 fichiers 200 + decodes + poids web (<300k)', imgOk,
     `${imgEntries.filter(([k, v]) => v.status === 200 && v.w > 0).length}/${imgEntries.length} ok`);
   await rp.close();
 

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opening the doors: the friends-and-family beta: ParrotTalk</title>
+  <link rel="canonical" href="https://www.parrottalk.app/blog/opening-the-doors-beta/">
+  <meta name="description" content="The day I stopped building in private and asked real people to break ParrotTalk, with a tester kit and a feedback form that took no new backend.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="ParrotTalk">
+  <meta property="og:title" content="Opening the doors: the friends-and-family beta">
+  <meta property="og:description" content="The day I stopped building in private and asked real people to break ParrotTalk.">
+  <meta property="og:url" content="https://www.parrottalk.app/blog/opening-the-doors-beta/">
+  <meta property="og:image" content="https://www.parrottalk.app/img/blog/opening-the-doors-beta-og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-08-08T08:00:00+02:00">
+  <meta property="article:modified_time" content="2026-08-08T08:00:00+02:00">
+  <meta property="article:author" content="Xavier, founder of ParrotTalk">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ParrotTalkApp">
+  <meta name="twitter:title" content="Opening the doors: the friends-and-family beta">
+  <meta name="twitter:description" content="The day I stopped building in private and asked real people to break ParrotTalk.">
+  <meta name="twitter:image" content="https://www.parrottalk.app/img/blog/opening-the-doors-beta-og.jpg">
+  <link rel="alternate" type="application/rss+xml" title="ParrotTalk Blog RSS" href="https://www.parrottalk.app/blog/feed.xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#129437;</text></svg>">
+  <script src="/js/analytics.js" async></script>
+  <script src="/js/cookie-banner.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Opening the doors: the friends-and-family beta",
+    "description": "The day I stopped building in private and asked real people to break ParrotTalk, with a tester kit and a feedback form that took no new backend.",
+    "image": "https://www.parrottalk.app/img/blog/opening-the-doors-beta-og.jpg",
+    "datePublished": "2026-08-08T08:00:00+02:00",
+    "dateModified": "2026-08-08T08:00:00+02:00",
+    "author": { "@type": "Person", "name": "Xavier, founder of ParrotTalk" },
+    "publisher": { "@type": "Organization", "name": "ParrotTalk", "url": "https://www.parrottalk.app/" },
+    "mainEntityOfPage": "https://www.parrottalk.app/blog/opening-the-doors-beta/"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.parrottalk.app/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.parrottalk.app/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Opening the doors: the friends-and-family beta", "item": "https://www.parrottalk.app/blog/opening-the-doors-beta/" }
+    ]
+  }
+  </script>
+  <style>
+    .article-wrap { max-width: 720px; margin: 0 auto; }
+    .crumbs { font-size: .85rem; color: var(--text-light); padding: calc(var(--nav-h) + 20px) 0 0; }
+    .crumbs a { color: var(--text-muted); text-decoration: none; }
+    .crumbs a:hover { text-decoration: underline; }
+    .article-head { padding: 18px 0 8px; }
+    .article-head h1 { font-size: clamp(1.8rem, 4.2vw, 2.5rem); line-height: 1.16; margin: 0 0 14px; color: var(--dark); }
+    .article-meta { font-size: .9rem; color: var(--text-muted); margin: 0; }
+    .article-figure { float: right; width: 190px; margin: 6px 0 14px 24px; }
+    .article-figure img { width: 100%; height: auto; display: block; border-radius: var(--r); box-shadow: var(--sh-sm); }
+    @media (max-width: 560px) { .article-figure { float: none; width: 150px; margin: 4px auto 16px; } }
+    .article-body { font-size: 1.08rem; line-height: 1.72; color: var(--text); padding: 12px 0 8px; }
+    .article-body h2 { font-size: 1.5rem; line-height: 1.25; margin: 38px 0 12px; color: var(--dark); }
+    .article-body p { margin: 0 0 18px; }
+    .article-body ul { margin: 0 0 18px; padding-left: 1.3em; }
+    .article-body li { margin: 0 0 8px; }
+    .article-body a { color: var(--primary); }
+    .article-cta { background: var(--primary-pale); border: 1px solid var(--primary-light); border-radius: var(--r-lg); padding: 22px 24px; margin: 34px 0 8px; }
+    .article-cta p { margin: 0 0 8px; }
+    .article-back { padding: 8px 0 64px; }
+    .article-back a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="/index.html" class="nav__logo">
+      <img src="/img/logo-official.webp" alt="ParrotTalk">
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="/quickmock.html" class="nav__link">Quick Mock Test</a>
+      <a href="/mockexam.html" class="nav__link">Mock Test</a>
+      <a href="/index.html#modules" class="nav__link">Practice</a>
+      <a href="/dashboard.html" class="nav__link">Dashboard</a>
+    </div>
+    <a href="/listening.html" class="nav__cta">Start Free</a>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="article-wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> / <a href="/blog/">Blog</a> / Opening the doors
+    </nav>
+
+    <article>
+      <header class="article-head">
+        <h1>Opening the doors: the friends-and-family beta</h1>
+        <p class="article-meta">By Xavier, founder of ParrotTalk &middot; August 8, 2026 &middot; 4 min read</p>
+      </header>
+
+      <div class="article-body">
+        <figure class="article-figure">
+          <img src="/img/blog/opening-the-doors-beta.webp" width="480" height="480"
+               alt="The ParrotTalk parrot mascot with sunglasses, giving a thumbs up" loading="lazy">
+        </figure>
+        <p>On July 9 I posted a link on my own social accounts and asked people I know to come and break the thing I had been building for nine days.</p>
+
+        <p>It is a strange feeling to recommend. Up to that point every bug had been mine, found by me, at my own pace, in my own browser. Handing it to real people means handing over the pace as well, and finding out which of your confident assumptions were merely convenient.</p>
+
+        <h2>Removing the step where people give up</h2>
+
+        <p>The first thing the beta taught me had nothing to do with the product. It was about the path to the product.</p>
+
+        <p>My original plan was tidy on paper: send each tester an email with an invitation letter and a test sheet attached, and off they go. In practice that plan has a dozen places to die. The email lands in a promotions tab. Somebody reads it on a phone, means to open the attachment later on a laptop, and later never arrives. Someone else hears about it from a friend and has no email at all, so there is no way in.</p>
+
+        <p>So I put the whole tester kit directly on the home page: the invitation and the test sheet, downloadable, no email required, no permission needed. Anyone who reached the site could get started, whether or not I had ever written to them.</p>
+
+        <p>That is a pattern I have used a lot since. Every step you require between someone's interest and someone's first real action is a step where most of them quietly leave. It is the same instinct that keeps <a href="/">the site itself</a> 100% free with no sign-up: I would rather have people practising than have their contact details.</p>
+
+        <h2>A feedback form, and the temptation I resisted</h2>
+
+        <p>Next I needed a way for testers to tell me things. And I noticed the pull, immediately, toward building something far too clever: a proper feedback system, stored submissions, a little admin screen to browse them, statuses, tags.</p>
+
+        <p>That would have been a genuinely enjoyable two days of work, and it would have been two days not spent on the actual product, in exchange for a feature serving a handful of people I could count on my fingers.</p>
+
+        <p>So I built the form in plain HTML and wired it to an existing service that forwards submissions straight to my inbox. No new backend, no database, no admin screen. A hidden trap field to soak up automated spam, and a consent checkbox that links to the privacy policy, because asking people for their email while being vague about what happens to it would have undone every honest word I had written the week before.</p>
+
+        <p>The questions were deliberately concrete. What device were you on. Which sections did you try. What worked. What broke. What was unclear. Did the band you got feel anything like what you expected. Would you tell a friend about it. Then a free box for anything I had not thought to ask, which is invariably where the best remark of the day turns up.</p>
+
+        <p>I checked it on a real phone, at real phone dimensions, because a feedback form that will not submit on mobile is a very efficient way to collect no feedback at all.</p>
+
+        <h2>The compromise I wrote down</h2>
+
+        <p>One decision from that day was a deliberate mess, and I noted it as such at the time.</p>
+
+        <p>The site is in English. These first testers were French-speaking friends. So I wrote that section, and only that section, in French, and left a note to myself that it had to be switched back to English before the site opened to anyone beyond that circle.</p>
+
+        <p>I could pretend this was a clever localisation strategy. It was not. It was a temporary bilingual patch on a site that had no business being bilingual, and I knew it while I was typing it. What made it survivable was writing the debt down in the same commit that created it, with the condition for clearing it. Weeks later, when the site opened up properly, those French blocks came out exactly as planned, and the note was still there waiting for me.</p>
+
+        <p>Undocumented shortcuts are how a young codebase turns into a swamp. A shortcut with an expiry date written next to it is just a decision.</p>
+
+        <h2>What actually came back</h2>
+
+        <p>The reports were nothing like my own testing. Nobody followed the happy path I had walked a hundred times. People clicked things in orders I had not imagined, on browsers I had not opened in weeks, and stopped in places where I had assumed the next step was obvious.</p>
+
+        <p>Almost none of it was about the AI, which is the part I had spent the most time on and worried about most. It was about the plumbing. Where do I click now. Did that save. Is it still loading. Why did nothing happen.</p>
+
+        <p>That is the real value of opening the doors early, and it is worth more than the bug list. Nine days in, I had gone comprehensively blind to my own product. Every screen was obvious to me because I had built it, and obvious-to-the-builder is the least useful form of obvious there is. It takes about ten minutes with someone else's confusion to get your eyes back.</p>
+        <div class="article-cta">
+          <p><strong>The doors are still open.</strong> No account, no wallet, no waiting list.</p>
+          <p><a href="/">Start practicing for free &rarr;</a></p>
+        </div>
+      </div>
+    </article>
+
+    <div class="article-back">
+      <a href="/blog/">&larr; Back to the journal</a>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__logo"><span>&#129437;</span> ParrotTalk</div>
+      <div class="footer__links">
+        <a href="/listening.html">Listening</a>
+        <a href="/reading.html">Reading</a>
+        <a href="/writing.html">Writing</a>
+        <a href="/speaking.html">Speaking</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/writing-checker.html">Writing Checker</a>
+        <a href="/blog/">Blog</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/legal-notice.html">Legal Notice</a>
+        <a href="/terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <p class="footer__copy">&copy; 2026 ParrotTalk &middot; Free IELTS Preparation &middot; parrottalk.app</p>
+    <p class="footer__copy" style="font-size:.75rem;opacity:.6;margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
+  </div>
+</footer>
+
+</body>
+</html>

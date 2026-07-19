@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The bug that mattered most: never losing your progress: ParrotTalk</title>
+  <link rel="canonical" href="https://www.parrottalk.app/blog/never-losing-your-progress/">
+  <meta name="description" content="The most important fix of the whole project was not a feature. It was making sure a reload never costs you the answers you already wrote.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="ParrotTalk">
+  <meta property="og:title" content="The bug that mattered most: never losing your progress">
+  <meta property="og:description" content="The most important fix of the project: making sure a reload never costs you the answers you already wrote.">
+  <meta property="og:url" content="https://www.parrottalk.app/blog/never-losing-your-progress/">
+  <meta property="og:image" content="https://www.parrottalk.app/img/blog/never-losing-your-progress-og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-07-31T08:00:00+02:00">
+  <meta property="article:modified_time" content="2026-07-31T08:00:00+02:00">
+  <meta property="article:author" content="Xavier, founder of ParrotTalk">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ParrotTalkApp">
+  <meta name="twitter:title" content="The bug that mattered most: never losing your progress">
+  <meta name="twitter:description" content="The most important fix of the project: making sure a reload never costs you the answers you already wrote.">
+  <meta name="twitter:image" content="https://www.parrottalk.app/img/blog/never-losing-your-progress-og.jpg">
+  <link rel="alternate" type="application/rss+xml" title="ParrotTalk Blog RSS" href="https://www.parrottalk.app/blog/feed.xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#129437;</text></svg>">
+  <script src="/js/analytics.js" async></script>
+  <script src="/js/cookie-banner.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "The bug that mattered most: never losing your progress",
+    "description": "The most important fix of the whole project was not a feature. It was making sure a reload never costs you the answers you already wrote.",
+    "image": "https://www.parrottalk.app/img/blog/never-losing-your-progress-og.jpg",
+    "datePublished": "2026-07-31T08:00:00+02:00",
+    "dateModified": "2026-07-31T08:00:00+02:00",
+    "author": { "@type": "Person", "name": "Xavier, founder of ParrotTalk" },
+    "publisher": { "@type": "Organization", "name": "ParrotTalk", "url": "https://www.parrottalk.app/" },
+    "mainEntityOfPage": "https://www.parrottalk.app/blog/never-losing-your-progress/"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.parrottalk.app/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.parrottalk.app/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "The bug that mattered most: never losing your progress", "item": "https://www.parrottalk.app/blog/never-losing-your-progress/" }
+    ]
+  }
+  </script>
+  <style>
+    .article-wrap { max-width: 720px; margin: 0 auto; }
+    .crumbs { font-size: .85rem; color: var(--text-light); padding: calc(var(--nav-h) + 20px) 0 0; }
+    .crumbs a { color: var(--text-muted); text-decoration: none; }
+    .crumbs a:hover { text-decoration: underline; }
+    .article-head { padding: 18px 0 8px; }
+    .article-head h1 { font-size: clamp(1.8rem, 4.2vw, 2.5rem); line-height: 1.16; margin: 0 0 14px; color: var(--dark); }
+    .article-meta { font-size: .9rem; color: var(--text-muted); margin: 0; }
+    .article-figure { float: right; width: 190px; margin: 6px 0 14px 24px; }
+    .article-figure img { width: 100%; height: auto; display: block; border-radius: var(--r); box-shadow: var(--sh-sm); }
+    @media (max-width: 560px) { .article-figure { float: none; width: 150px; margin: 4px auto 16px; } }
+    .article-body { font-size: 1.08rem; line-height: 1.72; color: var(--text); padding: 12px 0 8px; }
+    .article-body h2 { font-size: 1.5rem; line-height: 1.25; margin: 38px 0 12px; color: var(--dark); }
+    .article-body p { margin: 0 0 18px; }
+    .article-body ul { margin: 0 0 18px; padding-left: 1.3em; }
+    .article-body li { margin: 0 0 8px; }
+    .article-body a { color: var(--primary); }
+    .article-cta { background: var(--primary-pale); border: 1px solid var(--primary-light); border-radius: var(--r-lg); padding: 22px 24px; margin: 34px 0 8px; }
+    .article-cta p { margin: 0 0 8px; }
+    .article-back { padding: 8px 0 64px; }
+    .article-back a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="/index.html" class="nav__logo">
+      <img src="/img/logo-official.webp" alt="ParrotTalk">
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="/quickmock.html" class="nav__link">Quick Mock Test</a>
+      <a href="/mockexam.html" class="nav__link">Mock Test</a>
+      <a href="/index.html#modules" class="nav__link">Practice</a>
+      <a href="/dashboard.html" class="nav__link">Dashboard</a>
+    </div>
+    <a href="/listening.html" class="nav__cta">Start Free</a>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="article-wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> / <a href="/blog/">Blog</a> / Never losing your progress
+    </nav>
+
+    <article>
+      <header class="article-head">
+        <h1>The bug that mattered most: never losing your progress</h1>
+        <p class="article-meta">By Xavier, founder of ParrotTalk &middot; July 31, 2026 &middot; 4 min read</p>
+      </header>
+
+      <div class="article-body">
+        <figure class="article-figure">
+          <img src="/img/blog/never-losing-your-progress.webp" width="480" height="480"
+               alt="The ParrotTalk parrot mascot wearing headphones next to a speech bubble" loading="lazy">
+        </figure>
+        <p>On July 7 I fixed the bug that matters more than anything else I have built into ParrotTalk. It has no screenshot, it wins no argument, and nobody will ever thank me for it. It is simply this: your progress is saved, and a reload no longer costs you your answers.</p>
+
+        <p>I want to explain why I put a whole session into something so invisible, because the reasoning shaped a lot of what came after.</p>
+
+        <h2>Picture the person on the other side</h2>
+
+        <p>The candidate I keep in mind is not sitting in a quiet study with two spare hours. They are practising at half past ten at night, on a laptop with fourteen tabs open, after a full day of work. They have answered twenty-something Listening questions. Then the browser hiccups, or they hit refresh out of habit, or a phone call knocks the tab sideways.</p>
+
+        <p>If everything they just typed disappears at that moment, they do not file a bug report. They close the tab. And they are right to. Redoing twenty answers you already got right is not practice, it is punishment, and nobody signs up for punishment on a free site they found ten minutes ago. Losing work is the single most effective way to make someone never come back.</p>
+
+        <p>So before adding anything new, I went and made the thing not lose your work.</p>
+
+        <h2>Deciding what "done" actually means</h2>
+
+        <p>The first decision was smaller than it sounds and it fixed a lot on its own. Until then, a Listening section was considered finished when the audio finished playing. That is a tidy idea and a bad one. The audio ending tells you the recording is over. It tells you nothing about whether the person is done writing. Plenty of candidates are still going back over question seven when the tape runs out, which is exactly what happens in the real exam too.</p>
+
+        <p>So I moved the decision to where it belongs, which is with you. There is now an explicit button, "I've finished this section", on each of the four Listening sections, and "I've finished this passage" on each of the nine Reading blocks across the three tests. Clicking it does two things at once: it saves your score and your answers, and it moves you on. Nothing is ever decided by a clock or a sound file.</p>
+
+        <p>That single change turned a fuzzy state, "the audio is over so presumably you are done", into a fact I can act on. And a fact is something you can save.</p>
+
+        <h2>Saving without collecting anything</h2>
+
+        <p>Underneath, I wrote three small helpers, save, load and clear, and kept them generic so Listening and Reading could share the exact same machinery instead of each growing its own slightly different version. Everything lives in your own browser, namespaced per module and per test, so a Listening test in progress cannot tread on a Reading one.</p>
+
+        <p>Worth saying plainly, because it is the kind of thing people assume the worst about: none of this involves an account, a server or a single piece of personal information. There is nothing to sign up for, nothing sent anywhere, and nothing about you in what gets stored. It is your answers, on your machine, waiting for you to come back. That is the whole design. It is also why the site can stay 100% free with no sign-up: there is no user database to build, because there are no users to store.</p>
+
+        <p>I also went and taught the reset button on the <a href="/dashboard.html">dashboard</a> about the new saved data, so that "clear everything" really means everything. A reset button that quietly leaves things behind is worse than no reset button at all.</p>
+
+        <h2>The bug inside the fix</h2>
+
+        <p>Here is the part I like. While testing the save and restore cycle, I found that I was storing the wrong position. When you finished section one, I was saving "you are on section one", because that was the section the code was holding at the time. Reload, and you would come back to the section you had just completed rather than the one you were about to start.</p>
+
+        <p>Nothing was lost, technically. Every answer was safely there. But you would have come back to a section already marked as done and thought the site was confused, or worse, that your work had been thrown away and you were starting again. The perception of a lost answer does exactly the same damage as a genuinely lost answer.</p>
+
+        <p>It was a one-line fix, and I would never have found it by reading the code. I only found it by running the whole cycle end to end, the way a person would: finish section one, start section two, simulate the reload, look at what actually comes back.</p>
+
+        <h2>What it taught me</h2>
+
+        <p>The lesson has stayed with me. On a practice tool, reliability is not a background quality that sits behind the features. It is the feature. A brilliant AI report is worth nothing to a candidate who lost twenty answers on the way to it.</p>
+
+        <p>Every session since, I have started with the same question: what would make someone close the tab in frustration tonight, and can I remove it before I build anything new. It is a slower way to work. It is the only one that produces a tool you would actually rely on the week before your exam.</p>
+        <div class="article-cta">
+          <p><strong>Your work stays where you left it.</strong> Practice a section tonight, finish the rest tomorrow.</p>
+          <p><a href="/mockexam.html">Take a full mock test &rarr;</a></p>
+        </div>
+      </div>
+    </article>
+
+    <div class="article-back">
+      <a href="/blog/">&larr; Back to the journal</a>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__logo"><span>&#129437;</span> ParrotTalk</div>
+      <div class="footer__links">
+        <a href="/listening.html">Listening</a>
+        <a href="/reading.html">Reading</a>
+        <a href="/writing.html">Writing</a>
+        <a href="/speaking.html">Speaking</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/writing-checker.html">Writing Checker</a>
+        <a href="/blog/">Blog</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/legal-notice.html">Legal Notice</a>
+        <a href="/terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <p class="footer__copy">&copy; 2026 ParrotTalk &middot; Free IELTS Preparation &middot; parrottalk.app</p>
+    <p class="footer__copy" style="font-size:.75rem;opacity:.6;margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
+  </div>
+</footer>
+
+</body>
+</html>

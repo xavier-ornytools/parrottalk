@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The day a passing test lied to me: ParrotTalk</title>
+  <link rel="canonical" href="https://www.parrottalk.app/blog/the-day-a-passing-test-lied-to-me/">
+  <meta name="description" content="My test suite was green. The site was broken. What I learned the day a passing test told me a comfortable lie about my own work.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="ParrotTalk">
+  <meta property="og:title" content="The day a passing test lied to me">
+  <meta property="og:description" content="My test suite was green and the site was broken. The day a passing test told me a comfortable lie.">
+  <meta property="og:url" content="https://www.parrottalk.app/blog/the-day-a-passing-test-lied-to-me/">
+  <meta property="og:image" content="https://www.parrottalk.app/img/blog/the-day-a-passing-test-lied-to-me-og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-08-02T08:00:00+02:00">
+  <meta property="article:modified_time" content="2026-08-02T08:00:00+02:00">
+  <meta property="article:author" content="Xavier, founder of ParrotTalk">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ParrotTalkApp">
+  <meta name="twitter:title" content="The day a passing test lied to me">
+  <meta name="twitter:description" content="My test suite was green and the site was broken. The day a passing test told me a comfortable lie.">
+  <meta name="twitter:image" content="https://www.parrottalk.app/img/blog/the-day-a-passing-test-lied-to-me-og.jpg">
+  <link rel="alternate" type="application/rss+xml" title="ParrotTalk Blog RSS" href="https://www.parrottalk.app/blog/feed.xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#129437;</text></svg>">
+  <script src="/js/analytics.js" async></script>
+  <script src="/js/cookie-banner.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "The day a passing test lied to me",
+    "description": "My test suite was green. The site was broken. What I learned the day a passing test told me a comfortable lie about my own work.",
+    "image": "https://www.parrottalk.app/img/blog/the-day-a-passing-test-lied-to-me-og.jpg",
+    "datePublished": "2026-08-02T08:00:00+02:00",
+    "dateModified": "2026-08-02T08:00:00+02:00",
+    "author": { "@type": "Person", "name": "Xavier, founder of ParrotTalk" },
+    "publisher": { "@type": "Organization", "name": "ParrotTalk", "url": "https://www.parrottalk.app/" },
+    "mainEntityOfPage": "https://www.parrottalk.app/blog/the-day-a-passing-test-lied-to-me/"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.parrottalk.app/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.parrottalk.app/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "The day a passing test lied to me", "item": "https://www.parrottalk.app/blog/the-day-a-passing-test-lied-to-me/" }
+    ]
+  }
+  </script>
+  <style>
+    .article-wrap { max-width: 720px; margin: 0 auto; }
+    .crumbs { font-size: .85rem; color: var(--text-light); padding: calc(var(--nav-h) + 20px) 0 0; }
+    .crumbs a { color: var(--text-muted); text-decoration: none; }
+    .crumbs a:hover { text-decoration: underline; }
+    .article-head { padding: 18px 0 8px; }
+    .article-head h1 { font-size: clamp(1.8rem, 4.2vw, 2.5rem); line-height: 1.16; margin: 0 0 14px; color: var(--dark); }
+    .article-meta { font-size: .9rem; color: var(--text-muted); margin: 0; }
+    .article-figure { float: right; width: 190px; margin: 6px 0 14px 24px; }
+    .article-figure img { width: 100%; height: auto; display: block; border-radius: var(--r); box-shadow: var(--sh-sm); }
+    @media (max-width: 560px) { .article-figure { float: none; width: 150px; margin: 4px auto 16px; } }
+    .article-body { font-size: 1.08rem; line-height: 1.72; color: var(--text); padding: 12px 0 8px; }
+    .article-body h2 { font-size: 1.5rem; line-height: 1.25; margin: 38px 0 12px; color: var(--dark); }
+    .article-body p { margin: 0 0 18px; }
+    .article-body ul { margin: 0 0 18px; padding-left: 1.3em; }
+    .article-body li { margin: 0 0 8px; }
+    .article-body a { color: var(--primary); }
+    .article-cta { background: var(--primary-pale); border: 1px solid var(--primary-light); border-radius: var(--r-lg); padding: 22px 24px; margin: 34px 0 8px; }
+    .article-cta p { margin: 0 0 8px; }
+    .article-back { padding: 8px 0 64px; }
+    .article-back a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="/index.html" class="nav__logo">
+      <img src="/img/logo-official.webp" alt="ParrotTalk">
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="/quickmock.html" class="nav__link">Quick Mock Test</a>
+      <a href="/mockexam.html" class="nav__link">Mock Test</a>
+      <a href="/index.html#modules" class="nav__link">Practice</a>
+      <a href="/dashboard.html" class="nav__link">Dashboard</a>
+    </div>
+    <a href="/listening.html" class="nav__cta">Start Free</a>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="article-wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> / <a href="/blog/">Blog</a> / The day a passing test lied to me
+    </nav>
+
+    <article>
+      <header class="article-head">
+        <h1>The day a passing test lied to me</h1>
+        <p class="article-meta">By Xavier, founder of ParrotTalk &middot; August 2, 2026 &middot; 4 min read</p>
+      </header>
+
+      <div class="article-body">
+        <figure class="article-figure">
+          <img src="/img/blog/the-day-a-passing-test-lied-to-me.webp" width="480" height="480"
+               alt="The ParrotTalk parrot mascot raising a megaphone to make an announcement" loading="lazy">
+        </figure>
+        <p>The day after I shipped the progress-saving work, on July 7, I opened Firefox to check it like a normal person would. I finished section one. I started section two. I hit refresh.</p>
+
+        <p>The site threw me back to the test selection screen as if I had never been there. Everything looked gone.</p>
+
+        <p>My automated test for exactly this scenario had passed. Green. Not a warning, not a flake, a clean pass on the precise behaviour I was now watching fail in front of me.</p>
+
+        <h2>What was actually wrong</h2>
+
+        <p>I reproduced it properly with a real browser driven by a script, rather than trusting my own clicking, and the answer was almost funny. The saving worked. The loading worked. The data was sitting safely in the browser the entire time, every answer intact.</p>
+
+        <p>The problem was that the restore only ever ran inside the function that starts a test, and that function only runs when you click "Start Test". After a real reload the page comes back exactly as it does on a first visit: selection screen showing, test area hidden. Nothing was watching for saved work at that moment. You had to click "Start Test" again for your answers to reappear, and there was no reason on earth for you to guess that.</p>
+
+        <p>So the honest description of the bug is not "progress was lost". It is "progress was there and the site never told you, and behaved exactly as if it were not". From where you sit, those are the same thing. The data being technically fine is no comfort to somebody staring at an empty screen.</p>
+
+        <h2>Why the test was so confident</h2>
+
+        <p>This is the part worth writing down. My test ran the page in a simulated browser, which is a fast and useful way to check logic. It did the following: fill in some answers, finish a section, simulate a reload, then call the start function, then check the answers are back.</p>
+
+        <p>Read that sequence again and you can see the lie. <em>Then call the start function.</em> The test did, by hand, the exact thing a real person never does. It supplied the missing click itself and then congratulated the code for the outcome.</p>
+
+        <p>The test was not badly written. It was answering a question that sounded like mine but was not: "does saving and restoring work if you ask for a restore?" The question I actually cared about was "what does a person see after pressing refresh and doing nothing else?" One of those is comfortable. The other is true.</p>
+
+        <p>That is the whole trap. A test can be perfectly correct and still measure the wrong thing, and when it goes green it hands you a certificate for a job you did not do. A test that lies to you is worse than no test, because no test at least leaves you suspicious.</p>
+
+        <h2>What I changed, and what I changed in myself</h2>
+
+        <p>The fix itself was straightforward once the diagnosis was right. The page now checks for saved work when it loads, on its own, for any test, and takes you straight back into the right place without waiting for a click that was never going to come. It is the guarantee that holds today when you sit a <a href="/mockexam.html">full mock test</a>: step away, come back, and you are where you left off.</p>
+
+        <p>The more important change was to the test. I rewrote it to drive a real browser and to reproduce my own scenario with nothing added: finish a section, fill in some of the next one, perform a genuine page reload, click nothing at all, and then look at what is actually on the screen. That version would have caught the bug on the first run, before anyone else ever saw it. It passed, and this time the pass meant something.</p>
+
+        <p>Since then I have kept a rule that has served me better than any tool. A test earns its place by reproducing what a person does, in the order a person does it, and by checking what they can see. Not the internal state. Not the storage. The screen.</p>
+
+        <p>It costs more to write that way. Real browsers are slower than simulated ones and the tests are fiddlier. It is worth every second, because the alternative is a wall of reassuring green while somebody, somewhere, quietly closes the tab.</p>
+
+        <h2>The uncomfortable general lesson</h2>
+
+        <p>I keep coming back to how close I came to never finding this. The site was live. The tests were passing. If I had not opened a browser and behaved like an ordinary user on an ordinary evening, the bug would have sat there for weeks, silently costing me exactly the people I was trying to help, and I would have had a dashboard full of green ticks explaining why everything was fine.</p>
+
+        <p>So now I distrust good news that arrives too easily. When something passes on the first try, I go and look at the real thing with my own eyes. It has saved me more than once since, and it cost me nothing but a little humility.</p>
+        <div class="article-cta">
+          <p><strong>Judge it yourself.</strong> The only opinion that counts is what happens in your browser.</p>
+          <p><a href="/mockexam.html">Try a full mock test &rarr;</a></p>
+        </div>
+      </div>
+    </article>
+
+    <div class="article-back">
+      <a href="/blog/">&larr; Back to the journal</a>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__logo"><span>&#129437;</span> ParrotTalk</div>
+      <div class="footer__links">
+        <a href="/listening.html">Listening</a>
+        <a href="/reading.html">Reading</a>
+        <a href="/writing.html">Writing</a>
+        <a href="/speaking.html">Speaking</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/writing-checker.html">Writing Checker</a>
+        <a href="/blog/">Blog</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/legal-notice.html">Legal Notice</a>
+        <a href="/terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <p class="footer__copy">&copy; 2026 ParrotTalk &middot; Free IELTS Preparation &middot; parrottalk.app</p>
+    <p class="footer__copy" style="font-size:.75rem;opacity:.6;margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
+  </div>
+</footer>
+
+</body>
+</html>

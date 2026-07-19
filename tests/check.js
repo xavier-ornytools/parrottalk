@@ -188,15 +188,20 @@ check('gabarit : 3 derives + regle photos distinctes', () =>
   contains('blog/_template-article.html', '{{SLUG}}-card.webp') &&
   contains('blog/_template-article.html', '{{SLUG}}-og.jpg') &&
   contains('blog/_template-article.html', 'DEUX photos differentes'));
-// Wording : gratuite permanente/temporaire bannie sur tout le HTML du blog
-check('blog : aucune formule "free forever"', () => {
-  const files = ['blog/index.html', 'blog/_template-article.html', ART_REL];
-  return files.every(f => !/free forever|always free|forever free/i.test(fs.readFileSync(path.join(root, f), 'utf8')));
-});
-check('blog : aucune formule "for now"', () => {
-  const files = ['blog/index.html', 'blog/_template-article.html', ART_REL];
-  return files.every(f => !/\bfor now\b/i.test(fs.readFileSync(path.join(root, f), 'utf8')));
-});
+// Wording : gratuite permanente/temporaire bannie sur tout le HTML du blog.
+// La liste est DERIVEE du dossier blog/ et non ecrite en dur : chaque cartouche
+// ajoutee au stock est couverte sans qu'on ait a penser a l'inscrire ici.
+const BLOG_HTML = ['blog/index.html', 'blog/_template-article.html'].concat(
+  fs.readdirSync(path.join(root, 'blog'), { withFileTypes: true })
+    .filter(d => d.isDirectory())
+    .map(d => `blog/${d.name}/index.html`)
+    .filter(f => exists(f)));
+check('blog : aucune formule "free forever"', () =>
+  BLOG_HTML.every(f => !/free forever|always free|forever free/i.test(fs.readFileSync(path.join(root, f), 'utf8'))));
+check('blog : aucune formule "for now"', () =>
+  BLOG_HTML.every(f => !/\bfor now\b/i.test(fs.readFileSync(path.join(root, f), 'utf8'))));
+check('blog : les 10 cartouches du stock sont couvertes par le grep wording',
+  () => BLOG_HTML.length === 12);
 check('sitemap : contient l\'index blog', () => contains('sitemap.xml', 'https://www.parrottalk.app/blog/</loc>'));
 check('sitemap : contient l\'article 1', () => contains('sitemap.xml', '/blog/how-i-built-an-ielts-site-with-ai/</loc>'));
 
@@ -225,13 +230,37 @@ NEW_ARTS.forEach(s => {
   check(`${s} : auteur Xavier, temps de lecture`, () =>
     contains(rel, 'Xavier, founder of ParrotTalk') && contains(rel, 'min read'));
 });
-const ALL_ARTS = NEW_ARTS.concat('how-i-built-an-ielts-site-with-ai');
-check('index blog : 5 cartes', () =>
-  (fs.readFileSync(path.join(root, 'blog/index.html'), 'utf8').match(/class="post"/g) || []).length === 5);
-check('index blog : les 5 vignettes en -card.webp', () =>
+// Blog LOT 4, 5 cartouches de plus en stock (2026-07-19)
+console.log('\n[ Blog LOT 4 ]');
+const LOT4_ARTS = ['never-losing-your-progress', 'the-day-a-passing-test-lied-to-me',
+                   'starting-to-measure', 'rewriting-the-faq-around-proof',
+                   'opening-the-doors-beta'];
+LOT4_ARTS.forEach(s => {
+  const rel = `blog/${s}/index.html`;
+  check(`${s} : page existe`, () => exists(rel));
+  check(`${s} : og:type article + JSON-LD Article + BreadcrumbList`, () =>
+    contains(rel, 'property="og:type" content="article"') && contains(rel, '"@type": "Article"') && contains(rel, '"@type": "BreadcrumbList"'));
+  check(`${s} : image d'article + og + figure`, () =>
+    contains(rel, `img/blog/${s}.webp`) && contains(rel, `img/blog/${s}-og.jpg`) && contains(rel, 'article-figure'));
+  check(`${s} : 3 derives image existent`, () =>
+    exists(`img/blog/${s}.webp`) && exists(`img/blog/${s}-card.webp`) && exists(`img/blog/${s}-og.jpg`));
+  check(`${s} : wording gratuite propre`, () => {
+    const src = fs.readFileSync(path.join(root, rel), 'utf8');
+    return !/free forever|always free|\bfor now\b|forever free/i.test(src);
+  });
+  check(`${s} : auteur Xavier, temps de lecture`, () =>
+    contains(rel, 'Xavier, founder of ParrotTalk') && contains(rel, 'min read'));
+});
+
+// Compteurs du stock : DERIVES de ALL_ARTS, jamais ecrits en dur. Chaque
+// cartouche ajoutee au stock etend ces trois controles toute seule.
+const ALL_ARTS = NEW_ARTS.concat(LOT4_ARTS).concat('how-i-built-an-ielts-site-with-ai');
+check(`index blog : ${ALL_ARTS.length} cartes`, () =>
+  (fs.readFileSync(path.join(root, 'blog/index.html'), 'utf8').match(/class="post"/g) || []).length === ALL_ARTS.length);
+check(`index blog : les ${ALL_ARTS.length} vignettes en -card.webp`, () =>
   ALL_ARTS.every(s => contains('blog/index.html', `${s}-card.webp`)));
-check('sitemap : les 5 articles blog', () => ALL_ARTS.every(s => contains('sitemap.xml', `/blog/${s}/</loc>`)));
-check('feed : les 5 articles blog', () => ALL_ARTS.every(s => contains('blog/feed.xml', `/blog/${s}/`)));
+check(`sitemap : les ${ALL_ARTS.length} articles blog`, () => ALL_ARTS.every(s => contains('sitemap.xml', `/blog/${s}/</loc>`)));
+check(`feed : les ${ALL_ARTS.length} articles blog`, () => ALL_ARTS.every(s => contains('blog/feed.xml', `/blog/${s}/`)));
 
 console.log(`\n${'='.repeat(30)}`);
 console.log(`  ${passed} passed  |  ${failed} failed`);

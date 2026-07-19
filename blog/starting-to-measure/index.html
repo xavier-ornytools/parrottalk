@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Starting to measure whether any of this works: ParrotTalk</title>
+  <link rel="canonical" href="https://www.parrottalk.app/blog/starting-to-measure/">
+  <meta name="description" content="The day I installed analytics on ParrotTalk, looked at genuinely tiny numbers, and decided to read them honestly instead of flatteringly.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="ParrotTalk">
+  <meta property="og:title" content="Starting to measure whether any of this works">
+  <meta property="og:description" content="The day I started measuring ParrotTalk honestly, with genuinely tiny numbers and no stories.">
+  <meta property="og:url" content="https://www.parrottalk.app/blog/starting-to-measure/">
+  <meta property="og:image" content="https://www.parrottalk.app/img/blog/starting-to-measure-og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-08-04T08:00:00+02:00">
+  <meta property="article:modified_time" content="2026-08-04T08:00:00+02:00">
+  <meta property="article:author" content="Xavier, founder of ParrotTalk">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ParrotTalkApp">
+  <meta name="twitter:title" content="Starting to measure whether any of this works">
+  <meta name="twitter:description" content="The day I started measuring ParrotTalk honestly, with genuinely tiny numbers and no stories.">
+  <meta name="twitter:image" content="https://www.parrottalk.app/img/blog/starting-to-measure-og.jpg">
+  <link rel="alternate" type="application/rss+xml" title="ParrotTalk Blog RSS" href="https://www.parrottalk.app/blog/feed.xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#129437;</text></svg>">
+  <script src="/js/analytics.js" async></script>
+  <script src="/js/cookie-banner.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Starting to measure whether any of this works",
+    "description": "The day I installed analytics on ParrotTalk, looked at genuinely tiny numbers, and decided to read them honestly instead of flatteringly.",
+    "image": "https://www.parrottalk.app/img/blog/starting-to-measure-og.jpg",
+    "datePublished": "2026-08-04T08:00:00+02:00",
+    "dateModified": "2026-08-04T08:00:00+02:00",
+    "author": { "@type": "Person", "name": "Xavier, founder of ParrotTalk" },
+    "publisher": { "@type": "Organization", "name": "ParrotTalk", "url": "https://www.parrottalk.app/" },
+    "mainEntityOfPage": "https://www.parrottalk.app/blog/starting-to-measure/"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.parrottalk.app/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.parrottalk.app/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Starting to measure whether any of this works", "item": "https://www.parrottalk.app/blog/starting-to-measure/" }
+    ]
+  }
+  </script>
+  <style>
+    .article-wrap { max-width: 720px; margin: 0 auto; }
+    .crumbs { font-size: .85rem; color: var(--text-light); padding: calc(var(--nav-h) + 20px) 0 0; }
+    .crumbs a { color: var(--text-muted); text-decoration: none; }
+    .crumbs a:hover { text-decoration: underline; }
+    .article-head { padding: 18px 0 8px; }
+    .article-head h1 { font-size: clamp(1.8rem, 4.2vw, 2.5rem); line-height: 1.16; margin: 0 0 14px; color: var(--dark); }
+    .article-meta { font-size: .9rem; color: var(--text-muted); margin: 0; }
+    .article-figure { float: right; width: 190px; margin: 6px 0 14px 24px; }
+    .article-figure img { width: 100%; height: auto; display: block; border-radius: var(--r); box-shadow: var(--sh-sm); }
+    @media (max-width: 560px) { .article-figure { float: none; width: 150px; margin: 4px auto 16px; } }
+    .article-body { font-size: 1.08rem; line-height: 1.72; color: var(--text); padding: 12px 0 8px; }
+    .article-body h2 { font-size: 1.5rem; line-height: 1.25; margin: 38px 0 12px; color: var(--dark); }
+    .article-body p { margin: 0 0 18px; }
+    .article-body ul { margin: 0 0 18px; padding-left: 1.3em; }
+    .article-body li { margin: 0 0 8px; }
+    .article-body a { color: var(--primary); }
+    .article-cta { background: var(--primary-pale); border: 1px solid var(--primary-light); border-radius: var(--r-lg); padding: 22px 24px; margin: 34px 0 8px; }
+    .article-cta p { margin: 0 0 8px; }
+    .article-back { padding: 8px 0 64px; }
+    .article-back a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="/index.html" class="nav__logo">
+      <img src="/img/logo-official.webp" alt="ParrotTalk">
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="/quickmock.html" class="nav__link">Quick Mock Test</a>
+      <a href="/mockexam.html" class="nav__link">Mock Test</a>
+      <a href="/index.html#modules" class="nav__link">Practice</a>
+      <a href="/dashboard.html" class="nav__link">Dashboard</a>
+    </div>
+    <a href="/listening.html" class="nav__cta">Start Free</a>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="article-wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> / <a href="/blog/">Blog</a> / Starting to measure
+    </nav>
+
+    <article>
+      <header class="article-head">
+        <h1>Starting to measure whether any of this works</h1>
+        <p class="article-meta">By Xavier, founder of ParrotTalk &middot; August 4, 2026 &middot; 4 min read</p>
+      </header>
+
+      <div class="article-body">
+        <figure class="article-figure">
+          <img src="/img/blog/starting-to-measure.webp" width="480" height="480"
+               alt="The ParrotTalk parrot mascot cheering with a raised fist beside a rocket" loading="lazy">
+        </figure>
+        <p>On July 8, about a week into building ParrotTalk, I did something that felt faintly ridiculous at the time. I installed proper measurement on a site that almost nobody was visiting.</p>
+
+        <p>It felt like putting a speedometer on a bicycle I was still pushing up a hill. But I had a suspicion, and it turned out to be right: the habit of measuring is much easier to build when the numbers are too small to hurt your feelings.</p>
+
+        <h2>Doing it once, properly</h2>
+
+        <p>The technical part took an afternoon. Rather than paste a tracking snippet into each page and let the copies drift apart over time, I put the loading logic in one small shared file and included that file across the site. One place to change, one place to audit, one place to switch off. Every page that needs it points at the same code.</p>
+
+        <p>That sounds like a minor tidiness point. It became one of the better decisions of the early weeks. Months later, when I needed measurement to respect the cookie banner properly, and later still when I needed my own visits to stop polluting the picture, both were single edits in a single file rather than an archaeology expedition across a dozen pages. Doing the boring thing once buys you the right to change your mind cheaply later.</p>
+
+        <p>The other rule I set that day: nothing gets sent unless you have accepted cookies. The measurement never loads itself uninvited. If you say no, there is nothing to say no to twice. Given that the site asks you for no account, no email and no payment, it would have been a strange kind of hypocrisy to be greedy about the one thing left.</p>
+
+        <h2>Humble beginnings</h2>
+
+        <p>Then I opened the reports, and there was almost nothing there. A handful of visits, most of them mine. The kind of numbers where you can name the people individually.</p>
+
+        <p>I want to be honest about that rather than skip past it, because founder journals have a bad habit of starting at the point where the graph turns upward. Mine started at a flat line near zero, and staying honest about that was the entire exercise.</p>
+
+        <p>There is a strong pull, when the numbers are that small, to arrange them into a nicer shape. Two visits become "early traction". A single returning visitor becomes "retention". You are not exactly lying, you are just choosing generous words, and generous words are how you end up building the wrong thing for six months. Small numbers are extremely easy to flatter, which is precisely why they are such good training.</p>
+
+        <h2>What I decided to watch</h2>
+
+        <p>So I wrote down what I would actually pay attention to, and it was short.</p>
+
+        <ul>
+          <li>Does anyone start a test at all.</li>
+          <li>Do they finish the section they started, or stop halfway.</li>
+          <li>Do they come back a second time.</li>
+        </ul>
+
+        <p>Not page views. Not time on site. Those go up when people are lost, and I had no interest in a metric that rewards confusion. The three above are the ones a practice tool actually lives or dies by, and they are uncomfortable in the right way: each one can only be improved by making the product genuinely better, never by making the copy shoutier.</p>
+
+        <p>The one I braced for was the second. Somebody starting a test tells you the front page did its job. Somebody finishing tells you the test itself was worth their evening. The gap between those two is where all the honest, unflattering information lives, and it is the only number I have ever found that reliably tells you what to build next.</p>
+
+        <h2>Why measure this early</h2>
+
+        <p>Two reasons, and neither is about growth.</p>
+
+        <p>The first is that you cannot recover a number you did not collect. If I had waited until the traffic was interesting, I would have had no way of knowing what "before" looked like. Every improvement afterwards would have been a matter of opinion and vibes.</p>
+
+        <p>The second is the habit itself. Learning to look at a number you do not like, while the numbers are small enough to be painless, means that by the time they matter you already know how to read them without editing them in your head. I would much rather learn to face a disappointing chart when the chart represents four people than four thousand.</p>
+
+        <p>The candidate-facing version of the same idea already lived in the product: the <a href="/dashboard.html">dashboard</a> shows you your own bands over time, including the ones that went down. I did not build a version that quietly hides your worse attempts, and I was not about to run my own business on softer terms than I offer you.</p>
+
+        <p>It is still a modest set of numbers. But it has been an honest one from the first week, and that turns out to be worth far more than a big one you have learned to misread.</p>
+        <div class="article-cta">
+          <p><strong>Watch your own numbers instead.</strong> Your band, your sections, your progress over time.</p>
+          <p><a href="/dashboard.html">Open your dashboard &rarr;</a></p>
+        </div>
+      </div>
+    </article>
+
+    <div class="article-back">
+      <a href="/blog/">&larr; Back to the journal</a>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__logo"><span>&#129437;</span> ParrotTalk</div>
+      <div class="footer__links">
+        <a href="/listening.html">Listening</a>
+        <a href="/reading.html">Reading</a>
+        <a href="/writing.html">Writing</a>
+        <a href="/speaking.html">Speaking</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/writing-checker.html">Writing Checker</a>
+        <a href="/blog/">Blog</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/legal-notice.html">Legal Notice</a>
+        <a href="/terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <p class="footer__copy">&copy; 2026 ParrotTalk &middot; Free IELTS Preparation &middot; parrottalk.app</p>
+    <p class="footer__copy" style="font-size:.75rem;opacity:.6;margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -6,7 +6,47 @@
     <atom:link href="https://www.parrottalk.app/blog/feed.xml" rel="self" type="application/rss+xml"/>
     <description>A founder's journal about building ParrotTalk, a 100% free IELTS practice site with AI feedback.</description>
     <language>en</language>
-    <lastBuildDate>Mon, 27 Jul 2026 08:00:00 +0200</lastBuildDate>
+    <lastBuildDate>Sat, 08 Aug 2026 08:00:00 +0200</lastBuildDate>
+    <item>
+      <title>Opening the doors: the friends-and-family beta</title>
+      <link>https://www.parrottalk.app/blog/opening-the-doors-beta/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/opening-the-doors-beta/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Sat, 08 Aug 2026 08:00:00 +0200</pubDate>
+      <description>The day I stopped building in private and asked real people to come and break the thing I had made.</description>
+    </item>
+    <item>
+      <title>Rewriting the FAQ around proof, not promises</title>
+      <link>https://www.parrottalk.app/blog/rewriting-the-faq-around-proof/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/rewriting-the-faq-around-proof/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Thu, 06 Aug 2026 08:00:00 +0200</pubDate>
+      <description>Rebuilding the FAQ from the actual code rather than from what I wished were true, and admitting a real gap.</description>
+    </item>
+    <item>
+      <title>Starting to measure whether any of this works</title>
+      <link>https://www.parrottalk.app/blog/starting-to-measure/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/starting-to-measure/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Tue, 04 Aug 2026 08:00:00 +0200</pubDate>
+      <description>Installing measurement early, looking at genuinely tiny numbers, and refusing to tell myself a flattering story about them.</description>
+    </item>
+    <item>
+      <title>The day a passing test lied to me</title>
+      <link>https://www.parrottalk.app/blog/the-day-a-passing-test-lied-to-me/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/the-day-a-passing-test-lied-to-me/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Sun, 02 Aug 2026 08:00:00 +0200</pubDate>
+      <description>My test suite was green. The site was broken. The day a passing test told me a comfortable lie.</description>
+    </item>
+    <item>
+      <title>The bug that mattered most: never losing your progress</title>
+      <link>https://www.parrottalk.app/blog/never-losing-your-progress/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/never-losing-your-progress/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Fri, 31 Jul 2026 08:00:00 +0200</pubDate>
+      <description>The most important fix of the whole project was not a feature. It was making sure a reload never costs you your answers.</description>
+    </item>
     <item>
       <title>The honesty pass: cutting every claim I could not stand behind</title>
       <link>https://www.parrottalk.app/blog/the-honesty-pass/</link>
