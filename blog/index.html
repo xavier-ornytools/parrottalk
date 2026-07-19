@@ -47,22 +47,27 @@
 
     .blog-list { padding: 32px 0 64px; display: grid; gap: 22px; }
 
+    /* Carte article : vignette + contenu, entierement cliquable. */
     .post {
       display: block;
       background: var(--white);
       border: 1px solid var(--border);
       border-radius: var(--r-lg);
-      padding: 28px 28px 24px;
+      overflow: hidden;
       box-shadow: var(--sh-sm);
       text-decoration: none;
       color: inherit;
       transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
     .post:hover { transform: translateY(-4px); box-shadow: var(--sh-lg); border-color: var(--primary-light); }
+    .post__thumb { aspect-ratio: 16 / 9; background: var(--primary-pale); overflow: hidden; }
+    .post__thumb img { width: 100%; height: 100%; object-fit: cover; object-position: center 42%; display: block; }
+    .post__body { padding: 22px 28px 24px; }
     .post__meta { font-size: .82rem; color: var(--text-light); margin: 0 0 10px; letter-spacing: .01em; }
     .post__title { font-size: 1.4rem; line-height: 1.25; margin: 0 0 10px; color: var(--dark); }
     .post__excerpt { font-size: 1rem; color: var(--text-muted); margin: 0 0 14px; }
     .post__more { font-weight: 600; color: var(--primary); font-size: .95rem; }
+    @media (max-width: 560px) { .post__thumb { aspect-ratio: 3 / 2; } .post__body { padding: 18px 20px 20px; } }
   </style>
 </head>
 <body>
@@ -92,10 +97,16 @@
 
   <section class="blog-list">
     <a class="post" href="/blog/how-i-built-an-ielts-site-with-ai/">
-      <p class="post__meta">By Xavier, founder of ParrotTalk · July 19, 2026 · 7 min read</p>
-      <h2 class="post__title">I couldn't find an IELTS site I liked, so I built one by talking to an AI</h2>
-      <p class="post__excerpt">How ParrotTalk went from a one-day prototype to a real IELTS practice platform, built in the open, one honest fix at a time.</p>
-      <span class="post__more">Read the story &rarr;</span>
+      <div class="post__thumb">
+        <img src="/img/blog/how-i-built-an-ielts-site-with-ai.webp" width="900" height="900"
+             alt="A blue and gold macaw saying thank you in many languages, the ParrotTalk mascot" loading="lazy">
+      </div>
+      <div class="post__body">
+        <p class="post__meta">By Xavier, founder of ParrotTalk · July 19, 2026 · 7 min read</p>
+        <h2 class="post__title">I couldn't find an IELTS site I liked, so I built one by talking to an AI</h2>
+        <p class="post__excerpt">How ParrotTalk went from a one-day prototype to a real IELTS practice platform, built in the open, one honest fix at a time.</p>
+        <span class="post__more">Read the story &rarr;</span>
+      </div>
     </a>
   </section>
 </main>

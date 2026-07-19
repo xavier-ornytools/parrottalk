@@ -44,12 +44,14 @@ async function main() {
     const posts = Array.from(document.querySelectorAll('a.post'));
     const rss = document.querySelector('link[rel="alternate"][type="application/rss+xml"]');
     const canon = document.querySelector('link[rel="canonical"]');
+    const thumb = document.querySelector('.post__thumb img');
     return {
       posts: posts.length,
       linksArticle: posts.some(a => (a.getAttribute('href') || '').includes(art)),
       rss: rss ? rss.getAttribute('href') : null,
       canon: canon ? canon.getAttribute('href') : null,
       h1: (document.querySelector('h1') || {}).textContent || '',
+      cardImg: thumb ? thumb.getAttribute('src') : null,
     };
   }, ART);
   c('index blog : aucune erreur JS', idxErr.length === 0, idxErr[0] || '');
@@ -57,6 +59,7 @@ async function main() {
   c('index blog : lien vers l\'article 1', idx.linksArticle);
   c('index blog : lien RSS present', /\/blog\/feed\.xml$/.test(idx.rss || ''), idx.rss || '');
   c('index blog : canonical = /blog/', idx.canon === 'https://www.parrottalk.app/blog/', idx.canon || '');
+  c('index blog : carte avec vignette image webp', /\/img\/blog\/.+\.webp$/.test(idx.cardImg || ''), idx.cardImg || '');
   await page.screenshot({ path: path.join(SHOT, 'index-1280.png'), fullPage: true });
   const pm = await b.newPage({ viewport: { width: 390, height: 800 } });
   await pm.goto(`${BASE}/blog/`, { waitUntil: 'domcontentloaded' });
@@ -81,6 +84,9 @@ async function main() {
     // Liens produit en prose = hors encart CTA (.article-cta), pour mesurer le bourrage reel.
     const proseLinks = Array.from(document.querySelectorAll('.article-body a'))
       .filter(a => !a.closest('.article-cta')).map(a => a.getAttribute('href'));
+    const hero = document.querySelector('.article-hero img');
+    const ogImg = document.querySelector('meta[property="og:image"]');
+    const ldImg = (lds.find(l => l && l['@type'] === 'Article') || {}).image;
     return {
       h1: (document.querySelector('h1') || {}).textContent || '',
       crumbs: !!document.querySelector('.crumbs'),
@@ -90,6 +96,10 @@ async function main() {
       toQuick: bodyLinks.some(h => (h || '').includes('quickmock.html')),
       hasCta: !!document.querySelector('.article-cta'),
       proseProductLinks: proseLinks.filter(h => /mockexam|quickmock|writing-checker/.test(h || '')).length,
+      heroSrc: hero ? hero.getAttribute('src') : null,
+      heroAlt: hero ? hero.getAttribute('alt') : null,
+      ogImage: ogImg ? ogImg.getAttribute('content') : null,
+      ldImage: ldImg || null,
     };
   });
   c('article : aucune erreur JS', artErr.length === 0, artErr[0] || '');
@@ -103,6 +113,9 @@ async function main() {
   c('article : lien produit vers quickmock', art.toQuick);
   c('article : 1 a 2 liens produit en prose (anti bourrage)', art.proseProductLinks >= 1 && art.proseProductLinks <= 2, `prose=${art.proseProductLinks}`);
   c('article : 1 encart CTA produit', art.hasCta);
+  c('article : image de tete presente (webp) + alt', /\/img\/blog\/.+\.webp$/.test(art.heroSrc || '') && (art.heroAlt || '').length > 8, art.heroSrc || '');
+  c('article : og:image + JSON-LD image pointent l\'og du blog',
+    /\/img\/blog\/.+-og\.jpg$/.test(art.ogImage || '') && art.ogImage === art.ldImage, art.ogImage || '');
   await ap.screenshot({ path: path.join(SHOT, 'article-1280.png'), fullPage: true });
   const am = await b.newPage({ viewport: { width: 390, height: 800 } });
   await am.goto(`${BASE}/${ART}`, { waitUntil: 'domcontentloaded' });
@@ -164,6 +177,32 @@ async function main() {
   });
   c('sitemap.xml : HTTP 200', smap.status === 200, `status=${smap.status}`);
   c('sitemap.xml : bien forme + index blog + article', smap.wellFormed && smap.hasIndex && smap.hasArticle);
+
+  console.log('\n=== Ressources image ===');
+  // On verifie le vrai decodage image (naturalWidth) plutot que le content-type :
+  // le serveur de dev Python renvoie application/octet-stream pour .webp, mais le
+  // navigateur (et Vercel en prod) decode correctement. Poids controle via fetch.
+  const imgs = await rp.evaluate(async () => {
+    const decode = (src) => new Promise(res => {
+      const im = new Image();
+      im.onload = () => res({ ok: true, w: im.naturalWidth });
+      im.onerror = () => res({ ok: false, w: 0 });
+      im.src = src;
+    });
+    const hero = await fetch('/img/blog/how-i-built-an-ielts-site-with-ai.webp');
+    const og = await fetch('/img/blog/how-i-built-an-ielts-site-with-ai-og.jpg');
+    const heroBytes = (await hero.arrayBuffer()).byteLength;
+    const ogBytes = (await og.arrayBuffer()).byteLength;
+    const heroDec = await decode('/img/blog/how-i-built-an-ielts-site-with-ai.webp');
+    const ogDec = await decode('/img/blog/how-i-built-an-ielts-site-with-ai-og.jpg');
+    return { heroStatus: hero.status, heroBytes, heroDec, ogStatus: og.status, ogBytes, ogDec };
+  });
+  c('hero webp : 200 + image decodee + poids web (<200k)',
+    imgs.heroStatus === 200 && imgs.heroDec.ok && imgs.heroDec.w > 0 && imgs.heroBytes < 200000,
+    `${Math.round(imgs.heroBytes/1024)}k ${imgs.heroDec.w}px`);
+  c('og jpg : 200 + image decodee 1200px + poids web (<300k)',
+    imgs.ogStatus === 200 && imgs.ogDec.ok && imgs.ogDec.w === 1200 && imgs.ogBytes < 300000,
+    `${Math.round(imgs.ogBytes/1024)}k ${imgs.ogDec.w}px`);
   await rp.close();
 
   await b.close();

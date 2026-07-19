@@ -19,7 +19,7 @@
   <meta property="og:title" content="{{TITLE}}">
   <meta property="og:description" content="{{META_DESCRIPTION}}">
   <meta property="og:url" content="https://www.parrottalk.app/blog/{{SLUG}}/">
-  <meta property="og:image" content="https://www.parrottalk.app/img/og-image.png">
+  <meta property="og:image" content="https://www.parrottalk.app/img/blog/{{SLUG}}-og.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="article:published_time" content="{{PUBLISHED_ISO}}">
@@ -29,7 +29,7 @@
   <meta name="twitter:site" content="@ParrotTalkApp">
   <meta name="twitter:title" content="{{TITLE}}">
   <meta name="twitter:description" content="{{META_DESCRIPTION}}">
-  <meta name="twitter:image" content="https://www.parrottalk.app/img/og-image.png">
+  <meta name="twitter:image" content="https://www.parrottalk.app/img/blog/{{SLUG}}-og.jpg">
   <link rel="alternate" type="application/rss+xml" title="ParrotTalk Blog RSS" href="https://www.parrottalk.app/blog/feed.xml">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
@@ -41,7 +41,7 @@
     "@type": "Article",
     "headline": "{{TITLE}}",
     "description": "{{META_DESCRIPTION}}",
-    "image": "https://www.parrottalk.app/img/og-image.png",
+    "image": "https://www.parrottalk.app/img/blog/{{SLUG}}-og.jpg",
     "datePublished": "{{PUBLISHED_ISO}}",
     "dateModified": "{{MODIFIED_ISO}}",
     "author": { "@type": "Person", "name": "Xavier, founder of ParrotTalk" },
@@ -73,6 +73,8 @@
     .article-head { padding: 18px 0 8px; }
     .article-head h1 { font-size: clamp(1.8rem, 4.2vw, 2.5rem); line-height: 1.16; margin: 0 0 14px; color: var(--dark); }
     .article-meta { font-size: .9rem; color: var(--text-muted); margin: 0; }
+    .article-hero { margin: 20px 0 4px; }
+    .article-hero img { width: 100%; height: auto; display: block; border-radius: var(--r-lg); box-shadow: var(--sh-sm); }
     .article-body { font-size: 1.08rem; line-height: 1.72; color: var(--text); padding: 12px 0 8px; }
     .article-body h2 { font-size: 1.5rem; line-height: 1.25; margin: 38px 0 12px; color: var(--dark); }
     .article-body p { margin: 0 0 18px; }
@@ -118,6 +120,15 @@
         <h1>{{TITLE}}</h1>
         <p class="article-meta">By Xavier, founder of ParrotTalk · {{DATE_HUMAN}} · {{READ_MIN}} min read</p>
       </header>
+
+      <!-- Emplacement image standard. Par article, generer 2 derives web depuis
+           _image-sources/ (PIL, comme le lot images) :
+             img/blog/{{SLUG}}.webp     hero + vignette carte (largeur ~900, q80)
+             img/blog/{{SLUG}}-og.jpg   image sociale 1200x630 (og/twitter/JSON-LD)
+           Ne jamais choisir une image portant un wording de gratuite interdit. -->
+      <figure class="article-hero">
+        <img src="/img/blog/{{SLUG}}.webp" width="900" height="900" alt="{{IMAGE_ALT}}" loading="eager">
+      </figure>
 
       <div class="article-body">
         {{BODY}}

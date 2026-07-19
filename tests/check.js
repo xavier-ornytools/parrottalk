@@ -168,6 +168,13 @@ check('article : auteur Xavier, founder of ParrotTalk', () => contains(ART_REL, 
 check('article : lien produit mockexam', () => contains(ART_REL, 'href="/mockexam.html"'));
 check('article : lien produit quickmock', () => contains(ART_REL, 'href="/quickmock.html"'));
 check('article : temps de lecture en dur', () => contains(ART_REL, 'min read'));
+check('article : image de tete hero webp', () => contains(ART_REL, 'img/blog/how-i-built-an-ielts-site-with-ai.webp'));
+check('article : og:image = og jpg du blog', () => contains(ART_REL, 'img/blog/how-i-built-an-ielts-site-with-ai-og.jpg'));
+check('hero webp existe', () => exists('img/blog/how-i-built-an-ielts-site-with-ai.webp'));
+check('og jpg existe', () => exists('img/blog/how-i-built-an-ielts-site-with-ai-og.jpg'));
+check('index blog : carte avec vignette', () => contains('blog/index.html', 'post__thumb'));
+check('gabarit : emplacement image standard ({{SLUG}})', () =>
+  contains('blog/_template-article.html', 'img/blog/{{SLUG}}.webp') && contains('blog/_template-article.html', '{{SLUG}}-og.jpg'));
 // Wording : gratuite permanente/temporaire bannie sur tout le HTML du blog
 check('blog : aucune formule "free forever"', () => {
   const files = ['blog/index.html', 'blog/_template-article.html', ART_REL];
