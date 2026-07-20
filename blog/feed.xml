@@ -6,7 +6,15 @@
     <atom:link href="https://www.parrottalk.app/blog/feed.xml" rel="self" type="application/rss+xml"/>
     <description>A founder's journal about building ParrotTalk, a 100% free IELTS practice site with AI feedback.</description>
     <language>en</language>
-    <lastBuildDate>Mon, 20 Jul 2026 08:00:00 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 21 Jul 2026 08:00:00 +0200</lastBuildDate>
+    <item>
+      <title>Teaching a parrot to grade a voice in one day</title>
+      <link>https://www.parrottalk.app/blog/teaching-a-parrot-to-grade-a-voice/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/teaching-a-parrot-to-grade-a-voice/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Tue, 21 Jul 2026 08:00:00 +0200</pubDate>
+      <description>Day one of ParrotTalk: building browser voice recording and AI Speaking feedback in a single day.</description>
+    </item>
     <item>
       <title>How our AI scoring works, and how accurate it is</title>
       <link>https://www.parrottalk.app/blog/how-our-scoring-works/</link>

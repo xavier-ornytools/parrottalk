@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teaching a parrot to grade a voice in one day: ParrotTalk</title>
+  <link rel="canonical" href="https://www.parrottalk.app/blog/teaching-a-parrot-to-grade-a-voice/">
+  <meta name="description" content="Day one of ParrotTalk: building browser voice recording and AI Speaking feedback in a single day, and the messy technical fight it took to get there.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="ParrotTalk">
+  <meta property="og:title" content="Teaching a parrot to grade a voice in one day">
+  <meta property="og:description" content="Day one of ParrotTalk: building browser voice recording and AI Speaking feedback in a single day.">
+  <meta property="og:url" content="https://www.parrottalk.app/blog/teaching-a-parrot-to-grade-a-voice/">
+  <meta property="og:image" content="https://www.parrottalk.app/img/blog/teaching-a-parrot-to-grade-a-voice-og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-07-21T08:00:00+02:00">
+  <meta property="article:modified_time" content="2026-07-21T08:00:00+02:00">
+  <meta property="article:author" content="Xavier, founder of ParrotTalk">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ParrotTalkApp">
+  <meta name="twitter:title" content="Teaching a parrot to grade a voice in one day">
+  <meta name="twitter:description" content="Day one of ParrotTalk: browser voice recording and AI Speaking feedback, built in a day.">
+  <meta name="twitter:image" content="https://www.parrottalk.app/img/blog/teaching-a-parrot-to-grade-a-voice-og.jpg">
+  <link rel="alternate" type="application/rss+xml" title="ParrotTalk Blog RSS" href="https://www.parrottalk.app/blog/feed.xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦜</text></svg>">
+  <script src="/js/analytics.js" async></script>
+  <script src="/js/cookie-banner.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Teaching a parrot to grade a voice in one day",
+    "description": "Day one of ParrotTalk: building browser voice recording and AI Speaking feedback in a single day, and the messy technical fight it took to get there.",
+    "image": "https://www.parrottalk.app/img/blog/teaching-a-parrot-to-grade-a-voice-og.jpg",
+    "datePublished": "2026-07-21T08:00:00+02:00",
+    "dateModified": "2026-07-21T08:00:00+02:00",
+    "author": { "@type": "Person", "name": "Xavier, founder of ParrotTalk" },
+    "publisher": { "@type": "Organization", "name": "ParrotTalk", "url": "https://www.parrottalk.app/" },
+    "mainEntityOfPage": "https://www.parrottalk.app/blog/teaching-a-parrot-to-grade-a-voice/"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.parrottalk.app/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.parrottalk.app/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Teaching a parrot to grade a voice in one day", "item": "https://www.parrottalk.app/blog/teaching-a-parrot-to-grade-a-voice/" }
+    ]
+  }
+  </script>
+  <style>
+    .article-wrap { max-width: 720px; margin: 0 auto; }
+    .crumbs { font-size: .85rem; color: var(--text-light); padding: calc(var(--nav-h) + 20px) 0 0; }
+    .crumbs a { color: var(--text-muted); text-decoration: none; }
+    .crumbs a:hover { text-decoration: underline; }
+    .article-head { padding: 18px 0 8px; }
+    .article-head h1 { font-size: clamp(1.8rem, 4.2vw, 2.5rem); line-height: 1.16; margin: 0 0 14px; color: var(--dark); }
+    .article-meta { font-size: .9rem; color: var(--text-muted); margin: 0; }
+    .article-figure { float: right; width: 190px; margin: 6px 0 14px 24px; }
+    .article-figure img { width: 100%; height: auto; display: block; border-radius: var(--r); box-shadow: var(--sh-sm); }
+    @media (max-width: 560px) { .article-figure { float: none; width: 150px; margin: 4px auto 16px; } }
+    .article-body { font-size: 1.08rem; line-height: 1.72; color: var(--text); padding: 12px 0 8px; }
+    .article-body h2 { font-size: 1.5rem; line-height: 1.25; margin: 38px 0 12px; color: var(--dark); }
+    .article-body p { margin: 0 0 18px; }
+    .article-body ul { margin: 0 0 18px; padding-left: 1.3em; }
+    .article-body li { margin: 0 0 8px; }
+    .article-body a { color: var(--primary); }
+    .article-cta { background: var(--primary-pale); border: 1px solid var(--primary-light); border-radius: var(--r-lg); padding: 22px 24px; margin: 34px 0 8px; }
+    .article-cta p { margin: 0 0 8px; }
+    .article-back { padding: 8px 0 64px; }
+    .article-back a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="/index.html" class="nav__logo">
+      <img src="/img/logo-official.webp" alt="ParrotTalk">
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="/quickmock.html" class="nav__link">Quick Mock Test</a>
+      <a href="/mockexam.html" class="nav__link">Mock Test</a>
+      <a href="/index.html#modules" class="nav__link">Practice</a>
+      <a href="/dashboard.html" class="nav__link">Dashboard</a>
+    </div>
+    <a href="/listening.html" class="nav__cta">Start Free</a>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="article-wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> / <a href="/blog/">Blog</a> / Teaching a parrot to grade a voice
+    </nav>
+
+    <article>
+      <header class="article-head">
+        <h1>Teaching a parrot to grade a voice in one day</h1>
+        <p class="article-meta">By Xavier, founder of ParrotTalk · July 21, 2026 · 4 min read</p>
+      </header>
+
+      <div class="article-body">
+        <figure class="article-figure">
+          <img src="/img/blog/teaching-a-parrot-to-grade-a-voice.webp" width="480" height="480"
+               alt="The ParrotTalk parrot mascot speaking into a microphone, the ParrotTalk mascot" loading="lazy">
+        </figure>
+
+        <p>On June 30, the first day of ParrotTalk, the feature I was most nervous about was Speaking. Reading and Writing you can imagine on a screen. But Speaking means asking someone to talk to their laptop, out loud, alone, and then handing that recording to a machine and asking it to be useful about it. I decided to try to get the whole loop working in a single day. By the evening it did, in a rough and slightly held-together way, and that felt like a small miracle.</p>
+
+        <p>The loop is simple to describe and stubborn to build. You see a Part 2 cue card, you press record, you speak. The browser captures your voice, the audio goes to a model that transcribes what you said and evaluates it against the Speaking criteria, and a moment later you get feedback and a band estimate. Getting from "simple to describe" to "actually happens" is where day one went.</p>
+
+        <h2>The fight with the audio</h2>
+
+        <p>Recording in a browser is the easy half: the built-in recorder hands you an audio blob without much fuss. The hard half is that the blob it hands you is not the shape the model wants to read. My first attempts came back as silence or gibberish, not because the speaking was bad but because the file was in a format the model could not properly hear.</p>
+
+        <p>So the real work of the day became conversion: turning whatever the browser produced into clean 16kHz WAV audio before sending it on. The moment I got that right, a transcript came back that actually matched what I had said, and I genuinely cheered at my desk.</p>
+
+        <p>There was an easier road I deliberately did not take. Browsers ship a built-in speech-recognition feature, and I could have leaned on it to turn your voice into text for free. I tried it, and it was too inconsistent to trust: it behaves differently from one phone and browser to the next, and a candidate in Karachi on an Android phone would not get the same experience as someone on a laptop. So I chose the harder path of recording the actual audio and sending it to be transcribed properly on our side. It cost me more work that day, and it is the reason Speaking feedback is consistent no matter what device you show up on.</p>
+
+        <p>Then came the smaller indignities. I burned an hour on model names, trying one version, hitting an error, trying another, because the exact identifier matters and the docs and reality did not always agree. I hit rate limits and had to add a polite backoff so that a burst of requests would wait and retry instead of failing. And the first version was slow: a full Speaking answer took the better part of a minute to come back, which is long enough for a nervous person to assume it broke. Splitting the transcription so parts ran in parallel pulled that down from around forty-five seconds to roughly ten. Same result, a quarter of the waiting.</p>
+
+        <h2>Why it was worth doing on day one</h2>
+
+        <p>I could have shipped three tidy modules and left Speaking as a "coming soon". I did not, and I am glad. Speaking is the part most free tools skip, precisely because it is awkward, and it is the part a lot of candidates dread most. Having it there from the first day, however rough, set the tone: this was going to be a real four-skill tool, not a reading-and-quizzes site with a voice sticker on it.</p>
+
+        <p>It was far from perfect that night. It has been rebuilt and calibrated many times since. But the shape held. You still press record, talk to a friendly parrot, and get feedback on how you sounded. If you want to try it, the <a href="/speaking.html">IELTS Speaking practice</a> is free and needs no sign-up.</p>
+
+        <div class="article-cta">
+          <p><strong>Give your voice a workout.</strong> Speak a Part 2 answer and get honest feedback in a couple of minutes.</p>
+          <p><a href="/speaking.html">Try Speaking practice &rarr;</a></p>
+        </div>
+
+        <p>Looking back, the lesson of that first day was not about audio formats. It was that the scary feature is usually the one worth doing first, because getting it standing changes what the whole project is allowed to become.</p>
+      </div>
+    </article>
+
+    <div class="article-back">
+      <a href="/blog/">&larr; Back to the journal</a>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__logo"><span>🦜</span> ParrotTalk</div>
+      <div class="footer__links">
+        <a href="/listening.html">Listening</a>
+        <a href="/reading.html">Reading</a>
+        <a href="/writing.html">Writing</a>
+        <a href="/speaking.html">Speaking</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/writing-checker.html">Writing Checker</a>
+        <a href="/blog/">Blog</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/legal-notice.html">Legal Notice</a>
+        <a href="/terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <p class="footer__copy">© 2026 ParrotTalk · Free IELTS Preparation · parrottalk.app</p>
+    <p class="footer__copy" style="font-size:.75rem;opacity:.6;margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
+  </div>
+</footer>
+
+</body>
+</html>
