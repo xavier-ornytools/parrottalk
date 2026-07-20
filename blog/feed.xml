@@ -6,7 +6,15 @@
     <atom:link href="https://www.parrottalk.app/blog/feed.xml" rel="self" type="application/rss+xml"/>
     <description>A founder's journal about building ParrotTalk, a 100% free IELTS practice site with AI feedback.</description>
     <language>en</language>
-    <lastBuildDate>Sat, 19 Jul 2026 08:00:00 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 20 Jul 2026 08:00:00 +0200</lastBuildDate>
+    <item>
+      <title>How our AI scoring works, and how accurate it is</title>
+      <link>https://www.parrottalk.app/blog/how-our-scoring-works/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/how-our-scoring-works/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Mon, 20 Jul 2026 08:00:00 +0200</pubDate>
+      <description>How ParrotTalk estimates your IELTS band with AI, what we calibrated to make it fair, and the limits we are honest about.</description>
+    </item>
     <item>
       <title>I couldn't find an IELTS site I liked, so I built one by talking to an AI</title>
       <link>https://www.parrottalk.app/blog/how-i-built-an-ielts-site-with-ai/</link>
