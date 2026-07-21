@@ -6,7 +6,47 @@
     <atom:link href="https://www.parrottalk.app/blog/feed.xml" rel="self" type="application/rss+xml"/>
     <description>A founder's journal about building ParrotTalk, a 100% free IELTS practice site with AI feedback.</description>
     <language>en</language>
-    <lastBuildDate>Sun, 02 Aug 2026 08:00:00 +0200</lastBuildDate>
+    <lastBuildDate>Fri, 07 Aug 2026 08:00:00 +0200</lastBuildDate>
+    <item>
+      <title>Making sure we grade what you wrote</title>
+      <link>https://www.parrottalk.app/blog/making-sure-we-grade-what-you-wrote/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/making-sure-we-grade-what-you-wrote/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Fri, 07 Aug 2026 08:00:00 +0200</pubDate>
+      <description>The honest story of a bug that let the graded essay differ from the one on screen, how I fixed it, and why integrity is the product.</description>
+    </item>
+    <item>
+      <title>Never lose an essay again</title>
+      <link>https://www.parrottalk.app/blog/never-lose-an-essay-again/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/never-lose-an-essay-again/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Thu, 06 Aug 2026 08:00:00 +0200</pubDate>
+      <description>Your essay now saves as you type, so a stray tab close or a reload never wipes your work. A small seatbelt, big peace of mind.</description>
+    </item>
+    <item>
+      <title>The surprise in my notes: assistants were sending me students</title>
+      <link>https://www.parrottalk.app/blog/when-assistants-started-recommending-us/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/when-assistants-started-recommending-us/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Wed, 05 Aug 2026 08:00:00 +0200</pubDate>
+      <description>A lovely early surprise: AI assistants began recommending ParrotTalk on their own, and why honesty is what made it findable.</description>
+    </item>
+    <item>
+      <title>Giving each speaker a different voice</title>
+      <link>https://www.parrottalk.app/blog/giving-each-speaker-a-different-voice/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/giving-each-speaker-a-different-voice/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Tue, 04 Aug 2026 08:00:00 +0200</pubDate>
+      <description>Rebuilding the Listening audio so each section has its own distinct voice, the way exam day actually sounds.</description>
+    </item>
+    <item>
+      <title>Putting the exam clock on Listening</title>
+      <link>https://www.parrottalk.app/blog/putting-the-exam-clock-on-listening/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/putting-the-exam-clock-on-listening/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Mon, 03 Aug 2026 08:00:00 +0200</pubDate>
+      <description>Adding a single running clock and automatic submission to Listening, so a free practice test feels like the real computer-delivered exam.</description>
+    </item>
     <item>
       <title>When someone skips a question</title>
       <link>https://www.parrottalk.app/blog/when-someone-skips-a-question/</link>
@@ -48,12 +88,12 @@
       <description>The first real backend decision: moving the AI evaluation off the browser and behind a small server of our own.</description>
     </item>
     <item>
-      <title>Opening the doors: the friends-and-family beta</title>
+      <title>Opening the doors, and keeping them open</title>
       <link>https://www.parrottalk.app/blog/opening-the-doors-beta/</link>
       <guid isPermaLink="true">https://www.parrottalk.app/blog/opening-the-doors-beta/</guid>
       <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
       <pubDate>Tue, 28 Jul 2026 08:00:00 +0200</pubDate>
-      <description>The day I stopped building in private and asked real people to come and break the thing I had made.</description>
+      <description>The day ParrotTalk went from a private project to an open public beta, what real users taught me, and the honest plan for measuring the scoring.</description>
     </item>
     <item>
       <title>Rewriting the FAQ around proof, not promises</title>

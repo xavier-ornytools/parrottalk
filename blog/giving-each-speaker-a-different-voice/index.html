@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A free IELTS Listening practice test with real, distinct voices · ParrotTalk</title>
+  <link rel="canonical" href="https://www.parrottalk.app/blog/giving-each-speaker-a-different-voice/">
+  <meta name="description" content="A free IELTS Listening practice test should sound like exam day: several distinct speakers, not one narrator on a loop. How I rebuilt ParrotTalk's Listening audio to do that.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="ParrotTalk">
+  <meta property="og:title" content="Giving each speaker a different voice">
+  <meta property="og:description" content="Rebuilding Listening audio so each section has its own distinct voice, the way the real test does.">
+  <meta property="og:url" content="https://www.parrottalk.app/blog/giving-each-speaker-a-different-voice/">
+  <meta property="og:image" content="https://www.parrottalk.app/img/blog/giving-each-speaker-a-different-voice-og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-08-04T08:00:00+02:00">
+  <meta property="article:modified_time" content="2026-08-04T08:00:00+02:00">
+  <meta property="article:author" content="Xavier, founder of ParrotTalk">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ParrotTalkApp">
+  <meta name="twitter:title" content="Giving each speaker a different voice">
+  <meta name="twitter:description" content="Rebuilding Listening audio so each section has its own distinct voice, the way the real test does.">
+  <meta name="twitter:image" content="https://www.parrottalk.app/img/blog/giving-each-speaker-a-different-voice-og.jpg">
+  <link rel="alternate" type="application/rss+xml" title="ParrotTalk Blog RSS" href="https://www.parrottalk.app/blog/feed.xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <script src="/js/analytics.js" async></script>
+  <script src="/js/cookie-banner.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Giving each speaker a different voice",
+    "description": "A free IELTS Listening practice test should sound like exam day: several distinct speakers, not one narrator on a loop. How I rebuilt ParrotTalk's Listening audio to do that.",
+    "image": "https://www.parrottalk.app/img/blog/giving-each-speaker-a-different-voice-og.jpg",
+    "datePublished": "2026-08-04T08:00:00+02:00",
+    "dateModified": "2026-08-04T08:00:00+02:00",
+    "author": { "@type": "Person", "name": "Xavier, founder of ParrotTalk" },
+    "publisher": { "@type": "Organization", "name": "ParrotTalk", "url": "https://www.parrottalk.app/" },
+    "mainEntityOfPage": "https://www.parrottalk.app/blog/giving-each-speaker-a-different-voice/"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.parrottalk.app/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.parrottalk.app/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Giving each speaker a different voice", "item": "https://www.parrottalk.app/blog/giving-each-speaker-a-different-voice/" }
+    ]
+  }
+  </script>
+  <style>
+    .article-wrap { max-width: 720px; margin: 0 auto; }
+    .crumbs { font-size: .85rem; color: var(--text-light); padding: calc(var(--nav-h) + 20px) 0 0; }
+    .crumbs a { color: var(--text-muted); text-decoration: none; }
+    .crumbs a:hover { text-decoration: underline; }
+    .article-head { padding: 18px 0 8px; }
+    .article-head h1 { font-size: clamp(1.8rem, 4.2vw, 2.5rem); line-height: 1.16; margin: 0 0 14px; color: var(--dark); }
+    .article-meta { font-size: .9rem; color: var(--text-muted); margin: 0; }
+    .article-figure { float: right; width: 190px; margin: 6px 0 14px 24px; }
+    .article-figure img { width: 100%; height: auto; display: block; border-radius: var(--r); box-shadow: var(--sh-sm); }
+    @media (max-width: 560px) { .article-figure { float: none; width: 150px; margin: 4px auto 16px; } }
+    .article-body { font-size: 1.08rem; line-height: 1.72; color: var(--text); padding: 12px 0 8px; }
+    .article-body h2 { font-size: 1.5rem; line-height: 1.25; margin: 38px 0 12px; color: var(--dark); }
+    .article-body p { margin: 0 0 18px; }
+    .article-body ul { margin: 0 0 18px; padding-left: 1.3em; }
+    .article-body li { margin: 0 0 8px; }
+    .article-body a { color: var(--primary); }
+    .article-cta { background: var(--primary-pale); border: 1px solid var(--primary-light); border-radius: var(--r-lg); padding: 22px 24px; margin: 34px 0 8px; }
+    .article-cta p { margin: 0 0 8px; }
+    .article-back { padding: 8px 0 64px; }
+    .article-back a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="/index.html" class="nav__logo">
+      <img src="/img/logo-official.webp" alt="ParrotTalk">
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="/quickmock.html" class="nav__link">Quick Mock Test</a>
+      <a href="/mockexam.html" class="nav__link">Mock Test</a>
+      <a href="/index.html#modules" class="nav__link">Practice</a>
+      <a href="/dashboard.html" class="nav__link">Dashboard</a>
+    </div>
+    <a href="/listening.html" class="nav__cta">Start Free</a>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="article-wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> / <a href="/blog/">Blog</a> / Giving each speaker a different voice
+    </nav>
+
+    <article>
+      <header class="article-head">
+        <h1>Giving each speaker a different voice</h1>
+        <p class="article-meta">By Xavier, founder of ParrotTalk · August 4, 2026 · 3 min read</p>
+      </header>
+
+      <div class="article-body">
+        <figure class="article-figure">
+          <img src="/img/blog/giving-each-speaker-a-different-voice.webp" width="480" height="480"
+               alt="The ParrotTalk parrot mascot wearing a scarf and breaking a block of ice with a pick, the ParrotTalk mascot" loading="lazy">
+        </figure>
+
+        <p>In a real IELTS Listening test you hear several different people: a chatty conversation, a lecturer, a pair working through a task. A free IELTS Listening practice test that uses one flat narrator for all of it is missing half the challenge. So I rebuilt ParrotTalk's Listening audio to give each section its own distinct voice.</p>
+
+        <p>The first version of Listening had a single generated voice reading everything, calmly, at one steady pace. It was clear, which sounds like a compliment until you remember that clarity is not the skill being tested. Following a real conversation means tracking who is speaking, catching a name spelled out by a person in a hurry, and not losing the thread when the accent shifts.</p>
+
+        <h2>Different voices, on purpose</h2>
+
+        <p>So I regenerated the audio so that each section carries voices that actually differ: different speakers, different pacing, distinct enough that you have to keep up rather than drift. Where the real exam has two people talking, you now hear two people, not one voice pretending to be a room.</p>
+
+        <p>While I was in there, I did one more thing that I think matters for honesty: I made sure the word "IELTS" is never spoken in the audio itself. This is practice material in the shape of the exam, not a copy of it, and the recordings should reflect that plainly.</p>
+
+        <h2>Harder in the right way</h2>
+
+        <p>The result is a section that is a little harder, and harder in exactly the way the real test is harder. Not trick questions, not faster-than-life speech, just the ordinary difficulty of real people talking like real people. That is the difficulty worth training against.</p>
+
+        <p>If you have not tried it since, the <a href="/listening.html">Listening practice</a> sounds quite different now, and it is still 100% free with no sign-up.</p>
+
+        <div class="article-cta">
+          <p><strong>The short version:</strong> ParrotTalk's Listening now uses distinct voices per section, so a free practice test sounds like the real, multi-speaker exam. Free, no sign-up.</p>
+          <p><a href="/listening.html">Listen to the difference &rarr;</a></p>
+        </div>
+
+        <p>Small production details like this are invisible when they work and glaring when they do not. A single droning voice is comfortable. Exam day is not comfortable, so practice should not be either.</p>
+      </div>
+    </article>
+
+    <div class="article-back">
+      <a href="/blog/">← Back to the journal</a>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__logo"><span>🦜</span> ParrotTalk</div>
+      <div class="footer__links">
+        <a href="/listening.html">Listening</a>
+        <a href="/reading.html">Reading</a>
+        <a href="/writing.html">Writing</a>
+        <a href="/speaking.html">Speaking</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/writing-checker.html">Writing Checker</a>
+        <a href="/blog/">Blog</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/legal-notice.html">Legal Notice</a>
+        <a href="/terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <p class="footer__copy">© 2026 ParrotTalk · Free IELTS Preparation · parrottalk.app</p>
+    <p class="footer__copy" style="font-size:.75rem;opacity:.6;margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
+  </div>
+</footer>
+
+</body>
+</html>

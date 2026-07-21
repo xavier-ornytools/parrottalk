@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Opening the doors: the friends-and-family beta: ParrotTalk</title>
+  <title>Opening the doors, and keeping them open: our public beta · ParrotTalk</title>
   <link rel="canonical" href="https://www.parrottalk.app/blog/opening-the-doors-beta/">
-  <meta name="description" content="The day I stopped building in private and asked real people to break ParrotTalk, with a tester kit and a feedback form that took no new backend.">
+  <meta name="description" content="The day ParrotTalk went from a private project to an open, public beta, what real users taught me, and the honest plan for measuring how good the scoring really is.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="ParrotTalk">
-  <meta property="og:title" content="Opening the doors: the friends-and-family beta">
-  <meta property="og:description" content="The day I stopped building in private and asked real people to break ParrotTalk.">
+  <meta property="og:title" content="Opening the doors, and keeping them open">
+  <meta property="og:description" content="The day ParrotTalk went from private to an open public beta, what real users taught me, and what comes next.">
   <meta property="og:url" content="https://www.parrottalk.app/blog/opening-the-doors-beta/">
   <meta property="og:image" content="https://www.parrottalk.app/img/blog/opening-the-doors-beta-og.jpg">
   <meta property="og:image:width" content="1200">
@@ -19,20 +19,22 @@
   <meta property="article:author" content="Xavier, founder of ParrotTalk">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@ParrotTalkApp">
-  <meta name="twitter:title" content="Opening the doors: the friends-and-family beta">
-  <meta name="twitter:description" content="The day I stopped building in private and asked real people to break ParrotTalk.">
+  <meta name="twitter:title" content="Opening the doors, and keeping them open">
+  <meta name="twitter:description" content="The day ParrotTalk went from private to an open public beta, what real users taught me, and what comes next.">
   <meta name="twitter:image" content="https://www.parrottalk.app/img/blog/opening-the-doors-beta-og.jpg">
   <link rel="alternate" type="application/rss+xml" title="ParrotTalk Blog RSS" href="https://www.parrottalk.app/blog/feed.xml">
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#129437;</text></svg>">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <script src="/js/analytics.js" async></script>
   <script src="/js/cookie-banner.js" defer></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": "Opening the doors: the friends-and-family beta",
-    "description": "The day I stopped building in private and asked real people to break ParrotTalk, with a tester kit and a feedback form that took no new backend.",
+    "headline": "Opening the doors, and keeping them open",
+    "description": "The day ParrotTalk went from a private project to an open, public beta, what real users taught me, and the honest plan for measuring how good the scoring really is.",
     "image": "https://www.parrottalk.app/img/blog/opening-the-doors-beta-og.jpg",
     "datePublished": "2026-07-28T08:00:00+02:00",
     "dateModified": "2026-07-28T08:00:00+02:00",
@@ -48,7 +50,7 @@
     "itemListElement": [
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.parrottalk.app/" },
       { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.parrottalk.app/blog/" },
-      { "@type": "ListItem", "position": 3, "name": "Opening the doors: the friends-and-family beta", "item": "https://www.parrottalk.app/blog/opening-the-doors-beta/" }
+      { "@type": "ListItem", "position": 3, "name": "Opening the doors, and keeping them open", "item": "https://www.parrottalk.app/blog/opening-the-doors-beta/" }
     ]
   }
   </script>
@@ -96,72 +98,54 @@
 <main class="container">
   <div class="article-wrap">
     <nav class="crumbs" aria-label="Breadcrumb">
-      <a href="/">Home</a> / <a href="/blog/">Blog</a> / Opening the doors
+      <a href="/">Home</a> / <a href="/blog/">Blog</a> / Opening the doors, and keeping them open
     </nav>
 
     <article>
       <header class="article-head">
-        <h1>Opening the doors: the friends-and-family beta</h1>
-        <p class="article-meta">By Xavier, founder of ParrotTalk &middot; July 28, 2026 &middot; 4 min read</p>
+        <h1>Opening the doors, and keeping them open</h1>
+        <p class="article-meta">By Xavier, founder of ParrotTalk · July 28, 2026 · 3 min read</p>
       </header>
 
       <div class="article-body">
         <figure class="article-figure">
           <img src="/img/blog/opening-the-doors-beta.webp" width="480" height="480"
-               alt="The ParrotTalk parrot mascot with sunglasses, giving a thumbs up" loading="lazy">
+               alt="The ParrotTalk parrot mascot with sunglasses giving a friendly thumbs up, the ParrotTalk mascot" loading="lazy">
         </figure>
-        <p>On July 9 I posted a link on my own social accounts and asked people I know to come and break the thing I had been building for nine days.</p>
 
-        <p>It is a strange feeling to recommend. Up to that point every bug had been mine, found by me, at my own pace, in my own browser. Handing it to real people means handing over the pace as well, and finding out which of your confident assumptions were merely convenient.</p>
+        <p>On July 9 I posted a link on my own accounts and asked people I know to come and break the thing I had been building. That was the day ParrotTalk stopped being a private project. It has been an open, public beta ever since, and the doors have simply never closed.</p>
+
+        <p>It is a strange feeling to recommend your own unfinished work. Up to that point every bug had been mine, found by me, at my own pace, in my own browser. Handing it to real people means handing over the pace too, and finding out which of your confident assumptions were merely convenient.</p>
 
         <h2>Removing the step where people give up</h2>
 
-        <p>The first thing the beta taught me had nothing to do with the product. It was about the path to the product.</p>
+        <p>The first thing the beta taught me had nothing to do with the AI I had fussed over. It was about the path to the product. My tidy plan of emailing each tester an invitation and a test sheet had a dozen places to die: a promotions tab, a phone read meaning to open it later on a laptop, a friend-of-a-friend with no email at all and no way in.</p>
 
-        <p>My original plan was tidy on paper: send each tester an email with an invitation letter and a test sheet attached, and off they go. In practice that plan has a dozen places to die. The email lands in a promotions tab. Somebody reads it on a phone, means to open the attachment later on a laptop, and later never arrives. Someone else hears about it from a friend and has no email at all, so there is no way in.</p>
+        <p>So I put the whole tester kit straight on the home page, no email required and no permission needed. Anyone who reached the site could start. That is a pattern I have kept ever since, and it is the same instinct that keeps the site <a href="/">100% free with no sign-up</a>: I would rather have people practising than have their contact details.</p>
 
-        <p>So I put the whole tester kit directly on the home page: the invitation and the test sheet, downloadable, no email required, no permission needed. Anyone who reached the site could get started, whether or not I had ever written to them.</p>
+        <h2>What real people actually did</h2>
 
-        <p>That is a pattern I have used a lot since. Every step you require between someone's interest and someone's first real action is a step where most of them quietly leave. It is the same instinct that keeps <a href="/">the site itself</a> 100% free with no sign-up: I would rather have people practising than have their contact details.</p>
+        <p>The reports were nothing like my own testing. Nobody followed the happy path I had walked a hundred times. People clicked in orders I had not imagined, on browsers I had not opened in weeks, and stopped where I had assumed the next step was obvious. Almost none of it was about the AI. It was about the plumbing: where do I click now, did that save, is it still loading.</p>
 
-        <h2>A feedback form, and the temptation I resisted</h2>
+        <p>That is the real value of opening early, and it is worth more than any bug list. A few days in, I had gone comprehensively blind to my own product. Every screen was obvious to me because I had built it, and obvious-to-the-builder is the least useful kind of obvious there is. It takes about ten minutes with someone else's confusion to get your eyes back.</p>
 
-        <p>Next I needed a way for testers to tell me things. And I noticed the pull, immediately, toward building something far too clever: a proper feedback system, stored submissions, a little admin screen to browse them, statuses, tags.</p>
+        <h2>Where this is going</h2>
 
-        <p>That would have been a genuinely enjoyable two days of work, and it would have been two days not spent on the actual product, in exchange for a feature serving a handful of people I could count on my fingers.</p>
+        <p>Being a public beta is not a stage I am rushing to leave. It is an honest label: the tool works, it is genuinely useful, and it is still improving in the open, with real people shaping it. Calling it finished would be the dishonest move.</p>
 
-        <p>So I built the form in plain HTML and wired it to an existing service that forwards submissions straight to my inbox. No new backend, no database, no admin screen. A hidden trap field to soak up automated spam, and a consent checkbox that links to the privacy policy, because asking people for their email while being vague about what happens to it would have undone every honest word I had written the week before.</p>
+        <p>There is one next step I am planning, and I want to describe it without overselling it, because the whole project runs on not overselling. I would like to invite volunteers who sit both a full <a href="/mockexam.html">ParrotTalk mock test</a> and the real exam to share their official result, so I can measure how close the estimate really gets and publish that openly. It is fair to make it worth their time, and I intend to. I am not putting a date or a number on it yet, because I will not announce either until I can stand behind it.</p>
 
-        <p>The questions were deliberately concrete. What device were you on. Which sections did you try. What worked. What broke. What was unclear. Did the band you got feel anything like what you expected. Would you tell a friend about it. Then a free box for anything I had not thought to ask, which is invariably where the best remark of the day turns up.</p>
-
-        <p>I checked it on a real phone, at real phone dimensions, because a feedback form that will not submit on mobile is a very efficient way to collect no feedback at all.</p>
-
-        <h2>The compromise I wrote down</h2>
-
-        <p>One decision from that day was a deliberate mess, and I noted it as such at the time.</p>
-
-        <p>The site is in English. These first testers were French-speaking friends. So I wrote that section, and only that section, in French, and left a note to myself that it had to be switched back to English before the site opened to anyone beyond that circle.</p>
-
-        <p>I could pretend this was a clever localisation strategy. It was not. It was a temporary bilingual patch on a site that had no business being bilingual, and I knew it while I was typing it. What made it survivable was writing the debt down in the same commit that created it, with the condition for clearing it. Weeks later, when the site opened up properly, those French blocks came out exactly as planned, and the note was still there waiting for me.</p>
-
-        <p>Undocumented shortcuts are how a young codebase turns into a swamp. A shortcut with an expiry date written next to it is just a decision.</p>
-
-        <h2>What actually came back</h2>
-
-        <p>The reports were nothing like my own testing. Nobody followed the happy path I had walked a hundred times. People clicked things in orders I had not imagined, on browsers I had not opened in weeks, and stopped in places where I had assumed the next step was obvious.</p>
-
-        <p>Almost none of it was about the AI, which is the part I had spent the most time on and worried about most. It was about the plumbing. Where do I click now. Did that save. Is it still loading. Why did nothing happen.</p>
-
-        <p>That is the real value of opening the doors early, and it is worth more than the bug list. Nine days in, I had gone comprehensively blind to my own product. Every screen was obvious to me because I had built it, and obvious-to-the-builder is the least useful form of obvious there is. It takes about ten minutes with someone else's confusion to get your eyes back.</p>
         <div class="article-cta">
-          <p><strong>The doors are still open.</strong> No account, no wallet, no waiting list.</p>
-          <p><a href="/">Start practicing for free &rarr;</a></p>
+          <p><strong>The doors are still open.</strong> No account, no wallet, no waiting list. It is a public beta, and you are welcome in it.</p>
+          <p><a href="/">Start practising for free &rarr;</a></p>
         </div>
+
+        <p>Opening up early was the best decision of the project. It turned a thing I was sure about into a thing other people could actually use, which are not remotely the same thing.</p>
       </div>
     </article>
 
     <div class="article-back">
-      <a href="/blog/">&larr; Back to the journal</a>
+      <a href="/blog/">← Back to the journal</a>
     </div>
   </div>
 </main>
@@ -169,7 +153,7 @@
 <footer class="footer">
   <div class="container">
     <div class="footer__inner">
-      <div class="footer__logo"><span>&#129437;</span> ParrotTalk</div>
+      <div class="footer__logo"><span>🦜</span> ParrotTalk</div>
       <div class="footer__links">
         <a href="/listening.html">Listening</a>
         <a href="/reading.html">Reading</a>
@@ -184,7 +168,7 @@
         <a href="/terms.html">Terms of Use</a>
       </div>
     </div>
-    <p class="footer__copy">&copy; 2026 ParrotTalk &middot; Free IELTS Preparation &middot; parrottalk.app</p>
+    <p class="footer__copy">© 2026 ParrotTalk · Free IELTS Preparation · parrottalk.app</p>
     <p class="footer__copy" style="font-size:.75rem;opacity:.6;margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
   </div>
 </footer>

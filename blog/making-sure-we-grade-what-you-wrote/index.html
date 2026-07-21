@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Honest IELTS Writing feedback: grading exactly what you wrote · ParrotTalk</title>
+  <link rel="canonical" href="https://www.parrottalk.app/blog/making-sure-we-grade-what-you-wrote/">
+  <meta name="description" content="For IELTS Writing feedback to mean anything, the essay you see must be the exact essay the AI reads. The honest story of a bug I found, fixed, and now guard against.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="ParrotTalk">
+  <meta property="og:title" content="Making sure we grade what you wrote">
+  <meta property="og:description" content="For feedback to mean anything, the essay you see must be the exact one the AI reads. A bug I found, fixed, and now guard against.">
+  <meta property="og:url" content="https://www.parrottalk.app/blog/making-sure-we-grade-what-you-wrote/">
+  <meta property="og:image" content="https://www.parrottalk.app/img/blog/making-sure-we-grade-what-you-wrote-og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-08-07T08:00:00+02:00">
+  <meta property="article:modified_time" content="2026-08-07T08:00:00+02:00">
+  <meta property="article:author" content="Xavier, founder of ParrotTalk">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ParrotTalkApp">
+  <meta name="twitter:title" content="Making sure we grade what you wrote">
+  <meta name="twitter:description" content="For feedback to mean anything, the essay you see must be the exact one the AI reads. A bug I found, fixed, and now guard against.">
+  <meta name="twitter:image" content="https://www.parrottalk.app/img/blog/making-sure-we-grade-what-you-wrote-og.jpg">
+  <link rel="alternate" type="application/rss+xml" title="ParrotTalk Blog RSS" href="https://www.parrottalk.app/blog/feed.xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <script src="/js/analytics.js" async></script>
+  <script src="/js/cookie-banner.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Making sure we grade what you wrote",
+    "description": "For IELTS Writing feedback to mean anything, the essay you see must be the exact essay the AI reads. The honest story of a bug I found, fixed, and now guard against.",
+    "image": "https://www.parrottalk.app/img/blog/making-sure-we-grade-what-you-wrote-og.jpg",
+    "datePublished": "2026-08-07T08:00:00+02:00",
+    "dateModified": "2026-08-07T08:00:00+02:00",
+    "author": { "@type": "Person", "name": "Xavier, founder of ParrotTalk" },
+    "publisher": { "@type": "Organization", "name": "ParrotTalk", "url": "https://www.parrottalk.app/" },
+    "mainEntityOfPage": "https://www.parrottalk.app/blog/making-sure-we-grade-what-you-wrote/"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.parrottalk.app/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.parrottalk.app/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Making sure we grade what you wrote", "item": "https://www.parrottalk.app/blog/making-sure-we-grade-what-you-wrote/" }
+    ]
+  }
+  </script>
+  <style>
+    .article-wrap { max-width: 720px; margin: 0 auto; }
+    .crumbs { font-size: .85rem; color: var(--text-light); padding: calc(var(--nav-h) + 20px) 0 0; }
+    .crumbs a { color: var(--text-muted); text-decoration: none; }
+    .crumbs a:hover { text-decoration: underline; }
+    .article-head { padding: 18px 0 8px; }
+    .article-head h1 { font-size: clamp(1.8rem, 4.2vw, 2.5rem); line-height: 1.16; margin: 0 0 14px; color: var(--dark); }
+    .article-meta { font-size: .9rem; color: var(--text-muted); margin: 0; }
+    .article-figure { float: right; width: 190px; margin: 6px 0 14px 24px; }
+    .article-figure img { width: 100%; height: auto; display: block; border-radius: var(--r); box-shadow: var(--sh-sm); }
+    @media (max-width: 560px) { .article-figure { float: none; width: 150px; margin: 4px auto 16px; } }
+    .article-body { font-size: 1.08rem; line-height: 1.72; color: var(--text); padding: 12px 0 8px; }
+    .article-body h2 { font-size: 1.5rem; line-height: 1.25; margin: 38px 0 12px; color: var(--dark); }
+    .article-body p { margin: 0 0 18px; }
+    .article-body ul { margin: 0 0 18px; padding-left: 1.3em; }
+    .article-body li { margin: 0 0 8px; }
+    .article-body a { color: var(--primary); }
+    .article-cta { background: var(--primary-pale); border: 1px solid var(--primary-light); border-radius: var(--r-lg); padding: 22px 24px; margin: 34px 0 8px; }
+    .article-cta p { margin: 0 0 8px; }
+    .article-back { padding: 8px 0 64px; }
+    .article-back a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="/index.html" class="nav__logo">
+      <img src="/img/logo-official.webp" alt="ParrotTalk">
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="/quickmock.html" class="nav__link">Quick Mock Test</a>
+      <a href="/mockexam.html" class="nav__link">Mock Test</a>
+      <a href="/index.html#modules" class="nav__link">Practice</a>
+      <a href="/dashboard.html" class="nav__link">Dashboard</a>
+    </div>
+    <a href="/listening.html" class="nav__cta">Start Free</a>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="article-wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> / <a href="/blog/">Blog</a> / Making sure we grade what you wrote
+    </nav>
+
+    <article>
+      <header class="article-head">
+        <h1>Making sure we grade what you wrote</h1>
+        <p class="article-meta">By Xavier, founder of ParrotTalk · August 7, 2026 · 3 min read</p>
+      </header>
+
+      <div class="article-body">
+        <figure class="article-figure">
+          <img src="/img/blog/making-sure-we-grade-what-you-wrote.webp" width="480" height="480"
+               alt="The ParrotTalk parrot mascot as an archaeologist carefully brushing dust off an open book, the ParrotTalk mascot" loading="lazy">
+        </figure>
+
+        <p>For IELTS Writing feedback to mean anything at all, one thing has to be true without exception: the essay you see on your screen must be the exact essay the AI reads and marks. Early on, in a specific situation, that was not guaranteed, and this is the honest story of the bug I found and fixed.</p>
+
+        <p>The trouble lived in the handoff. Between the words on your screen and the words handed to the model for assessment, there was a seam, and in some cases the version that went off to be marked was not quite the version in front of you. The band you got back was real, but it could be answering a slightly different essay than the one you thought you had submitted. That is not a small thing. It is the one promise a marking tool cannot afford to break.</p>
+
+        <h2>Rebuilding the handoff</h2>
+
+        <p>I found it the way you find these things: a result came back that did not match the writing, and instead of shrugging it off I chased the mismatch until it confessed. Then I rebuilt how a piece of writing travels from your screen to the assessment, so there is now a single, clear path and no room for a stale copy to sneak in. What you see is what gets marked, full stop.</p>
+
+        <p>I am telling you about it plainly because I would want to know, if I were the one trusting a tool with my practice. It is tempting to fix a bug like this quietly and never mention it. But a marking tool that is not open about its own reliability is asking for a trust it has not earned.</p>
+
+        <h2>Why transparency is the feature</h2>
+
+        <p>Every tool has bugs. The difference is whether the maker treats correctness as a feature worth chasing or a detail worth hiding. On something people lean on to prepare for an exam that matters to their future, integrity of assessment is not a nice-to-have. It is the product.</p>
+
+        <p>You can put your own writing through it now with confidence in the <a href="/writing-checker.html">writing checker</a>, and the band you see is graded on exactly the words you wrote. It is 100% free, no sign-up.</p>
+
+        <div class="article-cta">
+          <p><strong>The short version:</strong> a bug once let the graded essay differ from the one on screen. It is fixed, the path is rebuilt, and what you see is now exactly what gets marked. Free, no sign-up.</p>
+          <p><a href="/writing-checker.html">Check your writing &rarr;</a></p>
+        </div>
+
+        <p>Trust is built in small, unglamorous moments like this one. Not by never having a bug, but by chasing the ones that matter and being honest when you do.</p>
+      </div>
+    </article>
+
+    <div class="article-back">
+      <a href="/blog/">← Back to the journal</a>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__logo"><span>🦜</span> ParrotTalk</div>
+      <div class="footer__links">
+        <a href="/listening.html">Listening</a>
+        <a href="/reading.html">Reading</a>
+        <a href="/writing.html">Writing</a>
+        <a href="/speaking.html">Speaking</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/writing-checker.html">Writing Checker</a>
+        <a href="/blog/">Blog</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/legal-notice.html">Legal Notice</a>
+        <a href="/terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <p class="footer__copy">© 2026 ParrotTalk · Free IELTS Preparation · parrottalk.app</p>
+    <p class="footer__copy" style="font-size:.75rem;opacity:.6;margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
+  </div>
+</footer>
+
+</body>
+</html>

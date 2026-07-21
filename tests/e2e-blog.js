@@ -25,6 +25,11 @@ const SHOT = path.join(__dirname, 'screenshots', 'blog');
 
 // Ordre antechronologique attendu dans l'index (le plus recent en premier).
 const ARTICLES = [
+  'making-sure-we-grade-what-you-wrote',
+  'never-lose-an-essay-again',
+  'when-assistants-started-recommending-us',
+  'giving-each-speaker-a-different-voice',
+  'putting-the-exam-clock-on-listening',
   'when-someone-skips-a-question',
   'free-ielts-practice-vietnam-bangladesh-pakistan-uzbekistan',
   'ai-checker-for-ielts-writing-task-2',
