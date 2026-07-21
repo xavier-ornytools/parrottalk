@@ -25,6 +25,11 @@ const SHOT = path.join(__dirname, 'screenshots', 'blog');
 
 // Ordre antechronologique attendu dans l'index (le plus recent en premier).
 const ARTICLES = [
+  'when-someone-skips-a-question',
+  'free-ielts-practice-vietnam-bangladesh-pakistan-uzbekistan',
+  'ai-checker-for-ielts-writing-task-2',
+  'free-ielts-mock-test-explained',
+  'moving-the-ai-off-the-browser',
   'opening-the-doors-beta',
   'rewriting-the-faq-around-proof',
   'starting-to-measure',
@@ -73,12 +78,12 @@ async function main() {
     };
   });
   c('index blog : aucune erreur JS', idxErr.length === 0, idxErr[0] || '');
-  c('index blog : 10 cartes listees', idx.count === 10, `count=${idx.count}`);
+  c(`index blog : ${ARTICLES.length} cartes listees`, idx.count === ARTICLES.length, `count=${idx.count}`);
   c('index blog : lien RSS present', /\/blog\/feed\.xml$/.test(idx.rss || ''));
   c('index blog : canonical = /blog/', idx.canon === 'https://www.parrottalk.app/blog/');
   c('index blog : chaque carte a une vignette -card.webp', idx.cards.every(c => /\/img\/blog\/.+-card\.webp$/.test(c.thumb || '')),
     idx.cards.map(c => base(c.thumb)).join(', '));
-  c('index blog : ordre antechronologique', idx.cards.map(c => (c.href || '').replace(/\/blog\/|\//g, '')).slice(0, 10).join(',') === ARTICLES.join(','),
+  c('index blog : ordre antechronologique', idx.cards.map(c => (c.href || '').replace(/\/blog\/|\//g, '')).slice(0, ARTICLES.length).join(',') === ARTICLES.join(','),
     idx.cards.map(c => (c.href || '').split('/').filter(Boolean).pop()).join(','));
   // Garde-fou taille de vignette (article 1 : la banniere avait ete refusee).
   const thumbGeo = await page.evaluate(() => {

@@ -6,13 +6,53 @@
     <atom:link href="https://www.parrottalk.app/blog/feed.xml" rel="self" type="application/rss+xml"/>
     <description>A founder's journal about building ParrotTalk, a 100% free IELTS practice site with AI feedback.</description>
     <language>en</language>
-    <lastBuildDate>Sat, 08 Aug 2026 08:00:00 +0200</lastBuildDate>
+    <lastBuildDate>Sun, 02 Aug 2026 08:00:00 +0200</lastBuildDate>
+    <item>
+      <title>When someone skips a question</title>
+      <link>https://www.parrottalk.app/blog/when-someone-skips-a-question/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/when-someone-skips-a-question/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Sun, 02 Aug 2026 08:00:00 +0200</pubDate>
+      <description>Real people do not answer in a tidy order. The small saga of making Speaking practice survive skipped questions and messy input.</description>
+    </item>
+    <item>
+      <title>Free IELTS practice for candidates in Vietnam, Bangladesh, Pakistan and Uzbekistan</title>
+      <link>https://www.parrottalk.app/blog/free-ielts-practice-vietnam-bangladesh-pakistan-uzbekistan/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/free-ielts-practice-vietnam-bangladesh-pakistan-uzbekistan/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Sat, 01 Aug 2026 08:00:00 +0200</pubDate>
+      <description>Full IELTS practice for all four skills, 100% free, and built to be genuinely usable from Hanoi to Tashkent.</description>
+    </item>
+    <item>
+      <title>An AI checker for IELTS Writing Task 2: what it looks at</title>
+      <link>https://www.parrottalk.app/blog/ai-checker-for-ielts-writing-task-2/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/ai-checker-for-ielts-writing-task-2/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Fri, 31 Jul 2026 08:00:00 +0200</pubDate>
+      <description>How ParrotTalk reads a Writing Task 2 essay: a band on each of the four official criteria, and feedback you can act on.</description>
+    </item>
+    <item>
+      <title>What a free IELTS mock test really means</title>
+      <link>https://www.parrottalk.app/blog/free-ielts-mock-test-explained/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/free-ielts-mock-test-explained/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Thu, 30 Jul 2026 08:00:00 +0200</pubDate>
+      <description>What a full IELTS mock test actually means: all four sections, back to back, under real exam timing, and completely free.</description>
+    </item>
+    <item>
+      <title>Moving the AI off the browser</title>
+      <link>https://www.parrottalk.app/blog/moving-the-ai-off-the-browser/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/moving-the-ai-off-the-browser/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Wed, 29 Jul 2026 08:00:00 +0200</pubDate>
+      <description>The first real backend decision: moving the AI evaluation off the browser and behind a small server of our own.</description>
+    </item>
     <item>
       <title>Opening the doors: the friends-and-family beta</title>
       <link>https://www.parrottalk.app/blog/opening-the-doors-beta/</link>
       <guid isPermaLink="true">https://www.parrottalk.app/blog/opening-the-doors-beta/</guid>
       <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
-      <pubDate>Sat, 08 Aug 2026 08:00:00 +0200</pubDate>
+      <pubDate>Tue, 28 Jul 2026 08:00:00 +0200</pubDate>
       <description>The day I stopped building in private and asked real people to come and break the thing I had made.</description>
     </item>
     <item>
@@ -20,7 +60,7 @@
       <link>https://www.parrottalk.app/blog/rewriting-the-faq-around-proof/</link>
       <guid isPermaLink="true">https://www.parrottalk.app/blog/rewriting-the-faq-around-proof/</guid>
       <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
-      <pubDate>Thu, 06 Aug 2026 08:00:00 +0200</pubDate>
+      <pubDate>Mon, 27 Jul 2026 08:00:00 +0200</pubDate>
       <description>Rebuilding the FAQ from the actual code rather than from what I wished were true, and admitting a real gap.</description>
     </item>
     <item>
@@ -28,7 +68,7 @@
       <link>https://www.parrottalk.app/blog/starting-to-measure/</link>
       <guid isPermaLink="true">https://www.parrottalk.app/blog/starting-to-measure/</guid>
       <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
-      <pubDate>Tue, 04 Aug 2026 08:00:00 +0200</pubDate>
+      <pubDate>Sun, 26 Jul 2026 08:00:00 +0200</pubDate>
       <description>Installing measurement early, looking at genuinely tiny numbers, and refusing to tell myself a flattering story about them.</description>
     </item>
     <item>
@@ -36,7 +76,7 @@
       <link>https://www.parrottalk.app/blog/the-day-a-passing-test-lied-to-me/</link>
       <guid isPermaLink="true">https://www.parrottalk.app/blog/the-day-a-passing-test-lied-to-me/</guid>
       <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
-      <pubDate>Sun, 02 Aug 2026 08:00:00 +0200</pubDate>
+      <pubDate>Sat, 25 Jul 2026 08:00:00 +0200</pubDate>
       <description>My test suite was green. The site was broken. The day a passing test told me a comfortable lie.</description>
     </item>
     <item>
@@ -44,7 +84,7 @@
       <link>https://www.parrottalk.app/blog/never-losing-your-progress/</link>
       <guid isPermaLink="true">https://www.parrottalk.app/blog/never-losing-your-progress/</guid>
       <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
-      <pubDate>Fri, 31 Jul 2026 08:00:00 +0200</pubDate>
+      <pubDate>Fri, 24 Jul 2026 08:00:00 +0200</pubDate>
       <description>The most important fix of the whole project was not a feature. It was making sure a reload never costs you your answers.</description>
     </item>
     <item>
@@ -52,7 +92,7 @@
       <link>https://www.parrottalk.app/blog/the-honesty-pass/</link>
       <guid isPermaLink="true">https://www.parrottalk.app/blog/the-honesty-pass/</guid>
       <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
-      <pubDate>Mon, 27 Jul 2026 08:00:00 +0200</pubDate>
+      <pubDate>Thu, 23 Jul 2026 08:00:00 +0200</pubDate>
       <description>Early on I went through every page of ParrotTalk and removed anything that was not strictly true. The day it stopped being a demo.</description>
     </item>
     <item>
@@ -60,7 +100,7 @@
       <link>https://www.parrottalk.app/blog/ten-bugs-and-one-section-at-a-time/</link>
       <guid isPermaLink="true">https://www.parrottalk.app/blog/ten-bugs-and-one-section-at-a-time/</guid>
       <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
-      <pubDate>Sat, 25 Jul 2026 08:00:00 +0200</pubDate>
+      <pubDate>Wed, 22 Jul 2026 08:00:00 +0200</pubDate>
       <description>An unglamorous bug-fix day, and the feature hiding inside the bug list: practice one IELTS section at a time.</description>
     </item>
     <item>

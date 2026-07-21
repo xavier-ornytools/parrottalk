@@ -200,8 +200,8 @@ check('blog : aucune formule "free forever"', () =>
   BLOG_HTML.every(f => !/free forever|always free|forever free/i.test(fs.readFileSync(path.join(root, f), 'utf8'))));
 check('blog : aucune formule "for now"', () =>
   BLOG_HTML.every(f => !/\bfor now\b/i.test(fs.readFileSync(path.join(root, f), 'utf8'))));
-check('blog : les 10 cartouches du stock sont couvertes par le grep wording',
-  () => BLOG_HTML.length === 12);
+check('blog : les 15 cartouches du stock sont couvertes par le grep wording',
+  () => BLOG_HTML.length === 17);
 check('sitemap : contient l\'index blog', () => contains('sitemap.xml', 'https://www.parrottalk.app/blog/</loc>'));
 check('sitemap : contient l\'article 1', () => contains('sitemap.xml', '/blog/how-i-built-an-ielts-site-with-ai/</loc>'));
 
@@ -252,9 +252,32 @@ LOT4_ARTS.forEach(s => {
     contains(rel, 'Xavier, founder of ParrotTalk') && contains(rel, 'min read'));
 });
 
+// Blog LOT 4 bis, 5 cartouches de plus en stock (2026-07-21, cadence quotidienne)
+console.log('\n[ Blog LOT 4 bis ]');
+const LOT4B_ARTS = ['moving-the-ai-off-the-browser', 'free-ielts-mock-test-explained',
+                    'ai-checker-for-ielts-writing-task-2',
+                    'free-ielts-practice-vietnam-bangladesh-pakistan-uzbekistan',
+                    'when-someone-skips-a-question'];
+LOT4B_ARTS.forEach(s => {
+  const rel = `blog/${s}/index.html`;
+  check(`${s} : page existe`, () => exists(rel));
+  check(`${s} : og:type article + JSON-LD Article + BreadcrumbList`, () =>
+    contains(rel, 'property="og:type" content="article"') && contains(rel, '"@type": "Article"') && contains(rel, '"@type": "BreadcrumbList"'));
+  check(`${s} : image d'article + og + figure`, () =>
+    contains(rel, `img/blog/${s}.webp`) && contains(rel, `img/blog/${s}-og.jpg`) && contains(rel, 'article-figure'));
+  check(`${s} : 3 derives image existent`, () =>
+    exists(`img/blog/${s}.webp`) && exists(`img/blog/${s}-card.webp`) && exists(`img/blog/${s}-og.jpg`));
+  check(`${s} : wording gratuite propre`, () => {
+    const src = fs.readFileSync(path.join(root, rel), 'utf8');
+    return !/free forever|always free|\bfor now\b|forever free/i.test(src);
+  });
+  check(`${s} : auteur Xavier, temps de lecture`, () =>
+    contains(rel, 'Xavier, founder of ParrotTalk') && contains(rel, 'min read'));
+});
+
 // Compteurs du stock : DERIVES de ALL_ARTS, jamais ecrits en dur. Chaque
 // cartouche ajoutee au stock etend ces trois controles toute seule.
-const ALL_ARTS = NEW_ARTS.concat(LOT4_ARTS).concat('how-i-built-an-ielts-site-with-ai');
+const ALL_ARTS = NEW_ARTS.concat(LOT4_ARTS).concat(LOT4B_ARTS).concat('how-i-built-an-ielts-site-with-ai');
 check(`index blog : ${ALL_ARTS.length} cartes`, () =>
   (fs.readFileSync(path.join(root, 'blog/index.html'), 'utf8').match(/class="post"/g) || []).length === ALL_ARTS.length);
 check(`index blog : les ${ALL_ARTS.length} vignettes en -card.webp`, () =>

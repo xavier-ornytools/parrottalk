@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moving the AI off the browser: safe AI IELTS feedback · ParrotTalk</title>
+  <link rel="canonical" href="https://www.parrottalk.app/blog/moving-the-ai-off-the-browser/">
+  <meta name="description" content="Where your answers go when you get AI IELTS feedback on ParrotTalk: not to a stranger, but through our own small server. The first real backend decision, in plain terms.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="ParrotTalk">
+  <meta property="og:title" content="Moving the AI off the browser">
+  <meta property="og:description" content="The first real backend decision: moving the AI evaluation off the browser and behind a small server of our own.">
+  <meta property="og:url" content="https://www.parrottalk.app/blog/moving-the-ai-off-the-browser/">
+  <meta property="og:image" content="https://www.parrottalk.app/img/blog/moving-the-ai-off-the-browser-og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-07-29T08:00:00+02:00">
+  <meta property="article:modified_time" content="2026-07-29T08:00:00+02:00">
+  <meta property="article:author" content="Xavier, founder of ParrotTalk">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ParrotTalkApp">
+  <meta name="twitter:title" content="Moving the AI off the browser">
+  <meta name="twitter:description" content="The first real backend decision: moving the AI evaluation off the browser and behind a small server of our own.">
+  <meta name="twitter:image" content="https://www.parrottalk.app/img/blog/moving-the-ai-off-the-browser-og.jpg">
+  <link rel="alternate" type="application/rss+xml" title="ParrotTalk Blog RSS" href="https://www.parrottalk.app/blog/feed.xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <script src="/js/analytics.js" async></script>
+  <script src="/js/cookie-banner.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Moving the AI off the browser",
+    "description": "Where your answers go when you get AI IELTS feedback on ParrotTalk: not to a stranger, but through our own small server. The first real backend decision, in plain terms.",
+    "image": "https://www.parrottalk.app/img/blog/moving-the-ai-off-the-browser-og.jpg",
+    "datePublished": "2026-07-29T08:00:00+02:00",
+    "dateModified": "2026-07-29T08:00:00+02:00",
+    "author": { "@type": "Person", "name": "Xavier, founder of ParrotTalk" },
+    "publisher": { "@type": "Organization", "name": "ParrotTalk", "url": "https://www.parrottalk.app/" },
+    "mainEntityOfPage": "https://www.parrottalk.app/blog/moving-the-ai-off-the-browser/"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.parrottalk.app/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.parrottalk.app/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Moving the AI off the browser", "item": "https://www.parrottalk.app/blog/moving-the-ai-off-the-browser/" }
+    ]
+  }
+  </script>
+  <style>
+    .article-wrap { max-width: 720px; margin: 0 auto; }
+    .crumbs { font-size: .85rem; color: var(--text-light); padding: calc(var(--nav-h) + 20px) 0 0; }
+    .crumbs a { color: var(--text-muted); text-decoration: none; }
+    .crumbs a:hover { text-decoration: underline; }
+    .article-head { padding: 18px 0 8px; }
+    .article-head h1 { font-size: clamp(1.8rem, 4.2vw, 2.5rem); line-height: 1.16; margin: 0 0 14px; color: var(--dark); }
+    .article-meta { font-size: .9rem; color: var(--text-muted); margin: 0; }
+    .article-figure { float: right; width: 190px; margin: 6px 0 14px 24px; }
+    .article-figure img { width: 100%; height: auto; display: block; border-radius: var(--r); box-shadow: var(--sh-sm); }
+    @media (max-width: 560px) { .article-figure { float: none; width: 150px; margin: 4px auto 16px; } }
+    .article-body { font-size: 1.08rem; line-height: 1.72; color: var(--text); padding: 12px 0 8px; }
+    .article-body h2 { font-size: 1.5rem; line-height: 1.25; margin: 38px 0 12px; color: var(--dark); }
+    .article-body p { margin: 0 0 18px; }
+    .article-body ul { margin: 0 0 18px; padding-left: 1.3em; }
+    .article-body li { margin: 0 0 8px; }
+    .article-body a { color: var(--primary); }
+    .article-cta { background: var(--primary-pale); border: 1px solid var(--primary-light); border-radius: var(--r-lg); padding: 22px 24px; margin: 34px 0 8px; }
+    .article-cta p { margin: 0 0 8px; }
+    .article-back { padding: 8px 0 64px; }
+    .article-back a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="/index.html" class="nav__logo">
+      <img src="/img/logo-official.webp" alt="ParrotTalk">
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="/quickmock.html" class="nav__link">Quick Mock Test</a>
+      <a href="/mockexam.html" class="nav__link">Mock Test</a>
+      <a href="/index.html#modules" class="nav__link">Practice</a>
+      <a href="/dashboard.html" class="nav__link">Dashboard</a>
+    </div>
+    <a href="/listening.html" class="nav__cta">Start Free</a>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="article-wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> / <a href="/blog/">Blog</a> / Moving the AI off the browser
+    </nav>
+
+    <article>
+      <header class="article-head">
+        <h1>Moving the AI off the browser</h1>
+        <p class="article-meta">By Xavier, founder of ParrotTalk · July 29, 2026 · 3 min read</p>
+      </header>
+
+      <div class="article-body">
+        <figure class="article-figure">
+          <img src="/img/blog/moving-the-ai-off-the-browser.webp" width="480" height="480"
+               alt="The ParrotTalk parrot mascot stepping out of a cardboard box next to a paper plane, the ParrotTalk mascot" loading="lazy">
+        </figure>
+
+        <p>When you ask ParrotTalk for AI feedback on an essay or a spoken answer, where does your work actually go? The short version is that it does not go to some company you never chose. It goes through a small server of our own, and setting that up was one of the first real engineering decisions I made.</p>
+
+        <p>In the very first prototype, the page in your browser called the AI model directly. It worked, and it felt like magic for about a day. Then the obvious problem sank in. The key that pays for those AI calls would have been sitting inside the web page, where anyone even mildly curious could read it and start spending on my behalf. That is not a detail you leave for later.</p>
+
+        <h2>So I put a small server in the middle</h2>
+
+        <p>On the fourth of July I moved the whole thing behind a lightweight server, a thin layer that sits between your browser and the AI. Now your browser only ever talks to ParrotTalk. ParrotTalk talks to the model. You never touch the key, and neither does anyone reading the page source.</p>
+
+        <p>This sounds like plumbing, and it is, but it quietly bought three things that matter to you. The paid key stays on the server, out of reach. I get one clear place to decide exactly what is sent for grading and to make sure a Speaking recording is discarded once it has been assessed, rather than left lying around. And the code got simpler, because I could delete a pile of dead prototype scaffolding that had been there just to make the browser-only version limp along.</p>
+
+        <h2>Why a boring decision was the right one</h2>
+
+        <p>None of this shows up on screen. You still paste an essay, still record an answer, still get a band and feedback a moment later. The difference is underneath: a clean line between what your browser does and what the server does, so that adding the next feature does not mean touching the risky part every time.</p>
+
+        <p>I think good tools are mostly made of unglamorous choices like this, taken early, before there is any pressure to. If you want to see the calm side of it, the part you actually use, try the <a href="/writing-checker.html">AI writing checker</a> on a paragraph of your own, or sit a full <a href="/mockexam.html">free mock test</a> across all four skills. Both are free, and both run on the same small server I set up that day.</p>
+
+        <div class="article-cta">
+          <p><strong>The short version:</strong> your answers go through ParrotTalk's own server, not straight to a third party, and the key that pays for the AI never sits in your browser.</p>
+          <p><a href="/faq.html">More about how it works in the FAQ &rarr;</a></p>
+        </div>
+
+        <p>Back to more visible work next time. But I wanted this one on the record, because the parts of a product you never see are often the parts that decide whether you can trust it.</p>
+      </div>
+    </article>
+
+    <div class="article-back">
+      <a href="/blog/">← Back to the journal</a>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__logo"><span>🦜</span> ParrotTalk</div>
+      <div class="footer__links">
+        <a href="/listening.html">Listening</a>
+        <a href="/reading.html">Reading</a>
+        <a href="/writing.html">Writing</a>
+        <a href="/speaking.html">Speaking</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/writing-checker.html">Writing Checker</a>
+        <a href="/blog/">Blog</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/legal-notice.html">Legal Notice</a>
+        <a href="/terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <p class="footer__copy">© 2026 ParrotTalk · Free IELTS Preparation · parrottalk.app</p>
+    <p class="footer__copy" style="font-size:.75rem;opacity:.6;margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
+  </div>
+</footer>
+
+</body>
+</html>
