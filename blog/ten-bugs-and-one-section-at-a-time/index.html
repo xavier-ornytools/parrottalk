@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ten bugs, and letting you submit one section at a time: ParrotTalk</title>
+  <link rel="canonical" href="https://www.parrottalk.app/blog/ten-bugs-and-one-section-at-a-time/">
+  <meta name="description" content="An early bug-fix day on ParrotTalk, and the feature that came out of it: letting you practice one IELTS section at a time and still get an honest band estimate.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="ParrotTalk">
+  <meta property="og:title" content="Ten bugs, and letting you submit one section at a time">
+  <meta property="og:description" content="An early bug-fix day, and the feature that came out of it: practice one IELTS section at a time.">
+  <meta property="og:url" content="https://www.parrottalk.app/blog/ten-bugs-and-one-section-at-a-time/">
+  <meta property="og:image" content="https://www.parrottalk.app/img/blog/ten-bugs-and-one-section-at-a-time-og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="article:published_time" content="2026-07-22T08:00:00+02:00">
+  <meta property="article:modified_time" content="2026-07-22T08:00:00+02:00">
+  <meta property="article:author" content="Xavier, founder of ParrotTalk">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ParrotTalkApp">
+  <meta name="twitter:title" content="Ten bugs, and letting you submit one section at a time">
+  <meta name="twitter:description" content="An early bug-fix day, and practicing one IELTS section at a time.">
+  <meta name="twitter:image" content="https://www.parrottalk.app/img/blog/ten-bugs-and-one-section-at-a-time-og.jpg">
+  <link rel="alternate" type="application/rss+xml" title="ParrotTalk Blog RSS" href="https://www.parrottalk.app/blog/feed.xml">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <script src="/js/analytics.js" async></script>
+  <script src="/js/cookie-banner.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Ten bugs, and letting you submit one section at a time",
+    "description": "An early bug-fix day on ParrotTalk, and the feature that came out of it: letting you practice one IELTS section at a time and still get an honest band estimate.",
+    "image": "https://www.parrottalk.app/img/blog/ten-bugs-and-one-section-at-a-time-og.jpg",
+    "datePublished": "2026-07-22T08:00:00+02:00",
+    "dateModified": "2026-07-22T08:00:00+02:00",
+    "author": { "@type": "Person", "name": "Xavier, founder of ParrotTalk" },
+    "publisher": { "@type": "Organization", "name": "ParrotTalk", "url": "https://www.parrottalk.app/" },
+    "mainEntityOfPage": "https://www.parrottalk.app/blog/ten-bugs-and-one-section-at-a-time/"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.parrottalk.app/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.parrottalk.app/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Ten bugs, and letting you submit one section at a time", "item": "https://www.parrottalk.app/blog/ten-bugs-and-one-section-at-a-time/" }
+    ]
+  }
+  </script>
+  <style>
+    .article-wrap { max-width: 720px; margin: 0 auto; }
+    .crumbs { font-size: .85rem; color: var(--text-light); padding: calc(var(--nav-h) + 20px) 0 0; }
+    .crumbs a { color: var(--text-muted); text-decoration: none; }
+    .crumbs a:hover { text-decoration: underline; }
+    .article-head { padding: 18px 0 8px; }
+    .article-head h1 { font-size: clamp(1.8rem, 4.2vw, 2.5rem); line-height: 1.16; margin: 0 0 14px; color: var(--dark); }
+    .article-meta { font-size: .9rem; color: var(--text-muted); margin: 0; }
+    .article-figure { float: right; width: 190px; margin: 6px 0 14px 24px; }
+    .article-figure img { width: 100%; height: auto; display: block; border-radius: var(--r); box-shadow: var(--sh-sm); }
+    @media (max-width: 560px) { .article-figure { float: none; width: 150px; margin: 4px auto 16px; } }
+    .article-body { font-size: 1.08rem; line-height: 1.72; color: var(--text); padding: 12px 0 8px; }
+    .article-body h2 { font-size: 1.5rem; line-height: 1.25; margin: 38px 0 12px; color: var(--dark); }
+    .article-body p { margin: 0 0 18px; }
+    .article-body ul { margin: 0 0 18px; padding-left: 1.3em; }
+    .article-body li { margin: 0 0 8px; }
+    .article-body a { color: var(--primary); }
+    .article-cta { background: var(--primary-pale); border: 1px solid var(--primary-light); border-radius: var(--r-lg); padding: 22px 24px; margin: 34px 0 8px; }
+    .article-cta p { margin: 0 0 8px; }
+    .article-back { padding: 8px 0 64px; }
+    .article-back a { color: var(--primary); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="/index.html" class="nav__logo">
+      <img src="/img/logo-official.webp" alt="ParrotTalk">
+      ParrotTalk
+    </a>
+    <div class="nav__links">
+      <a href="/quickmock.html" class="nav__link">Quick Mock Test</a>
+      <a href="/mockexam.html" class="nav__link">Mock Test</a>
+      <a href="/index.html#modules" class="nav__link">Practice</a>
+      <a href="/dashboard.html" class="nav__link">Dashboard</a>
+    </div>
+    <a href="/listening.html" class="nav__cta">Start Free</a>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="article-wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> / <a href="/blog/">Blog</a> / Ten bugs, and one section at a time
+    </nav>
+
+    <article>
+      <header class="article-head">
+        <h1>Ten bugs, and letting you submit one section at a time</h1>
+        <p class="article-meta">By Xavier, founder of ParrotTalk · July 22, 2026 · 4 min read</p>
+      </header>
+
+      <div class="article-body">
+        <figure class="article-figure">
+          <img src="/img/blog/ten-bugs-and-one-section-at-a-time.webp" width="480" height="480"
+               alt="The ParrotTalk parrot mascot holding a pen at a notebook, the ParrotTalk mascot" loading="lazy">
+        </figure>
+
+        <p>Three days after the first version went up, on July 3, I did not add a single shiny feature. I spent the day fixing ten bugs. It is not the kind of day you put on a landing page, but it is the kind of day that decides whether people come back, so it is exactly the kind of day this journal is for.</p>
+
+        <p>The bugs were the usual early-project zoo. One was a plain mismatch in the shape of the data sent to the server, so a request that looked fine simply bounced. One was a race condition in Listening, where the audio and the code that watched it could get out of step if you clicked at the wrong moment. One was a Writing score that used the wrong formula and quietly produced numbers that did not add up. The rest were smaller rough edges in the interface, the sort of thing you only notice when you sit down and actually use your own product as a stranger would.</p>
+
+        <p>That last part is the real story of the day. I stopped building and started taking the tests myself, start to finish, and the list of ten wrote itself. Nothing exposes a weak spot faster than becoming your own annoyed user.</p>
+
+        <p>Take the race condition. On paper the Listening code was fine; the audio played, the questions appeared. But when I clicked around impatiently the way a real person does, the timeline and the code watching it could drift a fraction out of step, and a question would reveal at the wrong moment. You cannot find that bug by reading the code calmly. You find it by being in a hurry, which is the exact state a candidate is in. The wrong Writing formula was similar: the maths looked plausible until I checked a result by hand and the number simply did not add up. Small, quiet, and the kind of thing that erodes trust without ever throwing an error.</p>
+
+        <h2>The feature hiding inside the bug list</h2>
+
+        <p>While using the site like a real candidate, I hit a wall that was not a bug at all, just a bad assumption. The tool expected you to sit an entire section before it would tell you anything. But a real person practicing after work does not always have a clean hour. Sometimes you have twenty minutes and one Reading passage in you, and then life happens.</p>
+
+        <p>So I added the ability to submit after any single section or passage and still get a result. Because a partial attempt cannot map cleanly onto a full IELTS band, I did not pretend otherwise: you get an approximate band with a plain warning that it is based on part of the test. Honest and useful beat precise and unusable. It turned the tool from something you had to schedule into something you could pick up for a few minutes at a time.</p>
+
+        <p>That is a small design decision with a big attitude behind it. A lot of study tools are built for an imaginary person with a quiet room and three free hours. Real candidates are on a bus, between shifts, or squeezing in a passage before bed. Once I started designing for that person instead of the imaginary one, a whole string of later choices fell into place: saving your progress so a reload never costs you anything, keeping pages light so they open on a slow connection, and eventually a full mock you can finish in under an hour. All of it traces back to a July afternoon spent fixing ten unglamorous bugs and listening to what the tool was trying to tell me.</p>
+
+        <p>That small change quietly shaped the whole product. Months later it grew into a proper short format you can finish in under an hour, but the seed was this July afternoon of letting people practice in the time they actually have. If you want the full thing under exam conditions, the <a href="/mockexam.html">free mock test</a> is there whenever you do have the hour.</p>
+
+        <div class="article-cta">
+          <p><strong>Only have twenty minutes?</strong> Do one section, get an honest read on where you stand, come back for the rest later.</p>
+          <p><a href="/mockexam.html">Start a free mock test &rarr;</a></p>
+        </div>
+
+        <p>I have come to like the unglamorous days. Ten bugs fixed is ten small reasons a stranger did not give up on the site. And every so often, buried in the bug list, there is a feature waiting to be noticed.</p>
+      </div>
+    </article>
+
+    <div class="article-back">
+      <a href="/blog/">&larr; Back to the journal</a>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__logo"><span>🦜</span> ParrotTalk</div>
+      <div class="footer__links">
+        <a href="/listening.html">Listening</a>
+        <a href="/reading.html">Reading</a>
+        <a href="/writing.html">Writing</a>
+        <a href="/speaking.html">Speaking</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/writing-checker.html">Writing Checker</a>
+        <a href="/blog/">Blog</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/legal-notice.html">Legal Notice</a>
+        <a href="/terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <p class="footer__copy">© 2026 ParrotTalk · Free IELTS Preparation · parrottalk.app</p>
+    <p class="footer__copy" style="font-size:.75rem;opacity:.6;margin-top:4px">ParrotTalk is not affiliated with, endorsed by, or connected to IELTS, the British Council, IDP, or Cambridge English.</p>
+  </div>
+</footer>
+
+</body>
+</html>

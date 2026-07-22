@@ -6,7 +6,15 @@
     <atom:link href="https://www.parrottalk.app/blog/feed.xml" rel="self" type="application/rss+xml"/>
     <description>A founder's journal about building ParrotTalk, a 100% free IELTS practice site with AI feedback.</description>
     <language>en</language>
-    <lastBuildDate>Tue, 21 Jul 2026 08:00:00 +0200</lastBuildDate>
+    <lastBuildDate>Wed, 22 Jul 2026 08:00:00 +0200</lastBuildDate>
+    <item>
+      <title>Ten bugs, and letting you submit one section at a time</title>
+      <link>https://www.parrottalk.app/blog/ten-bugs-and-one-section-at-a-time/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/ten-bugs-and-one-section-at-a-time/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Wed, 22 Jul 2026 08:00:00 +0200</pubDate>
+      <description>An unglamorous bug-fix day, and the feature hiding inside the bug list: practice one IELTS section at a time.</description>
+    </item>
     <item>
       <title>Teaching a parrot to grade a voice in one day</title>
       <link>https://www.parrottalk.app/blog/teaching-a-parrot-to-grade-a-voice/</link>
