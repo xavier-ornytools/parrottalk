@@ -130,17 +130,21 @@ async function testReadingListening(browser) {
   check('Reading test_started émis (section=reading)', ev.some(e => e.name === 'test_started' && e.params.section === 'reading'));
   check('Reading section_completed émis', ev.some(e => e.name === 'section_completed' && e.params.section === 'reading'));
 
-  // Listening
+  // Listening : section_completed n'est emis qu'UNE fois, quand le MODULE est
+  // entierement termine (derniere sous-section validee), aligne sur test_started
+  // (un par tentative) et sur Speaking. On finit donc toutes les sous-sections.
   await page.goto(`${BASE_URL}/listening.html`);
   await prep(page);
   await page.click(`button[onclick="selectTest('test01')"]`);
   await page.waitForTimeout(150);
   await page.click(`button[onclick="startTest()"]`);
   await page.waitForTimeout(200);
-  await page.evaluate(() => finishSection());
+  const nSecL = await page.evaluate(() => currentTest.sections.length);
+  for (let i = 0; i < nSecL; i++) { await page.evaluate(() => finishSection()); await page.waitForTimeout(150); }
   ev = await events(page);
   check('Listening test_started émis (section=listening)', ev.some(e => e.name === 'test_started' && e.params.section === 'listening'));
-  check('Listening section_completed émis', ev.some(e => e.name === 'section_completed' && e.params.section === 'listening'));
+  const lComp = ev.filter(e => e.name === 'section_completed' && e.params.section === 'listening');
+  check('Listening section_completed émis une seule fois (module termine)', lComp.length === 1);
 
   await page.close();
 }

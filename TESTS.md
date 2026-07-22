@@ -1,5 +1,21 @@
 # ParrotTalk — Tests techniques
 
+## LOT instrumentation : anomalie funnel Listening, section_completed par tentative (2026-07-22)
+
+Branche `fix/listening-test-started-tracking` depuis `main 2ca60b3`, tag de securite `avant-lot-listening-tracking-2026-07-22`. ExamFlow (`js/exam-flow.js`) et QuickMock (`js/quickmock.js`) intouches. Aucun push, aucun merge : Xavier valide au navigateur avant push.
+
+**Cause de l'anomalie (145 termines / 89 demarres cote Listening depuis le 14/07), mesuree et non supposee.** Le funnel par section du rapport quotidien compare `test_started` (1 par tentative) a `section_completed`. Hypothese de depart : un demarrage manquant ou mal attribue. **Refutee par la mesure** : le `test_started` de Listening part correctement une seule fois par tentative (auto-resume au reload ne le redeclenche pas). La vraie cause est que `section_completed` partait a CHAQUE sous-section (`finishSection`), soit jusqu'a 4 fois par tentative en Listening, alors qu'il est cense marquer la fin du module. Reading a le meme schema latent (par passage, 3x), Speaking l'emet une seule fois (au submit). Sonde au navigateur, vrai Chrome, dataLayer observe, googletagmanager bloque : **avant, Listening test01 = 1 test_started pour 4 section_completed (ratio 4.00)** ; Reading test01 = 1 pour 3 (3.00).
+
+**Correctif (`listening.html` uniquement, `finishSection`).** `section_completed` n'est plus emis qu'UNE fois, quand la derniere sous-section est validee (`sectionsDone.every(Boolean)`), donc une fois par tentative, aligne sur Speaking et comparable a `test_started`. Aucun changement d'UI, aucun autre event touche (`test_started`, `evaluation_received`, `feedback_completed`, `beta_rating_given` inchanges), la serie historique `section_completed` n'est pas detruite mais change de granularite : **rupture de serie a la date de deploiement**, a borner dans le rapport. Une completion partielle (module non termine) n'emet plus rien, ce qui est le sens attendu de "Termines". Reading laisse tel quel (hors perimetre de l'anomalie signalee) : meme correctif recommande en suivi.
+
+**Tests (vrai Chrome, port 8000). Baseline mesuree avant modification.**
+- `check.js` **110/0**.
+- **Nouveau** `e2e-listening-tracking` **12/0** : 0 event au chargement/choix de test ; exactement 1 `test_started` au Start ; 0 `section_completed` sur les sous-sections intermediaires ; exactement 1 `section_completed` a la fin du module ; 0 nouveau `test_started` a la reprise (auto-resume). Apres correctif, sonde : Listening ratio **1.00**.
+- `e2e-ga4-events` **14/0** (adapte : le cas Listening finit desormais toutes les sous-sections et verifie 1 seul `section_completed`).
+- `e2e-mockexam` **10/0**. `e2e-reading-tracking` **7/0** (port 8000).
+- `e2e-quickmock` **53/2** : les 2 echecs (`test_started porte flow:quick`, `les parametres historiques sont preserves`) sont le race intermittent GA4 pre-existant deja documente dans le lot du 19/07, identiques sur `listening.html` pristine (stash verifie), sans rapport avec ce correctif.
+- `e2e-persistence` : erreur pre-existante `currentRanges is not defined` dans `testReadingMatchingHeadings` (fonction Reading), identique sur pristine et modifie, anterieure a ce lot. Non traitee (hors perimetre).
+
 ## LOT technique groupe : cablage GA4 rating, garde quickmock, wording mockexam (2026-07-19)
 
 Branche `lot-technique-2026-07-19` depuis `main da357ee`, tag de securite `avant-lot-technique-2026-07-19`. ExamFlow (`js/exam-flow.js`) et `css/main.css` intouches. Trois micro-taches independantes.
