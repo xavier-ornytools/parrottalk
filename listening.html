@@ -794,7 +794,6 @@ function finishSection() {
   const si = currentSection;
   const sec = currentTest.sections[si];
   if (!sectionsDone[si]) {
-    window.ptEvent && window.ptEvent('section_completed', { section: 'listening', test_number: currentTest.id });
     const qs = getQuestions(sec);
     let score = 0;
     qs.forEach(q => {
@@ -805,6 +804,16 @@ function finishSection() {
     });
     sectionScores[si] = score;
     sectionsDone[si] = true;
+    // section_completed = MODULE termine, emis UNE SEULE fois par tentative,
+    // quand la derniere sous-section est validee. Aligne sur Speaking (un event
+    // au submit) et sur test_started (un event par tentative). Avant le 22/07,
+    // l'event partait a CHAQUE sous-section (jusqu'a 4x/tentative en Listening),
+    // ce qui gonflait "Termines" au-dessus de "Demarres" dans le funnel par
+    // section : c'est l'anomalie Listening (145 termines / 89 demarres depuis le
+    // 14/07). Rupture de serie section_completed a la date de deploiement.
+    if (sectionsDone.every(Boolean)) {
+      window.ptEvent && window.ptEvent('section_completed', { section: 'listening', test_number: currentTest.id });
+    }
     document.getElementById(`tab-${si}`)?.classList.add('done');
     updateSubmitVisibility();
     refreshTabLocks(); // valider une section déverrouille la suivante
