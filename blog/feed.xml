@@ -6,7 +6,15 @@
     <atom:link href="https://www.parrottalk.app/blog/feed.xml" rel="self" type="application/rss+xml"/>
     <description>A founder's journal about building ParrotTalk, a 100% free IELTS practice site with AI feedback.</description>
     <language>en</language>
-    <lastBuildDate>Wed, 22 Jul 2026 08:00:00 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 23 Jul 2026 08:00:00 +0200</lastBuildDate>
+    <item>
+      <title>The honesty pass: cutting every claim I could not stand behind</title>
+      <link>https://www.parrottalk.app/blog/the-honesty-pass/</link>
+      <guid isPermaLink="true">https://www.parrottalk.app/blog/the-honesty-pass/</guid>
+      <author>contact@parrottalk.app (Xavier, founder of ParrotTalk)</author>
+      <pubDate>Thu, 23 Jul 2026 08:00:00 +0200</pubDate>
+      <description>Early on I went through every page of ParrotTalk and removed anything that was not strictly true. The day it stopped being a demo.</description>
+    </item>
     <item>
       <title>Ten bugs, and letting you submit one section at a time</title>
       <link>https://www.parrottalk.app/blog/ten-bugs-and-one-section-at-a-time/</link>
